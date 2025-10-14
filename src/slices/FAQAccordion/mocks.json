@@ -1,0 +1,92 @@
+{
+  "id": "faq_accordion",
+  "name": "FAQ Accordion",
+  "description": "A collapsible FAQ section with customizable layout and styling options",
+  "imageUrl": "",
+  "display": "list",
+  "primary": {
+    "title": [
+      {
+        "type": "heading1",
+        "text": "Frequently Asked Questions",
+        "spans": []
+      }
+    ],
+    "subtitle": [
+      {
+        "type": "paragraph",
+        "text": "Find answers to the most common questions about our products and services.",
+        "spans": []
+      }
+    ],
+    "layout": "single",
+    "allowMultiple": false,
+    "showIcons": true,
+    "alignment": "center",
+    "footerText": [
+      {
+        "type": "paragraph",
+        "text": "Still have questions? Contact our support team for assistance.",
+        "spans": []
+      }
+    ]
+  },
+  "items": [
+    {
+      "question": "What is your return policy?",
+      "answer": [
+        {
+          "type": "paragraph",
+          "text": "We offer a 30-day return policy for all unused items in their original packaging. Returns are free and easy to process through your account dashboard.",
+          "spans": []
+        }
+      ],
+      "icon": {
+        "url": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=40&h=40&fit=crop&crop=center",
+        "alt": "Return policy icon"
+      }
+    },
+    {
+      "question": "How long does shipping take?",
+      "answer": [
+        {
+          "type": "paragraph",
+          "text": "Standard shipping takes 3-5 business days, while express shipping takes 1-2 business days. International shipping may take 7-14 business days depending on the destination.",
+          "spans": []
+        }
+      ],
+      "icon": {
+        "url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=center",
+        "alt": "Shipping icon"
+      }
+    },
+    {
+      "question": "Do you offer customer support?",
+      "answer": [
+        {
+          "type": "paragraph",
+          "text": "Yes! We provide 24/7 customer support via live chat, email, and phone. Our support team is always ready to help with any questions or concerns.",
+          "spans": []
+        }
+      ],
+      "icon": {
+        "url": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=40&h=40&fit=crop&crop=center",
+        "alt": "Support icon"
+      }
+    },
+    {
+      "question": "What payment methods do you accept?",
+      "answer": [
+        {
+          "type": "paragraph",
+          "text": "We accept all major credit cards (Visa, MasterCard, American Express), PayPal, Apple Pay, Google Pay, and bank transfers for larger orders.",
+          "spans": []
+        }
+      ],
+      "icon": {
+        "url": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=40&h=40&fit=crop&crop=center",
+        "alt": "Payment icon"
+      }
+    }
+  ]
+}

@@ -1,0 +1,156 @@
+{
+  "id": "multi_column_cards",
+  "name": "Multi Column Cards",
+  "description": "A flexible card layout with customizable columns and card styles",
+  "imageUrl": "",
+  "display": "list",
+  "type": "SharedSlice",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default Multi Column Cards",
+      "imageUrl": "",
+      "primary": {
+        "title": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Title",
+            "placeholder": "Enter the main title for the cards section",
+            "single": "heading1,heading2,heading3,heading4,heading5,heading6"
+          }
+        },
+        "subtitle": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Subtitle",
+            "placeholder": "Enter a subtitle or description",
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "columns": {
+          "type": "Number",
+          "config": {
+            "label": "Number of Columns",
+            "placeholder": "3"
+          }
+        },
+        "cardStyle": {
+          "type": "Text",
+          "config": {
+            "label": "Card Style",
+            "placeholder": "default"
+          }
+        },
+        "showImages": {
+          "type": "Boolean",
+          "config": {
+            "label": "Show Images",
+            "default_value": true,
+            "placeholder_false": "Hide images",
+            "placeholder_true": "Show images"
+          }
+        },
+        "showButtons": {
+          "type": "Boolean",
+          "config": {
+            "label": "Show Buttons",
+            "default_value": true,
+            "placeholder_false": "Hide buttons",
+            "placeholder_true": "Show buttons"
+          }
+        },
+        "alignment": {
+          "type": "Text",
+          "config": {
+            "label": "Text Alignment",
+            "placeholder": "center"
+          }
+        },
+        "footerLink": {
+          "type": "Link",
+          "config": {
+            "label": "Footer Link",
+            "placeholder": "Link to view all items"
+          }
+        },
+        "footerButtonText": {
+          "type": "Text",
+          "config": {
+            "label": "Footer Button Text",
+            "placeholder": "View All"
+          }
+        }
+      },
+      "items": {
+        "title": {
+          "type": "Text",
+          "config": {
+            "label": "Card Title",
+            "placeholder": "Enter the card title"
+          }
+        },
+        "description": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Description",
+            "placeholder": "Enter the card description",
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "image": {
+          "type": "Image",
+          "config": {
+            "label": "Image",
+            "constraint": {
+              "width": 400,
+              "height": 300
+            },
+            "thumbnails": []
+          }
+        },
+        "icon": {
+          "type": "Image",
+          "config": {
+            "label": "Icon",
+            "constraint": {
+              "width": 48,
+              "height": 48
+            },
+            "thumbnails": []
+          }
+        },
+        "link": {
+          "type": "Link",
+          "config": {
+            "label": "Link",
+            "placeholder": "Link to learn more"
+          }
+        },
+        "buttonText": {
+          "type": "Text",
+          "config": {
+            "label": "Button Text",
+            "placeholder": "Learn More"
+          }
+        },
+        "price": {
+          "type": "Text",
+          "config": {
+            "label": "Price",
+            "placeholder": "Enter price if applicable"
+          }
+        },
+        "features": {
+          "type": "Text",
+          "config": {
+            "label": "Features List",
+            "placeholder": "Enter feature items (one per line)"
+          }
+        }
+      }
+    }
+  ]
+}

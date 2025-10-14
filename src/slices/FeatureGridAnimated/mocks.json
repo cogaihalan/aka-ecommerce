@@ -1,0 +1,106 @@
+{
+  "id": "feature_grid_animated",
+  "name": "Feature Grid Animated",
+  "description": "An animated grid layout showcasing features with scroll-triggered animations",
+  "imageUrl": "",
+  "display": "list",
+  "primary": {
+    "title": [
+      {
+        "type": "heading2",
+        "text": "Experience the Future",
+        "spans": []
+      }
+    ],
+    "subtitle": [
+      {
+        "type": "paragraph",
+        "text": "Watch as our cutting-edge features come to life with smooth, engaging animations.",
+        "spans": []
+      }
+    ],
+    "columns": 3,
+    "showIcons": true,
+    "showImages": true,
+    "alignment": "center",
+    "footerLink": {
+      "link_type": "Web",
+      "url": "https://example.com/features"
+    },
+    "footerButtonText": "Explore All Features"
+  },
+  "items": [
+    {
+      "title": "Smart Automation",
+      "description": [
+        {
+          "type": "paragraph",
+          "text": "Automate repetitive tasks with our intelligent workflow engine that learns from your patterns.",
+          "spans": []
+        }
+      ],
+      "image": {
+        "url": "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=300&fit=crop&crop=center",
+        "alt": "Automation dashboard"
+      },
+      "icon": {
+        "url": "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=64&h=64&fit=crop&crop=center",
+        "alt": "Automation icon"
+      },
+      "link": {
+        "link_type": "Web",
+        "url": "https://example.com/automation"
+      },
+      "buttonText": "Discover More",
+      "features": "AI-powered workflows\nCustom triggers\nBatch processing\nSmart notifications"
+    },
+    {
+      "title": "Real-time Collaboration",
+      "description": [
+        {
+          "type": "paragraph",
+          "text": "Work together seamlessly with live editing, comments, and instant synchronization across all devices.",
+          "spans": []
+        }
+      ],
+      "image": {
+        "url": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=300&fit=crop&crop=center",
+        "alt": "Team collaboration"
+      },
+      "icon": {
+        "url": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=64&h=64&fit=crop&crop=center",
+        "alt": "Collaboration icon"
+      },
+      "link": {
+        "link_type": "Web",
+        "url": "https://example.com/collaboration"
+      },
+      "buttonText": "Discover More",
+      "features": "Live editing\nTeam chat\nVersion control\nPermission management"
+    },
+    {
+      "title": "Advanced Analytics",
+      "description": [
+        {
+          "type": "paragraph",
+          "text": "Unlock insights with powerful data visualization and predictive analytics that drive better decisions.",
+          "spans": []
+        }
+      ],
+      "image": {
+        "url": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop&crop=center",
+        "alt": "Analytics charts"
+      },
+      "icon": {
+        "url": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=64&h=64&fit=crop&crop=center",
+        "alt": "Analytics icon"
+      },
+      "link": {
+        "link_type": "Web",
+        "url": "https://example.com/analytics"
+      },
+      "buttonText": "Discover More",
+      "features": "Interactive dashboards\nCustom reports\nData export\nTrend analysis"
+    }
+  ]
+}

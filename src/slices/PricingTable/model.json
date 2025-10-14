@@ -1,0 +1,134 @@
+{
+  "id": "pricing_table",
+  "name": "Pricing Table",
+  "description": "A flexible pricing table with multiple layout options and customizable features",
+  "imageUrl": "",
+  "display": "list",
+  "type": "SharedSlice",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default Pricing Table",
+      "imageUrl": "",
+      "primary": {
+        "title": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Title",
+            "placeholder": "Enter the pricing table title",
+            "single": "heading1,heading2,heading3,heading4,heading5,heading6"
+          }
+        },
+        "subtitle": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Subtitle",
+            "placeholder": "Enter a subtitle or description",
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "layout": {
+          "type": "Text",
+          "config": {
+            "label": "Layout",
+            "placeholder": "grid"
+          }
+        },
+        "highlightPlan": {
+          "type": "Number",
+          "config": {
+            "label": "Highlight Plan (1-based index)",
+            "placeholder": "1"
+          }
+        },
+        "showFeatures": {
+          "type": "Boolean",
+          "config": {
+            "label": "Show Features",
+            "default_value": true,
+            "placeholder_false": "Hide features",
+            "placeholder_true": "Show features"
+          }
+        },
+        "showButtons": {
+          "type": "Boolean",
+          "config": {
+            "label": "Show Buttons",
+            "default_value": true,
+            "placeholder_false": "Hide buttons",
+            "placeholder_true": "Show buttons"
+          }
+        },
+        "footerText": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Footer Text",
+            "placeholder": "Enter any additional footer text",
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        }
+      },
+      "items": {
+        "name": {
+          "type": "Text",
+          "config": {
+            "label": "Plan Name",
+            "placeholder": "Enter the plan name"
+          }
+        },
+        "description": {
+          "type": "Text",
+          "config": {
+            "label": "Plan Description",
+            "placeholder": "Enter a brief description"
+          }
+        },
+        "price": {
+          "type": "Text",
+          "config": {
+            "label": "Price",
+            "placeholder": "Enter the price (e.g., $29/month)"
+          }
+        },
+        "period": {
+          "type": "Text",
+          "config": {
+            "label": "Period",
+            "placeholder": "Enter the billing period (e.g., /month, /year)"
+          }
+        },
+        "badge": {
+          "type": "Text",
+          "config": {
+            "label": "Badge",
+            "placeholder": "Enter a badge text (e.g., 'Most Popular')"
+          }
+        },
+        "features": {
+          "type": "Text",
+          "config": {
+            "label": "Features List",
+            "placeholder": "Enter feature items (one per line)"
+          }
+        },
+        "link": {
+          "type": "Link",
+          "config": {
+            "label": "Plan Link",
+            "placeholder": "Link to choose this plan"
+          }
+        },
+        "buttonText": {
+          "type": "Text",
+          "config": {
+            "label": "Button Text",
+            "placeholder": "Choose Plan"
+          }
+        }
+      }
+    }
+  ]
+}

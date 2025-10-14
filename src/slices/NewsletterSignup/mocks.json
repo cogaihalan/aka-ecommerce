@@ -1,0 +1,43 @@
+{
+  "id": "newsletter_signup",
+  "name": "Newsletter Signup",
+  "description": "A newsletter subscription form with customizable layouts and styling options",
+  "imageUrl": "",
+  "display": "list",
+  "primary": {
+    "title": [
+      {
+        "type": "heading2",
+        "text": "Stay Updated",
+        "spans": []
+      }
+    ],
+    "subtitle": [
+      {
+        "type": "paragraph",
+        "text": "Get the latest news, updates, and exclusive content delivered directly to your inbox.",
+        "spans": []
+      }
+    ],
+    "layout": "centered",
+    "showImage": true,
+    "image": {
+      "url": "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&h=600&fit=crop&crop=center",
+      "alt": "Newsletter subscription background"
+    },
+    "backgroundColor": "#16745f",
+    "textColor": "#ffffff",
+    "placeholder": "Enter your email address",
+    "buttonText": "Subscribe Now",
+    "successTitle": "Welcome to our community!",
+    "successMessage": "You'll receive our weekly newsletter with the latest updates and exclusive content.",
+    "privacyNotice": [
+      {
+        "type": "paragraph",
+        "text": "We respect your privacy. Unsubscribe at any time.",
+        "spans": []
+      }
+    ],
+    "features": "Weekly industry insights\nExclusive content\nEarly access to features\nSpecial offers and discounts"
+  }
+}

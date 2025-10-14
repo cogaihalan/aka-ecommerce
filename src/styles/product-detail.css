@@ -1,0 +1,79 @@
+/* Product Detail Page Styles - Tailwind-based */
+
+/* React Image Magnify Styles - Custom styles that can't be replaced with Tailwind */
+.react-image-magnify {
+  @apply relative inline-block w-full h-full;
+}
+
+.react-image-magnify__small-image {
+  @apply w-full h-full object-cover rounded-lg;
+}
+
+.react-image-magnify__large-image {
+  @apply absolute top-0 left-0 w-[200%] h-[200%] object-cover rounded-lg z-10 pointer-events-none;
+}
+
+.react-image-magnify__magnifier {
+  @apply absolute border-2 border-gray-300 bg-black/10 rounded-full pointer-events-none z-[5];
+}
+
+/* Ensure proper z-index stacking */
+.react-image-magnify__enlarged-image-container {
+  @apply z-20;
+}
+
+/* Thumbnail hover effects */
+.product-thumbnail {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+.product-thumbnail:hover {
+  @apply scale-105;
+}
+
+.product-thumbnail.active {
+  @apply scale-[1.02];
+}
+
+/* Loading states - Custom animation that can't be replicated with Tailwind */
+.product-image-loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .react-image-magnify__large-image {
+    @apply w-[150%] h-[150%];
+  }
+}
+
+/* Focus states for accessibility */
+.product-thumbnail:focus {
+  @apply outline-2 outline-blue-500 outline-offset-2;
+}
+
+/* Smooth transitions for all interactive elements */
+.product-gallery * {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+/* Error state styling */
+.product-error {
+  @apply border-2 border-dashed border-red-500 bg-red-50 text-red-600;
+}
+
+/* Success state styling */
+.product-success {
+  @apply border-2 border-green-500 bg-green-50;
+}

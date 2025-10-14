@@ -1,0 +1,104 @@
+{
+  "id": "stats_counter",
+  "name": "Stats Counter",
+  "description": "An animated statistics counter with customizable layouts and scroll-triggered animations",
+  "imageUrl": "",
+  "display": "list",
+  "primary": {
+    "title": [
+      {
+        "type": "heading2",
+        "text": "Our Impact in Numbers",
+        "spans": []
+      }
+    ],
+    "subtitle": [
+      {
+        "type": "paragraph",
+        "text": "See how we're making a difference with real results and measurable outcomes.",
+        "spans": []
+      }
+    ],
+    "layout": "grid",
+    "animationDuration": 2000,
+    "showIcons": true,
+    "alignment": "center",
+    "footerText": [
+      {
+        "type": "paragraph",
+        "text": "These numbers represent our commitment to excellence and continuous improvement.",
+        "spans": []
+      }
+    ]
+  },
+  "items": [
+    {
+      "value": "10000",
+      "label": "Happy Customers",
+      "description": [
+        {
+          "type": "paragraph",
+          "text": "Satisfied customers who trust our services and solutions.",
+          "spans": []
+        }
+      ],
+      "icon": {
+        "url": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=64&h=64&fit=crop&crop=center",
+        "alt": "Happy customers icon"
+      },
+      "prefix": "",
+      "suffix": "+"
+    },
+    {
+      "value": "99",
+      "label": "Uptime Percentage",
+      "description": [
+        {
+          "type": "paragraph",
+          "text": "Reliable service with industry-leading uptime guarantees.",
+          "spans": []
+        }
+      ],
+      "icon": {
+        "url": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=64&h=64&fit=crop&crop=center",
+        "alt": "Uptime icon"
+      },
+      "prefix": "",
+      "suffix": "%"
+    },
+    {
+      "value": "50",
+      "label": "Countries Served",
+      "description": [
+        {
+          "type": "paragraph",
+          "text": "Global reach with local support in multiple countries worldwide.",
+          "spans": []
+        }
+      ],
+      "icon": {
+        "url": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=64&h=64&fit=crop&crop=center",
+        "alt": "Global reach icon"
+      },
+      "prefix": "",
+      "suffix": "+"
+    },
+    {
+      "value": "24",
+      "label": "Support Hours",
+      "description": [
+        {
+          "type": "paragraph",
+          "text": "Round-the-clock customer support to help you succeed.",
+          "spans": []
+        }
+      ],
+      "icon": {
+        "url": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=64&h=64&fit=crop&crop=center",
+        "alt": "Support icon"
+      },
+      "prefix": "",
+      "suffix": "/7"
+    }
+  ]
+}

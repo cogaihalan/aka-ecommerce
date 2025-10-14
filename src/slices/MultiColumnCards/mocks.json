@@ -1,0 +1,110 @@
+{
+  "id": "multi_column_cards",
+  "name": "Multi Column Cards",
+  "description": "A flexible card layout with customizable columns and card styles",
+  "imageUrl": "",
+  "display": "list",
+  "primary": {
+    "title": [
+      {
+        "type": "heading2",
+        "text": "Our Services",
+        "spans": []
+      }
+    ],
+    "subtitle": [
+      {
+        "type": "paragraph",
+        "text": "Choose from our comprehensive range of professional services designed to meet your business needs.",
+        "spans": []
+      }
+    ],
+    "columns": 3,
+    "cardStyle": "elevated",
+    "showImages": true,
+    "showButtons": true,
+    "alignment": "center",
+    "footerLink": {
+      "link_type": "Web",
+      "url": "https://example.com/services"
+    },
+    "footerButtonText": "View All Services"
+  },
+  "items": [
+    {
+      "title": "Web Development",
+      "description": [
+        {
+          "type": "paragraph",
+          "text": "Custom web applications built with modern technologies and best practices for optimal performance and user experience.",
+          "spans": []
+        }
+      ],
+      "image": {
+        "url": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop&crop=center",
+        "alt": "Web development workspace"
+      },
+      "icon": {
+        "url": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=48&h=48&fit=crop&crop=center",
+        "alt": "Web development icon"
+      },
+      "link": {
+        "link_type": "Web",
+        "url": "https://example.com/web-development"
+      },
+      "buttonText": "Learn More",
+      "price": "From $2,500",
+      "features": "Responsive design\nModern frameworks\nSEO optimization\nPerformance tuning"
+    },
+    {
+      "title": "Mobile App Development",
+      "description": [
+        {
+          "type": "paragraph",
+          "text": "Native and cross-platform mobile applications that deliver exceptional user experiences across all devices.",
+          "spans": []
+        }
+      ],
+      "image": {
+        "url": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop&crop=center",
+        "alt": "Mobile app development"
+      },
+      "icon": {
+        "url": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=48&h=48&fit=crop&crop=center",
+        "alt": "Mobile development icon"
+      },
+      "link": {
+        "link_type": "Web",
+        "url": "https://example.com/mobile-development"
+      },
+      "buttonText": "Learn More",
+      "price": "From $3,500",
+      "features": "iOS & Android\nCross-platform\nApp store optimization\nPush notifications"
+    },
+    {
+      "title": "Digital Marketing",
+      "description": [
+        {
+          "type": "paragraph",
+          "text": "Comprehensive digital marketing strategies to boost your online presence and drive qualified leads to your business.",
+          "spans": []
+        }
+      ],
+      "image": {
+        "url": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop&crop=center",
+        "alt": "Digital marketing analytics"
+      },
+      "icon": {
+        "url": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=48&h=48&fit=crop&crop=center",
+        "alt": "Marketing icon"
+      },
+      "link": {
+        "link_type": "Web",
+        "url": "https://example.com/digital-marketing"
+      },
+      "buttonText": "Learn More",
+      "price": "From $1,500",
+      "features": "SEO & SEM\nSocial media marketing\nContent strategy\nAnalytics & reporting"
+    }
+  ]
+}

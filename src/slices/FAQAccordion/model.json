@@ -1,0 +1,104 @@
+{
+  "id": "faq_accordion",
+  "name": "FAQ Accordion",
+  "description": "A collapsible FAQ section with customizable layout and styling options",
+  "imageUrl": "",
+  "display": "list",
+  "type": "SharedSlice",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default FAQ Accordion",
+      "imageUrl": "",
+      "primary": {
+        "title": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Title",
+            "placeholder": "Enter the main title for the FAQ section",
+            "single": "heading1,heading2,heading3,heading4,heading5,heading6"
+          }
+        },
+        "subtitle": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Subtitle",
+            "placeholder": "Enter a subtitle or description",
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "layout": {
+          "type": "Text",
+          "config": {
+            "label": "Layout",
+            "placeholder": "single"
+          }
+        },
+        "allowMultiple": {
+          "type": "Boolean",
+          "config": {
+            "label": "Allow Multiple Open",
+            "default_value": false,
+            "placeholder_false": "Only one FAQ can be open at a time",
+            "placeholder_true": "Multiple FAQs can be open simultaneously"
+          }
+        },
+        "showIcons": {
+          "type": "Boolean",
+          "config": {
+            "label": "Show Icons",
+            "default_value": true,
+            "placeholder_false": "Hide icons",
+            "placeholder_true": "Show icons"
+          }
+        },
+        "alignment": {
+          "type": "Text",
+          "config": {
+            "label": "Text Alignment",
+            "placeholder": "center"
+          }
+        },
+        "footerText": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Footer Text",
+            "placeholder": "Enter any additional footer text",
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        }
+      },
+      "items": {
+        "question": {
+          "type": "Text",
+          "config": {
+            "label": "Question",
+            "placeholder": "Enter the FAQ question"
+          }
+        },
+        "answer": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Answer",
+            "placeholder": "Enter the FAQ answer",
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "icon": {
+          "type": "Image",
+          "config": {
+            "label": "Icon",
+            "constraint": {
+              "width": 40,
+              "height": 40
+            },
+            "thumbnails": []
+          }
+        }
+      }
+    }
+  ]
+}

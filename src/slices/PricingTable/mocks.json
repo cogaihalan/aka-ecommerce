@@ -1,0 +1,75 @@
+{
+  "id": "pricing_table",
+  "name": "Pricing Table",
+  "description": "A flexible pricing table with multiple layout options and customizable features",
+  "imageUrl": "",
+  "display": "list",
+  "primary": {
+    "title": [
+      {
+        "type": "heading2",
+        "text": "Choose Your Plan",
+        "spans": []
+      }
+    ],
+    "subtitle": [
+      {
+        "type": "paragraph",
+        "text": "Select the perfect plan for your business needs. All plans include our core features with no hidden fees.",
+        "spans": []
+      }
+    ],
+    "layout": "grid",
+    "highlightPlan": 2,
+    "showFeatures": true,
+    "showButtons": true,
+    "footerText": [
+      {
+        "type": "paragraph",
+        "text": "All plans include 24/7 customer support and a 30-day money-back guarantee.",
+        "spans": []
+      }
+    ]
+  },
+  "items": [
+    {
+      "name": "Starter",
+      "description": "Perfect for small businesses getting started",
+      "price": "$29",
+      "period": "/month",
+      "badge": "",
+      "features": "Up to 5 users\n10GB storage\nBasic analytics\nEmail support\nMobile app access",
+      "link": {
+        "link_type": "Web",
+        "url": "https://example.com/starter-plan"
+      },
+      "buttonText": "Get Started"
+    },
+    {
+      "name": "Professional",
+      "description": "Ideal for growing businesses with advanced needs",
+      "price": "$79",
+      "period": "/month",
+      "badge": "Most Popular",
+      "features": "Up to 25 users\n100GB storage\nAdvanced analytics\nPriority support\nAPI access\nCustom integrations",
+      "link": {
+        "link_type": "Web",
+        "url": "https://example.com/professional-plan"
+      },
+      "buttonText": "Choose Professional"
+    },
+    {
+      "name": "Enterprise",
+      "description": "For large organizations with custom requirements",
+      "price": "$199",
+      "period": "/month",
+      "badge": "",
+      "features": "Unlimited users\n1TB storage\nCustom analytics\nDedicated support\nWhite-label options\nCustom development",
+      "link": {
+        "link_type": "Web",
+        "url": "https://example.com/enterprise-plan"
+      },
+      "buttonText": "Contact Sales"
+    }
+  ]
+}

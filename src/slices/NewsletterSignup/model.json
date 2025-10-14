@@ -1,0 +1,121 @@
+{
+  "id": "newsletter_signup",
+  "name": "Newsletter Signup",
+  "description": "A newsletter subscription form with customizable layouts and styling options",
+  "imageUrl": "",
+  "display": "list",
+  "type": "SharedSlice",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default Newsletter Signup",
+      "imageUrl": "",
+      "primary": {
+        "title": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Title",
+            "placeholder": "Enter the newsletter title",
+            "single": "heading1,heading2,heading3,heading4,heading5,heading6"
+          }
+        },
+        "subtitle": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Subtitle",
+            "placeholder": "Enter a subtitle or description",
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "layout": {
+          "type": "Text",
+          "config": {
+            "label": "Layout",
+            "placeholder": "centered"
+          }
+        },
+        "showImage": {
+          "type": "Boolean",
+          "config": {
+            "label": "Show Image",
+            "default_value": true,
+            "placeholder_false": "Hide image",
+            "placeholder_true": "Show image"
+          }
+        },
+        "image": {
+          "type": "Image",
+          "config": {
+            "label": "Background Image",
+            "constraint": {
+              "width": 800,
+              "height": 600
+            },
+            "thumbnails": []
+          }
+        },
+        "backgroundColor": {
+          "type": "Color",
+          "config": {
+            "label": "Background Color",
+            "placeholder": "#16745f"
+          }
+        },
+        "textColor": {
+          "type": "Color",
+          "config": {
+            "label": "Text Color",
+            "placeholder": "#ffffff"
+          }
+        },
+        "placeholder": {
+          "type": "Text",
+          "config": {
+            "label": "Email Placeholder",
+            "placeholder": "Enter your email address"
+          }
+        },
+        "buttonText": {
+          "type": "Text",
+          "config": {
+            "label": "Button Text",
+            "placeholder": "Subscribe"
+          }
+        },
+        "successTitle": {
+          "type": "Text",
+          "config": {
+            "label": "Success Title",
+            "placeholder": "Thank you for subscribing!"
+          }
+        },
+        "successMessage": {
+          "type": "Text",
+          "config": {
+            "label": "Success Message",
+            "placeholder": "You'll receive our latest updates soon."
+          }
+        },
+        "privacyNotice": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Privacy Notice",
+            "placeholder": "Enter privacy notice text",
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "features": {
+          "type": "Text",
+          "config": {
+            "label": "Features List",
+            "placeholder": "Enter feature items (one per line)"
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

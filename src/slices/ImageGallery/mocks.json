@@ -1,0 +1,65 @@
+{
+  "id": "image_gallery",
+  "name": "Image Gallery",
+  "description": "A flexible image gallery with carousel and grid layouts, modal viewing, and navigation options",
+  "imageUrl": "",
+  "display": "list",
+  "primary": {
+    "title": [
+      {
+        "type": "heading2",
+        "text": "Our Work in Action",
+        "spans": []
+      }
+    ],
+    "subtitle": [
+      {
+        "type": "paragraph",
+        "text": "Explore our portfolio of successful projects and see the quality of our work.",
+        "spans": []
+      }
+    ],
+    "layout": "carousel",
+    "showThumbnails": true,
+    "showNavigation": true,
+    "autoPlay": false,
+    "autoPlayInterval": 5000
+  },
+  "items": [
+    {
+      "image": {
+        "url": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&h=800&fit=crop&crop=center",
+        "alt": "Modern office workspace with team collaboration"
+      },
+      "caption": "Team collaboration in our modern office space"
+    },
+    {
+      "image": {
+        "url": "https://images.unsplash.com/photo-1551434678-e076c223a692?w=1200&h=800&fit=crop&crop=center",
+        "alt": "Product development meeting"
+      },
+      "caption": "Product development brainstorming session"
+    },
+    {
+      "image": {
+        "url": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=800&fit=crop&crop=center",
+        "alt": "Client presentation"
+      },
+      "caption": "Presenting our latest solutions to clients"
+    },
+    {
+      "image": {
+        "url": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&h=800&fit=crop&crop=center",
+        "alt": "Team working on project"
+      },
+      "caption": "Our development team working on innovative projects"
+    },
+    {
+      "image": {
+        "url": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=800&fit=crop&crop=center",
+        "alt": "Technology showcase"
+      },
+      "caption": "Showcasing our cutting-edge technology solutions"
+    }
+  ]
+}

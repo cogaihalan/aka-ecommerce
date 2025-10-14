@@ -1,0 +1,62 @@
+{
+  "id": "hero_animated",
+  "name": "Hero Animated",
+  "description": "An animated hero section with scroll-triggered animations and customizable content",
+  "imageUrl": "",
+  "display": "list",
+  "type": "SharedSlice",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default Animated Hero",
+      "imageUrl": "",
+      "primary": {
+        "eyebrowHeadline": {
+          "type": "Text",
+          "config": {
+            "label": "Eyebrow Headline",
+            "placeholder": "Enter a small headline above the main title"
+          }
+        },
+        "title": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Title",
+            "placeholder": "Enter the main hero title",
+            "single": "heading1,heading2,heading3,heading4,heading5,heading6"
+          }
+        },
+        "description": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Description",
+            "placeholder": "Enter a description or subtitle",
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "image": {
+          "type": "Image",
+          "config": {
+            "label": "Hero Image",
+            "constraint": {
+              "width": 800,
+              "height": 600
+            },
+            "thumbnails": []
+          }
+        },
+        "callToActionLink": {
+          "type": "Link",
+          "config": {
+            "label": "Call to Action Link",
+            "placeholder": "Link for the main CTA button"
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

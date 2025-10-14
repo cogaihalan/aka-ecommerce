@@ -1,0 +1,149 @@
+{
+  "id": "feature_grid",
+  "name": "Feature Grid",
+  "description": "A grid layout showcasing features with customizable columns and styling",
+  "imageUrl": "",
+  "display": "list",
+  "type": "SharedSlice",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default Feature Grid",
+      "imageUrl": "",
+      "primary": {
+        "title": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Title",
+            "placeholder": "Enter the main title for the feature grid",
+            "single": "heading1,heading2,heading3,heading4,heading5,heading6"
+          }
+        },
+        "subtitle": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Subtitle",
+            "placeholder": "Enter a subtitle or description",
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "columns": {
+          "type": "Number",
+          "config": {
+            "label": "Number of Columns",
+            "placeholder": "3"
+          }
+        },
+        "layout": {
+          "type": "Text",
+          "config": {
+            "label": "Layout",
+            "placeholder": "grid"
+          }
+        },
+        "showIcons": {
+          "type": "Boolean",
+          "config": {
+            "label": "Show Icons",
+            "default_value": true,
+            "placeholder_false": "Hide icons",
+            "placeholder_true": "Show icons"
+          }
+        },
+        "showImages": {
+          "type": "Boolean",
+          "config": {
+            "label": "Show Images",
+            "default_value": true,
+            "placeholder_false": "Hide images",
+            "placeholder_true": "Show images"
+          }
+        },
+        "alignment": {
+          "type": "Text",
+          "config": {
+            "label": "Text Alignment",
+            "placeholder": "center"
+          }
+        },
+        "footerLink": {
+          "type": "Link",
+          "config": {
+            "label": "Footer Link",
+            "placeholder": "Link to view all features"
+          }
+        },
+        "footerButtonText": {
+          "type": "Text",
+          "config": {
+            "label": "Footer Button Text",
+            "placeholder": "View All Features"
+          }
+        }
+      },
+      "items": {
+        "title": {
+          "type": "Text",
+          "config": {
+            "label": "Feature Title",
+            "placeholder": "Enter the feature title"
+          }
+        },
+        "description": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Description",
+            "placeholder": "Enter the feature description",
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "image": {
+          "type": "Image",
+          "config": {
+            "label": "Image",
+            "constraint": {
+              "width": 400,
+              "height": 300
+            },
+            "thumbnails": []
+          }
+        },
+        "icon": {
+          "type": "Image",
+          "config": {
+            "label": "Icon",
+            "constraint": {
+              "width": 64,
+              "height": 64
+            },
+            "thumbnails": []
+          }
+        },
+        "link": {
+          "type": "Link",
+          "config": {
+            "label": "Link",
+            "placeholder": "Link to learn more about this feature"
+          }
+        },
+        "buttonText": {
+          "type": "Text",
+          "config": {
+            "label": "Button Text",
+            "placeholder": "Learn More"
+          }
+        },
+        "features": {
+          "type": "Text",
+          "config": {
+            "label": "Features List",
+            "placeholder": "Enter feature items (one per line)"
+          }
+        }
+      }
+    }
+  ]
+}

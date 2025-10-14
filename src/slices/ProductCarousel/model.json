@@ -1,0 +1,126 @@
+{
+  "id": "product_carousel",
+  "name": "Product Carousel",
+  "description": "An animated product carousel with customizable navigation and auto-play options",
+  "imageUrl": "",
+  "display": "list",
+  "type": "SharedSlice",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default Product Carousel",
+      "imageUrl": "",
+      "primary": {
+        "title": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Title",
+            "placeholder": "Enter the carousel title",
+            "single": "heading1,heading2,heading3,heading4,heading5,heading6"
+          }
+        },
+        "subtitle": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Subtitle",
+            "placeholder": "Enter a subtitle or description",
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "itemsPerView": {
+          "type": "Number",
+          "config": {
+            "label": "Items Per View",
+            "placeholder": "3"
+          }
+        },
+        "showNavigation": {
+          "type": "Boolean",
+          "config": {
+            "label": "Show Navigation Arrows",
+            "default_value": true,
+            "placeholder_false": "Hide navigation arrows",
+            "placeholder_true": "Show navigation arrows"
+          }
+        },
+        "showDots": {
+          "type": "Boolean",
+          "config": {
+            "label": "Show Dots Navigation",
+            "default_value": true,
+            "placeholder_false": "Hide dots navigation",
+            "placeholder_true": "Show dots navigation"
+          }
+        },
+        "autoPlay": {
+          "type": "Boolean",
+          "config": {
+            "label": "Auto Play",
+            "default_value": false,
+            "placeholder_false": "Disable auto play",
+            "placeholder_true": "Enable auto play"
+          }
+        },
+        "autoPlayInterval": {
+          "type": "Number",
+          "config": {
+            "label": "Auto Play Interval (ms)",
+            "placeholder": "5000"
+          }
+        }
+      },
+      "items": {
+        "title": {
+          "type": "Text",
+          "config": {
+            "label": "Product Title",
+            "placeholder": "Enter the product title"
+          }
+        },
+        "description": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Description",
+            "placeholder": "Enter the product description",
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "image": {
+          "type": "Image",
+          "config": {
+            "label": "Product Image",
+            "constraint": {
+              "width": 400,
+              "height": 300
+            },
+            "thumbnails": []
+          }
+        },
+        "price": {
+          "type": "Text",
+          "config": {
+            "label": "Price",
+            "placeholder": "Enter the product price"
+          }
+        },
+        "link": {
+          "type": "Link",
+          "config": {
+            "label": "Product Link",
+            "placeholder": "Link to product page"
+          }
+        },
+        "buttonText": {
+          "type": "Text",
+          "config": {
+            "label": "Button Text",
+            "placeholder": "View Product"
+          }
+        }
+      }
+    }
+  ]
+}

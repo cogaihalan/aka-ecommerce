@@ -1,0 +1,122 @@
+/* Featured Product Slider Styles */
+
+.glider-container {
+  @apply overflow-hidden;
+}
+
+.glider {
+  @apply overflow-hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.glider::-webkit-scrollbar {
+  @apply hidden;
+}
+
+.glider-contain,
+.glider-track {
+  @apply h-full;
+}
+
+.glider-slide {
+  @apply min-h-[0] min-w-[0] transition-transform duration-300 ease-out;
+}
+
+/* Hover effects */
+.glider-slide:hover img {
+  @apply scale-105;
+}
+
+/* Product Image Gallery Specific Styles */
+.product-image-gallery .glider-container {
+  @apply rounded-lg overflow-hidden;
+}
+
+.product-image-gallery .glider-slide {
+  @apply px-0;
+}
+
+.product-image-gallery .glider-slide img {
+  @apply transition-all duration-500 ease-out;
+}
+
+/* Smooth transitions for product gallery */
+.product-image-gallery .glider-slide {
+  @apply transition-all duration-500 ease-out;
+}
+
+/* Thumbnail navigation styles */
+.product-gallery-thumbnail {
+  @apply transition-all duration-300 ease-out;
+}
+
+.product-gallery-thumbnail.active {
+  @apply scale-105;
+}
+
+.product-gallery-thumbnail:hover {
+  @apply scale-105;
+}
+
+/* Thumbnail slider specific styles */
+.product-image-gallery .glider-slide {
+  @apply px-0;
+}
+
+/* Thumbnail slider container */
+.product-image-gallery .glider-container {
+  @apply overflow-hidden;
+}
+
+/* Thumbnail slider arrows */
+.product-image-gallery .glider-prev,
+.product-image-gallery .glider-next {
+  @apply bg-white/90 hover:bg-white shadow-lg border border-gray-200;
+}
+
+.product-image-gallery .glider-prev:hover,
+.product-image-gallery .glider-next:hover {
+  @apply bg-white shadow-xl;
+}
+
+/* Navigation arrow styles */
+.product-gallery-nav {
+  @apply transition-opacity duration-200;
+}
+
+/* Thumbnail slider items - fit exactly to image */
+.product-image-gallery .glider-slide {
+  @apply flex-shrink-0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .glider-slide {
+    @apply px-2;
+  }
+
+  .product-image-gallery .glider-slide {
+    @apply px-0;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .glider-slide {
+    @apply px-3;
+  }
+
+  .product-image-gallery .glider-slide {
+    @apply px-0;
+  }
+}
+
+@media (min-width: 1025px) {
+  .glider-slide {
+    @apply px-4;
+  }
+
+  .product-image-gallery .glider-slide {
+    @apply px-0;
+  }
+}

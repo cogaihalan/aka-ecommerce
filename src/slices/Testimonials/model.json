@@ -1,0 +1,135 @@
+{
+  "id": "testimonials",
+  "name": "Testimonials",
+  "description": "A testimonials section with carousel and grid layouts, featuring customer reviews with ratings and author information",
+  "imageUrl": "",
+  "display": "list",
+  "type": "SharedSlice",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default Testimonials",
+      "imageUrl": "",
+      "primary": {
+        "title": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Title",
+            "placeholder": "Enter the testimonials section title",
+            "single": "heading1,heading2,heading3,heading4,heading5,heading6"
+          }
+        },
+        "subtitle": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Subtitle",
+            "placeholder": "Enter a subtitle or description",
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "layout": {
+          "type": "Text",
+          "config": {
+            "label": "Layout",
+            "placeholder": "carousel"
+          }
+        },
+        "showNavigation": {
+          "type": "Boolean",
+          "config": {
+            "label": "Show Navigation Arrows",
+            "default_value": true,
+            "placeholder_false": "Hide navigation arrows",
+            "placeholder_true": "Show navigation arrows"
+          }
+        },
+        "showDots": {
+          "type": "Boolean",
+          "config": {
+            "label": "Show Dots Navigation",
+            "default_value": true,
+            "placeholder_false": "Hide dots navigation",
+            "placeholder_true": "Show dots navigation"
+          }
+        },
+        "autoPlay": {
+          "type": "Boolean",
+          "config": {
+            "label": "Auto Play",
+            "default_value": false,
+            "placeholder_false": "Disable auto play",
+            "placeholder_true": "Enable auto play"
+          }
+        },
+        "autoPlayInterval": {
+          "type": "Number",
+          "config": {
+            "label": "Auto Play Interval (ms)",
+            "placeholder": "5000"
+          }
+        },
+        "showRatings": {
+          "type": "Boolean",
+          "config": {
+            "label": "Show Star Ratings",
+            "default_value": true,
+            "placeholder_false": "Hide star ratings",
+            "placeholder_true": "Show star ratings"
+          }
+        }
+      },
+      "items": {
+        "quote": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Testimonial Quote",
+            "placeholder": "Enter the customer testimonial quote",
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "name": {
+          "type": "Text",
+          "config": {
+            "label": "Customer Name",
+            "placeholder": "Enter the customer's name"
+          }
+        },
+        "title": {
+          "type": "Text",
+          "config": {
+            "label": "Job Title",
+            "placeholder": "Enter the customer's job title"
+          }
+        },
+        "company": {
+          "type": "Text",
+          "config": {
+            "label": "Company",
+            "placeholder": "Enter the customer's company name"
+          }
+        },
+        "avatar": {
+          "type": "Image",
+          "config": {
+            "label": "Customer Avatar",
+            "constraint": {
+              "width": 120,
+              "height": 120
+            },
+            "thumbnails": []
+          }
+        },
+        "rating": {
+          "type": "Number",
+          "config": {
+            "label": "Star Rating (1-5)",
+            "placeholder": "4.5"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "id": "product_carousel",
+  "name": "Product Carousel",
+  "description": "An animated product carousel with customizable navigation and auto-play options",
+  "imageUrl": "",
+  "display": "list",
+  "primary": {
+    "title": [
+      {
+        "type": "heading2",
+        "text": "Featured Products",
+        "spans": []
+      }
+    ],
+    "subtitle": [
+      {
+        "type": "paragraph",
+        "text": "Discover our most popular products and latest additions to our catalog.",
+        "spans": []
+      }
+    ],
+    "itemsPerView": 3,
+    "showNavigation": true,
+    "showDots": true,
+    "autoPlay": false,
+    "autoPlayInterval": 5000
+  },
+  "items": [
+    {
+      "title": "Premium Wireless Headphones",
+      "description": [
+        {
+          "type": "paragraph",
+          "text": "Experience crystal-clear audio with our latest wireless headphones featuring noise cancellation and 30-hour battery life.",
+          "spans": []
+        }
+      ],
+      "image": {
+        "url": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop&crop=center",
+        "alt": "Premium wireless headphones"
+      },
+      "price": "$299",
+      "link": {
+        "link_type": "Web",
+        "url": "https://example.com/wireless-headphones"
+      },
+      "buttonText": "View Product"
+    },
+    {
+      "title": "Smart Fitness Tracker",
+      "description": [
+        {
+          "type": "paragraph",
+          "text": "Track your fitness goals with our advanced smartwatch featuring heart rate monitoring, GPS, and water resistance.",
+          "spans": []
+        }
+      ],
+      "image": {
+        "url": "https://images.unsplash.com/photo-1544117519-31a4b719223d?w=400&h=300&fit=crop&crop=center",
+        "alt": "Smart fitness tracker"
+      },
+      "price": "$199",
+      "link": {
+        "link_type": "Web",
+        "url": "https://example.com/fitness-tracker"
+      },
+      "buttonText": "View Product"
+    },
+    {
+      "title": "Professional Camera Lens",
+      "description": [
+        {
+          "type": "paragraph",
+          "text": "Capture stunning photos with our professional-grade camera lens featuring advanced optics and image stabilization.",
+          "spans": []
+        }
+      ],
+      "image": {
+        "url": "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=400&h=300&fit=crop&crop=center",
+        "alt": "Professional camera lens"
+      },
+      "price": "$899",
+      "link": {
+        "link_type": "Web",
+        "url": "https://example.com/camera-lens"
+      },
+      "buttonText": "View Product"
+    },
+    {
+      "title": "Ergonomic Office Chair",
+      "description": [
+        {
+          "type": "paragraph",
+          "text": "Work comfortably all day with our ergonomic office chair featuring lumbar support, adjustable height, and premium materials.",
+          "spans": []
+        }
+      ],
+      "image": {
+        "url": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop&crop=center",
+        "alt": "Ergonomic office chair"
+      },
+      "price": "$449",
+      "link": {
+        "link_type": "Web",
+        "url": "https://example.com/office-chair"
+      },
+      "buttonText": "View Product"
+    }
+  ]
+}

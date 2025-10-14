@@ -1,0 +1,97 @@
+{
+  "id": "image_gallery",
+  "name": "Image Gallery",
+  "description": "A flexible image gallery with carousel and grid layouts, modal viewing, and navigation options",
+  "imageUrl": "",
+  "display": "list",
+  "type": "SharedSlice",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default Image Gallery",
+      "imageUrl": "",
+      "primary": {
+        "title": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Title",
+            "placeholder": "Enter the gallery title",
+            "single": "heading1,heading2,heading3,heading4,heading5,heading6"
+          }
+        },
+        "subtitle": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Subtitle",
+            "placeholder": "Enter a subtitle or description",
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "layout": {
+          "type": "Text",
+          "config": {
+            "label": "Layout",
+            "placeholder": "carousel"
+          }
+        },
+        "showThumbnails": {
+          "type": "Boolean",
+          "config": {
+            "label": "Show Thumbnails",
+            "default_value": true,
+            "placeholder_false": "Hide thumbnails",
+            "placeholder_true": "Show thumbnails"
+          }
+        },
+        "showNavigation": {
+          "type": "Boolean",
+          "config": {
+            "label": "Show Navigation Arrows",
+            "default_value": true,
+            "placeholder_false": "Hide navigation arrows",
+            "placeholder_true": "Show navigation arrows"
+          }
+        },
+        "autoPlay": {
+          "type": "Boolean",
+          "config": {
+            "label": "Auto Play",
+            "default_value": false,
+            "placeholder_false": "Disable auto play",
+            "placeholder_true": "Enable auto play"
+          }
+        },
+        "autoPlayInterval": {
+          "type": "Number",
+          "config": {
+            "label": "Auto Play Interval (ms)",
+            "placeholder": "5000"
+          }
+        }
+      },
+      "items": {
+        "image": {
+          "type": "Image",
+          "config": {
+            "label": "Image",
+            "constraint": {
+              "width": 1200,
+              "height": 800
+            },
+            "thumbnails": []
+          }
+        },
+        "caption": {
+          "type": "Text",
+          "config": {
+            "label": "Caption",
+            "placeholder": "Enter an image caption"
+          }
+        }
+      }
+    }
+  ]
+}

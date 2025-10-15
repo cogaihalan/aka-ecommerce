@@ -1,21 +1,24 @@
 "use client";
 import { DataTableColumnHeader } from "@/components/ui/table/data-table-column-header";
-import { Product } from "@/types";
+import { Product, ProductImage } from "@/types";
 import { Column, ColumnDef } from "@tanstack/react-table";
 import { Text } from "lucide-react";
 import Image from "next/image";
 import { CellAction } from "./cell-action";
+import { formatImageUrl } from "@/lib/utils";
 
 export const columns: ColumnDef<Product>[] = [
   {
-    id: "photo_url",
-    accessorKey: "photo_url",
-    header: "IMAGE",
+    id: "images",
+    accessorKey: "images",
+    header: "Image",
     cell: ({ row }) => {
+      const images = row.getValue("images") as ProductImage[];
+      
       return (
         <div className="relative aspect-square">
           <Image
-            src={row.getValue("photo_url")}
+            src={formatImageUrl(images[0].url)}
             alt={row.getValue("name")}
             fill
             className="rounded-lg"

@@ -12,7 +12,7 @@ export const navItems: NavItem[] = [
   },
   {
     title: "Products",
-    url: "/admin/product",
+    url: "/admin/products",
     icon: "product",
     shortcut: ["p", "p"],
     isActive: false,

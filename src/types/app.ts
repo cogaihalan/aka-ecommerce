@@ -12,8 +12,6 @@ export interface AppStore {
 
   // Categories
   categories: Category[];
-  categoriesTree: Category[];
-  categoriesMap: Record<string, Category>;
 
   // Error states
   error: string | null;
@@ -24,10 +22,7 @@ export interface AppStore {
   setCategories: (categories: Category[]) => void;
   initializeApp: () => Promise<void>;
   refreshCategories: () => Promise<void>;
-
-  // Getters
-  getCategoryBySlug: (slug: string) => Category | undefined;
-  getCategoryById: (id: string) => Category | undefined;
-  getChildCategories: (parentId: string) => Category[];
-  getRootCategories: () => Category[];
+  addCategory: (category: Category) => void;
+  updateCategory: (category: Category) => void;
+  removeCategory: (categoryId: number) => void;
 }

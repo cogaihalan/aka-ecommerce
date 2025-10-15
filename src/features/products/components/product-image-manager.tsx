@@ -24,7 +24,7 @@ interface ProductImageManagerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   productId: number;
-  existingImages?: any[]; // Array of existing image objects with id, url, etc.
+  existingImages?: any[];
   onSuccess?: () => void;
 }
 

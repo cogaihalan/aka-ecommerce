@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { Product } from "@/lib/api/types";
+import { Product } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -50,22 +50,26 @@ export function formatBytes(
   }`;
 }
 
+export function formatImageUrl(url: string): string {
+  return `${process.env.NEXT_PUBLIC_BASE_URL}/${url}`;
+}
+
 /**
  * Check if a product is out of stock
  */
 export function isProductOutOfStock(product: Product): boolean {
   // Check if product is not active
-  if (product.status !== "active") {
+  if (product.status !== "ACTIVE") {
     return true;
   }
 
   // Check inventory status
-  if (product.inventory?.stockStatus === "out_of_stock") {
+  if (product.variants[0].status === "OUT_OF_STOCK") {
     return true;
   }
 
   // Check available quantity
-  if (product.inventory?.trackQuantity && product.inventory.available <= 0) {
+  if (product.variants[0].status === "OUT_OF_STOCK" && product.variants[0].stock <= 0) {
     return true;
   }
 
@@ -78,32 +82,20 @@ export function isProductOutOfStock(product: Product): boolean {
 export function getStockStatusText(product: Product): string {
   console.log(product);
 
-  if (product.status !== "active") {
+  if (product.status !== "ACTIVE") {
     return "Inactive";
   }
 
-  if (product.inventory?.stockStatus === "out_of_stock") {
+  if (product.variants[0].status === "OUT_OF_STOCK") {
     return "Out of Stock";
   }
 
-  if (product.inventory?.stockStatus === "backorder") {
-    return "Backorder";
-  }
-
-  if (product.inventory?.stockStatus === "preorder") {
-    return "Pre-order";
-  }
-
-  if (product.inventory?.trackQuantity) {
-    if (product.inventory.available <= 0) {
+  if (product.variants[0].status === "ACTIVE") {
+    if (product.variants[0].stock <= 0) {
       return "Out of Stock";
     }
-    if (
-      product.inventory.available <= (product.inventory.lowStockThreshold || 5)
-    ) {
-      return `Only ${product.inventory.available} left`;
-    }
-    return `${product.inventory.available} in stock`;
+ 
+    return `${product.variants[0].stock} in stock`;
   }
 
   return "In Stock";

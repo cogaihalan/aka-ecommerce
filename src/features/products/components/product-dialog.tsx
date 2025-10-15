@@ -27,12 +27,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { CreateProductRequest, UpdateProductRequest } from "@/lib/api/types";
 import { unifiedProductService } from "@/lib/api/services/unified";
 import { toast } from "sonner";
+import { useApp } from "@/components/providers/app-provider";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -57,8 +60,8 @@ export function ProductDialog({
   onSuccess,
 }: ProductDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [categories, setCategories] = useState<any[]>([]);
-
+  const { categories } = useApp();
+  
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -147,35 +150,86 @@ export function ProductDialog({
             <FormField
               control={form.control}
               name="categoryIds"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Categories</FormLabel>
-                  <Select
-                    onValueChange={(value) => {
-                      const categoryId = parseInt(value);
-                      const currentIds = field.value || [];
-                      if (!currentIds.includes(categoryId)) {
-                        field.onChange([...currentIds, categoryId]);
-                      }
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select categories" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem
-                          key={category.id}
-                          value={category.id.toString()}
-                        >
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
+              render={({ field }) => {
+                const selectedCategories = categories.filter(cat => 
+                  field.value?.includes(cat.id)
+                );
+                const availableCategories = categories.filter(cat => 
+                  !field.value?.includes(cat.id)
+                );
+
+                return (
+                  <FormItem>
+                    <FormLabel>Categories</FormLabel>
+                    <div className="space-y-2">
+                      {/* Display selected categories */}
+                      {selectedCategories.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {selectedCategories.map((category) => (
+                            <Badge
+                              key={category.id}
+                              variant="secondary"
+                              className="flex items-center gap-1 pr-1"
+                            >
+                              {category.name}
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="h-4 w-4 p-0 hover:bg-transparent"
+                                onClick={() => {
+                                  const newIds = field.value?.filter(id => id !== category.id) || [];
+                                  field.onChange(newIds);
+                                }}
+                              >
+                                <X className="h-3 w-3" />
+                              </Button>
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                      
+                      {/* Category selection dropdown */}
+                      <Select
+                        onValueChange={(value) => {
+                          const categoryId = parseInt(value);
+                          const currentIds = field.value || [];
+                          if (!currentIds.includes(categoryId)) {
+                            field.onChange([...currentIds, categoryId]);
+                          }
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue 
+                            placeholder={
+                              selectedCategories.length > 0 
+                                ? "Add more categories..." 
+                                : "Select categories"
+                            } 
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {availableCategories.length > 0 ? (
+                            availableCategories.map((category) => (
+                              <SelectItem
+                                key={category.id}
+                                value={category.id.toString()}
+                              >
+                                {category.name}
+                              </SelectItem>
+                            ))
+                          ) : (
+                            <SelectItem value="" disabled>
+                              All categories selected
+                            </SelectItem>
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
 
             <FormField

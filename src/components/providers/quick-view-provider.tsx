@@ -10,7 +10,7 @@ import {
   lazy,
   Suspense,
 } from "react";
-import { Product } from "@/lib/api/types";
+import { Product } from "@/types";
 
 // Lazy load the modal for better performance
 const QuickViewModal = lazy(() =>

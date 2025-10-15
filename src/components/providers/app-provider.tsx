@@ -23,11 +23,6 @@ export function AppProvider({ children }: AppProviderProps) {
   const contextValue: AppContextType = {
     // Categories
     categories: store.categories,
-    categoriesTree: store.categoriesTree,
-    getCategoryBySlug: store.getCategoryBySlug,
-    getCategoryById: store.getCategoryById,
-    getChildCategories: store.getChildCategories,
-    getRootCategories: store.getRootCategories,
 
     // Loading states
     isLoading: store.isLoading,
@@ -54,22 +49,8 @@ export function useApp() {
 
 // Convenience hooks for specific data
 export function useCategories() {
-  const {
-    categories,
-    categoriesTree,
-    getCategoryBySlug,
-    getCategoryById,
-    getChildCategories,
-    getRootCategories,
-  } = useApp();
-  return {
-    categories,
-    categoriesTree,
-    getCategoryBySlug,
-    getCategoryById,
-    getChildCategories,
-    getRootCategories,
-  };
+  const { categories } = useApp();
+  return { categories };
 }
 
 export function useAppLoading() {

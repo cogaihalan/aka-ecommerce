@@ -7,6 +7,6 @@ export default async function Admin() {
   if (!userId) {
     return redirect("/auth/sign-in");
   } else {
-    redirect("/admin/product");
+    redirect("/admin/products");
   }
 }

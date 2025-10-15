@@ -16,9 +16,9 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
     { title: "Dashboard", link: "/dashboard" },
     { title: "Employee", link: "/admin/employee" },
   ],
-  "/admin/product": [
+  "/admin/products": [
     { title: "Admin", link: "/admin" },
-    { title: "Products", link: "/admin/product" },
+    { title: "Products", link: "/admin/products" },
   ],
 
   // Storefront routes (excluding homepage)
@@ -53,7 +53,6 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
   ],
   "/auth/sign-in": [{ title: "Sign In", link: "/auth/sign-in" }],
   "/auth/sign-up": [{ title: "Sign Up", link: "/auth/sign-up" }],
-  "/token": [{ title: "Token", link: "/token" }],
 };
 
 export function useBreadcrumbs() {

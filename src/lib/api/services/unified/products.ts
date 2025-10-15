@@ -8,7 +8,7 @@ import type {
   ProductImageUpdateRequest,
   ProductImageDeleteRequest,
 } from "@/lib/api/types";
-import type { Product, ProductVariant } from "@/types/product";
+import type { Product } from "@/types/product";
 
 class UnifiedProductService {
   private basePath = "/products";
@@ -30,22 +30,8 @@ class UnifiedProductService {
       });
     }
 
-    // Handle dynamic parameters
-    Object.entries(params).forEach(([key, value]) => {
-      if (
-        key !== "page" &&
-        key !== "size" &&
-        key !== "sort" &&
-        value !== undefined &&
-        value !== null
-      ) {
-        if (Array.isArray(value)) {
-          value.forEach((v) => searchParams.append(`${key}[]`, v.toString()));
-        } else {
-          searchParams.append(key, value.toString());
-        }
-      }
-    });
+    if (params.name !== undefined)
+      searchParams.append("name", params.name.toString());
 
     const queryString = searchParams.toString();
     const endpoint = queryString
@@ -53,53 +39,10 @@ class UnifiedProductService {
       : this.basePath;
 
     const response = await apiClient.get<ProductListResponse>(endpoint);
+
     return response.data!;
   }
 
-  // Search products with simplified query structure
-  async searchProducts(params: QueryParams = {}): Promise<ProductListResponse> {
-    const searchParams = new URLSearchParams();
-
-    // Handle pagination
-    if (params.page !== undefined)
-      searchParams.append("page", params.page.toString());
-    if (params.size !== undefined)
-      searchParams.append("size", params.size.toString());
-
-    // Handle sorting
-    if (params.sort && params.sort.length > 0) {
-      params.sort.forEach((sortItem) => {
-        searchParams.append("sort", sortItem);
-      });
-    }
-
-    // Handle dynamic parameters
-    Object.entries(params).forEach(([key, value]) => {
-      if (
-        key !== "page" &&
-        key !== "size" &&
-        key !== "sort" &&
-        value !== undefined &&
-        value !== null
-      ) {
-        if (Array.isArray(value)) {
-          value.forEach((v) => searchParams.append(`${key}[]`, v.toString()));
-        } else {
-          searchParams.append(key, value.toString());
-        }
-      }
-    });
-
-    const queryString = searchParams.toString();
-    const endpoint = queryString
-      ? `${this.basePath}/search?${queryString}`
-      : `${this.basePath}/search`;
-
-    const response = await apiClient.get<ProductListResponse>(endpoint);
-    return response.data!;
-  }
-
-  // Basic CRUD operations
   async getProduct(id: number): Promise<Product> {
     const response = await apiClient.get<Product>(`${this.basePath}/${id}`);
     return response.data!;
@@ -136,21 +79,11 @@ class UnifiedProductService {
     await apiClient.delete(`${this.basePath}/${id}`);
   }
 
-  // Enhanced product management methods
-
-  // Get product with full details including variants, reviews, etc.
-  async getProductWithDetails(id: number): Promise<Product> {
-    const response = await apiClient.get<Product>(
-      `${this.basePath}/${id}/details`
-    );
-    return response.data!;
-  }
-
   // Product Image Management API
   async uploadProductImages(data: ProductImageUploadRequest): Promise<Product> {
     const formData = new FormData();
     formData.append("id", data.id.toString());
-    data.files.forEach((file, index) => {
+    data.files.forEach((file) => {
       formData.append(`files`, file);
     });
 
@@ -206,46 +139,6 @@ class UnifiedProductService {
     );
     return response.data!;
   }
-
-  // Manage product categories
-  async assignProductToCategories(
-    productId: number,
-    categoryIds: number[],
-    primaryCategoryId?: number
-  ): Promise<Product> {
-    const response = await apiClient.patch<Product>(
-      `${this.basePath}/${productId}/categories`,
-      {
-        categoryIds,
-        primaryCategoryId,
-      }
-    );
-    return response.data!;
-  }
-
-  // Product status management
-  async publishProduct(id: number): Promise<Product> {
-    const response = await apiClient.patch<Product>(
-      `${this.basePath}/${id}/publish`
-    );
-    return response.data!;
-  }
-
-  async unpublishProduct(id: number): Promise<Product> {
-    const response = await apiClient.patch<Product>(
-      `${this.basePath}/${id}/unpublish`
-    );
-    return response.data!;
-  }
-
-  async archiveProduct(id: number): Promise<Product> {
-    const response = await apiClient.patch<Product>(
-      `${this.basePath}/${id}/archive`
-    );
-    return response.data!;
-  }
-
-  // Product comparison removed - use simplified product structure
 }
 
 export const unifiedProductService = new UnifiedProductService();

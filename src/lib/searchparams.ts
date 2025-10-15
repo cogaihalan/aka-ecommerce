@@ -15,7 +15,6 @@ export const searchParams = {
   isActive: parseAsString,
   parentId: parseAsString,
   role: parseAsString,
-  couponType: parseAsString,
   // Order-specific parameters
   orderNumber: parseAsString,
   status: parseAsString,

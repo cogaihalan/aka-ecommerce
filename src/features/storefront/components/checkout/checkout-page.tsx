@@ -11,7 +11,14 @@ import { Badge } from "@/components/ui/badge";
 import { AddressForm } from "@/features/storefront/components/account/addresses/address-form";
 import { OrderSummary } from "@/components/order/order-summary";
 import { useCheckoutPage } from "@/hooks/use-checkout-page";
-import { Loader2, MapPin, CreditCard, Truck, Package, CheckCircle } from "lucide-react";
+import {
+  Loader2,
+  MapPin,
+  CreditCard,
+  Truck,
+  Package,
+  CheckCircle,
+} from "lucide-react";
 
 export default function CheckoutPage() {
   const {
@@ -24,7 +31,6 @@ export default function CheckoutPage() {
     auth,
     constants,
     availableShippingMethods,
-    discounts,
   } = useCheckoutPage();
 
   // Loading states
@@ -71,24 +77,52 @@ export default function CheckoutPage() {
               <CardContent className="space-y-4">
                 {addresses.shipping.length > 0 ? (
                   <div className="space-y-3">
-                    <p className="text-sm text-muted-foreground">Select a shipping address:</p>
+                    <p className="text-sm text-muted-foreground">
+                      Select a shipping address:
+                    </p>
                     <RadioGroup
                       value={addresses.selectedShipping?.id?.toString() || ""}
                       onValueChange={handlers.handleShippingAddressChange}
                       className="space-y-2"
                     >
                       {addresses.shipping.map((address) => (
-                        <div key={address.id} className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-muted/50">
-                          <RadioGroupItem value={address.id.toString()} id={`shipping-${address.id}`} />
+                        <div
+                          key={address.id}
+                          className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-muted/50"
+                        >
+                          <RadioGroupItem
+                            value={address.id.toString()}
+                            id={`shipping-${address.id}`}
+                          />
                           <div className="flex-1">
-                            <Label htmlFor={`shipping-${address.id}`} className="cursor-pointer">
+                            <Label
+                              htmlFor={`shipping-${address.id}`}
+                              className="cursor-pointer"
+                            >
                               <div className="space-y-1">
-                                <p className="font-medium">{address.firstName} {address.lastName}</p>
-                                <p className="text-sm text-muted-foreground">{address.address1}</p>
-                                {address.address2 && <p className="text-sm text-muted-foreground">{address.address2}</p>}
-                                {address.phone && <p className="text-sm text-muted-foreground">{address.phone}</p>}
+                                <p className="font-medium">
+                                  {address.firstName} {address.lastName}
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                  {address.address1}
+                                </p>
+                                {address.address2 && (
+                                  <p className="text-sm text-muted-foreground">
+                                    {address.address2}
+                                  </p>
+                                )}
+                                {address.phone && (
+                                  <p className="text-sm text-muted-foreground">
+                                    {address.phone}
+                                  </p>
+                                )}
                                 {address.isDefault && (
-                                  <Badge variant="secondary" className="text-xs">Default</Badge>
+                                  <Badge
+                                    variant="secondary"
+                                    className="text-xs"
+                                  >
+                                    Default
+                                  </Badge>
                                 )}
                               </div>
                             </Label>
@@ -97,7 +131,9 @@ export default function CheckoutPage() {
                             type="button"
                             variant="ghost"
                             size="sm"
-                            onClick={() => handlers.handleOpenShippingForm(address)}
+                            onClick={() =>
+                              handlers.handleOpenShippingForm(address)
+                            }
                           >
                             Edit
                           </Button>
@@ -154,24 +190,54 @@ export default function CheckoutPage() {
                   <div className="space-y-3">
                     {addresses.billing.length > 0 ? (
                       <>
-                        <p className="text-sm text-muted-foreground">Select a billing address:</p>
+                        <p className="text-sm text-muted-foreground">
+                          Select a billing address:
+                        </p>
                         <RadioGroup
-                          value={addresses.selectedBilling?.id?.toString() || ""}
+                          value={
+                            addresses.selectedBilling?.id?.toString() || ""
+                          }
                           onValueChange={handlers.handleBillingAddressChange}
                           className="space-y-2"
                         >
                           {addresses.billing.map((address) => (
-                            <div key={address.id} className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-muted/50">
-                              <RadioGroupItem value={address.id.toString()} id={`billing-${address.id}`} />
+                            <div
+                              key={address.id}
+                              className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-muted/50"
+                            >
+                              <RadioGroupItem
+                                value={address.id.toString()}
+                                id={`billing-${address.id}`}
+                              />
                               <div className="flex-1">
-                                <Label htmlFor={`billing-${address.id}`} className="cursor-pointer">
+                                <Label
+                                  htmlFor={`billing-${address.id}`}
+                                  className="cursor-pointer"
+                                >
                                   <div className="space-y-1">
-                                    <p className="font-medium">{address.firstName} {address.lastName}</p>
-                                    <p className="text-sm text-muted-foreground">{address.address1}</p>
-                                    {address.address2 && <p className="text-sm text-muted-foreground">{address.address2}</p>}
-                                    {address.phone && <p className="text-sm text-muted-foreground">{address.phone}</p>}
+                                    <p className="font-medium">
+                                      {address.firstName} {address.lastName}
+                                    </p>
+                                    <p className="text-sm text-muted-foreground">
+                                      {address.address1}
+                                    </p>
+                                    {address.address2 && (
+                                      <p className="text-sm text-muted-foreground">
+                                        {address.address2}
+                                      </p>
+                                    )}
+                                    {address.phone && (
+                                      <p className="text-sm text-muted-foreground">
+                                        {address.phone}
+                                      </p>
+                                    )}
                                     {address.isDefault && (
-                                      <Badge variant="secondary" className="text-xs">Default</Badge>
+                                      <Badge
+                                        variant="secondary"
+                                        className="text-xs"
+                                      >
+                                        Default
+                                      </Badge>
                                     )}
                                   </div>
                                 </Label>
@@ -180,7 +246,9 @@ export default function CheckoutPage() {
                                 type="button"
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => handlers.handleOpenBillingForm(address)}
+                                onClick={() =>
+                                  handlers.handleOpenBillingForm(address)
+                                }
                               >
                                 Edit
                               </Button>
@@ -199,7 +267,8 @@ export default function CheckoutPage() {
                     ) : (
                       <div className="text-center py-4">
                         <p className="text-muted-foreground mb-4">
-                          No billing addresses found. Please add one to continue.
+                          No billing addresses found. Please add one to
+                          continue.
                         </p>
                         <Button
                           type="button"
@@ -217,13 +286,22 @@ export default function CheckoutPage() {
                   <div className="p-4 border rounded-lg bg-green-50">
                     <div className="flex items-center gap-2 text-green-700">
                       <CheckCircle className="h-4 w-4" />
-                      <span className="text-sm font-medium">Using shipping address as billing address</span>
+                      <span className="text-sm font-medium">
+                        Using shipping address as billing address
+                      </span>
                     </div>
                     <div className="text-sm text-muted-foreground mt-2">
-                      <p>{addresses.selectedShipping.firstName} {addresses.selectedShipping.lastName}</p>
+                      <p>
+                        {addresses.selectedShipping.firstName}{" "}
+                        {addresses.selectedShipping.lastName}
+                      </p>
                       <p>{addresses.selectedShipping.address1}</p>
-                      {addresses.selectedShipping.address2 && <p>{addresses.selectedShipping.address2}</p>}
-                      {addresses.selectedShipping.phone && <p>{addresses.selectedShipping.phone}</p>}
+                      {addresses.selectedShipping.address2 && (
+                        <p>{addresses.selectedShipping.address2}</p>
+                      )}
+                      {addresses.selectedShipping.phone && (
+                        <p>{addresses.selectedShipping.phone}</p>
+                      )}
                     </div>
                   </div>
                 )}
@@ -241,12 +319,13 @@ export default function CheckoutPage() {
               <CardContent>
                 <div className="space-y-3">
                   {availableShippingMethods.map((method) => {
-                    const isFree = method.id === "free" && cart.subtotal >= 1000000;
+                    const isFree =
+                      method.id === "free" && cart.subtotal >= 1000000;
                     const cost = isFree ? 0 : method.cost;
-                    
+
                     return (
-                      <div 
-                        key={method.id} 
+                      <div
+                        key={method.id}
                         className="flex items-center space-x-3 p-4 border rounded-lg bg-muted/30"
                       >
                         <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10">
@@ -259,21 +338,29 @@ export default function CheckoutPage() {
                               <Badge variant="secondary">Free</Badge>
                             )}
                           </div>
-                          <p className="text-sm text-muted-foreground">{method.description}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {method.description}
+                          </p>
                           <p className="text-sm font-medium">
-                            {cost === 0 ? "Free" : `${cost.toLocaleString()} VND`}
+                            {cost === 0
+                              ? "Free"
+                              : `${cost.toLocaleString()} VND`}
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
                           <CheckCircle className="h-5 w-5 text-green-600" />
-                          <span className="text-sm font-medium text-green-600">Selected</span>
+                          <span className="text-sm font-medium text-green-600">
+                            Selected
+                          </span>
                         </div>
                       </div>
                     );
                   })}
                 </div>
                 {form.errors.shippingMethod && (
-                  <p className="text-sm text-red-500 mt-2">{form.errors.shippingMethod.message}</p>
+                  <p className="text-sm text-red-500 mt-2">
+                    {form.errors.shippingMethod.message}
+                  </p>
                 )}
               </CardContent>
             </Card>
@@ -289,28 +376,40 @@ export default function CheckoutPage() {
               <CardContent>
                 <RadioGroup
                   value={form.watchedPaymentMethod}
-                  onValueChange={(value) => form.setValue("paymentMethod", value)}
+                  onValueChange={(value) =>
+                    form.setValue("paymentMethod", value)
+                  }
                   className="space-y-3"
                 >
                   {constants.PAYMENT_METHODS.map((method) => {
                     return (
-                      <div key={method.id} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50">
+                      <div
+                        key={method.id}
+                        className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-muted/50"
+                      >
                         <RadioGroupItem value={method.id} id={method.id} />
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
                             <CreditCard className="h-4 w-4" />
-                            <Label htmlFor={method.id} className="font-medium cursor-pointer">
+                            <Label
+                              htmlFor={method.id}
+                              className="font-medium cursor-pointer"
+                            >
                               {method.name}
                             </Label>
                           </div>
-                          <p className="text-sm text-muted-foreground">{method.description}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {method.description}
+                          </p>
                         </div>
                       </div>
                     );
                   })}
                 </RadioGroup>
                 {form.errors.paymentMethod && (
-                  <p className="text-sm text-red-500 mt-2">{form.errors.paymentMethod.message}</p>
+                  <p className="text-sm text-red-500 mt-2">
+                    {form.errors.paymentMethod.message}
+                  </p>
                 )}
               </CardContent>
             </Card>
@@ -328,74 +427,82 @@ export default function CheckoutPage() {
                 />
               </CardContent>
             </Card>
-        </div>
+          </div>
 
-        {/* Order Summary */}
-        <div className="lg:col-span-1">
-          <OrderSummary
-            showPromoCode={true}
-            showShippingInfo={false}
-            showSecurityBadges={false}
-            showActionButtons={false}
-            showClearCart={false}
-            customShippingCost={cart.shippingCost}
-            customTax={cart.tax}
-            showItems={true}
-            items={cart.items}
-          />
-          
-          <div className="mt-4">
-            <Button
-              type="submit"
-              className="w-full"
-              size="lg"
-              disabled={loading.submitting || !form.watchedShippingMethod || !form.watchedPaymentMethod}
-            >
-              {loading.submitting ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                "Complete Purchase"
-              )}
-            </Button>
+          {/* Order Summary */}
+          <div className="lg:col-span-1">
+            <OrderSummary
+              showPromoCode={true}
+              showShippingInfo={false}
+              showSecurityBadges={false}
+              showActionButtons={false}
+              showClearCart={false}
+              customShippingCost={cart.shippingCost}
+              customTax={cart.tax}
+              showItems={true}
+              items={cart.items}
+            />
+
+            <div className="mt-4">
+              <Button
+                type="submit"
+                className="w-full"
+                size="lg"
+                disabled={
+                  loading.submitting ||
+                  !form.watchedShippingMethod ||
+                  !form.watchedPaymentMethod
+                }
+              >
+                {loading.submitting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  "Complete Purchase"
+                )}
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
 
-    {/* Shipping Address Form Modal */}
-    {modals.showShippingForm && (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-          <AddressForm
-            address={modals.editingShippingAddress || { type: "shipping" } as any}
-            onSubmit={handlers.handleShippingAddressSubmit}
-            onCancel={() => {
-              modals.setShowShippingForm(false);
-              modals.setEditingShippingAddress(null);
-            }}
-          />
+      {/* Shipping Address Form Modal */}
+      {modals.showShippingForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <AddressForm
+              address={
+                modals.editingShippingAddress || ({ type: "shipping" } as any)
+              }
+              onSubmit={handlers.handleShippingAddressSubmit}
+              onCancel={() => {
+                modals.setShowShippingForm(false);
+                modals.setEditingShippingAddress(null);
+              }}
+            />
+          </div>
         </div>
-      </div>
-    )}
+      )}
 
-    {/* Billing Address Form Modal */}
-    {modals.showBillingForm && (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-          <AddressForm
-            address={modals.editingBillingAddress || { type: "billing" } as any}
-            onSubmit={handlers.handleBillingAddressSubmit}
-            onCancel={() => {
-              modals.setShowBillingForm(false);
-              modals.setEditingBillingAddress(null);
-            }}
-          />
+      {/* Billing Address Form Modal */}
+      {modals.showBillingForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <AddressForm
+              address={
+                modals.editingBillingAddress || ({ type: "billing" } as any)
+              }
+              onSubmit={handlers.handleBillingAddressSubmit}
+              onCancel={() => {
+                modals.setShowBillingForm(false);
+                modals.setEditingBillingAddress(null);
+              }}
+            />
+          </div>
         </div>
-      </div>
-    )}
+      )}
     </div>
   );
 }

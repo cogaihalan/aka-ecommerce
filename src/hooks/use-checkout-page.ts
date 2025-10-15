@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
-import { useCartStore, useCartDiscounts, useCartCouponCode, useCartDiscountTotal, useCartFinalTotal } from "@/stores/cart-store";
+import { useCartStore } from "@/stores/cart-store";
 import { useUserAddresses } from "@/hooks/use-user-addresses";
 import { Address } from "@/lib/api/types";
 
@@ -54,22 +54,26 @@ export const PAYMENT_METHODS = [
 export function useCheckoutPage() {
   const router = useRouter();
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
-  const { items, getSubtotal, getShipping, getTax, getTotal, clearCart } = useCartStore();
-  const { addresses, isLoading: addressesLoading, addAddress, updateAddress } = useUserAddresses();
-  
-  // Discount-related hooks
-  const appliedDiscounts = useCartDiscounts();
-  const couponCode = useCartCouponCode();
-  const discountTotal = useCartDiscountTotal();
-  const finalTotal = useCartFinalTotal();
-  
+  const { items, getSubtotal, getShipping, getTax, getTotal, clearCart } =
+    useCartStore();
+  const {
+    addresses,
+    isLoading: addressesLoading,
+    addAddress,
+    updateAddress,
+  } = useUserAddresses();
+
   // Form state
   const [showShippingForm, setShowShippingForm] = useState(false);
   const [showBillingForm, setShowBillingForm] = useState(false);
-  const [editingShippingAddress, setEditingShippingAddress] = useState<Address | null>(null);
-  const [editingBillingAddress, setEditingBillingAddress] = useState<Address | null>(null);
-  const [selectedShippingAddress, setSelectedShippingAddress] = useState<Address | null>(null);
-  const [selectedBillingAddress, setSelectedBillingAddress] = useState<Address | null>(null);
+  const [editingShippingAddress, setEditingShippingAddress] =
+    useState<Address | null>(null);
+  const [editingBillingAddress, setEditingBillingAddress] =
+    useState<Address | null>(null);
+  const [selectedShippingAddress, setSelectedShippingAddress] =
+    useState<Address | null>(null);
+  const [selectedBillingAddress, setSelectedBillingAddress] =
+    useState<Address | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form setup
@@ -94,8 +98,12 @@ export function useCheckoutPage() {
   const watchedPaymentMethod = watch("paymentMethod");
 
   // Get default addresses
-  const defaultShippingAddress = addresses.find(addr => addr.type === "shipping" && addr.isDefault);
-  const defaultBillingAddress = addresses.find(addr => addr.type === "billing" && addr.isDefault);
+  const defaultShippingAddress = addresses.find(
+    (addr) => addr.type === "shipping" && addr.isDefault
+  );
+  const defaultBillingAddress = addresses.find(
+    (addr) => addr.type === "billing" && addr.isDefault
+  );
 
   // Initialize selected addresses with defaults
   useEffect(() => {
@@ -105,7 +113,12 @@ export function useCheckoutPage() {
     if (defaultBillingAddress && !selectedBillingAddress) {
       setSelectedBillingAddress(defaultBillingAddress);
     }
-  }, [defaultShippingAddress, defaultBillingAddress, selectedShippingAddress, selectedBillingAddress]);
+  }, [
+    defaultShippingAddress,
+    defaultBillingAddress,
+    selectedShippingAddress,
+    selectedBillingAddress,
+  ]);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -114,22 +127,21 @@ export function useCheckoutPage() {
     }
   }, [isAuthenticated, authLoading, router]);
 
-
   // Filter shipping methods based on order conditions
   const getAvailableShippingMethods = () => {
     const subtotal = getSubtotal();
-    
-    return SHIPPING_METHODS.filter(method => {
+
+    return SHIPPING_METHODS.filter((method) => {
       // Free shipping is only available for orders over 1,000,000 VND
       if (method.id === "free") {
         return subtotal >= 1000000;
       }
-      
+
       // Standard shipping is always available
       if (method.id === "standard") {
         return true;
       }
-      
+
       return false;
     });
   };
@@ -137,15 +149,17 @@ export function useCheckoutPage() {
   // Calculate shipping cost based on method and order total
   const calculateShippingCost = () => {
     const subtotal = getSubtotal();
-    const selectedMethod = SHIPPING_METHODS.find(method => method.id === watchedShippingMethod);
-    
+    const selectedMethod = SHIPPING_METHODS.find(
+      (method) => method.id === watchedShippingMethod
+    );
+
     if (!selectedMethod) return 0;
-    
+
     // Free shipping for orders over 1,000,000 VND
     if (selectedMethod.id === "free" && subtotal >= 1000000) {
       return 0;
     }
-    
+
     return selectedMethod.cost;
   };
 
@@ -153,7 +167,7 @@ export function useCheckoutPage() {
   const subtotal = getSubtotal();
   const shippingCost = calculateShippingCost();
   const tax = getTax();
-  const total = finalTotal; // Use final total that includes discounts
+  const total = getTotal();
 
   // Auto-select the first available shipping method
   useEffect(() => {
@@ -167,7 +181,10 @@ export function useCheckoutPage() {
   const handleShippingAddressSubmit = async (data: any) => {
     try {
       if (editingShippingAddress) {
-        await updateAddress(editingShippingAddress.id, { ...data, type: "shipping" });
+        await updateAddress(editingShippingAddress.id, {
+          ...data,
+          type: "shipping",
+        });
         toast.success("Shipping address updated successfully");
       } else {
         await addAddress({ ...data, type: "shipping", isDefault: true });
@@ -176,7 +193,9 @@ export function useCheckoutPage() {
       setShowShippingForm(false);
       setEditingShippingAddress(null);
       // Auto-select the newly created/updated address
-      const updatedAddresses = addresses.filter(addr => addr.type === "shipping");
+      const updatedAddresses = addresses.filter(
+        (addr) => addr.type === "shipping"
+      );
       const newAddress = updatedAddresses[updatedAddresses.length - 1];
       if (newAddress) {
         setSelectedShippingAddress(newAddress);
@@ -189,7 +208,10 @@ export function useCheckoutPage() {
   const handleBillingAddressSubmit = async (data: any) => {
     try {
       if (editingBillingAddress) {
-        await updateAddress(editingBillingAddress.id, { ...data, type: "billing" });
+        await updateAddress(editingBillingAddress.id, {
+          ...data,
+          type: "billing",
+        });
         toast.success("Billing address updated successfully");
       } else {
         await addAddress({ ...data, type: "billing", isDefault: true });
@@ -198,7 +220,9 @@ export function useCheckoutPage() {
       setShowBillingForm(false);
       setEditingBillingAddress(null);
       // Auto-select the newly created/updated address
-      const updatedAddresses = addresses.filter(addr => addr.type === "billing");
+      const updatedAddresses = addresses.filter(
+        (addr) => addr.type === "billing"
+      );
       const newAddress = updatedAddresses[updatedAddresses.length - 1];
       if (newAddress) {
         setSelectedBillingAddress(newAddress);
@@ -218,7 +242,6 @@ export function useCheckoutPage() {
     setEditingBillingAddress(address || null);
     setShowBillingForm(true);
   };
-
 
   // Handle form submission
   const handleFormSubmit = async (data: CheckoutFormValues) => {
@@ -249,14 +272,14 @@ export function useCheckoutPage() {
       // Create order data
       const orderData = {
         customerId: user.id,
-        items: items.map(item => ({
+        items: items.map((item) => ({
           productId: item.productId,
           variantId: item.variantId,
           quantity: item.quantity,
         })),
         shippingAddress: selectedShippingAddress,
-        billingAddress: data.sameAsShipping 
-          ? selectedShippingAddress 
+        billingAddress: data.sameAsShipping
+          ? selectedShippingAddress
           : selectedBillingAddress,
         shippingMethod: data.shippingMethod,
         paymentMethod: data.paymentMethod,
@@ -271,20 +294,19 @@ export function useCheckoutPage() {
 
       // TODO: Implement actual order creation API call
       console.log("Creating order:", orderData);
-      
+
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       // Generate order ID
-      const orderId = `AKA-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`;
-      
+      const orderId = `AKA-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 10000)).padStart(4, "0")}`;
+
       // Clear cart and redirect to success page
       clearCart();
       toast.success("Order placed successfully!");
-      
+
       // Redirect to success page with order ID
       router.push(`/checkout/success?order_id=${orderId}`);
-      
     } catch (error) {
       console.error("Error creating order:", error);
       toast.error("Failed to place order. Please try again.");
@@ -303,13 +325,13 @@ export function useCheckoutPage() {
 
   // Handle shipping address selection
   const handleShippingAddressChange = (addressId: string) => {
-    const address = addresses.find(addr => addr.id.toString() === addressId);
+    const address = addresses.find((addr) => addr.id.toString() === addressId);
     setSelectedShippingAddress(address || null);
   };
 
   // Handle billing address selection
   const handleBillingAddressChange = (addressId: string) => {
-    const address = addresses.find(addr => addr.id.toString() === addressId);
+    const address = addresses.find((addr) => addr.id.toString() === addressId);
     setSelectedBillingAddress(address || null);
   };
 
@@ -325,18 +347,18 @@ export function useCheckoutPage() {
       watchedShippingMethod,
       watchedPaymentMethod,
     },
-    
+
     // Address state
     addresses: {
       all: addresses,
-      shipping: addresses.filter(addr => addr.type === "shipping"),
-      billing: addresses.filter(addr => addr.type === "billing"),
+      shipping: addresses.filter((addr) => addr.type === "shipping"),
+      billing: addresses.filter((addr) => addr.type === "billing"),
       selectedShipping: selectedShippingAddress,
       selectedBilling: selectedBillingAddress,
       defaultShipping: defaultShippingAddress,
       defaultBilling: defaultBillingAddress,
     },
-    
+
     // Form modals
     modals: {
       showShippingForm,
@@ -348,7 +370,7 @@ export function useCheckoutPage() {
       setEditingShippingAddress,
       setEditingBillingAddress,
     },
-    
+
     // Handlers
     handlers: {
       handleOpenShippingForm,
@@ -359,7 +381,7 @@ export function useCheckoutPage() {
       handleShippingAddressChange,
       handleBillingAddressChange,
     },
-    
+
     // Cart and pricing
     cart: {
       items,
@@ -367,37 +389,27 @@ export function useCheckoutPage() {
       shippingCost,
       tax,
       total,
-      discountTotal,
-      finalTotal,
     },
-    
-    // Discount information
-    discounts: {
-      appliedDiscounts,
-      couponCode,
-      discountTotal,
-      finalTotal,
-    },
-    
+
     // Loading states
     loading: {
       auth: authLoading,
       addresses: addressesLoading,
       submitting: isSubmitting,
     },
-    
+
     // Auth state
     auth: {
       user,
       isAuthenticated,
     },
-    
+
     // Constants
     constants: {
       SHIPPING_METHODS,
       PAYMENT_METHODS,
     },
-    
+
     // Available shipping methods
     availableShippingMethods: getAvailableShippingMethods(),
   };

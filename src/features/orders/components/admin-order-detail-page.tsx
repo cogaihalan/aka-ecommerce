@@ -215,11 +215,6 @@ export default function AdminOrderDetailPage({
                             <div className="text-sm text-muted-foreground">
                               Price: {formatCurrency(item.price)}
                             </div>
-                            {item.discount && item.discount > 0 ? (
-                              <div className="text-sm text-green-600">
-                                Discount: -{formatCurrency(item.discount)}
-                              </div>
-                            ) : null}
                           </div>
                           <div className="mt-2">
                             <p className="font-bold">
@@ -484,10 +479,6 @@ export default function AdminOrderDetailPage({
                       ? "Free"
                       : formatCurrency(order.pricing.shipping)}
                   </span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Discount</span>
-                  <span>{formatCurrency(order.pricing.discount)}</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between font-bold text-lg">

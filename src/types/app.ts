@@ -1,14 +1,8 @@
 export interface Category {
-  id: string;
+  id: number;
   name: string;
-  slug: string;
-  description?: string;
-  image?: string;
-  productCount: number;
-  parentId?: string;
-  children?: Category[];
-  isActive: boolean;
-  sortOrder: number;
+  description: string;
+  parentId: number;
 }
 
 export interface AppStore {

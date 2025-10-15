@@ -4,9 +4,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { CartStore, CartItem, CartValidationResult } from "@/types/cart";
-import { Product, ProductVariant } from "@/lib/api/types";
-import { unifiedDiscountService } from "@/lib/api/services/unified";
-import { DiscountCalculationContext } from "@/types/discount";
+import { Product, ProductVariant } from "@/types";
 
 // Default cart calculation options for Vietnamese market
 const DEFAULT_CALCULATION_OPTIONS = {
@@ -26,8 +24,6 @@ export const useCartStore = create<CartStore>()(
       isLoading: false,
       error: null,
       lastUpdated: Date.now(),
-      appliedDiscounts: [],
-      couponCode: undefined,
 
       // Item management actions
       addItem: (
@@ -195,7 +191,7 @@ export const useCartStore = create<CartStore>()(
 
       // Cart state management
       toggleCart: () => {
-        set((state) => ({ isOpen: !state.isOpen }));
+        set((state: any) => ({ isOpen: !state.isOpen }));
       },
 
       openCart: () => {
@@ -269,100 +265,6 @@ export const useCartStore = create<CartStore>()(
         );
       },
 
-      // Discount management
-      applyCoupon: async (couponCode: string) => {
-        set({ isLoading: true, error: null });
-
-        try {
-          const state = get();
-          const context: DiscountCalculationContext = {
-            cartItems: state.items.map((item) => ({
-              productId: item.productId,
-              variantId: item.variantId,
-              quantity: item.quantity,
-              price: item.price,
-              categoryIds: [], // TODO: Get from product data
-            })),
-            customerId: undefined, // TODO: Get from auth
-            customerGroupId: undefined, // TODO: Get from auth
-            websiteId: 1, // TODO: Get from app config
-            couponCode,
-            subtotal: state.getSubtotal(),
-            shippingAmount: state.getShipping(),
-          };
-
-          const validation = await unifiedDiscountService.validateCoupon(
-            couponCode,
-            context
-          );
-
-          if (validation.isValid) {
-            const appliedDiscounts =
-              await unifiedDiscountService.calculateDiscounts(context);
-            set({
-              appliedDiscounts,
-              couponCode,
-              isLoading: false,
-              lastUpdated: Date.now(),
-            });
-            return true;
-          } else {
-            set({
-              error: validation.message || "Invalid coupon code",
-              isLoading: false,
-            });
-            return false;
-          }
-        } catch (error) {
-          set({
-            error:
-              error instanceof Error ? error.message : "Failed to apply coupon",
-            isLoading: false,
-          });
-          return false;
-        }
-      },
-
-      removeCoupon: (couponCode: string) => {
-        const state = get();
-        const updatedDiscounts = state.appliedDiscounts.filter(
-          (discount) => discount.couponCode !== couponCode
-        );
-
-        set({
-          appliedDiscounts: updatedDiscounts,
-          couponCode:
-            updatedDiscounts.length > 0 ? state.couponCode : undefined,
-          lastUpdated: Date.now(),
-        });
-      },
-
-      clearDiscounts: () => {
-        set({
-          appliedDiscounts: [],
-          couponCode: undefined,
-          lastUpdated: Date.now(),
-        });
-      },
-
-      getDiscountTotal: () => {
-        const state = get();
-        return state.appliedDiscounts.reduce(
-          (total, discount) => total + discount.discountAmount,
-          0
-        );
-      },
-
-      getFinalTotal: () => {
-        const state = get();
-        const subtotal = state.getSubtotal();
-        const shipping = state.getShipping();
-        const tax = state.getTax();
-        const discountTotal = state.getDiscountTotal();
-
-        return subtotal + shipping + tax - discountTotal;
-      },
-
       // Persistence methods
       loadCart: () => {
         // This is handled by Zustand persist middleware
@@ -380,8 +282,6 @@ export const useCartStore = create<CartStore>()(
       partialize: (state) => ({
         items: state.items,
         lastUpdated: state.lastUpdated,
-        appliedDiscounts: state.appliedDiscounts,
-        couponCode: state.couponCode,
       }),
       onRehydrateStorage: () => (state) => {
         if (state) {
@@ -400,14 +300,6 @@ export const useCartItemCount = () =>
 export const useCartIsOpen = () => useCartStore((state) => state.isOpen);
 export const useCartLoading = () => useCartStore((state) => state.isLoading);
 export const useCartError = () => useCartStore((state) => state.error);
-export const useCartDiscounts = () =>
-  useCartStore((state) => state.appliedDiscounts);
-export const useCartCouponCode = () =>
-  useCartStore((state) => state.couponCode);
-export const useCartDiscountTotal = () =>
-  useCartStore((state) => state.getDiscountTotal());
-export const useCartFinalTotal = () =>
-  useCartStore((state) => state.getFinalTotal());
 
 // Cart validation utility
 export const validateCart = (items: CartItem[]): CartValidationResult => {

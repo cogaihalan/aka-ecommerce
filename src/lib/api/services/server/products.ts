@@ -8,7 +8,7 @@ import type {
   ProductImageUpdateRequest,
   ProductImageDeleteRequest,
 } from "@/lib/api/types";
-import type { Product, ProductVariant } from "@/types/product";
+import type { Product } from "@/types/product";
 
 class ServerUnifiedProductService {
   private basePath = "/products";
@@ -142,54 +142,6 @@ class ServerUnifiedProductService {
     );
     return response.data!;
   }
-
-  // Product variants
-  async getProductVariants(productId: number): Promise<ProductVariant[]> {
-    const response = await serverApiClient.get<ProductVariant[]>(
-      `${this.basePath}/${productId}/variants`
-    );
-    return response.data!;
-  }
-
-  async createProductVariant(
-    productId: number,
-    data: Partial<ProductVariant>
-  ): Promise<ProductVariant> {
-    const response = await serverApiClient.post<ProductVariant>(
-      `${this.basePath}/${productId}/variants`,
-      data
-    );
-    return response.data!;
-  }
-
-  async updateProductVariant(
-    productId: number,
-    variantId: number,
-    data: Partial<ProductVariant>
-  ): Promise<ProductVariant> {
-    const response = await serverApiClient.patch<ProductVariant>(
-      `${this.basePath}/${productId}/variants/${variantId}`,
-      data
-    );
-    return response.data!;
-  }
-
-  async deleteProductVariant(
-    productId: number,
-    variantId: number
-  ): Promise<void> {
-    await serverApiClient.delete(
-      `${this.basePath}/${productId}/variants/${variantId}`
-    );
-  }
-
-  // Media management removed - use ProductImageManager component instead
-
-  // Complex product management methods removed - use simplified product structure
-
-  // Analytics and comparison methods removed - use simplified product structure
-
-  // Bulk operations and import/export removed - use simplified product structure
 }
 
 // Export singleton instance

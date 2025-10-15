@@ -149,14 +149,6 @@ export const ProductInfo = memo(function ProductInfo({
     ));
   };
 
-  const discountPercentage = product.pricing?.compareAtPrice
-    ? Math.round(
-        ((product.pricing.compareAtPrice - product.pricing.basePrice) /
-          product.pricing.compareAtPrice) *
-          100
-      )
-    : 0;
-
   return (
     <div className={cn("space-y-6", className)}>
       {/* Product Header */}
@@ -192,8 +184,6 @@ export const ProductInfo = memo(function ProductInfo({
             originalPrice={product.pricing?.compareAtPrice}
             size="3xl"
             weight="bold"
-            showDiscount={true}
-            discountPercentage={discountPercentage}
           />
         </div>
 

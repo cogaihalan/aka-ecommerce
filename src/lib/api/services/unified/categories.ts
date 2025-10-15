@@ -1,103 +1,67 @@
-import { BaseService } from "../base-service";
+import { apiClient } from "@/lib/api/client";
 import type {
-  Category,
-  CategoryListResponse,
-  CategoryTreeResponse,
-  CategoryWithProducts,
   CreateCategoryRequest,
   UpdateCategoryRequest,
   QueryParams,
 } from "@/lib/api/types";
+import type { Category } from "@/types";
 
-class UnifiedCategoryService extends BaseService {
-  constructor() {
-    super({ basePath: "/categories" });
+class UnifiedCategoryService {
+  private basePath = "/categories";
+
+  // Get products with new query structure
+  async getCategories(params: QueryParams = {}): Promise<Category[]> {
+    const searchParams = new URLSearchParams();
+
+    // Handle pagination
+    if (params.page !== undefined)
+      searchParams.append("page", params.page.toString());
+    if (params.size !== undefined)
+      searchParams.append("size", params.size.toString());
+
+    // Handle sorting
+    if (params.sort && params.sort.length > 0) {
+      params.sort.forEach((sortItem: string) => {
+        searchParams.append("sort", sortItem);
+      });
+    }
+
+    if (params.name !== undefined)
+      searchParams.append("name", params.name.toString());
+
+    const queryString = searchParams.toString();
+    const endpoint = queryString
+      ? `${this.basePath}?${queryString}`
+      : this.basePath;
+
+    const response = await apiClient.get<Category[]>(endpoint);
+
+    return response.data!;
   }
 
-  // Get all categories with filtering and pagination
-  async getCategories(
-    params: QueryParams = {},
-    isAdmin: boolean = false
-  ): Promise<CategoryListResponse | Category[]> {
-    const searchParams = this.buildQueryParams(params);
-    const endpoint = this.buildEndpoint("", searchParams);
-    return this.get<CategoryListResponse | Category[]>(endpoint, isAdmin);
-  }
-
-  // Get category tree (hierarchical structure) - admin only
-  async getCategoryTree(): Promise<CategoryTreeResponse> {
-    return this.get<CategoryTreeResponse>("/tree", true);
-  }
-
-  // Get categories tree for storefront (public)
-  async getCategoriesTree(): Promise<Category[]> {
-    return this.get<Category[]>("/tree", false);
-  }
-
-  // Get a single category by ID (admin)
   async getCategory(id: number): Promise<Category> {
-    return this.get<Category>(`/${id}`, true);
+    const response = await apiClient.get<Category>(`${this.basePath}/${id}`);
+    return response.data!;
   }
 
-  // Get a single category by slug (storefront)
-  async getCategoryBySlug(slug: string): Promise<Category> {
-    return this.get<Category>(`/slug/${slug}`, false);
-  }
-
-  // Get category with products
-  async getCategoryWithProducts(
-    id: number,
-    params: QueryParams = {}
-  ): Promise<CategoryWithProducts> {
-    const searchParams = this.buildQueryParams(params);
-    const endpoint = this.buildEndpoint(`/${id}/products`, searchParams);
-    return this.get<CategoryWithProducts>(endpoint, true);
-  }
-
-  // Create a new category (admin only)
   async createCategory(data: CreateCategoryRequest): Promise<Category> {
-    return this.post<Category>("", data, true);
+    const response = await apiClient.post<Category>(this.basePath, data);
+    return response.data!;
   }
 
-  // Update an existing category (admin only)
-  async updateCategory(data: UpdateCategoryRequest): Promise<Category> {
-    const { id, ...updateData } = data;
-    return this.put<Category>(`/${id}`, updateData, true);
+  async updateCategory(
+    id: number,
+    data: UpdateCategoryRequest
+  ): Promise<Category> {
+    const response = await apiClient.put<Category>(
+      `${this.basePath}/${id}`,
+      data
+    );
+    return response.data!;
   }
 
-  // Delete a category (admin only)
   async deleteCategory(id: number): Promise<void> {
-    return this.delete(`/${id}`, true);
-  }
-
-  // Update category status (admin only)
-  async updateCategoryStatus(id: number, isActive: boolean): Promise<Category> {
-    return this.patch<Category>(`/${id}/status`, { isActive }, true);
-  }
-
-  // Reorder categories (admin only)
-  async reorderCategories(
-    categoryOrders: { id: number; sortOrder: number }[]
-  ): Promise<void> {
-    return this.patch("/reorder", { categoryOrders }, true);
-  }
-
-  // Search categories (admin only)
-  async searchCategories(
-    query: string,
-    limit: number = 10
-  ): Promise<Category[]> {
-    const endpoint = `/search?q=${encodeURIComponent(query)}&limit=${limit}`;
-    return this.get<Category[]>(endpoint, true);
-  }
-
-  // Validate category slug uniqueness (admin only)
-  async validateSlug(
-    slug: string,
-    excludeId?: number
-  ): Promise<{ isValid: boolean; message?: string }> {
-    const endpoint = `/validate-slug?slug=${encodeURIComponent(slug)}${excludeId ? `&excludeId=${excludeId}` : ""}`;
-    return this.get<{ isValid: boolean; message?: string }>(endpoint, true);
+    await apiClient.delete(`${this.basePath}/${id}`);
   }
 }
 

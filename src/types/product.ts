@@ -9,7 +9,6 @@ export interface ProductVariant {
   name: string;
   stock: number;
   price: number;
-  discountPrice: number;
   status: string;
 }
 

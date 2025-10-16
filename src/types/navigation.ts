@@ -8,7 +8,7 @@ export interface FilterOption {
 export interface FilterGroup {
   id: string;
   label: string;
-  type: 'checkbox' | 'radio' | 'range' | 'color';
+  type: "checkbox" | "radio" | "range" | "color";
   options: FilterOption[];
   min?: number;
   max?: number;
@@ -20,7 +20,7 @@ export interface SortOption {
   label: string;
   value: string;
   field: string;
-  order: 'asc' | 'desc';
+  order: "asc" | "desc";
 }
 
 export interface NavigationFilters {
@@ -28,8 +28,6 @@ export interface NavigationFilters {
   sort?: string;
   priceRange?: [number, number];
   categories?: string[];
-  ratings?: number[];
-  availability?: string[];
   [key: string]: any;
 }
 

@@ -78,72 +78,23 @@ export function useDynamicNavigation() {
           type: "range",
           options: [],
           min: 0,
-          max: 1000,
-          step: 10,
+          max: 100000000,
+          step: 1000,
         },
         {
           id: "categories",
           label: "Category",
           type: "checkbox",
-          options: [
-            {
-              id: "electronics",
-              label: "Electronics",
-              value: "electronics",
-              count: 0,
-            },
-            { id: "clothing", label: "Clothing", value: "clothing", count: 0 },
-            { id: "home", label: "Home & Garden", value: "home", count: 0 },
-            {
-              id: "sports",
-              label: "Sports & Outdoors",
-              value: "sports",
-              count: 0,
-            },
-            { id: "books", label: "Books", value: "books", count: 0 },
-            {
-              id: "beauty",
-              label: "Beauty & Health",
-              value: "beauty",
-              count: 0,
-            },
-          ],
-        },
-        {
-          id: "ratings",
-          label: "Customer Rating",
-          type: "checkbox",
-          options: [
-            { id: "5", label: "5 Stars", value: "5", count: 0 },
-            { id: "4", label: "4 Stars & Up", value: "4", count: 0 },
-            { id: "3", label: "3 Stars & Up", value: "3", count: 0 },
-            { id: "2", label: "2 Stars & Up", value: "2", count: 0 },
-          ],
-        },
-        {
-          id: "availability",
-          label: "Availability",
-          type: "checkbox",
-          options: [
-            { id: "in-stock", label: "In Stock", value: "in-stock", count: 0 },
-            { id: "on-sale", label: "On Sale", value: "on-sale", count: 0 },
-            {
-              id: "new-arrival",
-              label: "New Arrivals",
-              value: "new-arrival",
-              count: 0,
-            },
-          ],
+          options: [],
         },
       ];
     }
 
     // Build dynamic categories from context
     const categoryOptions = categories.map((category) => ({
-      id: category.id,
+      id: category.id.toString(),
       label: category.name,
-      value: category.slug,
-      count: category.productCount,
+      value: category.id.toString(),
     }));
 
     return [
@@ -153,7 +104,7 @@ export function useDynamicNavigation() {
         type: "range",
         options: [],
         min: 0,
-        max: 1000,
+        max: 100000000,
         step: 10,
       },
       {
@@ -161,32 +112,6 @@ export function useDynamicNavigation() {
         label: "Category",
         type: "checkbox",
         options: categoryOptions,
-      },
-      {
-        id: "ratings",
-        label: "Customer Rating",
-        type: "checkbox",
-        options: [
-          { id: "5", label: "5 Stars", value: "5", count: 0 },
-          { id: "4", label: "4 Stars & Up", value: "4", count: 0 },
-          { id: "3", label: "3 Stars & Up", value: "3", count: 0 },
-          { id: "2", label: "2 Stars & Up", value: "2", count: 0 },
-        ],
-      },
-      {
-        id: "availability",
-        label: "Availability",
-        type: "checkbox",
-        options: [
-          { id: "in-stock", label: "In Stock", value: "in-stock", count: 0 },
-          { id: "on-sale", label: "On Sale", value: "on-sale", count: 0 },
-          {
-            id: "new-arrival",
-            label: "New Arrivals",
-            value: "new-arrival",
-            count: 0,
-          },
-        ],
       },
     ];
   }, [categories, isLoading]);
@@ -196,10 +121,8 @@ export function useDynamicNavigation() {
     () => ({
       search: "",
       sort: "featured",
-      priceRange: [0, 1000] as [number, number],
+      priceRange: [0, 100000000] as [number, number],
       categories: [],
-      ratings: [],
-      availability: [],
     }),
     []
   );

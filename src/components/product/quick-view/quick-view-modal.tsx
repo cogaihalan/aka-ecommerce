@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { X } from "lucide-react";
-import { Product } from "@/lib/api/types";
+import { Product } from "@/types";
 import {
   ProductImageGallery,
   ProductInfo,
@@ -48,9 +48,8 @@ export const QuickViewModal = memo(function QuickViewModal({
     product.images?.map((img) => ({
       id: img.id,
       url: img.url,
-      alt: img.alt || product.name,
-      order: img.order || 0,
-      isPrimary: img.isPrimary || false,
+      alt: product.name,
+      primary: img.primary || false,
     })) || [];
 
   return (
@@ -74,13 +73,9 @@ export const QuickViewModal = memo(function QuickViewModal({
         </DialogHeader>
 
         <div className="flex flex-col gap-6 px-4 lg:px-0 pb-4 pt-0 lg:flex-row overflow-auto">
-          {/* Product Gallery - Fixed and Sticky */}
-          <div className="lg:w-1/2 lg:h-full lg:pl-4 overflow-hidden">
-            <ProductImageGallery
-              images={galleryImages}
-              productName={product.name}
-              className="h-full"
-            />
+          {/* Product Gallery - Flexible height to accommodate different image ratios */}
+          <div className="lg:w-1/2 lg:pl-4 overflow-hidden">
+            <ProductImageGallery images={galleryImages} />
           </div>
 
           {/* Product Info - Scrollable */}

@@ -127,16 +127,16 @@ export function LayeredNavigation({
 
     if (
       filters.priceRange &&
-      (filters.priceRange[0] !== 0 || filters.priceRange[1] !== 1000)
+      (filters.priceRange[0] !== 0 || filters.priceRange[1] !== 100000000)
     ) {
       activeFiltersList.push({
         key: "price",
-        label: `Price: $${filters.priceRange[0]} - $${filters.priceRange[1]}`,
-        onRemove: () => onFiltersChange({ priceRange: [0, 1000] }),
+        label: `Price: ${filters.priceRange[0]}đ - ${filters.priceRange[1]}đ`,
+        onRemove: () => onFiltersChange({ priceRange: [0, 100000000] }),
       });
     }
 
-    ["categories", "ratings", "availability"].forEach((filterKey) => {
+    ["categories"].forEach((filterKey) => {
       const values = filters[filterKey] as string[];
       if (values && values.length > 0) {
         values.forEach((value) => {
@@ -187,11 +187,11 @@ export function LayeredNavigation({
               <div className={cn("space-y-3")}>
                 <div className={cn("px-1")}>
                   <Slider
-                    value={filters.priceRange || [0, 1000]}
+                    value={filters.priceRange || [0, 100000000]}
                     onValueChange={handlePriceRangeChange}
-                    max={group.max || 1000}
+                    max={group.max || 100000000}
                     min={group.min || 0}
-                    step={group.step || 10}
+                    step={group.step || 1000}
                     className={cn("w-full")}
                   />
                 </div>
@@ -200,8 +200,8 @@ export function LayeredNavigation({
                     "flex justify-between text-sm text-muted-foreground"
                   )}
                 >
-                  <span>${filters.priceRange?.[0] || 0}</span>
-                  <span>${filters.priceRange?.[1] || 1000}</span>
+                  <span>{filters.priceRange?.[0] || 0}</span>
+                  <span>{filters.priceRange?.[1] || 100000000}</span>
                 </div>
               </div>
             )}
@@ -256,51 +256,6 @@ export function LayeredNavigation({
                 })}
               </div>
             )}
-
-            {group.type === "color" && (
-              <div className={cn("grid grid-cols-3 gap-2")}>
-                {group.options.map((option) => {
-                  const isChecked =
-                    (filters[group.id] as string[])?.includes(option.value) ||
-                    false;
-                  const count = getFilterCount(group.id, option.value);
-
-                  return (
-                    <div
-                      key={option.id}
-                      className={cn("flex flex-col items-center space-y-1")}
-                    >
-                      <Button
-                        variant={isChecked ? "default" : "outline"}
-                        size="sm"
-                        className={cn(
-                          "w-8 h-8 p-0 rounded-full border-2",
-                          isChecked && "ring-2 ring-primary"
-                        )}
-                        style={{ backgroundColor: option.value }}
-                        onClick={() =>
-                          handleArrayFilterChange(
-                            group.id,
-                            option.value,
-                            !isChecked
-                          )
-                        }
-                      />
-                      <div className={cn("text-center")}>
-                        <div className={cn("text-xs font-medium")}>
-                          {option.label}
-                        </div>
-                        {count > 0 && (
-                          <div className={cn("text-xs text-muted-foreground")}>
-                            ({count})
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
           </CollapsibleContent>
         </Collapsible>
       );
@@ -341,7 +296,7 @@ export function LayeredNavigation({
       </div>
 
       {/* Active Filters */}
-      {/* {activeFiltersCount > 0 && (
+      {activeFiltersCount > 0 && (
         <div className={cn("space-y-2")}>
           <div className={cn("flex items-center justify-between")}>
             <Label className={cn("text-sm font-medium")}>Active Filters</Label>
@@ -376,16 +331,16 @@ export function LayeredNavigation({
             ))}
           </div>
         </div>
-      )} */}
+      )}
 
-      {/* <Separator /> */}
+      <Separator />
 
       {/* Filter Groups */}
-      {/* <div className={cn("space-y-2 max-h-100 overflow-y-auto")}>
+      <div className={cn("space-y-2 max-h-100 overflow-y-auto")}>
         {filterGroups
           .filter((group) => !hideCategoryFilter || group.id !== "categories")
           .map(renderFilterGroup)}
-      </div> */}
+      </div>
     </div>
   );
 }

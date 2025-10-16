@@ -59,52 +59,14 @@ export const FILTER_GROUPS: FilterGroup[] = [
     type: "range",
     options: [],
     min: 0,
-    max: 1000,
-    step: 10,
+    max: 100000000,
+    step: 1000,
   },
   {
     id: "categories",
     label: "Category",
     type: "checkbox",
-    options: [
-      {
-        id: "electronics",
-        label: "Electronics",
-        value: "electronics",
-        count: 45,
-      },
-      { id: "clothing", label: "Clothing", value: "clothing", count: 32 },
-      { id: "home", label: "Home & Garden", value: "home", count: 28 },
-      { id: "sports", label: "Sports & Outdoors", value: "sports", count: 19 },
-      { id: "books", label: "Books", value: "books", count: 15 },
-      { id: "beauty", label: "Beauty & Health", value: "beauty", count: 12 },
-    ],
-  },
-  {
-    id: "ratings",
-    label: "Customer Rating",
-    type: "checkbox",
-    options: [
-      { id: "5", label: "5 Stars", value: "5", count: 45 },
-      { id: "4", label: "4 Stars & Up", value: "4", count: 38 },
-      { id: "3", label: "3 Stars & Up", value: "3", count: 25 },
-      { id: "2", label: "2 Stars & Up", value: "2", count: 12 },
-    ],
-  },
-  {
-    id: "availability",
-    label: "Availability",
-    type: "checkbox",
-    options: [
-      { id: "in-stock", label: "In Stock", value: "in-stock", count: 120 },
-      { id: "on-sale", label: "On Sale", value: "on-sale", count: 25 },
-      {
-        id: "new-arrival",
-        label: "New Arrivals",
-        value: "new-arrival",
-        count: 15,
-      },
-    ],
+    options: [],
   },
 ];
 
@@ -113,6 +75,4 @@ export const DEFAULT_FILTERS = {
   sort: "featured",
   priceRange: [0, 1000] as [number, number],
   categories: [],
-  ratings: [],
-  availability: [],
 };

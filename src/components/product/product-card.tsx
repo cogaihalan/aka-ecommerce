@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +16,7 @@ import {
   useWishlistAuthStatus,
   useIsInWishlist,
 } from "@/stores/wishlist-store";
-import { Product } from "@/lib/api/types";
+import { Product } from "@/types";
 import { cn, isProductOutOfStock, getStockStatusText } from "@/lib/utils";
 
 interface ProductCardProps {
@@ -26,8 +25,6 @@ interface ProductCardProps {
   showWishlist?: boolean;
   className?: string;
 }
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export function ProductCard({
   product,
@@ -101,10 +98,9 @@ export function ProductCard({
             <div className="w-20 h-20 bg-muted rounded-lg overflow-hidden">
               <Image
                 src={
-                  `${BASE_URL}${product.images?.[0]?.url}` ||
-                  "/assets/placeholder-image.jpeg"
+                  product.images?.[0]?.url || "/assets/placeholder-image.jpeg"
                 }
-                alt={product.images?.[0]?.alt || product.name}
+                alt={product.name}
                 width={80}
                 height={80}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
@@ -115,15 +111,13 @@ export function ProductCard({
             <div className="flex-1 flex flex-col justify-between min-w-0">
               <div className="space-y-1 flex-1">
                 <div className="flex items-center gap-2">
-                  <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
-                    {product.primaryCategory?.name || "Uncategorized"}
-                  </Badge>
+                  {/* <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
+                    {product.categories?.[0]?.name || "Uncategorized"}
+                  </Badge> */}
                 </div>
-                <Link href={`/products/${product.id}`}>
-                  <h3 className="font-medium text-sm line-clamp-1 group-hover:text-primary transition-colors cursor-pointer">
-                    {product.name}
-                  </h3>
-                </Link>
+                <h3 className="font-medium text-sm line-clamp-1 group-hover:text-primary transition-colors cursor-pointer">
+                  {product.name}
+                </h3>
                 <p className="text-xs text-muted-foreground line-clamp-2">
                   {product.description}
                 </p>
@@ -198,11 +192,8 @@ export function ProductCard({
       >
         <div className="aspect-square bg-muted rounded-t-lg overflow-hidden relative">
           <Image
-            src={
-              `${BASE_URL}${product.images?.[0]?.url}` ||
-              "/assets/placeholder-image.jpeg"
-            }
-            alt={product.images?.[0]?.alt || product.name}
+            src={product.images?.[0]?.url || "/assets/placeholder-image.jpeg"}
+            alt={product.name}
             width={300}
             height={300}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
@@ -267,22 +258,20 @@ export function ProductCard({
 
         <CardContent className="px-4 pb-4 flex flex-col h-full">
           <div className="flex-1 space-y-3">
-            <div className="flex items-center justify-between">
-              <Badge variant="secondary" className="text-xs">
-                {product.primaryCategory?.name || "Uncategorized"}
-              </Badge>
-              {product.featured && (
+            {/* <div className="flex items-center justify-between"> */}
+            {/* <Badge variant="secondary" className="text-xs">
+                {product.categories?.[0]?.name || "Uncategorized"}
+              </Badge> */}
+            {/* {product.featured && (
                 <Badge variant="destructive" className="text-xs">
                   Featured
                 </Badge>
-              )}
-            </div>
+              )} */}
+            {/* </div> */}
 
-            <Link href={`/products/${product.id}`}>
-              <h3 className="font-semibold line-clamp-2 group-hover:text-primary transition-colors cursor-pointer">
-                {product.name}
-              </h3>
-            </Link>
+            <h3 className="font-semibold line-clamp-2 group-hover:text-primary transition-colors cursor-pointer">
+              {product.name}
+            </h3>
 
             <p className="text-sm text-muted-foreground line-clamp-2">
               {product.description}
@@ -291,7 +280,7 @@ export function ProductCard({
             <div className="flex items-center justify-between">
               <Price
                 price={product.variants[0].price}
-                originalPrice={product.pricing?.compareAtPrice}
+                originalPrice={product.variants[0].price}
                 size="lg"
                 weight="bold"
                 showDiscount={true}
@@ -347,11 +336,8 @@ export function ProductCard({
     >
       <div className="flex-shrink-0 bg-muted rounded-t-lg overflow-hidden relative">
         <Image
-          src={
-            `${BASE_URL}${product.images?.[0]?.url}` ||
-            "/assets/placeholder-image.jpeg"
-          }
-          alt={product.images?.[0]?.alt || product.name}
+          src={product.images?.[0]?.url || "/assets/placeholder-image.jpeg"}
+          alt={product.name}
           width={300}
           height={300}
           className="block w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
@@ -416,15 +402,15 @@ export function ProductCard({
 
       <CardContent className="px-4 pb-4 flex flex-col gap-2 h-full">
         <div className="flex-1 space-y-3">
-          <Badge variant="secondary" className="text-xs">
-            {product.primaryCategory?.name || "Uncategorized"}
-          </Badge>
+          {/* <Badge variant="secondary" className="text-xs">
+            {product.categories?.[0]?.name || "Uncategorized"}
+          </Badge> */}
 
-          <Link href={`/products/${product.id}`}>
-            <h3 className="font-semibold line-clamp-2 group-hover:text-primary transition-colors cursor-pointer">
-              {product.name}
-            </h3>
-          </Link>
+          {/* <Link href={`/products/${product.id}`}> */}
+          <h3 className="font-semibold line-clamp-2 group-hover:text-primary transition-colors cursor-pointer">
+            {product.name}
+          </h3>
+          {/* </Link> */}
 
           <p className="text-sm text-muted-foreground line-clamp-2">
             {product.description}
@@ -433,7 +419,7 @@ export function ProductCard({
           <div className="flex items-center justify-between">
             <Price
               price={product.variants[0].price}
-              originalPrice={product.pricing?.compareAtPrice}
+              originalPrice={product.variants[0].price}
               size="lg"
               weight="bold"
               showDiscount={true}

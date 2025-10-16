@@ -1,7 +1,7 @@
 // Updated storefront product listing page with layered navigation
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -13,8 +13,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { storefrontCatalogService } from "@/lib/api/services/storefront/catalog";
-import type { Product } from "@/types/product";
 import { ProductCard } from "@/components/product/product-card";
 import { ProductCardSkeleton } from "@/components/product/product-card-skeleton";
 import {
@@ -24,16 +22,13 @@ import {
 } from "@/components/navigation";
 import { useNavigation } from "@/hooks/use-navigation";
 import { useProductFilters } from "@/hooks/use-product-filters";
-// Mock products removed - using API data only
 import {
   AnimatedGrid,
   LoadingOverlay,
 } from "@/components/ui/animated-container";
+import { useProductsStore } from "@/stores/products-store";
 
 export default function ProductListingPage() {
-  const { getToken } = useAuth();
-
-  // Use navigation hook for URL state management
   const {
     state,
     updateFilters,
@@ -41,65 +36,36 @@ export default function ProductListingPage() {
     resetFilters,
     getActiveFiltersCount,
     isLoading,
-    setIsLoading,
   } = useNavigation();
 
-  // View mode is handled separately from navigation state
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    products,
+    isLoading: productsLoading,
+    error: productsError,
+    totalCount,
+    fetchProducts,
+  } = useProductsStore();
+  console.log(products);
 
-  // Fetch products
-  const fetchProducts = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      const response = await storefrontCatalogService.getProducts({
-        page: state.page,
-        limit: state.limit,
-        search: state.filters.search || undefined,
-        sortBy:
-          state.filters.sort === "featured" ? undefined : state.filters.sort,
-        sortOrder: state.filters.sort?.includes("price-high") ? "desc" : "asc",
-        filters: {
-          priceRange: state.filters.priceRange,
-          categories: state.filters.categories,
-          ratings: state.filters.ratings,
-          availability: state.filters.availability,
-        },
-      });
-
-      setProducts(response.items);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch products");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [state.page, state.limit, state.filters, getToken]);
-
-  // Use product filters hook for client-side filtering
   const { filteredProducts, filterCounts, totalProducts, filteredCount } =
     useProductFilters({
       products: products,
       filters: state.filters,
     });
 
-  // Fetch products when filters change
   useEffect(() => {
-    fetchProducts();
-  }, [state.filters, state.page, fetchProducts]);
+    const params = {
+      page: state.page,
+      size: state.limit,
+    };
+    fetchProducts(params);
+  }, [state.filters, state.page, state.limit]);
 
-  // Load initial products
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
-
-  // Determine which products to display
-  const displayProducts = products;
-  const displayCount = products.length;
-  const displayTotal = products.length;
+  const displayProducts = filteredProducts;
+  const displayCount = filteredCount;
+  const displayTotal = totalCount || products.length;
 
   // Pagination logic
   const itemsPerPage = state.limit;
@@ -108,14 +74,39 @@ export default function ProductListingPage() {
   const endIndex = startIndex + itemsPerPage;
   const paginatedProducts = displayProducts.slice(startIndex, endIndex);
 
+  // Handle page change
   const handlePageChange = (page: number) => {
     updatePage(page);
   };
 
-  if (isLoading && products.length === 0) {
+  const isPageLoading = isLoading || productsLoading;
+
+  // Memoize loading skeleton cards
+  const loadingSkeletonCards = useMemo(() => {
+    return Array.from({ length: 6 }, (_, index) => (
+      <ProductCardSkeleton key={`skeleton-${index}`} />
+    ));
+  }, []);
+
+  // Memoize product cards to prevent unnecessary re-renders
+  const productCards = useMemo(() => {
+    return products.map((product, index) => (
+      <div
+        key={product.id}
+        className="animate-fade-in"
+        style={{ animationDelay: `${index * 50}ms` }}
+      >
+        <ProductCard
+          product={product}
+          variant={viewMode === "list" ? "compact" : "default"}
+        />
+      </div>
+    ));
+  }, [products, viewMode]);
+
+  if (isPageLoading && products.length === 0) {
     return (
       <div className="space-y-6">
-        {/* Header */}
         <div>
           <h1 className="text-3xl font-bold mb-2">All Products</h1>
           <p className="text-muted-foreground">
@@ -123,7 +114,6 @@ export default function ProductListingPage() {
           </p>
         </div>
 
-        {/* Loading skeleton grid */}
         <div className="flex gap-6">
           <div className="hidden lg:block w-80">
             <div className="space-y-4">
@@ -146,12 +136,7 @@ export default function ProductListingPage() {
                   : "grid-cols-1 lg:grid-cols-2"
               }`}
             >
-              {Array.from({ length: 6 }).map((_, index) => (
-                <ProductCardSkeleton
-                  key={index}
-                  variant={viewMode === "list" ? "compact" : "default"}
-                />
-              ))}
+              {loadingSkeletonCards}
             </AnimatedGrid>
           </div>
         </div>
@@ -159,12 +144,24 @@ export default function ProductListingPage() {
     );
   }
 
-  if (error) {
+  if (productsError) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <p className="text-red-500 mb-4">{error}</p>
-          <Button onClick={fetchProducts}>Try Again</Button>
+          <p className="text-red-500 mb-4">{productsError}</p>
+          <Button
+            onClick={() => {
+              const params = {
+                page: state.page,
+                size: state.limit,
+                ...state.filters,
+                sort: state.filters.sort ? [state.filters.sort] : undefined,
+              };
+              fetchProducts(params);
+            }}
+          >
+            Try Again
+          </Button>
         </div>
       </div>
     );
@@ -172,7 +169,6 @@ export default function ProductListingPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
         <h1 className="text-3xl font-bold mb-2">All Products</h1>
         <p className="text-muted-foreground">
@@ -180,7 +176,6 @@ export default function ProductListingPage() {
         </p>
       </div>
 
-      {/* Sort Controls */}
       <div className="flex items-end lg:items-center justify-between gap-2">
         <SortControls
           sortBy={state.filters.sort || "featured"}
@@ -217,7 +212,7 @@ export default function ProductListingPage() {
 
         {/* Products Grid - 3 columns */}
         <div className="flex-1">
-          <LoadingOverlay isLoading={isLoading && products.length > 0}>
+          <LoadingOverlay isLoading={isPageLoading && products.length > 0}>
             <AnimatedGrid
               className={`grid gap-6 layout-transition items-stretch ${
                 viewMode === "grid"
@@ -225,18 +220,7 @@ export default function ProductListingPage() {
                   : "grid-cols-1 lg:grid-cols-2"
               }`}
             >
-              {paginatedProducts.map((product, index) => (
-                <div
-                  key={product.id}
-                  className="animate-fade-in"
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  <ProductCard
-                    product={product}
-                    variant={viewMode === "list" ? "compact" : "default"}
-                  />
-                </div>
-              ))}
+              {productCards}
             </AnimatedGrid>
           </LoadingOverlay>
 
@@ -317,13 +301,7 @@ export default function ProductListingPage() {
                     : "grid-cols-1 lg:grid-cols-2"
                 }`}
               >
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <ProductCardSkeleton
-                    key={index}
-                    className="pt-0"
-                    variant={viewMode === "list" ? "compact" : "default"}
-                  />
-                ))}
+                {loadingSkeletonCards}
               </AnimatedGrid>
             )}
 

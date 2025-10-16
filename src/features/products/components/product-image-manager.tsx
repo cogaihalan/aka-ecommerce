@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import { FileUploader } from "@/components/file-uploader";
 import { X } from "lucide-react";
 import { toast } from "sonner";
@@ -38,6 +39,9 @@ export function ProductImageManager({
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [removedImageIds, setRemovedImageIds] = useState<number[]>([]);
+  const [primaryImageId, setPrimaryImageId] = useState<number | null>(
+    existingImages.find((img) => img.primary)?.id || null
+  );
 
   const handleImageUpload = async (files: File[]) => {
     setSelectedImages(files);
@@ -50,6 +54,18 @@ export function ProductImageManager({
 
   const removeExistingImage = (imageId: number) => {
     setRemovedImageIds((prev) => [...prev, imageId]);
+    // If removing the primary image, clear the primary selection
+    if (primaryImageId === imageId) {
+      setPrimaryImageId(null);
+    }
+  };
+
+  const handlePrimaryImageChange = (imageId: number, checked: boolean) => {
+    if (checked) {
+      setPrimaryImageId(imageId);
+    } else {
+      setPrimaryImageId(null);
+    }
   };
 
   const handleSubmit = async () => {
@@ -62,6 +78,7 @@ export function ProductImageManager({
           id: productId,
           files: selectedImages,
           removedImageIds,
+          primaryImageId,
         };
         await unifiedProductService.updateProductImages(updateData);
         toast.success("Product images updated successfully");
@@ -82,6 +99,20 @@ export function ProductImageManager({
         };
         await unifiedProductService.deleteProductImages(deleteData);
         toast.success("Product images deleted successfully");
+      } else if (
+        primaryImageId !== null &&
+        primaryImageId !==
+          (existingImages.find((img) => img.primary)?.id || null)
+      ) {
+        // Update: only changing primary image
+        const updateData: ProductImageUpdateRequest = {
+          id: productId,
+          files: [],
+          removedImageIds: [],
+          primaryImageId,
+        };
+        await unifiedProductService.updateProductImages(updateData);
+        toast.success("Primary image updated successfully");
       }
 
       onSuccess?.();
@@ -157,16 +188,16 @@ export function ProductImageManager({
           {visibleExistingImages.length > 0 && (
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Existing Images</h3>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-4">
                 {visibleExistingImages.map((image) => (
                   <div
                     key={image.id}
-                    className="relative border rounded-lg p-2"
+                    className="relative border rounded-lg p-3 w-40"
                   >
                     <img
                       src={image.url}
                       alt={`Product image ${image.id}`}
-                      className="w-full h-20 object-cover rounded"
+                      className="w-full aspect-square object-cover rounded"
                     />
                     <Button
                       type="button"
@@ -177,6 +208,21 @@ export function ProductImageManager({
                     >
                       <X className="h-3 w-3" />
                     </Button>
+                    <div className="mt-3 flex items-center space-x-2">
+                      <Checkbox
+                        id={`primary-${image.id}`}
+                        checked={primaryImageId === image.id}
+                        onCheckedChange={(checked) =>
+                          handlePrimaryImageChange(image.id, checked as boolean)
+                        }
+                      />
+                      <label
+                        htmlFor={`primary-${image.id}`}
+                        className="text-xs text-muted-foreground cursor-pointer"
+                      >
+                        Primary
+                      </label>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -196,7 +242,10 @@ export function ProductImageManager({
             onClick={handleSubmit}
             disabled={
               isLoading ||
-              (selectedImages.length === 0 && removedImageIds.length === 0)
+              (selectedImages.length === 0 &&
+                removedImageIds.length === 0 &&
+                primaryImageId ===
+                  (existingImages.find((img) => img.primary)?.id || null))
             }
           >
             {isLoading ? "Saving..." : "Save Changes"}

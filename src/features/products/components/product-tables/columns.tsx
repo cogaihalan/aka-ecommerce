@@ -5,7 +5,6 @@ import { Column, ColumnDef } from "@tanstack/react-table";
 import { Text } from "lucide-react";
 import Image from "next/image";
 import { CellAction } from "./cell-action";
-import { formatImageUrl } from "@/lib/utils";
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -14,14 +13,15 @@ export const columns: ColumnDef<Product>[] = [
     header: "Image",
     cell: ({ row }) => {
       const images = row.getValue("images") as ProductImage[];
-      
+      const primaryImage = images.find((image) => image.primary);
+
       return (
         <div className="relative aspect-square">
           <Image
-            src={formatImageUrl(images[0].url)}
+            src={primaryImage?.url || images[0].url}
             alt={row.getValue("name")}
             fill
-            className="rounded-lg"
+            className="rounded-lg object-cover"
           />
         </div>
       );
@@ -62,7 +62,7 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       const description = row.getValue("description") as string;
       return (
-        <div className="max-w-[200px] truncate text-sm text-muted-foreground">
+        <div className="max-w-50 line-clamp-4 text-sm text-muted-foreground whitespace-normal">
           {description || "No description"}
         </div>
       );

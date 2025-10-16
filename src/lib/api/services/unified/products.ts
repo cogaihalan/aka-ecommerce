@@ -10,8 +10,8 @@ import type {
 } from "@/lib/api/types";
 import type { Product } from "@/types/product";
 
-class UnifiedProductService {
-  private basePath = "/products";
+export class UnifiedProductService {
+  protected basePath = "/admin/products";
 
   // Get products with new query structure
   async getProducts(params: QueryParams = {}): Promise<ProductListResponse> {
@@ -38,8 +38,9 @@ class UnifiedProductService {
       ? `${this.basePath}?${queryString}`
       : this.basePath;
 
+    console.log(endpoint);
     const response = await apiClient.get<ProductListResponse>(endpoint);
-
+    console.log(response);
     return response.data!;
   }
 
@@ -103,6 +104,9 @@ class UnifiedProductService {
     const formData = new FormData();
     formData.append("id", data.id.toString());
     formData.append("removedImageIds", JSON.stringify(data.removedImageIds));
+    if (data.primaryImageId !== undefined) {
+      formData.append("primaryImageId", data.primaryImageId?.toString() || "");
+    }
     data.files.forEach((file) => {
       formData.append(`files`, file);
     });

@@ -12,19 +12,16 @@ interface ProductImage {
   id: number;
   url: string;
   alt: string;
-  order: number;
-  isPrimary: boolean;
+  primary: boolean;
 }
 
 interface ProductImageGalleryProps {
   images: ProductImage[];
-  productName: string;
   className?: string;
 }
 
 export const ProductImageGallery = memo(function ProductImageGallery({
   images,
-  productName,
   className,
 }: ProductImageGalleryProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -60,13 +57,11 @@ export const ProductImageGallery = memo(function ProductImageGallery({
     };
   }, [images]);
 
-  console.log(images);
-
-  // Sort images by order and ensure primary image is first
+  // Sort images by primary and ensure primary image is first
   const sortedImages = [...images].sort((a, b) => {
-    if (a.isPrimary) return -1;
-    if (b.isPrimary) return 1;
-    return a.order - b.order;
+    if (a.primary) return -1;
+    if (b.primary) return 1;
+    return a.id - b.id;
   });
 
   const handleSlideChange = useCallback((index: number) => {
@@ -96,7 +91,12 @@ export const ProductImageGallery = memo(function ProductImageGallery({
 
   if (!images || images.length === 0) {
     return (
-      <div className={cn("aspect-square bg-muted rounded-lg", className)}>
+      <div
+        className={cn(
+          "bg-muted rounded-lg min-h-[300px] max-h-[500px] flex items-center justify-center",
+          className
+        )}
+      >
         <div className="flex items-center justify-center h-full text-muted-foreground">
           No images available
         </div>
@@ -132,20 +132,20 @@ export const ProductImageGallery = memo(function ProductImageGallery({
         >
           {sortedImages.map((image, index) => (
             <div key={image.id} className="glider-slide">
-              <div className="aspect-square bg-muted rounded-lg overflow-hidden transform transition-all duration-300 ease-out relative group">
+              <div className="bg-muted rounded-lg overflow-hidden transform transition-all duration-300 ease-out relative group min-h-[300px] max-h-[500px] flex items-center justify-center">
                 <a
                   href={image.url}
                   data-fancybox="product-gallery"
-                  data-caption={image.alt || productName}
+                  data-caption={image.alt}
                   data-thumb={image.url}
-                  className="block w-full h-full"
+                  className="w-full h-full flex items-center justify-center"
                 >
                   <Image
                     src={image.url}
-                    alt={image.alt || productName}
+                    alt={image.alt}
                     width={600}
                     height={600}
-                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                    className="max-w-full max-h-full object-contain transition-transform duration-500 hover:scale-105"
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 40vw"
                     priority={index === 0}
                   />
@@ -230,7 +230,7 @@ export const ProductImageGallery = memo(function ProductImageGallery({
               <div className="hidden md:block w-full h-full">
                 <Image
                   src={image.url}
-                  alt={image.alt || productName}
+                  alt={image.alt}
                   width={64}
                   height={64}
                   className="w-full h-full object-cover transition-transform duration-300"

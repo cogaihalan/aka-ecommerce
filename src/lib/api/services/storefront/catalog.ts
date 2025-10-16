@@ -1,18 +1,7 @@
-import { unifiedProductService } from "@/lib/api/services/unified";
-import type { ProductListResponse, QueryParams } from "@/lib/api/types";
+import { UnifiedProductService } from "@/lib/api/services/unified/products";
 
-import type { Product } from "@/types";
-
-export class StorefrontCatalogService {
-  // Product catalog - delegate to unified service
-  async getProducts(params: QueryParams = {}): Promise<ProductListResponse> {
-    return unifiedProductService.getProducts(params);
-  }
-
-  // Get a single product by ID - delegate to unified service
-  async getProduct(id: number): Promise<Product> {
-    return unifiedProductService.getProduct(id);
-  }
+export class StorefrontCatalogService extends UnifiedProductService {
+  protected basePath = "/products";
 }
 
 // Export singleton instance

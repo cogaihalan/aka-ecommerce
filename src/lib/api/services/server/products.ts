@@ -11,7 +11,7 @@ import type {
 import type { Product } from "@/types/product";
 
 class ServerUnifiedProductService {
-  private basePath = "/products";
+  private basePath = "/admin/products";
 
   // Get products with new query structure
   async getProducts(params: QueryParams = {}): Promise<ProductListResponse> {
@@ -33,14 +33,12 @@ class ServerUnifiedProductService {
     if (params.name !== undefined)
       searchParams.append("name", params.name.toString());
 
-    // const queryString = searchParams.toString();
-    const queryString = "";
+    const queryString = searchParams.toString();
     const endpoint = queryString
       ? `${this.basePath}?${queryString}`
       : this.basePath;
 
     const response = await serverApiClient.get<ProductListResponse>(endpoint);
-
     return response.data!;
   }
 

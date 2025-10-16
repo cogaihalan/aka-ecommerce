@@ -9,7 +9,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Filter, X } from "lucide-react";
+import { Filter } from "lucide-react";
 import { LayeredNavigation } from "./layered-navigation";
 import { NavigationFilters } from "@/types/navigation";
 

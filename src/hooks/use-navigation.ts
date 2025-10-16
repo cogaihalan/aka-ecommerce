@@ -16,7 +16,7 @@ export function useNavigation(options: UseNavigationOptions = {}) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const { defaultFilters = {}, defaultPage = 1, defaultLimit = 12 } = options;
+  const { defaultFilters = {}, defaultPage = 0, defaultLimit = 12 } = options;
 
   // Parse URL parameters
   const parseUrlParams = useCallback((): NavigationState => {
@@ -50,7 +50,7 @@ export function useNavigation(options: UseNavigationOptions = {}) {
     });
 
     // Parse pagination
-    const page = parseInt(searchParams.get("page") || "1");
+    const page = parseInt(searchParams.get("page") || "0");
     const limit = parseInt(
       searchParams.get("limit") || defaultLimit.toString()
     );

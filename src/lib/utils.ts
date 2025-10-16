@@ -63,14 +63,19 @@ export function isProductOutOfStock(product: Product): boolean {
     return true;
   }
 
-  // Check inventory status
-  if (product.variants[0].status === "OUT_OF_STOCK") {
+  // Check if product stock is 0 or less
+  if (product.stock <= 0) {
     return true;
   }
 
-  // Check available quantity
-  if (product.variants[0].status === "OUT_OF_STOCK" && product.variants[0].stock <= 0) {
-    return true;
+  // Check if all variants are out of stock
+  if (product.variants.length > 0) {
+    const hasAvailableVariant = product.variants.some(variant => 
+      variant.status !== "OUT_OF_STOCK" && variant.stock > 0
+    );
+    if (!hasAvailableVariant) {
+      return true;
+    }
   }
 
   return false;
@@ -80,23 +85,27 @@ export function isProductOutOfStock(product: Product): boolean {
  * Get stock status text for display
  */
 export function getStockStatusText(product: Product): string {
-  console.log(product);
-
   if (product.status !== "ACTIVE") {
     return "Inactive";
   }
 
-  if (product.variants[0].status === "OUT_OF_STOCK") {
+  if (product.stock <= 0) {
     return "Out of Stock";
   }
 
-  if (product.variants[0].status === "ACTIVE") {
-    if (product.variants[0].stock <= 0) {
+  // Check if all variants are out of stock
+  if (product.variants.length > 0) {
+    const availableVariants = product.variants.filter(variant => 
+      variant.status !== "OUT_OF_STOCK" && variant.stock > 0
+    );
+    
+    if (availableVariants.length === 0) {
       return "Out of Stock";
     }
- 
-    return `${product.variants[0].stock} in stock`;
+    
+    const totalVariantStock = availableVariants.reduce((sum, variant) => sum + variant.stock, 0);
+    return `${totalVariantStock} in stock`;
   }
 
-  return "In Stock";
+  return `${product.stock} in stock`;
 }

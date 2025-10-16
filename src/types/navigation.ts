@@ -26,8 +26,8 @@ export interface SortOption {
 export interface NavigationFilters {
   search?: string;
   sort?: string;
-  priceRange?: [number, number];
-  categories?: string[];
+  priceRange?: [number, number] | [];
+  categoryIds?: string[];
   [key: string]: any;
 }
 
@@ -49,6 +49,4 @@ export interface NavigationContextType {
   updatePage: (page: number) => void;
   resetFilters: () => void;
   getFilterCounts: () => FilterCounts;
-  isLoading: boolean;
-  totalProducts: number;
 }

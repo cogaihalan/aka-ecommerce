@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { useCartStore } from "@/stores/cart-store";
-import { Product, ProductVariant } from "@/lib/api/types";
+import { Product, ProductVariant } from "@/types/product";
 import { AddToCartParams } from "@/types/cart";
 
 /**
@@ -23,7 +23,7 @@ export function useCart() {
       }
 
       // Check if product is available
-      if (product.status !== "active") {
+      if (product.status !== "ACTIVE") {
         store.setError("Product is not available");
         return false;
       }
@@ -31,8 +31,8 @@ export function useCart() {
       // Check inventory
       const selectedVariant = variant || product.variants?.[0];
       const availableQuantity =
-        selectedVariant?.inventory?.quantity ||
-        product.inventory?.quantity ||
+        selectedVariant?.stock ||
+        product.stock ||
         0;
 
       if (availableQuantity < quantity) {

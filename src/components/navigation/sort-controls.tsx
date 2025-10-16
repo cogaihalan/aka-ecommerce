@@ -22,22 +22,19 @@ interface SortControlsProps {
     filteredCount?: number;
     currentPageCount?: number;
     currentPage?: number;
-    itemsPerPage?: number;
 }
 
 export function SortControls({
-                                 sortBy,
-                                 viewMode,
-                                 onSortChange,
-                                 onViewModeChange,
-                                 onToggleFilters,
-                                 showFiltersToggle = false,
-                                 totalProducts = 0,
-                                 filteredCount = 0,
-                                 currentPageCount = 0,
-                                 currentPage = 1,
-                                 itemsPerPage = 12,
-                             }: SortControlsProps) {
+    sortBy,
+    viewMode,
+    onSortChange,
+    onViewModeChange,
+    onToggleFilters,
+    showFiltersToggle = false,
+    totalProducts = 0,
+    filteredCount = 0,
+    currentPageCount = 0,
+}: SortControlsProps) {
     return (
         <div className="w-full flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
             {/* Results count */}

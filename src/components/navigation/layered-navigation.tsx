@@ -37,7 +37,7 @@ export function LayeredNavigation({
 }: LayeredNavigationProps) {
   const { filterGroups } = useDynamicNavigation();
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(
-    new Set(hideCategoryFilter ? ["price"] : ["price", "categories"])
+    new Set(hideCategoryFilter ? ["price"] : ["price", "categoryIds"])
   );
 
   const toggleGroup = useCallback((groupId: string) => {
@@ -136,21 +136,24 @@ export function LayeredNavigation({
       });
     }
 
-    ["categories"].forEach((filterKey) => {
-      const values = filters[filterKey] as string[];
-      if (values && values.length > 0) {
-        values.forEach((value) => {
-          activeFiltersList.push({
-            key: `${filterKey}-${value}`,
-            label: value,
-            onRemove: () => handleArrayFilterChange(filterKey, value, false),
-          });
+    // Handle category filters with proper labels
+    if (filters.categoryIds && filters.categoryIds.length > 0) {
+      filters.categoryIds.forEach((categoryId: string) => {
+        // Find the category name from the filter groups
+        const categoryGroup = filterGroups.find(group => group.id === "categoryIds");
+        const categoryOption = categoryGroup?.options.find(option => option.value === categoryId);
+        const categoryLabel = categoryOption?.label || categoryId; // Fallback to ID if name not found
+        
+        activeFiltersList.push({
+          key: `categoryIds-${categoryId}`,
+          label: categoryLabel,
+          onRemove: () => handleArrayFilterChange("categoryIds", categoryId, false),
         });
-      }
-    });
+      });
+    }
 
     return activeFiltersList;
-  }, [filters, onFiltersChange, handleArrayFilterChange]);
+  }, [filters, onFiltersChange, handleArrayFilterChange, filterGroups]);
 
   const renderFilterGroup = useCallback(
     (group: FilterGroup) => {
@@ -338,7 +341,7 @@ export function LayeredNavigation({
       {/* Filter Groups */}
       <div className={cn("space-y-2 max-h-100 overflow-y-auto")}>
         {filterGroups
-          .filter((group) => !hideCategoryFilter || group.id !== "categories")
+          .filter((group) => !hideCategoryFilter || group.id !== "categoryIds")
           .map(renderFilterGroup)}
       </div>
     </div>

@@ -125,7 +125,8 @@ export function ProductCard({
 
               <div className="flex items-center justify-between mt-2">
                 <Price
-                  price={product.variants[0].price}
+                  price={product.discountPrice || product.price}
+                  originalPrice={product.discountPrice ? product.price : undefined}
                   size="sm"
                   weight="bold"
                 />
@@ -279,8 +280,8 @@ export function ProductCard({
 
             <div className="flex items-center justify-between">
               <Price
-                price={product.variants[0].price}
-                originalPrice={product.variants[0].price}
+                price={product.discountPrice || product.price}
+                originalPrice={product.discountPrice ? product.price : undefined}
                 size="lg"
                 weight="bold"
                 showDiscount={true}
@@ -325,7 +326,6 @@ export function ProductCard({
     );
   }
 
-  console.log(product.images?.[0]?.url);
   // Default variant
   return (
     <Card
@@ -418,8 +418,8 @@ export function ProductCard({
 
           <div className="flex items-center justify-between">
             <Price
-              price={product.variants[0].price}
-              originalPrice={product.variants[0].price}
+              price={product.discountPrice || product.price}
+              originalPrice={product.discountPrice ? product.price : undefined}
               size="lg"
               weight="bold"
               showDiscount={true}

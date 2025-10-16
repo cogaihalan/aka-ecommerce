@@ -11,23 +11,14 @@ type BreadcrumbItem = {
 // This allows to add custom title as well
 const routeMapping: Record<string, BreadcrumbItem[]> = {
   // Dashboard routes
-  "/dashboard": [{ title: "Dashboard", link: "/dashboard" }],
-  "/admin/employee": [
-    { title: "Dashboard", link: "/dashboard" },
-    { title: "Employee", link: "/admin/employee" },
-  ],
-  "/admin/products": [
-    { title: "Admin", link: "/admin" },
-    { title: "Products", link: "/admin/products" },
-  ],
-
-  // Storefront routes (excluding homepage)
-  "/about": [{ title: "About", link: "/about" }],
-  "/contact": [{ title: "Contact", link: "/contact" }],
-  "/help": [{ title: "Help", link: "/help" }],
-  "/products": [{ title: "Products", link: "/products" }],
-  "/search": [{ title: "Search", link: "/search" }],
-  "/cart": [{ title: "Cart", link: "/cart" }],
+  "/admin": [{ title: "Admin", link: "/admin" }],
+  "/admin/products": [{ title: "Products", link: "/admin/products" }],
+  "/admin/categories": [{ title: "Categories", link: "/admin/categories" }],
+  "/admin/users": [{ title: "Users", link: "/admin/users" }],
+  "/admin/orders": [{ title: "Orders", link: "/admin/orders" }],
+  "/admin/courses": [{ title: "Courses", link: "/admin/courses" }],
+  "/admin/pages": [{ title: "Pages", link: "/admin/pages" }],
+  "/admin/settings": [{ title: "Settings", link: "/admin/settings" }],
   "/account/wishlist": [
     { title: "Account", link: "/account" },
     { title: "Wishlist", link: "/account/wishlist" },

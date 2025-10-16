@@ -1,5 +1,5 @@
 // Import comprehensive product types
-import type { Product, Category, Order, User, OrderStatus } from "@/types";
+import type { Product, Category, Order, User } from "@/types";
 
 // Base API types
 export interface PaginationResponse {
@@ -14,6 +14,10 @@ export interface QueryParams {
   size?: number;
   sort?: string[];
   name?: string;
+  categoryIds?: string[];
+  minPrice?: number;
+  maxPrice?: number;
+  statuses?: string[];
 }
 
 // API Response types
@@ -50,8 +54,10 @@ export interface ApiErrorResponse {
 export interface CreateProductRequest {
   name: string;
   description: string;
-  categoryIds: number[];
+  stock: number;
   price: number;
+  discountPrice?: number;
+  categoryIds: number[];
 }
 
 export interface UpdateProductRequest extends Partial<CreateProductRequest> {

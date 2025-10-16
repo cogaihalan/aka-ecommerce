@@ -40,8 +40,10 @@ import { useApp } from "@/components/providers/app-provider";
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().min(1, "Description is required"),
-  categoryIds: z.array(z.number()).min(1, "At least one category is required"),
+  stock: z.number().min(0, "Stock must be non-negative"),
   price: z.number().min(0, "Price must be positive"),
+  discountPrice: z.number().min(0, "Discount price must be non-negative").optional(),
+  categoryIds: z.array(z.number()).min(1, "At least one category is required"),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -67,8 +69,10 @@ export function ProductDialog({
     defaultValues: {
       name: product?.name || "",
       description: product?.description || "",
-      categoryIds: product?.categories?.map((c: any) => c.id) || [],
+      stock: product?.stock || 0,
       price: product?.price || 0,
+      discountPrice: product?.discountPrice || 0,
+      categoryIds: product?.categories?.map((c: any) => c.id) || [],
     },
   });
 
@@ -140,6 +144,76 @@ export function ProductDialog({
                     <Textarea
                       placeholder="Enter product description"
                       {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="stock"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Stock</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min="0"
+                        placeholder="0"
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value) || 0)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Price</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        placeholder="0.00"
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(parseFloat(e.target.value) || 0)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormField
+              control={form.control}
+              name="discountPrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Discount Price (Optional)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      placeholder="0.00"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(parseFloat(e.target.value) || 0)
+                      }
                     />
                   </FormControl>
                   <FormMessage />
@@ -232,27 +306,6 @@ export function ProductDialog({
               }}
             />
 
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      placeholder="0.00"
-                      {...field}
-                      onChange={(e) =>
-                        field.onChange(parseFloat(e.target.value) || 0)
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             <DialogFooter>
               <Button

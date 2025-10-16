@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
-import { Product } from "@/lib/api/types";
+import { Product } from "@/types/product";
 
 // Wishlist item interface
 export interface WishlistItem {
@@ -234,7 +234,7 @@ export const useWishlistStore = create<WishlistStore>()(
         const currentUserId = state.currentUserId;
         return state.items
           .filter((item) => !currentUserId || item.userId === currentUserId)
-          .reduce((total, item) => total + item.product.pricing?.basePrice, 0);
+          .reduce((total, item) => total + (item.product.discountPrice || item.product.price), 0);
       },
 
       // User management

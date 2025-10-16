@@ -30,7 +30,7 @@ export function useNavigation(options: UseNavigationOptions = {}) {
     if (search) filters.search = search;
 
     // Parse sort
-    const sort = searchParams.get("sort") || "featured";
+    const sort = searchParams.get("sort") || "";
     filters.sort = sort;
 
     // Parse price range
@@ -40,14 +40,11 @@ export function useNavigation(options: UseNavigationOptions = {}) {
       filters.priceRange = [parseInt(minPrice), parseInt(maxPrice)];
     }
 
-    // Parse array parameters
-    const arrayParams = ["categories", "ratings", "availability"];
-    arrayParams.forEach((param) => {
-      const values = searchParams.getAll(param);
-      if (values.length > 0) {
-        filters[param] = values;
-      }
-    });
+    // Parse categoryIds as comma-separated string
+    const categoryIdsParam = searchParams.get("categoryIds");
+    if (categoryIdsParam) {
+      filters.categoryIds = categoryIdsParam.split(",").map(id => id.trim()).filter(id => id);
+    }
 
     // Parse pagination
     const page = parseInt(searchParams.get("page") || "0");
@@ -63,7 +60,6 @@ export function useNavigation(options: UseNavigationOptions = {}) {
   }, [searchParams, defaultFilters, defaultLimit]);
 
   const [state, setState] = useState<NavigationState>(parseUrlParams);
-  const [isLoading, setIsLoading] = useState(false);
 
   // Update URL when state changes
   const updateUrl = useCallback(
@@ -90,14 +86,10 @@ export function useNavigation(options: UseNavigationOptions = {}) {
         params.set("maxPrice", newState.filters.priceRange[1].toString());
       }
 
-      // Add array parameters
-      const arrayParams = ["categories", "ratings", "availability"];
-      arrayParams.forEach((param) => {
-        const values = newState.filters[param] as string[];
-        if (values && values.length > 0) {
-          values.forEach((value) => params.append(param, value));
-        }
-      });
+      // Add categoryIds as comma-separated string
+      if (newState.filters.categoryIds && newState.filters.categoryIds.length > 0) {
+        params.set("categoryIds", newState.filters.categoryIds.join(","));
+      }
 
       // View mode is handled separately in the component layer
 
@@ -146,7 +138,7 @@ export function useNavigation(options: UseNavigationOptions = {}) {
             ...prevState.filters,
             ...newFilters,
           },
-          page: 1, // Reset to first page when filters change
+          page: defaultPage, // Reset to first page when filters change
         };
         updateUrl(updatedState);
         return updatedState;
@@ -175,12 +167,12 @@ export function useNavigation(options: UseNavigationOptions = {}) {
       const updatedState = {
         ...prevState,
         filters: { ...DEFAULT_FILTERS, ...defaultFilters },
-        page: 1,
+        page: defaultPage,
       };
       updateUrl(updatedState);
       return updatedState;
     });
-  }, [updateUrl, defaultFilters]);
+  }, [updateUrl, defaultFilters, defaultPage]);
 
   // Get active filters count
   const getActiveFiltersCount = useCallback(() => {
@@ -196,11 +188,8 @@ export function useNavigation(options: UseNavigationOptions = {}) {
     )
       count++;
 
-    const arrayParams = ["categories", "ratings", "availability"];
-    arrayParams.forEach((param) => {
-      const values = filters[param] as string[];
-      if (values && values.length > 0) count += values.length;
-    });
+    const categoryIds = filters.categoryIds || [];
+    if (categoryIds && categoryIds.length > 0) count += categoryIds.length;
 
     return count;
   }, [state.filters]);
@@ -227,8 +216,6 @@ export function useNavigation(options: UseNavigationOptions = {}) {
     updateFilters,
     updatePage,
     resetFilters,
-    getActiveFiltersCount,
-    isLoading,
-    setIsLoading,
+    getActiveFiltersCount
   };
 }

@@ -9,7 +9,15 @@ export interface ProductVariant {
   name: string;
   stock: number;
   price: number;
+  discountPrice: number;
   status: string;
+}
+
+export interface ProductCategory {
+  id: number;
+  name: string;
+  description: string;
+  parentId: number;
 }
 
 export type ProductStatus =
@@ -23,7 +31,11 @@ export interface Product {
   id: number;
   name: string;
   description: string;
+  stock: number;
+  price: number;
+  discountPrice: number;
   status: ProductStatus;
   images: ProductImage[];
   variants: ProductVariant[];
+  categories: ProductCategory[];
 }

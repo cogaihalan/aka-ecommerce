@@ -54,8 +54,8 @@ export const useCartStore = create<CartStore>()(
 
             // Check stock limits
             const maxQuantity =
-              variantToUse?.inventory?.quantity ||
-              product.inventory?.quantity ||
+              variantToUse?.stock ||
+              product.stock ||
               999;
             if (newQuantity > maxQuantity) {
               set({
@@ -82,20 +82,19 @@ export const useCartStore = create<CartStore>()(
               productId: product.id,
               variantId: variantToUse?.id,
               name: product.name,
-              price: variantToUse?.price || product.pricing.basePrice,
+              price: variantToUse?.price || product.price,
               compareAtPrice:
-                variantToUse?.compareAtPrice || product.pricing.compareAtPrice,
+                variantToUse?.discountPrice || product.discountPrice,
               quantity,
-              image: product.images?.[0]?.url || variantToUse?.images?.[0]?.url,
+              image: product.images?.[0]?.url,
               attributes: {
                 ...attributes,
-                ...(variantToUse?.attributes || {}),
               },
-              sku: variantToUse?.sku || product.sku,
-              weight: variantToUse?.weight || product.shipping?.weight,
+              sku: variantToUse?.name || product.name,
+              weight: 0, // Default weight
               maxQuantity:
-                variantToUse?.inventory?.quantity ||
-                product.inventory?.quantity,
+                variantToUse?.stock ||
+                product.stock,
             };
 
             set({

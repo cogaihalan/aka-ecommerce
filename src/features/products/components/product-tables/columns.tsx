@@ -43,6 +43,17 @@ export const columns: ColumnDef<Product>[] = [
     enableColumnFilter: true,
   },
   {
+    id: "stock",
+    accessorKey: "stock",
+    header: ({ column }: { column: Column<Product, unknown> }) => (
+      <DataTableColumnHeader column={column} title="Stock" />
+    ),
+    cell: ({ row }) => {
+      const stock = row.getValue("stock") as number;
+      return <div className="font-medium">{stock || 0}</div>;
+    },
+  },
+  {
     id: "price",
     accessorKey: "price",
     header: ({ column }: { column: Column<Product, unknown> }) => (
@@ -50,7 +61,17 @@ export const columns: ColumnDef<Product>[] = [
     ),
     cell: ({ row }) => {
       const price = row.getValue("price") as number;
-      return <div className="font-medium">${price?.toFixed(2) || "0.00"}</div>;
+      const discountPrice = row.original.discountPrice;
+      return (
+        <div className="space-y-1">
+          <div className="font-medium">${price?.toFixed(2) || "0.00"}</div>
+          {discountPrice && discountPrice > 0 && (
+            <div className="text-sm text-green-600">
+              ${discountPrice.toFixed(2)}
+            </div>
+          )}
+        </div>
+      );
     },
   },
   {

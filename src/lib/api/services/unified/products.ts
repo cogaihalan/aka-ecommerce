@@ -33,6 +33,26 @@ export class UnifiedProductService {
     if (params.name !== undefined)
       searchParams.append("name", params.name.toString());
 
+    // Handle category filtering
+    if (params.categoryIds && params.categoryIds.length > 0) {
+      params.categoryIds.forEach((categoryId) => {
+        searchParams.append("categoryIds", categoryId.toString());
+      });
+    }
+
+    // Handle price range filtering
+    if (params.minPrice !== undefined)
+      searchParams.append("minPrice", params.minPrice.toString());
+    if (params.maxPrice !== undefined)
+      searchParams.append("maxPrice", params.maxPrice.toString());
+
+    // Handle status filtering
+    if (params.statuses && params.statuses.length > 0) {
+      params.statuses.forEach((status) => {
+        searchParams.append("statuses", status);
+      });
+    }
+
     const queryString = searchParams.toString();
     const endpoint = queryString
       ? `${this.basePath}?${queryString}`

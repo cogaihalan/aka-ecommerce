@@ -92,7 +92,7 @@ export const columns: ColumnDef<PrismicContent>[] = [
       const type = row.original.type;
       return (
         <Badge variant="outline" className="capitalize">
-          {type === "static_page" ? "Static Page" : type}
+          {type}
         </Badge>
       );
     },

@@ -88,7 +88,7 @@ export function ProductCard({
     return (
       <Card
         className={cn("group cursor-pointer h-full flex flex-col", className)}
-        isProductCard={true}
+        disableBlockPadding={true}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -187,7 +187,7 @@ export function ProductCard({
           "group cursor-pointer relative overflow-hidden h-full flex flex-col",
           className
         )}
-        isProductCard={true}
+        disableBlockPadding={true}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -330,7 +330,7 @@ export function ProductCard({
   return (
     <Card
       className={cn("group cursor-pointer h-full flex flex-col", className)}
-      isProductCard={true}
+      disableBlockPadding={true}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

@@ -4,6 +4,8 @@ import { Content, isFilled } from "@prismicio/client";
 import { SliceComponentProps, PrismicRichText } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 export type TestimonialsProps = SliceComponentProps<any>;
 
@@ -109,7 +111,7 @@ const Testimonials: FC<TestimonialsProps> = ({ slice }) => {
     <section
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className="py-16 px-8 bg-gray-50 text-gray-900"
+      className="py-16 px-8 bg-muted text-foreground"
     >
       <div className="mx-auto max-w-4xl sm:max-w-5xl lg:max-w-6xl xl:max-w-7xl">
         {/* Header */}
@@ -117,7 +119,7 @@ const Testimonials: FC<TestimonialsProps> = ({ slice }) => {
           isFilled.richText(slice.primary.subtitle)) && (
           <div className="text-center mb-12">
             {isFilled.richText(slice.primary.title) && (
-              <div className="text-4xl font-bold mb-4 text-gray-900">
+              <div className="text-4xl font-bold mb-4 text-foreground">
                 <PrismicRichText
                   field={slice.primary.title}
                   components={{
@@ -144,7 +146,7 @@ const Testimonials: FC<TestimonialsProps> = ({ slice }) => {
               </div>
             )}
             {isFilled.richText(slice.primary.subtitle) && (
-              <div className="text-lg text-gray-600 max-w-2xl mx-auto">
+              <div className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 <PrismicRichText
                   field={slice.primary.subtitle}
                   components={{
@@ -172,63 +174,65 @@ const Testimonials: FC<TestimonialsProps> = ({ slice }) => {
                 >
                   {testimonials.map((testimonial: any, index: number) => (
                     <div key={index} className="flex-none w-full min-w-0">
-                      <div className="bg-white p-12 rounded-xl shadow-md text-center h-full flex flex-col justify-between">
-                        {/* Quote */}
-                        {isFilled.richText(testimonial.quote) && (
-                          <div className="text-xl leading-relaxed text-gray-600 mb-8 italic relative">
-                            <span className="absolute -top-4 -left-2 text-6xl text-[#16745f] font-serif">
-                              "
-                            </span>
-                            <PrismicRichText
-                              field={testimonial.quote}
-                              components={{
-                                paragraph: ({ children }) => (
-                                  <p className="m-0">{children}</p>
-                                ),
-                              }}
-                            />
-                          </div>
-                        )}
-
-                        {/* Rating */}
-                        {showRatings && testimonial.rating && (
-                          <div className="flex justify-center gap-1 mb-8">
-                            {renderStars(testimonial.rating)}
-                          </div>
-                        )}
-
-                        {/* Author */}
-                        <div className="flex items-center justify-center gap-4 md:flex-row flex-col">
-                          {isFilled.image(testimonial.avatar) && (
-                            <div className="w-15 h-15 rounded-full overflow-hidden flex-shrink-0">
-                              <PrismicNextImage
-                                field={testimonial.avatar}
-                                className="w-full h-full object-cover"
+                      <Card className="text-center h-full flex flex-col justify-between">
+                        <CardContent className="p-12">
+                          {/* Quote */}
+                          {isFilled.richText(testimonial.quote) && (
+                            <div className="text-xl leading-relaxed text-muted-foreground mb-8 italic relative">
+                              <span className="absolute -top-4 -left-2 text-6xl text-primary font-serif">
+                                "
+                              </span>
+                              <PrismicRichText
+                                field={testimonial.quote}
+                                components={{
+                                  paragraph: ({ children }) => (
+                                    <p className="m-0">{children}</p>
+                                  ),
+                                }}
                               />
                             </div>
                           )}
 
-                          <div className="text-left md:text-center">
-                            {isFilled.keyText(testimonial.name) && (
-                              <div className="text-lg font-semibold text-gray-900 mb-1">
-                                {testimonial.name}
+                          {/* Rating */}
+                          {showRatings && testimonial.rating && (
+                            <div className="flex justify-center gap-1 mb-8">
+                              {renderStars(testimonial.rating)}
+                            </div>
+                          )}
+
+                          {/* Author */}
+                          <div className="flex items-center justify-center gap-4 md:flex-row flex-col">
+                            {isFilled.image(testimonial.avatar) && (
+                              <div className="w-15 h-15 rounded-full overflow-hidden flex-shrink-0">
+                                <PrismicNextImage
+                                  field={testimonial.avatar}
+                                  className="w-full h-full object-cover"
+                                />
                               </div>
                             )}
 
-                            {isFilled.keyText(testimonial.title) && (
-                              <div className="text-sm text-[#16745f] font-medium mb-1">
-                                {testimonial.title}
-                              </div>
-                            )}
+                            <div className="text-left md:text-center">
+                              {isFilled.keyText(testimonial.name) && (
+                                <div className="text-lg font-semibold text-foreground mb-1">
+                                  {testimonial.name}
+                                </div>
+                              )}
 
-                            {isFilled.keyText(testimonial.company) && (
-                              <div className="text-sm text-gray-500">
-                                {testimonial.company}
-                              </div>
-                            )}
+                              {isFilled.keyText(testimonial.title) && (
+                                <div className="text-sm text-primary font-medium mb-1">
+                                  {testimonial.title}
+                                </div>
+                              )}
+
+                              {isFilled.keyText(testimonial.company) && (
+                                <div className="text-sm text-muted-foreground">
+                                  {testimonial.company}
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </div>
+                        </CardContent>
+                      </Card>
                     </div>
                   ))}
                 </div>
@@ -236,14 +240,16 @@ const Testimonials: FC<TestimonialsProps> = ({ slice }) => {
                 {/* Navigation Arrows */}
                 {showNavigation && testimonials.length > 1 && (
                   <>
-                    <button
-                      className="absolute top-1/2 -left-6 -translate-y-1/2 bg-white/90 border-none rounded-full w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300 z-10 shadow-md hover:bg-white hover:scale-110"
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-background/90 hover:bg-background shadow-lg"
                       onClick={prevSlide}
                       aria-label="Previous testimonial"
                     >
                       <svg
-                        width="24"
-                        height="24"
+                        width="20"
+                        height="20"
                         viewBox="0 0 24 24"
                         fill="none"
                       >
@@ -255,15 +261,17 @@ const Testimonials: FC<TestimonialsProps> = ({ slice }) => {
                           strokeLinejoin="round"
                         />
                       </svg>
-                    </button>
-                    <button
-                      className="absolute top-1/2 -right-6 -translate-y-1/2 bg-white/90 border-none rounded-full w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-300 z-10 shadow-md hover:bg-white hover:scale-110"
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-background/90 hover:bg-background shadow-lg"
                       onClick={nextSlide}
                       aria-label="Next testimonial"
                     >
                       <svg
-                        width="24"
-                        height="24"
+                        width="20"
+                        height="20"
                         viewBox="0 0 24 24"
                         fill="none"
                       >
@@ -275,7 +283,7 @@ const Testimonials: FC<TestimonialsProps> = ({ slice }) => {
                           strokeLinejoin="round"
                         />
                       </svg>
-                    </button>
+                    </Button>
                   </>
                 )}
               </div>
@@ -289,8 +297,8 @@ const Testimonials: FC<TestimonialsProps> = ({ slice }) => {
                       className={cn(
                         "w-3 h-3 rounded-full border-none cursor-pointer transition-colors duration-300",
                         index === currentIndex
-                          ? "bg-[#16745f] hover:bg-[#0d5e4c]"
-                          : "bg-gray-300 hover:bg-gray-400"
+                          ? "bg-primary hover:bg-primary/80"
+                          : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
                       )}
                       onClick={() => goToSlide(index)}
                       aria-label={`Go to testimonial ${index + 1}`}
@@ -303,66 +311,68 @@ const Testimonials: FC<TestimonialsProps> = ({ slice }) => {
             /* Grid Layout */
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {testimonials.map((testimonial: any, index: number) => (
-                <div
+                <Card
                   key={index}
-                  className="bg-white p-8 rounded-xl shadow-md text-center h-full flex flex-col justify-between"
+                  className="text-center h-full flex flex-col justify-between"
                 >
-                  {/* Quote */}
-                  {isFilled.richText(testimonial.quote) && (
-                    <div className="text-lg leading-relaxed text-gray-600 mb-6 italic relative">
-                      <span className="absolute -top-4 -left-2 text-5xl text-[#16745f] font-serif">
-                        "
-                      </span>
-                      <PrismicRichText
-                        field={testimonial.quote}
-                        components={{
-                          paragraph: ({ children }) => (
-                            <p className="m-0">{children}</p>
-                          ),
-                        }}
-                      />
-                    </div>
-                  )}
-
-                  {/* Rating */}
-                  {showRatings && testimonial.rating && (
-                    <div className="flex justify-center gap-1 mb-6">
-                      {renderStars(testimonial.rating)}
-                    </div>
-                  )}
-
-                  {/* Author */}
-                  <div className="flex items-center justify-center gap-4 flex-col">
-                    {isFilled.image(testimonial.avatar) && (
-                      <div className="w-15 h-15 rounded-full overflow-hidden flex-shrink-0">
-                        <PrismicNextImage
-                          field={testimonial.avatar}
-                          className="w-full h-full object-cover"
+                  <CardContent className="p-8">
+                    {/* Quote */}
+                    {isFilled.richText(testimonial.quote) && (
+                      <div className="text-lg leading-relaxed text-muted-foreground mb-6 italic relative">
+                        <span className="absolute -top-4 -left-2 text-5xl text-primary font-serif">
+                          "
+                        </span>
+                        <PrismicRichText
+                          field={testimonial.quote}
+                          components={{
+                            paragraph: ({ children }) => (
+                              <p className="m-0">{children}</p>
+                            ),
+                          }}
                         />
                       </div>
                     )}
 
-                    <div className="text-center">
-                      {isFilled.keyText(testimonial.name) && (
-                        <div className="text-lg font-semibold text-gray-900 mb-1">
-                          {testimonial.name}
+                    {/* Rating */}
+                    {showRatings && testimonial.rating && (
+                      <div className="flex justify-center gap-1 mb-6">
+                        {renderStars(testimonial.rating)}
+                      </div>
+                    )}
+
+                    {/* Author */}
+                    <div className="flex items-center justify-center gap-4 flex-col">
+                      {isFilled.image(testimonial.avatar) && (
+                        <div className="w-15 h-15 rounded-full overflow-hidden flex-shrink-0">
+                          <PrismicNextImage
+                            field={testimonial.avatar}
+                            className="w-full h-full object-cover"
+                          />
                         </div>
                       )}
 
-                      {isFilled.keyText(testimonial.title) && (
-                        <div className="text-sm text-[#16745f] font-medium mb-1">
-                          {testimonial.title}
-                        </div>
-                      )}
+                      <div className="text-center">
+                        {isFilled.keyText(testimonial.name) && (
+                          <div className="text-lg font-semibold text-foreground mb-1">
+                            {testimonial.name}
+                          </div>
+                        )}
 
-                      {isFilled.keyText(testimonial.company) && (
-                        <div className="text-sm text-gray-500">
-                          {testimonial.company}
-                        </div>
-                      )}
+                        {isFilled.keyText(testimonial.title) && (
+                          <div className="text-sm text-primary font-medium mb-1">
+                            {testimonial.title}
+                          </div>
+                        )}
+
+                        {isFilled.keyText(testimonial.company) && (
+                          <div className="text-sm text-muted-foreground">
+                            {testimonial.company}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           )}

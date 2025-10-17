@@ -4,15 +4,43 @@ import { SliceComponentProps, PrismicRichText } from "@prismicio/react";
 import { PrismicNextLink, PrismicNextImage } from "@prismicio/next";
 import { cn } from "@/lib/utils";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
-export type FeatureGridAnimatedProps = SliceComponentProps<any>;
+interface FeatureItem {
+  title?: string;
+  description?: any;
+  image?: any;
+  icon?: any;
+  link?: any;
+  buttonText?: string;
+  features?: string;
+}
+
+interface FeatureGridAnimatedProps extends SliceComponentProps<any> {
+  slice: {
+    slice_type: string;
+    variation: string;
+    primary: {
+      title?: any;
+      subtitle?: any;
+      columns?: number;
+      showIcons?: boolean;
+      showImages?: boolean;
+      text_alignment?: "left" | "right" | "center";
+      footerLink?: any;
+      footerButtonText?: string;
+    };
+    items: FeatureItem[];
+  };
+}
 
 const FeatureGridAnimated: FC<FeatureGridAnimatedProps> = ({ slice }) => {
   const features = slice.items || [];
   const columns = slice.primary.columns || 3;
   const showIcons = slice.primary.showIcons !== false;
   const showImages = slice.primary.showImages !== false;
-  const alignment = slice.primary.alignment || "center";
+  const alignment = slice.primary.text_alignment || "center";
 
   const { ref, hasIntersected } = useIntersectionObserver({
     threshold: 0.1,
@@ -20,29 +48,22 @@ const FeatureGridAnimated: FC<FeatureGridAnimatedProps> = ({ slice }) => {
   });
 
   const getGridColumns = () => {
-    switch (columns) {
-      case 1:
-        return "grid-cols-1";
-      case 2:
-        return "grid-cols-1 md:grid-cols-2";
-      case 3:
-        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
-      case 4:
-        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-4";
-      default:
-        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
-    }
+    const gridMap = {
+      1: "grid-cols-1",
+      2: "grid-cols-1 md:grid-cols-2",
+      3: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
+      4: "grid-cols-1 md:grid-cols-2 lg:grid-cols-4",
+    };
+    return gridMap[columns as keyof typeof gridMap] || "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
   };
 
   const getAlignmentClasses = () => {
-    switch (alignment) {
-      case "left":
-        return "text-left";
-      case "right":
-        return "text-right";
-      default:
-        return "text-center";
-    }
+    const alignmentMap = {
+      left: "text-left",
+      right: "text-right",
+      center: "text-center",
+    };
+    return alignmentMap[alignment as keyof typeof alignmentMap] || "text-center";
   };
 
   return (
@@ -50,9 +71,9 @@ const FeatureGridAnimated: FC<FeatureGridAnimatedProps> = ({ slice }) => {
       ref={ref}
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className="py-16 px-8 bg-white text-gray-900"
+      className="py-8 md:py-16"
     >
-      <div className="mx-auto max-w-4xl sm:max-w-5xl lg:max-w-6xl xl:max-w-7xl">
+      <div className="mx-auto max-w-7xl">
         {/* Header */}
         {(isFilled.richText(slice.primary.title) ||
           isFilled.richText(slice.primary.subtitle)) && (
@@ -66,27 +87,39 @@ const FeatureGridAnimated: FC<FeatureGridAnimatedProps> = ({ slice }) => {
             )}
           >
             {isFilled.richText(slice.primary.title) && (
-              <div className="text-4xl font-bold mb-4 text-gray-900">
+              <div className="mb-6">
                 <PrismicRichText
                   field={slice.primary.title}
                   components={{
                     heading1: ({ children }) => (
-                      <h1 className="m-0">{children}</h1>
+                      <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 leading-tight">
+                        {children}
+                      </h1>
                     ),
                     heading2: ({ children }) => (
-                      <h2 className="m-0">{children}</h2>
+                      <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight">
+                        {children}
+                      </h2>
                     ),
                     heading3: ({ children }) => (
-                      <h3 className="m-0">{children}</h3>
+                      <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight">
+                        {children}
+                      </h3>
                     ),
                     heading4: ({ children }) => (
-                      <h4 className="m-0">{children}</h4>
+                      <h4 className="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">
+                        {children}
+                      </h4>
                     ),
                     heading5: ({ children }) => (
-                      <h5 className="m-0">{children}</h5>
+                      <h5 className="text-lg sm:text-xl font-bold text-gray-900 leading-tight">
+                        {children}
+                      </h5>
                     ),
                     heading6: ({ children }) => (
-                      <h6 className="m-0">{children}</h6>
+                      <h6 className="text-base sm:text-lg font-bold text-gray-900 leading-tight">
+                        {children}
+                      </h6>
                     ),
                   }}
                 />
@@ -95,19 +128,15 @@ const FeatureGridAnimated: FC<FeatureGridAnimatedProps> = ({ slice }) => {
             {isFilled.richText(slice.primary.subtitle) && (
               <div
                 className={cn(
-                  "text-lg text-gray-600 max-w-2xl transition-all duration-500 ease-out",
-                  alignment === "center" && "mx-auto",
-                  hasIntersected
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-4"
+                  "text-lg text-gray-600 max-w-3xl transition-all duration-500 ease-out",
+                  alignment === "center" && "mx-auto"
                 )}
-                style={{ transitionDelay: hasIntersected ? "200ms" : "0ms" }}
               >
                 <PrismicRichText
                   field={slice.primary.subtitle}
                   components={{
                     paragraph: ({ children }) => (
-                      <p className="m-0">{children}</p>
+                      <p className="leading-relaxed">{children}</p>
                     ),
                   }}
                 />
@@ -118,102 +147,69 @@ const FeatureGridAnimated: FC<FeatureGridAnimatedProps> = ({ slice }) => {
 
         {/* Features Grid */}
         {features.length > 0 && (
-          <div className={cn("grid gap-8 mb-12", getGridColumns())}>
-            {features.map((feature: any, index: number) => (
-              <div
+          <div className={cn("grid gap-3 md:gap-4 lg:gap-6 mb-8", getGridColumns())}>
+            {features.map((feature: FeatureItem, index: number) => (
+              <Card
                 key={index}
+                disableBlockPadding={true}
                 className={cn(
-                  "bg-white rounded-xl p-8 border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group h-full flex flex-col",
+                  "group h-full hover:shadow-md transition-all duration-300",
                   getAlignmentClasses(),
-                  "opacity-0 translate-y-8",
-                  hasIntersected && "opacity-100 translate-y-0"
+                  hasIntersected
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-8"
                 )}
                 style={{
-                  transitionDelay: hasIntersected
-                    ? `${300 + index * 100}ms`
-                    : "0ms",
-                  transitionDuration: "500ms",
+                  transitionDelay: hasIntersected ? `${index * 100}ms` : "0ms",
                 }}
               >
                 {/* Feature Image */}
                 {showImages && isFilled.image(feature.image) && (
-                  <div className="mb-6 rounded-lg overflow-hidden aspect-video">
+                  <div className="rounded-t-lg overflow-hidden aspect-square bg-gray-100">
                     <PrismicNextLink field={feature.link}>
                       <PrismicNextImage
                         field={feature.image}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        alt={""}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        alt=""
                       />
                     </PrismicNextLink>
                   </div>
                 )}
 
-                {/* Feature Icon */}
-                {showIcons && isFilled.image(feature.icon) && (
-                  <div
-                    className={cn(
-                      "w-16 h-16 mb-6 flex items-center justify-center bg-gradient-to-br from-[#16745f] to-[#0d5e4c] rounded-xl shadow-md transition-all duration-500",
-                      "opacity-0 scale-75",
-                      hasIntersected && "opacity-100 scale-100"
-                    )}
-                    style={{
-                      transitionDelay: hasIntersected
-                        ? `${400 + index * 100}ms`
-                        : "0ms",
-                    }}
-                  >
-                    <PrismicNextImage
-                      field={feature.icon}
-                      alt={""}
-                      className="w-8 h-8 filter brightness-0 invert"
-                    />
-                  </div>
-                )}
+                <CardHeader className="pb-4">
+                  {/* Feature Icon */}
+                  {showIcons && isFilled.image(feature.icon) && (
+                    <div className="w-12 h-12 mb-4 flex items-center justify-center bg-primary rounded-lg shadow-sm">
+                      <PrismicNextImage
+                        field={feature.icon}
+                        alt=""
+                        className="w-6 h-6 filter brightness-0 invert"
+                      />
+                    </div>
+                  )}
 
-                {/* Feature Content */}
-                <div className="flex-1 flex flex-col">
                   {/* Title */}
                   {isFilled.keyText(feature.title) && (
-                    <h3
-                      className={cn(
-                        "text-xl font-semibold mb-4 leading-tight transition-all duration-500",
-                        "opacity-0 translate-y-4",
-                        hasIntersected && "opacity-100 translate-y-0"
-                      )}
-                      style={{
-                        transitionDelay: hasIntersected
-                          ? `${500 + index * 100}ms`
-                          : "0ms",
-                      }}
-                    >
+                    <h3 className="text-xl font-semibold leading-tight text-gray-900">
                       <PrismicNextLink
                         field={feature.link}
-                        className="text-gray-900 no-underline transition-colors duration-300 hover:text-[#16745f]"
+                        className="text-primary no-underline transition-colors duration-200 hover:text-primary/70"
                       >
                         {feature.title}
                       </PrismicNextLink>
                     </h3>
                   )}
+                </CardHeader>
 
+                <CardContent className="flex-1 flex flex-col">
                   {/* Description */}
                   {isFilled.richText(feature.description) && (
-                    <div
-                      className={cn(
-                        "text-gray-600 mb-6 leading-relaxed flex-1 transition-all duration-500",
-                        "opacity-0 translate-y-4",
-                        hasIntersected && "opacity-100 translate-y-0"
-                      )}
-                      style={{
-                        transitionDelay: hasIntersected
-                          ? `${600 + index * 100}ms`
-                          : "0ms",
-                      }}
-                    >
+                    <div className="text-gray-600 mb-6 leading-relaxed flex-1">
                       <PrismicRichText
                         field={feature.description}
                         components={{
                           paragraph: ({ children }) => (
-                            <p className="m-0">{children}</p>
+                            <p className="mb-4 last:mb-0">{children}</p>
                           ),
                         }}
                       />
@@ -222,40 +218,21 @@ const FeatureGridAnimated: FC<FeatureGridAnimatedProps> = ({ slice }) => {
 
                   {/* Features List */}
                   {feature.features && feature.features.length > 0 && (
-                    <ul
-                      className={cn(
-                        "list-none p-0 mb-6 transition-all duration-500",
-                        "opacity-0 translate-y-4",
-                        hasIntersected && "opacity-100 translate-y-0"
-                      )}
-                      style={{
-                        transitionDelay: hasIntersected
-                          ? `${700 + index * 100}ms`
-                          : "0ms",
-                      }}
-                    >
+                    <ul className="list-none p-0 mb-6 space-y-3">
                       {feature.features
-                        .split("/n")
-                        .map((item: any, itemIndex: number) => (
+                        .split("\n")
+                        .filter((item: string) => item.trim())
+                        .map((item: string, itemIndex: number) => (
                           <li
                             key={itemIndex}
-                            className={cn(
-                              "flex items-center gap-3 mb-3 text-sm text-gray-600 transition-all duration-300",
-                              "opacity-0 translate-x-4",
-                              hasIntersected && "opacity-100 translate-x-0"
-                            )}
-                            style={{
-                              transitionDelay: hasIntersected
-                                ? `${800 + index * 100 + itemIndex * 50}ms`
-                                : "0ms",
-                            }}
+                            className="flex items-center gap-3 text-sm text-gray-600"
                           >
                             <svg
                               width="16"
                               height="16"
                               viewBox="0 0 24 24"
                               fill="none"
-                              className="text-[#16745f] flex-shrink-0"
+                              className="text-emerald-600 flex-shrink-0"
                             >
                               <path
                                 d="M20 6L9 17L4 12"
@@ -265,36 +242,28 @@ const FeatureGridAnimated: FC<FeatureGridAnimatedProps> = ({ slice }) => {
                                 strokeLinejoin="round"
                               />
                             </svg>
-                            {item}
+                            {item.trim()}
                           </li>
                         ))}
                     </ul>
                   )}
+                </CardContent>
 
-                  {/* Button */}
-                  {isFilled.link(feature.link) && (
-                    <div
-                      className={cn(
-                        "mt-auto transition-all duration-500",
-                        "opacity-0 translate-y-4",
-                        hasIntersected && "opacity-100 translate-y-0"
-                      )}
-                      style={{
-                        transitionDelay: hasIntersected
-                          ? `${900 + index * 100}ms`
-                          : "0ms",
-                      }}
+                {/* Button */}
+                {isFilled.link(feature.link) && (
+                  <CardFooter className="pt-0 pb-4">
+                    <Button
+                      asChild
+                      className="w-full"
+                      variant="default"
                     >
-                      <PrismicNextLink
-                        field={feature.link}
-                        className="inline-block w-full text-center bg-[#16745f] text-white px-6 py-3 rounded-lg no-underline font-medium transition-all duration-300 hover:bg-[#0d5e4c] hover:scale-105 hover:shadow-lg"
-                      >
+                      <PrismicNextLink field={feature.link}>
                         {feature.buttonText || "Learn More"}
                       </PrismicNextLink>
-                    </div>
-                  )}
-                </div>
-              </div>
+                    </Button>
+                  </CardFooter>
+                )}
+              </Card>
             ))}
           </div>
         )}
@@ -303,23 +272,22 @@ const FeatureGridAnimated: FC<FeatureGridAnimatedProps> = ({ slice }) => {
         {isFilled.link(slice.primary.footerLink) && (
           <div
             className={cn(
-              "mt-8 transition-all duration-700 ease-out",
+              "mt-6 md:mt-8 transition-all duration-500 ease-out",
               getAlignmentClasses(),
-              "opacity-0 translate-y-8",
-              hasIntersected && "opacity-100 translate-y-0"
+              hasIntersected
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-8"
             )}
-            style={{
-              transitionDelay: hasIntersected
-                ? `${1000 + features.length * 100}ms`
-                : "0ms",
-            }}
           >
-            <PrismicNextLink
-              field={slice.primary.footerLink}
-              className="inline-block bg-transparent text-[#16745f] px-8 py-3 border-2 border-[#16745f] rounded-lg no-underline font-medium transition-all duration-300 hover:bg-[#16745f] hover:text-white hover:scale-105 hover:shadow-lg"
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
             >
-              {slice.primary.footerButtonText || "View All Features"}
-            </PrismicNextLink>
+              <PrismicNextLink field={slice.primary.footerLink}>
+                {slice.primary.footerButtonText || "View All Features"}
+              </PrismicNextLink>
+            </Button>
           </div>
         )}
       </div>

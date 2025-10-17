@@ -40,9 +40,6 @@
             },
             "faq_accordion": {
               "type": "SharedSlice"
-            },
-            "feature_grid": {
-              "type": "SharedSlice"
             }
           }
         }

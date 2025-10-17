@@ -1,7 +1,7 @@
 {
   "id": "faq_accordion",
   "name": "FAQ Accordion",
-  "description": "A collapsible FAQ section with customizable layout and styling options",
+  "description": "A collapsible FAQ section",
   "imageUrl": "",
   "display": "list",
   "type": "SharedSlice",
@@ -28,13 +28,6 @@
             "label": "Subtitle",
             "placeholder": "Enter a subtitle or description",
             "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
-          }
-        },
-        "layout": {
-          "type": "Text",
-          "config": {
-            "label": "Layout",
-            "placeholder": "single"
           }
         },
         "allowMultiple": {

@@ -15,7 +15,7 @@ export function ProductCardSkeleton({
 }: ProductCardSkeletonProps) {
   if (variant === "compact") {
     return (
-      <Card className={cn("group h-full flex flex-col", className)}>
+      <Card disableBlockPadding={true} className={cn("group h-full flex flex-col", className)}>
         <CardContent className="p-3 flex-1 flex flex-col">
           <div className="flex gap-3">
             {/* Image skeleton */}
@@ -43,7 +43,7 @@ export function ProductCardSkeleton({
 
   if (variant === "featured") {
     return (
-      <Card className={cn("group relative overflow-hidden h-full flex flex-col", className)}>
+      <Card disableBlockPadding={true} className={cn("group relative overflow-hidden h-full flex flex-col", className)}>
         <Skeleton className="aspect-square rounded-t-lg" />
         
         <CardContent className="px-4 pb-4 flex flex-col h-full">
@@ -52,19 +52,13 @@ export function ProductCardSkeleton({
               <Skeleton className="h-5 w-20" />
               <Skeleton className="h-5 w-16" />
             </div>
-
             <Skeleton className="h-5 w-full" />
             <Skeleton className="h-5 w-3/4" />
-
             <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-2/3" />
-
-            <div className="flex items-center justify-between">
-              <Skeleton className="h-6 w-20" />
-            </div>
           </div>
 
-          <div className="mt-auto space-y-2">
+          <div className="mt-4 space-y-2">
             <Skeleton className="h-9 w-full" />
           </div>
         </CardContent>
@@ -74,25 +68,19 @@ export function ProductCardSkeleton({
 
   // Default variant
   return (
-    <Card className={cn("group h-full flex flex-col", className)}>
+    <Card disableBlockPadding={true} className={cn("group h-full flex flex-col", className)}>
       <Skeleton className="aspect-square rounded-t-lg" />
       
       <CardContent className="px-4 pb-4 flex flex-col h-full">
         <div className="flex-1 space-y-3">
           <Skeleton className="h-5 w-20" />
-
           <Skeleton className="h-5 w-full" />
           <Skeleton className="h-5 w-3/4" />
-
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-2/3" />
-
-          <div className="flex items-center justify-between">
-            <Skeleton className="h-6 w-20" />
-          </div>
         </div>
 
-        <div className="mt-auto space-y-2">
+        <div className="mt-4 space-y-2">
           <Skeleton className="h-9 w-full" />
         </div>
       </CardContent>

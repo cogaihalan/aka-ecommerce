@@ -1,11 +1,11 @@
 import { FC } from "react";
-import { Content, isFilled } from "@prismicio/client";
+import { isFilled } from "@prismicio/client";
 import { SliceComponentProps, PrismicRichText } from "@prismicio/react";
 import { PrismicNextLink, PrismicNextImage } from "@prismicio/next";
 import { cn } from "@/lib/utils";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
 
-export type HeroAnimatedProps = SliceComponentProps<Content.HeroSlice>;
+export type HeroAnimatedProps = SliceComponentProps<any>;
 
 const HeroAnimated: FC<HeroAnimatedProps> = ({ slice }) => {
   const isImageRight = slice.variation === "imageRight";
@@ -60,7 +60,7 @@ const HeroAnimated: FC<HeroAnimatedProps> = ({ slice }) => {
             {isFilled.keyText(slice.primary.eyebrowHeadline) && (
               <p 
                 className={cn(
-                  "text-[#47C1AF] text-lg font-medium m-0 transition-all duration-500 ease-out",
+                  "text-primary text-lg font-medium m-0 transition-all duration-500 ease-out",
                   hasIntersected ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
                 )}
                 style={{ transitionDelay: hasIntersected ? "600ms" : "0ms" }}

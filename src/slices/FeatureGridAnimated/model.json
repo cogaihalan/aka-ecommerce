@@ -2,8 +2,6 @@
   "id": "feature_grid_animated",
   "name": "Feature Grid Animated",
   "description": "An animated grid layout showcasing features with scroll-triggered animations",
-  "imageUrl": "",
-  "display": "list",
   "type": "SharedSlice",
   "variations": [
     {
@@ -55,18 +53,25 @@
             "placeholder_true": "Show images"
           }
         },
-        "alignment": {
-          "type": "Text",
+        "text_alignment": {
+          "type": "Select",
           "config": {
             "label": "Text Alignment",
-            "placeholder": "center"
+            "placeholder": "Choose the text alignment",
+            "options": [
+              "center",
+              "left",
+              "right"
+            ],
+            "default_value": "center"
           }
         },
         "footerLink": {
           "type": "Link",
           "config": {
             "label": "Footer Link",
-            "placeholder": "Link to view all features"
+            "placeholder": "Link to view all features",
+            "select": null
           }
         },
         "footerButtonText": {
@@ -119,7 +124,8 @@
           "type": "Link",
           "config": {
             "label": "Link",
-            "placeholder": "Link to learn more about this feature"
+            "placeholder": "Link to learn more about this feature",
+            "select": null
           }
         },
         "buttonText": {

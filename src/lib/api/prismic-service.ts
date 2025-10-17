@@ -85,7 +85,7 @@ export class PrismicApiService {
       const response = await this.client.getAllByType("page", queryOptions);
 
       return {
-        results: response as unknown as PrismicPage[],
+        results: response as PrismicPage[],
         total_results_size: response.length,
         total_pages: Math.ceil(response.length / pageSize),
         page,

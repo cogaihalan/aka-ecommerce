@@ -2,6 +2,8 @@
 import { FC, useState, useEffect } from "react";
 import { Content, isFilled } from "@prismicio/client";
 import { SliceComponentProps, PrismicRichText } from "@prismicio/react";
+import { cn } from "@/lib/utils";
+import { Card, CardContent } from "@/components/ui/card";
 
 export type StatsCounterProps = SliceComponentProps<any>;
 
@@ -92,25 +94,25 @@ const StatsCounter: FC<StatsCounterProps> = ({ slice }) => {
     return `${prefix}${value}${suffix}`;
   };
 
-  const getLayoutClass = () => {
+  const getLayoutClasses = () => {
     switch (layout) {
       case "horizontal":
-        return "es-stats-counter--horizontal";
+        return "grid-cols-2 md:grid-cols-4";
       case "vertical":
-        return "es-stats-counter--vertical";
+        return "grid-cols-1 max-w-md mx-auto";
       default:
-        return "es-stats-counter--grid";
+        return "grid-cols-1 md:grid-cols-2 lg:grid-cols-4";
     }
   };
 
-  const getAlignmentClass = () => {
+  const getAlignmentClasses = () => {
     switch (alignment) {
       case "left":
-        return "es-stats-counter--left";
+        return "text-left";
       case "right":
-        return "es-stats-counter--right";
+        return "text-right";
       default:
-        return "es-stats-counter--center";
+        return "text-center";
     }
   };
 
@@ -118,23 +120,39 @@ const StatsCounter: FC<StatsCounterProps> = ({ slice }) => {
     <section
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className={`es-bounded es-stats-counter ${getLayoutClass()} ${getAlignmentClass()}`}
+      className="py-16 px-8 bg-muted text-foreground"
     >
-      <div className="es-bounded__content es-stats-counter__content">
+      <div className="mx-auto max-w-4xl sm:max-w-5xl lg:max-w-6xl xl:max-w-7xl">
         {/* Header */}
         {(isFilled.richText(slice.primary.title) ||
           isFilled.richText(slice.primary.subtitle)) && (
-          <div
-            className={`es-stats-counter__header es-stats-counter__header--${alignment}`}
-          >
+          <div className={cn("mb-12", getAlignmentClasses())}>
             {isFilled.richText(slice.primary.title) && (
-              <div className="es-stats-counter__title">
-                <PrismicRichText field={slice.primary.title} />
+              <div className="text-4xl font-bold mb-4 text-foreground">
+                <PrismicRichText 
+                  field={slice.primary.title}
+                  components={{
+                    heading1: ({ children }) => <h1 className="m-0">{children}</h1>,
+                    heading2: ({ children }) => <h2 className="m-0">{children}</h2>,
+                    heading3: ({ children }) => <h3 className="m-0">{children}</h3>,
+                    heading4: ({ children }) => <h4 className="m-0">{children}</h4>,
+                    heading5: ({ children }) => <h5 className="m-0">{children}</h5>,
+                    heading6: ({ children }) => <h6 className="m-0">{children}</h6>,
+                  }}
+                />
               </div>
             )}
             {isFilled.richText(slice.primary.subtitle) && (
-              <div className="es-stats-counter__subtitle">
-                <PrismicRichText field={slice.primary.subtitle} />
+              <div className={cn(
+                "text-lg text-muted-foreground max-w-2xl",
+                alignment === "center" && "mx-auto"
+              )}>
+                <PrismicRichText 
+                  field={slice.primary.subtitle}
+                  components={{
+                    paragraph: ({ children }) => <p className="m-0">{children}</p>,
+                  }}
+                />
               </div>
             )}
           </div>
@@ -142,280 +160,71 @@ const StatsCounter: FC<StatsCounterProps> = ({ slice }) => {
 
         {/* Stats Grid */}
         {stats.length > 0 && (
-          <div className="es-stats-counter__stats">
+          <div className={cn("grid gap-8 mb-12", getLayoutClasses())}>
             {stats.map((stat: any, index: number) => (
-              <div key={index} className="es-stats-counter__stat">
-                {/* Icon */}
-                {showIcons && isFilled.image(stat.icon) && (
-                  <div className="es-stats-counter__stat-icon">
-                    <img
-                      src={stat.icon.url}
-                      alt={stat.icon.alt || stat.label}
-                      className="es-stats-counter__icon"
-                    />
-                  </div>
-                )}
-
-                {/* Counter */}
-                <div className="es-stats-counter__stat-content">
-                  <div className="es-stats-counter__counter">
-                    {formatNumber(
-                      counters[index] || 0,
-                      stat.suffix || "",
-                      stat.prefix || ""
-                    )}
-                  </div>
-
-                  {isFilled.keyText(stat.label) && (
-                    <div className="es-stats-counter__label">{stat.label}</div>
-                  )}
-
-                  {isFilled.richText(stat.description) && (
-                    <div className="es-stats-counter__description">
-                      <PrismicRichText field={stat.description} />
+              <Card key={index} className="relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                {/* Top accent bar */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-primary/60" />
+                
+                <CardContent className="text-center p-8">
+                  {/* Icon */}
+                  {showIcons && isFilled.image(stat.icon) && (
+                    <div className="w-16 h-16 mx-auto mb-6 flex items-center justify-center bg-gradient-to-br from-primary to-primary/80 rounded-xl shadow-md">
+                      <img
+                        src={stat.icon.url}
+                        alt={stat.icon.alt || stat.label}
+                        className="w-8 h-8 filter brightness-0 invert"
+                      />
                     </div>
                   )}
-                </div>
-              </div>
+
+                  {/* Counter */}
+                  <div className="mb-4">
+                    <div className="text-4xl font-bold text-primary mb-2">
+                      {formatNumber(
+                        counters[index] || 0,
+                        stat.suffix || "",
+                        stat.prefix || ""
+                      )}
+                    </div>
+
+                    {isFilled.keyText(stat.label) && (
+                      <div className="text-lg font-semibold text-foreground mb-2">
+                        {stat.label}
+                      </div>
+                    )}
+
+                    {isFilled.richText(stat.description) && (
+                      <div className="text-sm text-muted-foreground max-w-xs mx-auto">
+                        <PrismicRichText 
+                          field={stat.description}
+                          components={{
+                            paragraph: ({ children }) => <p className="m-0">{children}</p>,
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         )}
 
         {/* Footer */}
         {isFilled.richText(slice.primary.footerText) && (
-          <div
-            className={`es-stats-counter__footer es-stats-counter__footer--${alignment}`}
-          >
-            <div className="es-stats-counter__footer-text">
-              <PrismicRichText field={slice.primary.footerText} />
+          <div className={cn("mt-8", getAlignmentClasses())}>
+            <div className="text-sm text-muted-foreground">
+              <PrismicRichText 
+                field={slice.primary.footerText}
+                components={{
+                  paragraph: ({ children }) => <p className="m-0">{children}</p>,
+                }}
+              />
             </div>
           </div>
         )}
       </div>
-
-      <style>
-        {`
-          .es-bounded {
-            padding: 8vw 2rem;
-          }
-
-          .es-bounded__content {
-            margin-left: auto;
-            margin-right: auto;
-            max-width: 90%;
-          }
-
-          @media screen and (min-width: 640px) {
-            .es-bounded__content {
-              max-width: 85%;
-            }
-          }
-
-          @media screen and (min-width: 896px) {
-            .es-bounded__content {
-              max-width: 80%;
-            }
-          }
-
-          @media screen and (min-width: 1280px) {
-            .es-bounded__content {
-              max-width: 75%;
-            }
-          }
-
-          .es-stats-counter {
-            font-family: system-ui, sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-          }
-
-          .es-stats-counter__header {
-            margin-bottom: 3rem;
-          }
-
-          .es-stats-counter__header--left {
-            text-align: left;
-          }
-
-          .es-stats-counter__header--center {
-            text-align: center;
-          }
-
-          .es-stats-counter__header--right {
-            text-align: right;
-          }
-
-          .es-stats-counter__title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #1a1a1a;
-          }
-
-          .es-stats-counter__title * {
-            margin: 0;
-          }
-
-          .es-stats-counter__subtitle {
-            font-size: 1.125rem;
-            color: #666;
-            max-width: 600px;
-            margin: 0 auto;
-          }
-
-          .es-stats-counter__subtitle * {
-            margin: 0;
-          }
-
-          .es-stats-counter__header--left .es-stats-counter__subtitle,
-          .es-stats-counter__header--right .es-stats-counter__subtitle {
-            margin: 0;
-          }
-
-          .es-stats-counter__stats {
-            display: grid;
-            gap: 2rem;
-            margin-bottom: 3rem;
-          }
-
-          .es-stats-counter--grid .es-stats-counter__stats {
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          }
-
-          .es-stats-counter--horizontal .es-stats-counter__stats {
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-          }
-
-          .es-stats-counter--vertical .es-stats-counter__stats {
-            grid-template-columns: 1fr;
-            max-width: 400px;
-            margin: 0 auto 3rem;
-          }
-
-          .es-stats-counter__stat {
-            background: #fff;
-            border-radius: 0.75rem;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            overflow: hidden;
-          }
-
-          .es-stats-counter__stat::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #16745f, #0d5e4c);
-          }
-
-          .es-stats-counter__stat:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
-          }
-
-          .es-stats-counter__stat-icon {
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #16745f, #0d5e4c);
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-          }
-
-          .es-stats-counter__icon {
-            width: 32px;
-            height: 32px;
-            filter: brightness(0) invert(1);
-          }
-
-          .es-stats-counter__stat-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-          }
-
-          .es-stats-counter__counter {
-            font-size: 3rem;
-            font-weight: 700;
-            color: #16745f;
-            line-height: 1;
-            margin-bottom: 0.5rem;
-          }
-
-          .es-stats-counter__label {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 0.5rem;
-          }
-
-          .es-stats-counter__description {
-            font-size: 0.875rem;
-            color: #666;
-            line-height: 1.5;
-            max-width: 200px;
-          }
-
-          .es-stats-counter__description * {
-            margin: 0;
-          }
-
-          .es-stats-counter__footer {
-            margin-top: 2rem;
-          }
-
-          .es-stats-counter__footer--left {
-            text-align: left;
-          }
-
-          .es-stats-counter__footer--center {
-            text-align: center;
-          }
-
-          .es-stats-counter__footer--right {
-            text-align: right;
-          }
-
-          .es-stats-counter__footer-text {
-            font-size: 0.875rem;
-            color: #666;
-            line-height: 1.6;
-          }
-
-          .es-stats-counter__footer-text * {
-            margin: 0;
-          }
-
-          @media (max-width: 768px) {
-            .es-stats-counter__stats {
-              grid-template-columns: 1fr !important;
-            }
-
-            .es-stats-counter__counter {
-              font-size: 2.5rem;
-            }
-
-            .es-stats-counter__title {
-              font-size: 2rem;
-            }
-          }
-
-          @media (min-width: 769px) and (max-width: 1024px) {
-            .es-stats-counter--grid .es-stats-counter__stats {
-              grid-template-columns: repeat(2, 1fr);
-            }
-          }
-        `}
-      </style>
     </section>
   );
 };

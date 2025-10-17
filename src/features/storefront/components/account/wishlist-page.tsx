@@ -110,7 +110,7 @@ export default function WishlistPage() {
 
             return (
               <Card
-                isProductCard
+                disableBlockPadding
                 key={item.id}
                 className="group h-full flex flex-col"
               >

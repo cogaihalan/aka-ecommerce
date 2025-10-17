@@ -15,7 +15,7 @@ interface CourseCardProps {
 
 export function CourseCard({ course, onWatch }: CourseCardProps) {
   return (
-    <Card isProductCard={true} className="group hover:shadow-lg transition-shadow">
+    <Card disableBlockPadding={true} className="group hover:shadow-lg transition-shadow">
       <div className="relative aspect-video overflow-hidden rounded-t-lg">
         {course.thumbnailUrl ? (
           <Image

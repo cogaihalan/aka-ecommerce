@@ -3,16 +3,16 @@ import { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 
 interface CardProps extends ComponentProps<"div"> {
-  isProductCard?: boolean;
+  disableBlockPadding?: boolean;
 }
 
-function Card({ className, isProductCard = false, ...props }: CardProps) {
+function Card({ className, disableBlockPadding = false, ...props }: CardProps) {
   return (
     <div
       data-slot="card"
       className={cn(
         "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border shadow-sm",
-        !isProductCard && "py-6",
+        !disableBlockPadding && "py-6",
         className
       )}
       {...props}

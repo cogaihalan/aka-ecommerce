@@ -57,20 +57,6 @@
             "thumbnails": []
           }
         },
-        "backgroundColor": {
-          "type": "Color",
-          "config": {
-            "label": "Background Color",
-            "placeholder": "#16745f"
-          }
-        },
-        "textColor": {
-          "type": "Color",
-          "config": {
-            "label": "Text Color",
-            "placeholder": "#ffffff"
-          }
-        },
         "placeholder": {
           "type": "Text",
           "config": {

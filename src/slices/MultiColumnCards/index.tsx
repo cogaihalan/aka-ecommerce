@@ -2,6 +2,9 @@ import { FC } from "react";
 import { Content, isFilled } from "@prismicio/client";
 import { SliceComponentProps, PrismicRichText } from "@prismicio/react";
 import { PrismicNextLink, PrismicNextImage } from "@prismicio/next";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 export type MultiColumnCardsProps = SliceComponentProps<any>;
 
@@ -15,25 +18,32 @@ const MultiColumnCards: FC<MultiColumnCardsProps> = ({ slice }) => {
 
   const getGridColumns = () => {
     switch (columns) {
-      case 1: return "1fr";
-      case 2: return "repeat(2, 1fr)";
-      case 3: return "repeat(3, 1fr)";
-      case 4: return "repeat(4, 1fr)";
-      default: return "repeat(3, 1fr)";
+      case 1: return "grid-cols-1";
+      case 2: return "grid-cols-1 md:grid-cols-2";
+      case 3: return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+      case 4: return "grid-cols-1 md:grid-cols-2 lg:grid-cols-4";
+      default: return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
     }
   };
 
-  const getCardClassName = () => {
-    const baseClass = "es-multi-column-cards__card";
+  const getCardVariant = () => {
     switch (cardStyle) {
       case "elevated":
-        return `${baseClass} es-multi-column-cards__card--elevated`;
+        return "shadow-lg hover:shadow-xl";
       case "outlined":
-        return `${baseClass} es-multi-column-cards__card--outlined`;
+        return "border-2 hover:border-primary";
       case "minimal":
-        return `${baseClass} es-multi-column-cards__card--minimal`;
+        return "shadow-none border-none bg-transparent";
       default:
-        return baseClass;
+        return "shadow-sm hover:shadow-md";
+    }
+  };
+
+  const getAlignmentClasses = () => {
+    switch (alignment) {
+      case "left": return "text-left";
+      case "right": return "text-right";
+      default: return "text-center";
     }
   };
 
@@ -41,20 +51,38 @@ const MultiColumnCards: FC<MultiColumnCardsProps> = ({ slice }) => {
     <section
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className="es-bounded es-multi-column-cards"
+      className="py-16 px-8 bg-background text-foreground"
     >
-      <div className="es-bounded__content es-multi-column-cards__content">
+      <div className="mx-auto max-w-4xl sm:max-w-5xl lg:max-w-6xl xl:max-w-7xl">
         {/* Header */}
         {(isFilled.richText(slice.primary.title) || isFilled.richText(slice.primary.subtitle)) && (
-          <div className={`es-multi-column-cards__header es-multi-column-cards__header--${alignment}`}>
+          <div className={cn("mb-12", getAlignmentClasses())}>
             {isFilled.richText(slice.primary.title) && (
-              <div className="es-multi-column-cards__title">
-                <PrismicRichText field={slice.primary.title} />
+              <div className="text-4xl font-bold mb-4 text-foreground">
+                <PrismicRichText 
+                  field={slice.primary.title}
+                  components={{
+                    heading1: ({ children }) => <h1 className="m-0">{children}</h1>,
+                    heading2: ({ children }) => <h2 className="m-0">{children}</h2>,
+                    heading3: ({ children }) => <h3 className="m-0">{children}</h3>,
+                    heading4: ({ children }) => <h4 className="m-0">{children}</h4>,
+                    heading5: ({ children }) => <h5 className="m-0">{children}</h5>,
+                    heading6: ({ children }) => <h6 className="m-0">{children}</h6>,
+                  }}
+                />
               </div>
             )}
             {isFilled.richText(slice.primary.subtitle) && (
-              <div className="es-multi-column-cards__subtitle">
-                <PrismicRichText field={slice.primary.subtitle} />
+              <div className={cn(
+                "text-lg text-muted-foreground max-w-2xl",
+                alignment === "center" && "mx-auto"
+              )}>
+                <PrismicRichText 
+                  field={slice.primary.subtitle}
+                  components={{
+                    paragraph: ({ children }) => <p className="m-0">{children}</p>,
+                  }}
+                />
               </div>
             )}
           </div>
@@ -62,58 +90,69 @@ const MultiColumnCards: FC<MultiColumnCardsProps> = ({ slice }) => {
 
         {/* Cards Grid */}
         {cards.length > 0 && (
-          <div 
-            className="es-multi-column-cards__grid"
-            style={{ gridTemplateColumns: getGridColumns() }}
-          >
+          <div className={cn("grid gap-8 mb-12", getGridColumns())}>
             {cards.map((card: any, index: number) => (
-              <div key={index} className={getCardClassName()}>
+              <Card 
+                key={index} 
+                className={cn(
+                  "transition-all duration-300 hover:-translate-y-1 h-full flex flex-col",
+                  getCardVariant(),
+                  getAlignmentClasses()
+                )}
+              >
                 {/* Card Image */}
                 {showImages && isFilled.image(card.image) && (
-                  <div className="es-multi-column-cards__card-image">
+                  <div className="relative aspect-video overflow-hidden">
                     <PrismicNextLink field={card.link}>
                       <PrismicNextImage
                         field={card.image}
-                        className="es-multi-column-cards__image"
+                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                       />
                     </PrismicNextLink>
                   </div>
                 )}
 
-                {/* Card Content */}
-                <div className="es-multi-column-cards__card-content">
+                <CardContent className="flex-1 flex flex-col">
                   {/* Icon */}
                   {isFilled.image(card.icon) && (
-                    <div className="es-multi-column-cards__card-icon">
+                    <div className="w-12 h-12 mb-4 flex items-center justify-center bg-muted rounded-lg">
                       <PrismicNextImage
                         field={card.icon}
-                        className="es-multi-column-cards__icon"
+                        className="w-6 h-6"
                       />
                     </div>
                   )}
 
                   {/* Title */}
                   {isFilled.keyText(card.title) && (
-                    <h3 className="es-multi-column-cards__card-title">
-                      <PrismicNextLink field={card.link}>
+                    <CardTitle className="mb-3">
+                      <PrismicNextLink 
+                        field={card.link}
+                        className="text-foreground no-underline hover:text-primary transition-colors duration-300"
+                      >
                         {card.title}
                       </PrismicNextLink>
-                    </h3>
+                    </CardTitle>
                   )}
 
                   {/* Description */}
                   {isFilled.richText(card.description) && (
-                    <div className="es-multi-column-cards__card-description">
-                      <PrismicRichText field={card.description} />
-                    </div>
+                    <CardDescription className="mb-4 flex-1">
+                      <PrismicRichText 
+                        field={card.description}
+                        components={{
+                          paragraph: ({ children }) => <p className="m-0">{children}</p>,
+                        }}
+                      />
+                    </CardDescription>
                   )}
 
                   {/* Features List */}
                   {card.features && card.features.length > 0 && (
-                    <ul className="es-multi-column-cards__card-features">
+                    <ul className="list-none p-0 mb-4">
                       {card.features.map((feature: any, featureIndex: number) => (
-                        <li key={featureIndex} className="es-multi-column-cards__card-feature">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="es-multi-column-cards__check-icon">
+                        <li key={featureIndex} className="flex items-center gap-2 mb-2 text-sm text-muted-foreground">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-primary flex-shrink-0">
                             <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                           </svg>
                           {feature}
@@ -124,328 +163,38 @@ const MultiColumnCards: FC<MultiColumnCardsProps> = ({ slice }) => {
 
                   {/* Price */}
                   {isFilled.keyText(card.price) && (
-                    <div className="es-multi-column-cards__card-price">
+                    <div className="text-2xl font-bold text-primary mb-4">
                       {card.price}
                     </div>
                   )}
 
                   {/* Button */}
                   {showButtons && isFilled.link(card.link) && (
-                    <div className="es-multi-column-cards__card-button-container">
-                      <PrismicNextLink
-                        field={card.link}
-                        className="es-multi-column-cards__card-button"
-                      >
-                        {card.buttonText || "Learn More"}
-                      </PrismicNextLink>
+                    <div className="mt-auto">
+                      <Button asChild className="w-full">
+                        <PrismicNextLink field={card.link}>
+                          {card.buttonText || "Learn More"}
+                        </PrismicNextLink>
+                      </Button>
                     </div>
                   )}
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         )}
 
         {/* Footer CTA */}
         {isFilled.link(slice.primary.footerLink) && (
-          <div className={`es-multi-column-cards__footer es-multi-column-cards__footer--${alignment}`}>
-            <PrismicNextLink
-              field={slice.primary.footerLink}
-              className="es-multi-column-cards__footer-button"
-            >
-              {slice.primary.footerButtonText || "View All"}
-            </PrismicNextLink>
+          <div className={cn("mt-8", getAlignmentClasses())}>
+            <Button variant="outline" asChild>
+              <PrismicNextLink field={slice.primary.footerLink}>
+                {slice.primary.footerButtonText || "View All"}
+              </PrismicNextLink>
+            </Button>
           </div>
         )}
       </div>
-
-      <style>
-        {`
-          .es-bounded {
-            padding: 8vw 2rem;
-          }
-
-          .es-bounded__content {
-            margin-left: auto;
-            margin-right: auto;
-            max-width: 90%;
-          }
-
-          @media screen and (min-width: 640px) {
-            .es-bounded__content {
-              max-width: 85%;
-            }
-          }
-
-          @media screen and (min-width: 896px) {
-            .es-bounded__content {
-              max-width: 80%;
-            }
-          }
-
-          @media screen and (min-width: 1280px) {
-            .es-bounded__content {
-              max-width: 75%;
-            }
-          }
-
-          .es-multi-column-cards {
-            font-family: system-ui, sans-serif;
-            background-color: #fff;
-            color: #333;
-          }
-
-          .es-multi-column-cards__header {
-            margin-bottom: 3rem;
-          }
-
-          .es-multi-column-cards__header--left {
-            text-align: left;
-          }
-
-          .es-multi-column-cards__header--center {
-            text-align: center;
-          }
-
-          .es-multi-column-cards__header--right {
-            text-align: right;
-          }
-
-          .es-multi-column-cards__title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #1a1a1a;
-          }
-
-          .es-multi-column-cards__title * {
-            margin: 0;
-          }
-
-          .es-multi-column-cards__subtitle {
-            font-size: 1.125rem;
-            color: #666;
-            max-width: 600px;
-            margin: 0 auto;
-          }
-
-          .es-multi-column-cards__subtitle * {
-            margin: 0;
-          }
-
-          .es-multi-column-cards__header--left .es-multi-column-cards__subtitle,
-          .es-multi-column-cards__header--right .es-multi-column-cards__subtitle {
-            margin: 0;
-          }
-
-          .es-multi-column-cards__grid {
-            display: grid;
-            gap: 2rem;
-            margin-bottom: 3rem;
-          }
-
-          .es-multi-column-cards__card {
-            background: #fff;
-            border-radius: 0.75rem;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-          }
-
-          .es-multi-column-cards__card--elevated {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-          }
-
-          .es-multi-column-cards__card--elevated:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
-          }
-
-          .es-multi-column-cards__card--outlined {
-            border: 2px solid #e5e7eb;
-          }
-
-          .es-multi-column-cards__card--outlined:hover {
-            border-color: #16745f;
-          }
-
-          .es-multi-column-cards__card--minimal {
-            background: transparent;
-            border: none;
-            box-shadow: none;
-          }
-
-          .es-multi-column-cards__card-image {
-            position: relative;
-            aspect-ratio: 16/9;
-            overflow: hidden;
-          }
-
-          .es-multi-column-cards__image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-          }
-
-          .es-multi-column-cards__card:hover .es-multi-column-cards__image {
-            transform: scale(1.05);
-          }
-
-          .es-multi-column-cards__card-content {
-            padding: 2rem;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-          }
-
-          .es-multi-column-cards__card-icon {
-            width: 48px;
-            height: 48px;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f3f4f6;
-            border-radius: 0.5rem;
-          }
-
-          .es-multi-column-cards__icon {
-            width: 24px;
-            height: 24px;
-          }
-
-          .es-multi-column-cards__card-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            line-height: 1.4;
-          }
-
-          .es-multi-column-cards__card-title a {
-            color: #1a1a1a;
-            text-decoration: none;
-            transition: color 0.3s ease;
-          }
-
-          .es-multi-column-cards__card-title a:hover {
-            color: #16745f;
-          }
-
-          .es-multi-column-cards__card-description {
-            font-size: 1rem;
-            color: #666;
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-            flex: 1;
-          }
-
-          .es-multi-column-cards__card-description * {
-            margin: 0;
-          }
-
-          .es-multi-column-cards__card-features {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 1.5rem 0;
-          }
-
-          .es-multi-column-cards__card-feature {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 0.75rem;
-            font-size: 0.875rem;
-            color: #4b5563;
-          }
-
-          .es-multi-column-cards__check-icon {
-            color: #16745f;
-            flex-shrink: 0;
-          }
-
-          .es-multi-column-cards__card-price {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #16745f;
-            margin-bottom: 1.5rem;
-          }
-
-          .es-multi-column-cards__card-button-container {
-            margin-top: auto;
-          }
-
-          .es-multi-column-cards__card-button {
-            display: inline-block;
-            background-color: #16745f;
-            color: #fff;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            text-decoration: none;
-            font-weight: 500;
-            transition: background-color 0.3s ease;
-            text-align: center;
-            width: 100%;
-          }
-
-          .es-multi-column-cards__card-button:hover {
-            background-color: #0d5e4c;
-          }
-
-          .es-multi-column-cards__footer {
-            margin-top: 2rem;
-          }
-
-          .es-multi-column-cards__footer--left {
-            text-align: left;
-          }
-
-          .es-multi-column-cards__footer--center {
-            text-align: center;
-          }
-
-          .es-multi-column-cards__footer--right {
-            text-align: right;
-          }
-
-          .es-multi-column-cards__footer-button {
-            display: inline-block;
-            background-color: transparent;
-            color: #16745f;
-            padding: 0.75rem 2rem;
-            border: 2px solid #16745f;
-            border-radius: 0.5rem;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-          }
-
-          .es-multi-column-cards__footer-button:hover {
-            background-color: #16745f;
-            color: #fff;
-          }
-
-          @media (max-width: 768px) {
-            .es-multi-column-cards__grid {
-              grid-template-columns: 1fr !important;
-            }
-          }
-
-          @media (min-width: 769px) and (max-width: 1024px) {
-            .es-multi-column-cards__grid {
-              grid-template-columns: repeat(2, 1fr) !important;
-            }
-          }
-
-          @media (min-width: 1025px) and (max-width: 1200px) {
-            .es-multi-column-cards__grid {
-              grid-template-columns: repeat(3, 1fr) !important;
-            }
-          }
-        `}
-      </style>
     </section>
   );
 };

@@ -3,30 +3,15 @@
 import dynamic from "next/dynamic";
 
 export const components = {
-  alternate_grid: dynamic(() => import("./AlternateGrid")),
-  alternate_grid_2: dynamic(() => import("./AlternateGrid2")),
-  call_to_action: dynamic(() => import("./CallToAction")),
-  call_to_action_2: dynamic(() => import("./CallToAction2")),
-  call_to_action_3: dynamic(() => import("./CallToAction3")),
-  call_to_action_4: dynamic(() => import("./CallToAction4")),
-  customer_logos: dynamic(() => import("./CustomerLogos")),
-  customer_logos_2: dynamic(() => import("./CustomerLogos2")),
-  customer_logos_3: dynamic(() => import("./CustomerLogos3")),
-  hero: dynamic(() => import("./Hero")),
-  hero_2: dynamic(() => import("./Hero2")),
-  hero_3: dynamic(() => import("./Hero3")),
-  // New e-commerce and website sections
   product_carousel: dynamic(() => import("./ProductCarousel")),
   image_gallery: dynamic(() => import("./ImageGallery")),
   multi_column_cards: dynamic(() => import("./MultiColumnCards")),
   testimonials: dynamic(() => import("./Testimonials")),
-  feature_grid: dynamic(() => import("./FeatureGrid")),
   newsletter_signup: dynamic(() => import("./NewsletterSignup")),
   pricing_table: dynamic(() => import("./PricingTable")),
   stats_counter: dynamic(() => import("./StatsCounter")),
   faq_accordion: dynamic(() => import("./FAQAccordion")),
   hero_animated: dynamic(() => import("./HeroAnimated")),
   feature_grid_animated: dynamic(() => import("./FeatureGridAnimated")),
-
   
 };

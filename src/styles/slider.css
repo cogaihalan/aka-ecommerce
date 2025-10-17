@@ -120,3 +120,41 @@
     @apply px-0;
   }
 }
+
+/* Product Carousel Specific Styles */
+.product-carousel .glider-container {
+  @apply overflow-hidden;
+}
+
+.product-carousel .glider-slide {
+  @apply px-3;
+}
+
+.product-carousel .glider-prev,
+.product-carousel .glider-next {
+  @apply bg-background/90 hover:bg-background shadow-lg border border-border;
+}
+
+.product-carousel .glider-prev:hover,
+.product-carousel .glider-next:hover {
+  @apply bg-background shadow-xl;
+}
+
+/* Responsive adjustments for product carousel */
+@media (max-width: 768px) {
+  .product-carousel .glider-slide {
+    @apply px-2;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .product-carousel .glider-slide {
+    @apply px-3;
+  }
+}
+
+@media (min-width: 1025px) {
+  .product-carousel .glider-slide {
+    @apply px-4;
+  }
+}

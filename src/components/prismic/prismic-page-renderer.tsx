@@ -34,8 +34,6 @@ export function PrismicPageRenderer({
   // Type assertion to handle the data structure
   const data = content.data as any;
 
-  console.log(data);
-
   // Handle case where data might not have slices
   if (!data.slices || !Array.isArray(data.slices)) {
     console.warn("No slices found in content data");

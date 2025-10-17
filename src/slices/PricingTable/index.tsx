@@ -2,6 +2,9 @@ import { FC } from "react";
 import { Content, isFilled } from "@prismicio/client";
 import { SliceComponentProps, PrismicRichText } from "@prismicio/react";
 import { PrismicNextLink } from "@prismicio/next";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export type PricingTableProps = SliceComponentProps<any>;
 
@@ -12,11 +15,11 @@ const PricingTable: FC<PricingTableProps> = ({ slice }) => {
   const showFeatures = slice.primary.showFeatures !== false;
   const showButtons = slice.primary.showButtons !== false;
 
-  const getLayoutClass = () => {
+  const getLayoutClasses = () => {
     switch (layout) {
-      case "table": return "es-pricing-table--table";
-      case "cards": return "es-pricing-table--cards";
-      default: return "es-pricing-table--grid";
+      case "table": return "flex flex-col gap-0";
+      case "cards": return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
+      default: return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8";
     }
   };
 
@@ -24,10 +27,10 @@ const PricingTable: FC<PricingTableProps> = ({ slice }) => {
     if (!features || features.length === 0) return null;
 
     return (
-      <ul className="es-pricing-table__features">
+      <ul className="list-none p-0 space-y-3">
         {features.map((feature, index) => (
-          <li key={index} className="es-pricing-table__feature">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="es-pricing-table__check-icon">
+          <li key={index} className="flex items-center gap-3 text-sm text-muted-foreground">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-primary flex-shrink-0">
               <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
             {feature}
@@ -41,20 +44,35 @@ const PricingTable: FC<PricingTableProps> = ({ slice }) => {
     <section
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className={`es-bounded es-pricing-table ${getLayoutClass()}`}
+      className="py-16 px-8 bg-background text-foreground"
     >
-      <div className="es-bounded__content es-pricing-table__content">
+      <div className="mx-auto max-w-4xl sm:max-w-5xl lg:max-w-6xl xl:max-w-7xl">
         {/* Header */}
         {(isFilled.richText(slice.primary.title) || isFilled.richText(slice.primary.subtitle)) && (
-          <div className="es-pricing-table__header">
+          <div className="text-center mb-12">
             {isFilled.richText(slice.primary.title) && (
-              <div className="es-pricing-table__title">
-                <PrismicRichText field={slice.primary.title} />
+              <div className="text-4xl font-bold mb-4 text-foreground">
+                <PrismicRichText 
+                  field={slice.primary.title}
+                  components={{
+                    heading1: ({ children }) => <h1 className="m-0">{children}</h1>,
+                    heading2: ({ children }) => <h2 className="m-0">{children}</h2>,
+                    heading3: ({ children }) => <h3 className="m-0">{children}</h3>,
+                    heading4: ({ children }) => <h4 className="m-0">{children}</h4>,
+                    heading5: ({ children }) => <h5 className="m-0">{children}</h5>,
+                    heading6: ({ children }) => <h6 className="m-0">{children}</h6>,
+                  }}
+                />
               </div>
             )}
             {isFilled.richText(slice.primary.subtitle) && (
-              <div className="es-pricing-table__subtitle">
-                <PrismicRichText field={slice.primary.subtitle} />
+              <div className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                <PrismicRichText 
+                  field={slice.primary.subtitle}
+                  components={{
+                    paragraph: ({ children }) => <p className="m-0">{children}</p>,
+                  }}
+                />
               </div>
             )}
           </div>
@@ -62,395 +80,94 @@ const PricingTable: FC<PricingTableProps> = ({ slice }) => {
 
         {/* Pricing Plans */}
         {plans.length > 0 && (
-          <div className="es-pricing-table__plans">
+          <div className={cn("mb-12", getLayoutClasses())}>
             {plans.map((plan: any, index: number) => (
-              <div 
+              <Card 
                 key={index} 
-                className={`es-pricing-table__plan ${
-                  index === highlightPlan - 1 ? 'es-pricing-table__plan--highlighted' : ''
-                }`}
+                className={cn(
+                  "relative transition-all duration-300 hover:-translate-y-1 h-full flex flex-col",
+                  index === highlightPlan - 1 && "border-primary shadow-lg scale-105"
+                )}
               >
-                {/* Plan Header */}
-                <div className="es-pricing-table__plan-header">
+                {/* Badge */}
+                {isFilled.keyText(plan.badge) && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-medium">
+                    {plan.badge}
+                  </div>
+                )}
+
+                <CardHeader className="text-center">
                   {isFilled.keyText(plan.name) && (
-                    <h3 className="es-pricing-table__plan-name">
+                    <CardTitle className="text-2xl font-bold">
                       {plan.name}
-                    </h3>
+                    </CardTitle>
                   )}
                   
                   {isFilled.keyText(plan.description) && (
-                    <p className="es-pricing-table__plan-description">
+                    <p className="text-muted-foreground mt-2">
                       {plan.description}
                     </p>
                   )}
 
                   {/* Price */}
-                  <div className="es-pricing-table__plan-price">
+                  <div className="flex items-baseline justify-center gap-2 mt-4">
                     {isFilled.keyText(plan.price) && (
-                      <span className="es-pricing-table__price">
+                      <span className="text-4xl font-bold text-primary">
                         {plan.price}
                       </span>
                     )}
                     {isFilled.keyText(plan.period) && (
-                      <span className="es-pricing-table__period">
+                      <span className="text-muted-foreground">
                         {plan.period}
                       </span>
                     )}
                   </div>
+                </CardHeader>
 
-                  {/* Badge */}
-                  {isFilled.keyText(plan.badge) && (
-                    <div className="es-pricing-table__plan-badge">
-                      {plan.badge}
+                <CardContent className="flex-1 flex flex-col">
+                  {/* Plan Features */}
+                  {showFeatures && plan.features && plan.features.length > 0 && (
+                    <div className="mb-8">
+                      {renderFeatures(plan.features)}
                     </div>
                   )}
-                </div>
 
-                {/* Plan Features */}
-                {showFeatures && plan.features && plan.features.length > 0 && (
-                  <div className="es-pricing-table__plan-features">
-                    {renderFeatures(plan.features)}
-                  </div>
-                )}
-
-                {/* Plan Button */}
-                {showButtons && isFilled.link(plan.link) && (
-                  <div className="es-pricing-table__plan-button-container">
-                    <PrismicNextLink
-                      field={plan.link}
-                      className={`es-pricing-table__plan-button ${
-                        index === highlightPlan - 1 ? 'es-pricing-table__plan-button--primary' : 'es-pricing-table__plan-button--secondary'
-                      }`}
-                    >
-                      {plan.buttonText || "Choose Plan"}
-                    </PrismicNextLink>
-                  </div>
-                )}
-              </div>
+                  {/* Plan Button */}
+                  {showButtons && isFilled.link(plan.link) && (
+                    <div className="mt-auto">
+                      <Button 
+                        asChild 
+                        className={cn(
+                          "w-full",
+                          index === highlightPlan - 1 ? "bg-primary hover:bg-primary/90" : "bg-secondary hover:bg-secondary/80"
+                        )}
+                      >
+                        <PrismicNextLink field={plan.link}>
+                          {plan.buttonText || "Choose Plan"}
+                        </PrismicNextLink>
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             ))}
           </div>
         )}
 
         {/* Footer */}
         {isFilled.richText(slice.primary.footerText) && (
-          <div className="es-pricing-table__footer">
-            <div className="es-pricing-table__footer-text">
-              <PrismicRichText field={slice.primary.footerText} />
+          <div className="text-center pt-8 border-t">
+            <div className="text-sm text-muted-foreground">
+              <PrismicRichText 
+                field={slice.primary.footerText}
+                components={{
+                  paragraph: ({ children }) => <p className="m-0">{children}</p>,
+                }}
+              />
             </div>
           </div>
         )}
       </div>
-
-      <style>
-        {`
-          .es-bounded {
-            padding: 8vw 2rem;
-          }
-
-          .es-bounded__content {
-            margin-left: auto;
-            margin-right: auto;
-            max-width: 90%;
-          }
-
-          @media screen and (min-width: 640px) {
-            .es-bounded__content {
-              max-width: 85%;
-            }
-          }
-
-          @media screen and (min-width: 896px) {
-            .es-bounded__content {
-              max-width: 80%;
-            }
-          }
-
-          @media screen and (min-width: 1280px) {
-            .es-bounded__content {
-              max-width: 75%;
-            }
-          }
-
-          .es-pricing-table {
-            font-family: system-ui, sans-serif;
-            background-color: #fff;
-            color: #333;
-          }
-
-          .es-pricing-table__header {
-            text-align: center;
-            margin-bottom: 3rem;
-          }
-
-          .es-pricing-table__title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #1a1a1a;
-          }
-
-          .es-pricing-table__title * {
-            margin: 0;
-          }
-
-          .es-pricing-table__subtitle {
-            font-size: 1.125rem;
-            color: #666;
-            max-width: 600px;
-            margin: 0 auto;
-          }
-
-          .es-pricing-table__subtitle * {
-            margin: 0;
-          }
-
-          .es-pricing-table__plans {
-            display: grid;
-            gap: 2rem;
-            margin-bottom: 3rem;
-          }
-
-          .es-pricing-table--grid .es-pricing-table__plans {
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          }
-
-          .es-pricing-table--cards .es-pricing-table__plans {
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          }
-
-          .es-pricing-table--table .es-pricing-table__plans {
-            grid-template-columns: 1fr;
-            gap: 0;
-          }
-
-          .es-pricing-table__plan {
-            background: #fff;
-            border: 2px solid #e5e7eb;
-            border-radius: 0.75rem;
-            padding: 2rem;
-            position: relative;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-          }
-
-          .es-pricing-table--table .es-pricing-table__plan {
-            border-radius: 0;
-            border-bottom: 1px solid #e5e7eb;
-            flex-direction: row;
-            align-items: center;
-            gap: 2rem;
-          }
-
-          .es-pricing-table--table .es-pricing-table__plan:first-child {
-            border-top-left-radius: 0.75rem;
-            border-top-right-radius: 0.75rem;
-          }
-
-          .es-pricing-table--table .es-pricing-table__plan:last-child {
-            border-bottom-left-radius: 0.75rem;
-            border-bottom-right-radius: 0.75rem;
-            border-bottom: 2px solid #e5e7eb;
-          }
-
-          .es-pricing-table__plan:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
-          }
-
-          .es-pricing-table__plan--highlighted {
-            border-color: #16745f;
-            transform: scale(1.05);
-            box-shadow: 0 10px 25px -3px rgba(22, 116, 95, 0.2);
-          }
-
-          .es-pricing-table__plan--highlighted::before {
-            content: "Most Popular";
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #16745f;
-            color: #fff;
-            padding: 0.5rem 1rem;
-            border-radius: 1rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-          }
-
-          .es-pricing-table__plan-header {
-            text-align: center;
-            margin-bottom: 2rem;
-            position: relative;
-          }
-
-          .es-pricing-table--table .es-pricing-table__plan-header {
-            text-align: left;
-            margin-bottom: 0;
-            flex: 1;
-          }
-
-          .es-pricing-table__plan-name {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #1a1a1a;
-          }
-
-          .es-pricing-table__plan-description {
-            font-size: 1rem;
-            color: #666;
-            margin-bottom: 1.5rem;
-            line-height: 1.5;
-          }
-
-          .es-pricing-table__plan-price {
-            display: flex;
-            align-items: baseline;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-          }
-
-          .es-pricing-table--table .es-pricing-table__plan-price {
-            justify-content: flex-start;
-          }
-
-          .es-pricing-table__price {
-            font-size: 3rem;
-            font-weight: 700;
-            color: #16745f;
-          }
-
-          .es-pricing-table__period {
-            font-size: 1rem;
-            color: #666;
-          }
-
-          .es-pricing-table__plan-badge {
-            position: absolute;
-            top: -0.5rem;
-            right: -0.5rem;
-            background: #fbbf24;
-            color: #92400e;
-            padding: 0.25rem 0.75rem;
-            border-radius: 1rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-          }
-
-          .es-pricing-table__plan-features {
-            flex: 1;
-            margin-bottom: 2rem;
-          }
-
-          .es-pricing-table--table .es-pricing-table__plan-features {
-            flex: 2;
-            margin-bottom: 0;
-          }
-
-          .es-pricing-table__features {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-          }
-
-          .es-pricing-table__feature {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 0.75rem;
-            font-size: 0.875rem;
-            color: #4b5563;
-          }
-
-          .es-pricing-table__check-icon {
-            color: #16745f;
-            flex-shrink: 0;
-          }
-
-          .es-pricing-table__plan-button-container {
-            margin-top: auto;
-          }
-
-          .es-pricing-table--table .es-pricing-table__plan-button-container {
-            margin-top: 0;
-            flex: 0 0 auto;
-          }
-
-          .es-pricing-table__plan-button {
-            display: inline-block;
-            padding: 0.75rem 2rem;
-            border-radius: 0.5rem;
-            text-decoration: none;
-            font-weight: 600;
-            text-align: center;
-            transition: all 0.3s ease;
-            width: 100%;
-          }
-
-          .es-pricing-table__plan-button--primary {
-            background-color: #16745f;
-            color: #fff;
-            border: 2px solid #16745f;
-          }
-
-          .es-pricing-table__plan-button--primary:hover {
-            background-color: #0d5e4c;
-            border-color: #0d5e4c;
-          }
-
-          .es-pricing-table__plan-button--secondary {
-            background-color: transparent;
-            color: #16745f;
-            border: 2px solid #16745f;
-          }
-
-          .es-pricing-table__plan-button--secondary:hover {
-            background-color: #16745f;
-            color: #fff;
-          }
-
-          .es-pricing-table__footer {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid #e5e7eb;
-          }
-
-          .es-pricing-table__footer-text {
-            font-size: 0.875rem;
-            color: #666;
-            line-height: 1.6;
-          }
-
-          .es-pricing-table__footer-text * {
-            margin: 0;
-          }
-
-          @media (max-width: 768px) {
-            .es-pricing-table--table .es-pricing-table__plan {
-              flex-direction: column;
-              text-align: center;
-            }
-
-            .es-pricing-table--table .es-pricing-table__plan-header {
-              text-align: center;
-            }
-
-            .es-pricing-table--table .es-pricing-table__plan-price {
-              justify-content: center;
-            }
-
-            .es-pricing-table__plans {
-              grid-template-columns: 1fr !important;
-            }
-
-            .es-pricing-table__plan--highlighted {
-              transform: none;
-            }
-          }
-        `}
-      </style>
     </section>
   );
 };

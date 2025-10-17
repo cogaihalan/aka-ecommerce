@@ -3,21 +3,21 @@ import { PrismicDocument } from "@prismicio/client";
 // Page content type
 export interface PrismicPage extends PrismicDocument {
   type: "page";
-  data: {
-    title: string;
-    content: any; // Rich text content
-    slug: string;
-    meta_title?: string;
-    meta_description?: string;
-    meta_keywords?: string[];
-    featured_image?: {
-      url: string;
-      alt: string;
-    };
-    status: "draft" | "published";
-    published_date?: string;
-    last_modified?: string;
-  };
+  // data: {
+  //   title: string;
+  //   content: any; // Rich text content
+  //   slug: string;
+  //   meta_title?: string;
+  //   meta_description?: string;
+  //   meta_keywords?: string[];
+  //   featured_image?: {
+  //     url: string;
+  //     alt: string;
+  //   };
+  //   status: "draft" | "published";
+  //   published_date?: string;
+  //   last_modified?: string;
+  // };
 }
 
 // Homepage content type

@@ -1,0 +1,125 @@
+{
+  "id": "mega_menu",
+  "name": "Mega Menu",
+  "description": "A comprehensive mega menu component with customizable sections, links, and layouts",
+  "type": "SharedSlice",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default Mega Menu with customizable sections",
+      "imageUrl": "",
+      "primary": {
+        "menu_title": {
+          "type": "Text",
+          "config": {
+            "label": "Menu Title",
+            "placeholder": "Main Navigation"
+          }
+        }
+      },
+      "items": {
+        "label": {
+          "type": "Text",
+          "config": {
+            "label": "Menu Item Label",
+            "placeholder": "Menu Item Label"
+          }
+        },
+        "link": {
+          "type": "Link",
+          "config": {
+            "label": "Menu Item Link",
+            "placeholder": "Menu Item Link"
+          }
+        },
+        "has_mega_menu": {
+          "type": "Boolean",
+          "config": {
+            "label": "Has Mega Menu",
+            "default_value": false,
+            "placeholder_false": "Simple link",
+            "placeholder_true": "Has mega menu dropdown"
+          }
+        },
+        "layout_type": {
+          "type": "Select",
+          "config": {
+            "label": "Layout Type",
+            "placeholder": "Choose layout type",
+            "options": [
+              "columns",
+              "featured_products",
+              "categories",
+              "mixed"
+            ],
+            "default_value": "columns"
+          }
+        },
+        "columns": {
+          "type": "Number",
+          "config": {
+            "label": "Number of Columns",
+            "placeholder": "3"
+          }
+        },
+        "featured_image": {
+          "type": "Image",
+          "config": {
+            "label": "Featured Image",
+            "constraint": {
+              "width": 400,
+              "height": 300
+            },
+            "thumbnails": []
+          }
+        },
+        "description": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Description",
+            "placeholder": "Enter description for mega menu",
+            "single": "paragraph,heading3,heading4"
+          }
+        },
+        "section_title": {
+          "type": "Text",
+          "config": {
+            "label": "Section Title",
+            "placeholder": "Section Title"
+          }
+        },
+        "section_links": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Section Links",
+            "placeholder": "Enter links (one per line)",
+            "single": "paragraph"
+          }
+        },
+        "is_featured": {
+          "type": "Boolean",
+          "config": {
+            "label": "Is Featured",
+            "default_value": false,
+            "placeholder_false": "Regular link",
+            "placeholder_true": "Featured link"
+          }
+        },
+        "icon": {
+          "type": "Image",
+          "config": {
+            "label": "Icon",
+            "constraint": {
+              "width": 24,
+              "height": 24
+            },
+            "thumbnails": []
+          }
+        }
+      }
+    }
+  ]
+}

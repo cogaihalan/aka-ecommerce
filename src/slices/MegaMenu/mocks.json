@@ -1,0 +1,82 @@
+[
+  {
+    "variation": "default",
+    "name": "Default",
+    "slice_type": "mega_menu",
+    "items": [
+      {
+        "label": "Products",
+        "link": {
+          "link_type": "Document",
+          "type": "page",
+          "uid": "products"
+        },
+        "has_mega_menu": true,
+        "layout_type": "columns",
+        "columns": 3,
+        "featured_image": {
+          "url": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop",
+          "alt": "Products showcase"
+        },
+        "description": [
+          {
+            "type": "paragraph",
+            "text": "Discover our wide range of products designed to meet your needs."
+          }
+        ],
+        "section_title": "Product Categories",
+        "section_links": [
+          {
+            "type": "paragraph",
+            "text": "Electronics\nClothing\nHome & Garden\nSports\nBooks"
+          }
+        ],
+        "is_featured": true,
+        "icon": {
+          "url": "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=24&h=24&fit=crop",
+          "alt": "Products icon"
+        }
+      },
+      {
+        "label": "Categories",
+        "link": {
+          "link_type": "Document",
+          "type": "page",
+          "uid": "categories"
+        },
+        "has_mega_menu": true,
+        "layout_type": "categories",
+        "columns": 4,
+        "section_title": "Browse by Category",
+        "section_links": [
+          {
+            "type": "paragraph",
+            "text": "Electronics & Gadgets\nFashion & Accessories\nHome & Living\nSports & Outdoors\nBooks & Media\nHealth & Beauty"
+          }
+        ],
+        "is_featured": false
+      },
+      {
+        "label": "About",
+        "link": {
+          "link_type": "Document",
+          "type": "page",
+          "uid": "about"
+        },
+        "has_mega_menu": false
+      },
+      {
+        "label": "Contact",
+        "link": {
+          "link_type": "Document",
+          "type": "page",
+          "uid": "contact"
+        },
+        "has_mega_menu": false
+      }
+    ],
+    "primary": {
+      "menu_title": "Main Navigation"
+    }
+  }
+]

@@ -13,5 +13,5 @@ export const components = {
   faq_accordion: dynamic(() => import("./FAQAccordion")),
   hero_animated: dynamic(() => import("./HeroAnimated")),
   feature_grid_animated: dynamic(() => import("./FeatureGridAnimated")),
-  
+  mega_menu: dynamic(() => import("./MegaMenu")),
 };

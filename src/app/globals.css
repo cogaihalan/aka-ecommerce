@@ -9,6 +9,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @import "../styles/slider.css";
+@import "../styles/mega-menu.css";
 
 :root {
   --radius: 0.625rem;

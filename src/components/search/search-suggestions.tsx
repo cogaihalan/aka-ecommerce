@@ -88,7 +88,7 @@ export function SearchSuggestions({
 
   const handleViewMoreClick = () => {
     if (searchTerm.trim()) {
-      router.push(`/products?name=${encodeURIComponent(searchTerm.trim())}`);
+      router.push(`/products?search=${encodeURIComponent(searchTerm.trim())}`);
       setIsOpen(false);
       clearSuggestions();
       onClose?.();
@@ -123,7 +123,7 @@ export function SearchSuggestions({
 
       {/* Suggestions Dropdown */}
       {isOpen && (
-        <Card className="absolute top-full left-0 right-0 z-50 mt-1 shadow-lg border animate-in fade-in-0 zoom-in-95 duration-200">
+        <Card disableBlockPadding={true} className="absolute top-full left-0 right-0 z-50 mt-1 shadow-lg rounded-lg overflow-hidden border animate-in fade-in-0 zoom-in-95 duration-200">
           <CardContent className="p-0">
             {error && (
               <div className="p-4 text-sm text-destructive">
@@ -176,7 +176,7 @@ export function SearchSuggestions({
                   return (
                     <div
                       key={product.id}
-                      className="p-4 hover:bg-muted/50 border-b last:border-b-0 transition-colors"
+                      className="p-4 overflow-hidden hover:bg-muted/50 border-b last:border-b-0 transition-colors"
                     >
                       <div className="flex items-center gap-3">
                         {/* Product Image */}
@@ -266,12 +266,6 @@ export function SearchSuggestions({
                   </Button>
                 </div>
               )}
-
-            {!isLoading && searchTerm.length < 2 && (
-              <div className="p-4 text-center text-muted-foreground">
-                <p className="text-sm">Type at least 2 characters to search</p>
-              </div>
-            )}
           </CardContent>
         </Card>
       )}

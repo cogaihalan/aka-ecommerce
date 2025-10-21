@@ -77,12 +77,34 @@ export interface PrismicBlogPost extends PrismicDocument {
   };
 }
 
+// Mega Menu content type
+export interface PrismicMegaMenu extends PrismicDocument {
+  type: "mega_menu";
+  data: {
+    menu_title?: string;
+    menu_items?: Array<{
+      label?: string;
+      link?: any;
+      has_mega_menu?: boolean;
+      layout_type?: "columns" | "featured_products" | "categories" | "mixed";
+      columns?: number;
+      featured_image?: any;
+      description?: any;
+      section_title?: string;
+      section_links?: string;
+      is_featured?: boolean;
+      icon?: any;
+    }>;
+  };
+}
+
 // Union type for all Prismic content types
 export type PrismicContent =
   | PrismicPage
   | PrismicHomepage
   | PrismicCategory
-  | PrismicBlogPost;
+  | PrismicBlogPost
+  | PrismicMegaMenu;
 
 // API response types
 export interface PrismicApiResponse<T = PrismicContent> {

@@ -11,6 +11,9 @@ import Link from "next/link";
 import { CartIcon } from "@/components/cart";
 import { AuthIcon } from "@/components/auth";
 import { SearchSuggestions } from "@/components/search";
+import { MegaMenu } from "@/components/navigation/mega-menu";
+import { MobileMegaMenu } from "@/components/navigation/mobile-mega-menu";
+import { useMegaMenu } from "@/hooks/use-mega-menu";
 import {
   useWishlistItemCount,
   useWishlistAuthStatus,
@@ -21,6 +24,7 @@ export default function StorefrontHeader() {
   const router = useRouter();
   const wishlistCount = useWishlistItemCount();
   const isAuthenticated = useWishlistAuthStatus();
+  const { megaMenuData, loading: megaMenuLoading } = useMegaMenu();
 
   const handleWishlistClick = () => {
     if (!isAuthenticated) {
@@ -34,6 +38,14 @@ export default function StorefrontHeader() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Logo size="lg" href="/" />
+          
+          {/* Desktop Navigation */}
+          {megaMenuData?.menu_items && !megaMenuLoading && (
+            <div className="hidden lg:flex flex-1 justify-center">
+              <MegaMenu menuItems={megaMenuData.menu_items} />
+            </div>
+          )}
+          
           <div className="flex flex-row-reverse items-center gap-2 md:flex-row md:gap-3">
             {/* Search Bar */}
             <div className="hidden lg:flex items-center space-x-2 flex-1 mx-4">
@@ -78,18 +90,22 @@ export default function StorefrontHeader() {
               <AuthIcon />
 
               {/* Mobile Menu Button */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="lg:hidden"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                {isMenuOpen ? (
-                  <X className="h-5 w-5" />
-                ) : (
-                  <Search className="h-5 w-5" />
-                )}
-              </Button>
+              {megaMenuData?.menu_items && !megaMenuLoading ? (
+                <MobileMegaMenu menuItems={megaMenuData.menu_items} />
+              ) : (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="lg:hidden"
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                >
+                  {isMenuOpen ? (
+                    <X className="h-5 w-5" />
+                  ) : (
+                    <Search className="h-5 w-5" />
+                  )}
+                </Button>
+              )}
             </div>
           </div>
         </div>

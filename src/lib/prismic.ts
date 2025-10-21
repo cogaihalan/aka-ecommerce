@@ -3,7 +3,7 @@ import { enableAutoPreviews } from "@prismicio/next";
 
 // Prismic repository configuration
 export const repositoryName =
-  process.env.PRISMIC_REPOSITORY_NAME || "your-repo-name";
+  process.env.PRISMIC_REPOSITORY_NAME || "aka-scissor";
 
 // Route configuration for Prismic content
 export const routes = [

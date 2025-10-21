@@ -69,6 +69,170 @@ type ContentRelationshipFieldWithData<
   >;
 }[Exclude<TCustomType[number], string>["id"]];
 
+/**
+ * Item in *Mega Menu → Menu Items*
+ */
+export interface MegaMenuDocumentDataMenuItemsItem {
+  /**
+   * Menu Item Label field in *Mega Menu → Menu Items*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: Menu Item Label
+   * - **API ID Path**: mega_menu.menu_items[].label
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  label: prismic.KeyTextField;
+
+  /**
+   * Menu Item Link field in *Mega Menu → Menu Items*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: Menu Item Link
+   * - **API ID Path**: mega_menu.menu_items[].link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  link: prismic.LinkField<string, string, unknown, prismic.FieldState, never>;
+
+  /**
+   * Has Mega Menu field in *Mega Menu → Menu Items*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: mega_menu.menu_items[].has_mega_menu
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  has_mega_menu: prismic.BooleanField;
+
+  /**
+   * Layout Type field in *Mega Menu → Menu Items*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: Choose layout type
+   * - **Default Value**: columns
+   * - **API ID Path**: mega_menu.menu_items[].layout_type
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  layout_type: prismic.SelectField<
+    "columns" | "featured_products" | "categories" | "mixed",
+    "filled"
+  >;
+
+  /**
+   * Number of Columns field in *Mega Menu → Menu Items*
+   *
+   * - **Field Type**: Number
+   * - **Placeholder**: 3
+   * - **API ID Path**: mega_menu.menu_items[].columns
+   * - **Documentation**: https://prismic.io/docs/fields/number
+   */
+  columns: prismic.NumberField;
+
+  /**
+   * Featured Image field in *Mega Menu → Menu Items*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: mega_menu.menu_items[].featured_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  featured_image: prismic.ImageField<never>;
+
+  /**
+   * Description field in *Mega Menu → Menu Items*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: Enter description for mega menu
+   * - **API ID Path**: mega_menu.menu_items[].description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  description: prismic.RichTextField;
+
+  /**
+   * Section Title field in *Mega Menu → Menu Items*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: Section Title
+   * - **API ID Path**: mega_menu.menu_items[].section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Links field in *Mega Menu → Menu Items*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: Enter links (one per line)
+   * - **API ID Path**: mega_menu.menu_items[].section_links
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_links: prismic.RichTextField;
+
+  /**
+   * Is Featured field in *Mega Menu → Menu Items*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: mega_menu.menu_items[].is_featured
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  is_featured: prismic.BooleanField;
+
+  /**
+   * Icon field in *Mega Menu → Menu Items*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: mega_menu.menu_items[].icon
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  icon: prismic.ImageField<never>;
+}
+
+/**
+ * Content for Mega Menu documents
+ */
+interface MegaMenuDocumentData {
+  /**
+   * Menu Title field in *Mega Menu*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: Main Navigation
+   * - **API ID Path**: mega_menu.menu_title
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  menu_title: prismic.KeyTextField;
+
+  /**
+   * Menu Items field in *Mega Menu*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: mega_menu.menu_items[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  menu_items: prismic.GroupField<Simplify<MegaMenuDocumentDataMenuItemsItem>>;
+}
+
+/**
+ * Mega Menu document from Prismic
+ *
+ * - **API ID**: `mega_menu`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type MegaMenuDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithoutUID<
+    Simplify<MegaMenuDocumentData>,
+    "mega_menu",
+    Lang
+  >;
+
 type PageDocumentDataSlicesSlice =
   | NewsletterSignupSlice
   | FeatureGridAnimatedSlice
@@ -151,72 +315,7 @@ interface PageDocumentData {
 export type PageDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<Simplify<PageDocumentData>, "page", Lang>;
 
-type SignUpDocumentDataSlicesSlice = never;
-
-/**
- * Content for Sign Up documents
- */
-interface SignUpDocumentData {
-  /**
-   * Slice Zone field in *Sign Up*
-   *
-   * - **Field Type**: Slice Zone
-   * - **Placeholder**: *None*
-   * - **API ID Path**: sign_up.slices[]
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/slices
-   */
-  slices: prismic.SliceZone<SignUpDocumentDataSlicesSlice> /**
-   * Meta Title field in *Sign Up*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: A title of the page used for social media and search engines
-   * - **API ID Path**: sign_up.meta_title
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */;
-  meta_title: prismic.KeyTextField;
-
-  /**
-   * Meta Description field in *Sign Up*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: A brief summary of the page
-   * - **API ID Path**: sign_up.meta_description
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  meta_description: prismic.KeyTextField;
-
-  /**
-   * Meta Image field in *Sign Up*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: sign_up.meta_image
-   * - **Tab**: SEO & Metadata
-   * - **Documentation**: https://prismic.io/docs/fields/image
-   */
-  meta_image: prismic.ImageField<never>;
-}
-
-/**
- * Sign Up document from Prismic
- *
- * - **API ID**: `sign_up`
- * - **Repeatable**: `false`
- * - **Documentation**: https://prismic.io/docs/content-modeling
- *
- * @typeParam Lang - Language API ID of the document.
- */
-export type SignUpDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithoutUID<
-    Simplify<SignUpDocumentData>,
-    "sign_up",
-    Lang
-  >;
-
-export type AllDocumentTypes = PageDocument | SignUpDocument;
+export type AllDocumentTypes = MegaMenuDocument | PageDocument;
 
 /**
  * Primary content in *FAQ Accordion → Default → Primary*
@@ -771,6 +870,172 @@ type ImageGallerySliceVariation = ImageGallerySliceDefault;
 export type ImageGallerySlice = prismic.SharedSlice<
   "image_gallery",
   ImageGallerySliceVariation
+>;
+
+/**
+ * Primary content in *Mega Menu → Default → Primary*
+ */
+export interface MegaMenuSliceDefaultPrimary {
+  /**
+   * Menu Title field in *Mega Menu → Default → Primary*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: Main Navigation
+   * - **API ID Path**: mega_menu.default.primary.menu_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  menu_title: prismic.KeyTextField;
+}
+
+/**
+ * Primary content in *Mega Menu → Items*
+ */
+export interface MegaMenuSliceDefaultItem {
+  /**
+   * Menu Item Label field in *Mega Menu → Items*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: Menu Item Label
+   * - **API ID Path**: mega_menu.items[].label
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  label: prismic.KeyTextField;
+
+  /**
+   * Menu Item Link field in *Mega Menu → Items*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: Menu Item Link
+   * - **API ID Path**: mega_menu.items[].link
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  link: prismic.LinkField<string, string, unknown, prismic.FieldState, never>;
+
+  /**
+   * Has Mega Menu field in *Mega Menu → Items*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: mega_menu.items[].has_mega_menu
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  has_mega_menu: prismic.BooleanField;
+
+  /**
+   * Layout Type field in *Mega Menu → Items*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: Choose layout type
+   * - **Default Value**: columns
+   * - **API ID Path**: mega_menu.items[].layout_type
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  layout_type: prismic.SelectField<
+    "columns" | "featured_products" | "categories" | "mixed",
+    "filled"
+  >;
+
+  /**
+   * Number of Columns field in *Mega Menu → Items*
+   *
+   * - **Field Type**: Number
+   * - **Placeholder**: 3
+   * - **API ID Path**: mega_menu.items[].columns
+   * - **Documentation**: https://prismic.io/docs/fields/number
+   */
+  columns: prismic.NumberField;
+
+  /**
+   * Featured Image field in *Mega Menu → Items*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: mega_menu.items[].featured_image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  featured_image: prismic.ImageField<never>;
+
+  /**
+   * Description field in *Mega Menu → Items*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: Enter description for mega menu
+   * - **API ID Path**: mega_menu.items[].description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  description: prismic.RichTextField;
+
+  /**
+   * Section Title field in *Mega Menu → Items*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: Section Title
+   * - **API ID Path**: mega_menu.items[].section_title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  section_title: prismic.KeyTextField;
+
+  /**
+   * Section Links field in *Mega Menu → Items*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: Enter links (one per line)
+   * - **API ID Path**: mega_menu.items[].section_links
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  section_links: prismic.RichTextField;
+
+  /**
+   * Is Featured field in *Mega Menu → Items*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: mega_menu.items[].is_featured
+   * - **Documentation**: https://prismic.io/docs/fields/boolean
+   */
+  is_featured: prismic.BooleanField;
+
+  /**
+   * Icon field in *Mega Menu → Items*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: mega_menu.items[].icon
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  icon: prismic.ImageField<never>;
+}
+
+/**
+ * Default variation for Mega Menu Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default Mega Menu with customizable sections
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type MegaMenuSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<MegaMenuSliceDefaultPrimary>,
+  Simplify<MegaMenuSliceDefaultItem>
+>;
+
+/**
+ * Slice variation for *Mega Menu*
+ */
+type MegaMenuSliceVariation = MegaMenuSliceDefault;
+
+/**
+ * Mega Menu Shared Slice
+ *
+ * - **API ID**: `mega_menu`
+ * - **Description**: A comprehensive mega menu component with customizable sections, links, and layouts
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type MegaMenuSlice = prismic.SharedSlice<
+  "mega_menu",
+  MegaMenuSliceVariation
 >;
 
 /**
@@ -1802,13 +2067,13 @@ declare module "@prismicio/client" {
 
   namespace Content {
     export type {
+      MegaMenuDocument,
+      MegaMenuDocumentData,
+      MegaMenuDocumentDataMenuItemsItem,
       PageDocument,
       PageDocumentData,
       PageDocumentDataSlicesSlice,
       PageDocumentDataSlices1Slice,
-      SignUpDocument,
-      SignUpDocumentData,
-      SignUpDocumentDataSlicesSlice,
       AllDocumentTypes,
       FaqAccordionSlice,
       FaqAccordionSliceDefaultPrimary,
@@ -1829,6 +2094,11 @@ declare module "@prismicio/client" {
       ImageGallerySliceDefaultItem,
       ImageGallerySliceVariation,
       ImageGallerySliceDefault,
+      MegaMenuSlice,
+      MegaMenuSliceDefaultPrimary,
+      MegaMenuSliceDefaultItem,
+      MegaMenuSliceVariation,
+      MegaMenuSliceDefault,
       MultiColumnCardsSlice,
       MultiColumnCardsSliceDefaultPrimary,
       MultiColumnCardsSliceDefaultItem,

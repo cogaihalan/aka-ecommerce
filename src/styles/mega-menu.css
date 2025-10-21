@@ -1,0 +1,136 @@
+/* Mega Menu Styles */
+.mega-menu {
+  @apply relative;
+}
+
+.mega-menu-content {
+  @apply absolute top-full left-0 w-full bg-white shadow-lg border-t border-gray-200 z-50;
+  @apply transform transition-all duration-200 ease-in-out;
+}
+
+.mega-menu-content.visible {
+  @apply opacity-100 visible translate-y-0;
+}
+
+.mega-menu-content.hidden {
+  @apply opacity-0 invisible -translate-y-2;
+}
+
+.mega-menu-section {
+  @apply space-y-3;
+}
+
+.mega-menu-section-title {
+  @apply font-semibold text-gray-900 text-sm uppercase tracking-wide;
+}
+
+.mega-menu-link {
+  @apply flex items-center gap-2 text-sm transition-colors hover:text-primary;
+}
+
+.mega-menu-link.featured {
+  @apply font-medium text-primary;
+}
+
+.mega-menu-icon {
+  @apply w-4 h-4 flex-shrink-0;
+}
+
+/* Mobile Mega Menu Styles */
+.mobile-mega-menu {
+  @apply relative;
+}
+
+.mobile-mega-menu-section {
+  @apply space-y-2;
+}
+
+.mobile-mega-menu-section-title {
+  @apply font-medium text-gray-900 text-sm;
+}
+
+.mobile-mega-menu-link {
+  @apply flex items-center gap-2 text-sm text-gray-600 hover:text-primary transition-colors;
+}
+
+.mobile-mega-menu-icon {
+  @apply w-4 h-4 flex-shrink-0;
+}
+
+/* Animation for mega menu dropdown */
+@keyframes megaMenuFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes megaMenuFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+.mega-menu-dropdown {
+  animation: megaMenuFadeIn 0.2s ease-out;
+}
+
+.mega-menu-dropdown.closing {
+  animation: megaMenuFadeOut 0.2s ease-in;
+}
+
+/* Hover effects for menu items */
+.mega-menu-item {
+  @apply relative;
+}
+
+.mega-menu-item:hover .mega-menu-dropdown {
+  @apply opacity-100 visible;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .mega-menu-content {
+    @apply fixed inset-0 bg-white z-50 overflow-y-auto;
+  }
+}
+
+/* Focus styles for accessibility */
+.mega-menu-link:focus {
+  @apply outline-none ring-2 ring-primary ring-offset-2;
+}
+
+.mobile-mega-menu-link:focus {
+  @apply outline-none ring-2 ring-primary ring-offset-2;
+}
+
+/* Loading state */
+.mega-menu-loading {
+  @apply animate-pulse;
+}
+
+.mega-menu-loading .mega-menu-skeleton {
+  @apply bg-gray-200 rounded h-4 w-24;
+}
+
+/* Featured content styling */
+.mega-menu-featured {
+  @apply bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg p-4;
+}
+
+.mega-menu-featured-image {
+  @apply aspect-video rounded-lg overflow-hidden;
+}
+
+.mega-menu-featured-description {
+  @apply text-gray-600 leading-relaxed;
+}

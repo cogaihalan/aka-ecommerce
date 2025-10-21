@@ -16,7 +16,7 @@ import {
 import { ChevronDown, ChevronUp, X, Search } from "lucide-react";
 import { FilterGroup, NavigationFilters } from "@/types/navigation";
 import { useDynamicNavigation } from "@/hooks/use-dynamic-navigation";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 
 interface LayeredNavigationProps {
   filters: NavigationFilters;
@@ -127,12 +127,13 @@ export function LayeredNavigation({
 
     if (
       filters.priceRange &&
+      filters.priceRange.length === 2 &&
       (filters.priceRange[0] !== 0 || filters.priceRange[1] !== 100000000)
     ) {
       activeFiltersList.push({
         key: "price",
-        label: `Price: ${filters.priceRange[0]}đ - ${filters.priceRange[1]}đ`,
-        onRemove: () => onFiltersChange({ priceRange: [0, 100000000] }),
+        label: `Price: ${formatPrice(filters.priceRange[0])} - ${formatPrice(filters.priceRange[1])}`,
+        onRemove: () => onFiltersChange({ priceRange: [] }),
       });
     }
 
@@ -140,14 +141,19 @@ export function LayeredNavigation({
     if (filters.categoryIds && filters.categoryIds.length > 0) {
       filters.categoryIds.forEach((categoryId: string) => {
         // Find the category name from the filter groups
-        const categoryGroup = filterGroups.find(group => group.id === "categoryIds");
-        const categoryOption = categoryGroup?.options.find(option => option.value === categoryId);
+        const categoryGroup = filterGroups.find(
+          (group) => group.id === "categoryIds"
+        );
+        const categoryOption = categoryGroup?.options.find(
+          (option) => option.value === categoryId
+        );
         const categoryLabel = categoryOption?.label || categoryId; // Fallback to ID if name not found
-        
+
         activeFiltersList.push({
           key: `categoryIds-${categoryId}`,
           label: categoryLabel,
-          onRemove: () => handleArrayFilterChange("categoryIds", categoryId, false),
+          onRemove: () =>
+            handleArrayFilterChange("categoryIds", categoryId, false),
         });
       });
     }
@@ -190,7 +196,12 @@ export function LayeredNavigation({
               <div className={cn("space-y-3")}>
                 <div className={cn("px-1")}>
                   <Slider
-                    value={filters.priceRange || [0, 100000000]}
+                    value={
+                      Array.isArray(filters.priceRange) &&
+                      filters.priceRange.length === 2
+                        ? (filters.priceRange as [number, number])
+                        : [group.min || 0, group.max || 100000000]
+                    }
                     onValueChange={handlePriceRangeChange}
                     max={group.max || 100000000}
                     min={group.min || 0}
@@ -203,8 +214,22 @@ export function LayeredNavigation({
                     "flex justify-between text-sm text-muted-foreground"
                   )}
                 >
-                  <span>{filters.priceRange?.[0] || 0}</span>
-                  <span>{filters.priceRange?.[1] || 100000000}</span>
+                  <span>
+                    {formatPrice(
+                      Array.isArray(filters.priceRange) &&
+                        filters.priceRange.length === 2
+                        ? filters.priceRange[0]
+                        : group.min || 0
+                    )}
+                  </span>
+                  <span>
+                    {formatPrice(
+                      Array.isArray(filters.priceRange) &&
+                        filters.priceRange.length === 2
+                        ? filters.priceRange[1]
+                        : group.max || 100000000
+                    )}
+                  </span>
                 </div>
               </div>
             )}

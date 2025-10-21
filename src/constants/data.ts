@@ -3,14 +3,6 @@ import { NavItem } from "@/types";
 //Info: The following data is used for the sidebar navigation and Cmd K bar.
 export const navItems: NavItem[] = [
   {
-    title: "Dashboard",
-    url: "/admin/overview",
-    icon: "dashboard",
-    isActive: false,
-    shortcut: ["d", "d"],
-    items: [],
-  },
-  {
     title: "Products",
     url: "/admin/products",
     icon: "product",
@@ -57,24 +49,5 @@ export const navItems: NavItem[] = [
     shortcut: ["p", "a"],
     isActive: false,
     items: [],
-  },
-  {
-    title: "Settings",
-    url: "/admin/settings",
-    icon: "settings",
-    shortcut: ["s", "s"],
-    isActive: false,
-    items: [
-      {
-        title: "Site Settings",
-        url: "/admin/settings",
-        shortcut: ["s", "i"],
-      },
-      {
-        title: "Mega Menu",
-        url: "/admin/mega-menu",
-        shortcut: ["s", "m"],
-      },
-    ],
   },
 ];

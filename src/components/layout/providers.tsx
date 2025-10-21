@@ -7,8 +7,8 @@ import { ActiveThemeProvider } from "@/components/theme/active-theme";
 import { CartProvider } from "@/components/providers/cart-provider";
 import { QuickViewProvider } from "@/components/providers/quick-view-provider";
 import { WishlistAuthProvider } from "@/components/providers/wishlist-auth-provider";
-import { AuthSyncProvider } from "@/components/providers/auth-sync-provider";
 import { AppProvider } from "@/components/providers/app-provider";
+import { ApiAuthProvider } from "@/components/providers/api-auth-provider";
 
 export default function Providers({
   activeThemeValue,
@@ -29,13 +29,13 @@ export default function Providers({
           }}
         >
           <AppProvider>
-            <AuthSyncProvider>
+            <ApiAuthProvider>
               <WishlistAuthProvider>
                 <CartProvider>
                   <QuickViewProvider>{children}</QuickViewProvider>
                 </CartProvider>
               </WishlistAuthProvider>
-            </AuthSyncProvider>
+            </ApiAuthProvider>
           </AppProvider>
         </ClerkProvider>
       </ActiveThemeProvider>

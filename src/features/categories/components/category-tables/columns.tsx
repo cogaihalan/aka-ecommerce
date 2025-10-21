@@ -7,6 +7,18 @@ import { CellAction } from "./cell-action";
 
 export const columns: ColumnDef<Category>[] = [
   {
+    accessorKey: "id",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="ID" />
+    ),
+    cell: ({ row }) => {
+      const category = row.original;
+      return <div className="font-medium text-sm w-8">{category.id}</div>;
+    },
+    size: 32,
+    maxSize: 32,
+  },
+  {
     accessorKey: "name",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Name" />

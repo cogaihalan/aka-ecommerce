@@ -32,7 +32,7 @@ export const SORT_OPTIONS: SortOption[] = [
   {
     id: "name-desc",
     label: "Name: Z to A",
-    value: "name-desc",
+    value: "name,desc",
     field: "name",
     order: "desc",
   },
@@ -58,7 +58,7 @@ export const FILTER_GROUPS: FilterGroup[] = [
 
 export const DEFAULT_FILTERS = {
   search: "",
-  sort: "featured",
-  priceRange: [],
+  sort: "featured", // Keep "featured" as default option
+  priceRange: [] as [] | [number, number],
   categoryIds: [],
 };

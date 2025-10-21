@@ -27,8 +27,8 @@ export default function StorefrontHomePage() {
           </CardHeader>
           <CardContent>
             <CardDescription>
-              Free shipping on orders over $50. Fast and reliable delivery to
-              your doorstep.
+              Free shipping on orders over 1,000,000 đ. Fast and reliable
+              delivery to your doorstep.
             </CardDescription>
           </CardContent>
         </Card>

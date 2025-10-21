@@ -43,14 +43,11 @@ export function ProductCard({
     },
   });
 
-  const { isInCart, getItemQuantity } = useCart();
   const { openQuickView } = useQuickView();
   const { addItem: addToWishlist, removeItem: removeFromWishlist } =
     useWishlistActions();
   const isAuthenticated = useWishlistAuthStatus();
   const isInWishlistState = useIsInWishlist(product.id);
-  const isInCartState = isInCart(product.id);
-  const cartQuantity = getItemQuantity(product.id);
 
   // Stock status checks
   const isOutOfStock = isProductOutOfStock(product);
@@ -111,9 +108,9 @@ export function ProductCard({
             <div className="flex-1 flex flex-col justify-between min-w-0">
               <div className="space-y-1 flex-1">
                 <div className="flex items-center gap-2">
-                  {/* <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
+                  <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
                     {product.categories?.[0]?.name || "Uncategorized"}
-                  </Badge> */}
+                  </Badge>
                 </div>
                 <h3 className="font-medium text-sm line-clamp-1 group-hover:text-primary transition-colors cursor-pointer">
                   {product.name}
@@ -126,9 +123,11 @@ export function ProductCard({
               <div className="flex items-center justify-between mt-2">
                 <Price
                   price={product.discountPrice || product.price}
-                  originalPrice={product.discountPrice ? product.price : undefined}
+                  originalPrice={
+                    product.discountPrice ? product.price : undefined
+                  }
                   size="sm"
-                  weight="bold"
+                  weight="semibold"
                 />
                 <div className="flex items-center gap-1">
                   {showWishlist && (
@@ -167,7 +166,7 @@ export function ProductCard({
                       "h-7 px-2 text-xs",
                       isOutOfStock && "opacity-50 cursor-not-allowed"
                     )}
-                    title={isOutOfStock ? stockStatusText : "Add to cart"}
+                    title={stockStatusText}
                   >
                     <ShoppingCart className="h-3 w-3" />
                   </Button>
@@ -241,9 +240,9 @@ export function ProductCard({
                   "h-10 w-10 rounded-full bg-white/90 hover:bg-white shadow-lg",
                   isOutOfStock && "opacity-50 cursor-not-allowed"
                 )}
-                title={isOutOfStock ? stockStatusText : "Add to cart"}
+                title={stockStatusText}
               >
-                <ShoppingCart className="h-4 w-4" />
+                <ShoppingCart className="h-4 w-4 text-black" />
               </Button>
               <Button
                 variant="secondary"
@@ -251,7 +250,7 @@ export function ProductCard({
                 onClick={handleQuickView}
                 className="h-10 w-10 rounded-full bg-white/90 hover:bg-white shadow-lg"
               >
-                <Eye className="h-4 w-4" />
+                <Eye className="h-4 w-4 text-black" />
               </Button>
             </div>
           </div>
@@ -259,16 +258,11 @@ export function ProductCard({
 
         <CardContent className="px-4 pb-4 flex flex-col h-full">
           <div className="flex-1 space-y-3">
-            {/* <div className="flex items-center justify-between"> */}
-            {/* <Badge variant="secondary" className="text-xs">
+            <div className="flex items-center justify-between">
+              <Badge variant="secondary" className="text-xs">
                 {product.categories?.[0]?.name || "Uncategorized"}
-              </Badge> */}
-            {/* {product.featured && (
-                <Badge variant="destructive" className="text-xs">
-                  Featured
-                </Badge>
-              )} */}
-            {/* </div> */}
+              </Badge>
+            </div>
 
             <h3 className="font-semibold line-clamp-2 group-hover:text-primary transition-colors cursor-pointer">
               {product.name}
@@ -281,9 +275,11 @@ export function ProductCard({
             <div className="flex items-center justify-between">
               <Price
                 price={product.discountPrice || product.price}
-                originalPrice={product.discountPrice ? product.price : undefined}
+                originalPrice={
+                  product.discountPrice ? product.price : undefined
+                }
                 size="lg"
-                weight="bold"
+                weight="semibold"
                 showDiscount={true}
               />
             </div>
@@ -300,22 +296,7 @@ export function ProductCard({
                   isOutOfStock && "opacity-50 cursor-not-allowed"
                 )}
               >
-                {isOutOfStock ? (
-                  <>
-                    <ShoppingCart className="h-4 w-4 mr-2" />
-                    {stockStatusText}
-                  </>
-                ) : isInCartState ? (
-                  <>
-                    <ShoppingCart className="h-4 w-4 mr-2" />
-                    In Cart ({cartQuantity})
-                  </>
-                ) : (
-                  <>
-                    <ShoppingCart className="h-4 w-4 mr-2" />
-                    Add to Cart
-                  </>
-                )}
+                {stockStatusText}
               </Button>
             </div>
 
@@ -384,9 +365,9 @@ export function ProductCard({
                 "h-10 w-10 rounded-full bg-white/90 hover:bg-white shadow-lg",
                 isOutOfStock && "opacity-50 cursor-not-allowed"
               )}
-              title={isOutOfStock ? stockStatusText : "Add to cart"}
+              title={stockStatusText}
             >
-              <ShoppingCart className="h-4 w-4" />
+              <ShoppingCart className="h-4 w-4 text-black" />
             </Button>
             <Button
               variant="secondary"
@@ -394,7 +375,7 @@ export function ProductCard({
               onClick={handleQuickView}
               className="h-10 w-10 rounded-full bg-white/90 hover:bg-white shadow-lg"
             >
-              <Eye className="h-4 w-4" />
+              <Eye className="h-4 w-4 text-black" />
             </Button>
           </div>
         </div>
@@ -402,9 +383,9 @@ export function ProductCard({
 
       <CardContent className="px-4 pb-4 flex flex-col gap-2 h-full">
         <div className="flex-1 space-y-3">
-          {/* <Badge variant="secondary" className="text-xs">
+          <Badge variant="secondary" className="text-xs">
             {product.categories?.[0]?.name || "Uncategorized"}
-          </Badge> */}
+          </Badge>
 
           {/* <Link href={`/products/${product.id}`}> */}
           <h3 className="font-semibold line-clamp-2 group-hover:text-primary transition-colors cursor-pointer">
@@ -421,7 +402,7 @@ export function ProductCard({
               price={product.discountPrice || product.price}
               originalPrice={product.discountPrice ? product.price : undefined}
               size="lg"
-              weight="bold"
+              weight="semibold"
               showDiscount={true}
             />
           </div>
@@ -438,22 +419,7 @@ export function ProductCard({
                 isOutOfStock && "opacity-50 cursor-not-allowed"
               )}
             >
-              {isOutOfStock ? (
-                <>
-                  <ShoppingCart className="h-4 w-4 mr-2" />
-                  {stockStatusText}
-                </>
-              ) : isInCartState ? (
-                <>
-                  <ShoppingCart className="h-4 w-4 mr-2" />
-                  In Cart ({cartQuantity})
-                </>
-              ) : (
-                <>
-                  <ShoppingCart className="h-4 w-4 mr-2" />
-                  Add to Cart
-                </>
-              )}
+              {stockStatusText}
             </Button>
           </div>
 

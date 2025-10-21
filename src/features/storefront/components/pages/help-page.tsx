@@ -21,7 +21,10 @@ const faqCategories = [
         q: "How long does shipping take?",
         a: "Standard shipping takes 3-5 business days.",
       },
-      { q: "Do you offer free shipping?", a: "Yes, on orders over $50." },
+      {
+        q: "Do you offer free shipping?",
+        a: "Yes, on orders over 1,000,000 đ.",
+      },
     ],
   },
   {

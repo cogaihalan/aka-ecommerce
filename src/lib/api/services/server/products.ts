@@ -110,12 +110,7 @@ class ServerUnifiedProductService {
 
     const response = await serverApiClient.post<Product>(
       `${this.basePath}/${data.id}/images`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
+      formData
     );
     return response.data!;
   }
@@ -130,12 +125,7 @@ class ServerUnifiedProductService {
 
     const response = await serverApiClient.put<Product>(
       `${this.basePath}/${data.id}/images`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
+      formData
     );
     return response.data!;
   }
@@ -153,9 +143,6 @@ class ServerUnifiedProductService {
       {
         method: "DELETE",
         body: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
       }
     );
     return response.data!;

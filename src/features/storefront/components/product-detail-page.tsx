@@ -12,10 +12,9 @@ import {
   ProductImageGallery,
   ProductInfo,
   ProductTabs,
-  FeaturedProductSlider,
 } from "@/components/product";
 import { storefrontCatalogService } from "@/lib/api/services/storefront/catalog";
-import { Product } from "@/lib/api/types";
+import { Product, ProductImage } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
@@ -86,13 +85,10 @@ export default function ProductDetailPage({
 
     return {
       ...deferredProduct,
-      inStock: deferredProduct.variants[0].stock > 0,
-      stockCount: deferredProduct.variants[0].stock,
+      inStock: deferredProduct.stock > 0,
+      stockCount: deferredProduct.stock,
     };
   }, [deferredProduct]);
-
-  // Use related products directly
-  const relatedProductsForSlider = data.relatedProducts;
 
   if (data.loading) {
     return <ProductDetailSkeleton />;
@@ -126,8 +122,12 @@ export default function ProductDetailPage({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Product Images */}
           <ProductImageGallery
-            images={deferredProduct?.images || []}
-            productName={deferredProduct?.name || ""}
+            images={
+              deferredProduct?.images.map((image: ProductImage) => ({
+                ...image,
+                alt: deferredProduct?.name || "",
+              })) || []
+            }
           />
 
           {/* Product Info */}
@@ -136,16 +136,6 @@ export default function ProductDetailPage({
 
         {/* Product Tabs */}
         {enhancedProduct && <ProductTabs product={enhancedProduct} />}
-
-        {/* Related Products */}
-        {relatedProductsForSlider.length > 0 && (
-          <FeaturedProductSlider
-            products={relatedProductsForSlider}
-            title="Related Products"
-            showViewAll={true}
-            viewAllHref={`/categories/${deferredProduct?.primaryCategory.slug || ""}`}
-          />
-        )}
       </div>
     </div>
   );

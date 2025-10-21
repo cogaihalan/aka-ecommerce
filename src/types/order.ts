@@ -26,4 +26,6 @@ export interface Order {
   status: OrderStatus;
   shippingAddress: string;
   items: OrderItem[];
+  createdAt: Date;
+  updatedAt: Date;
 }

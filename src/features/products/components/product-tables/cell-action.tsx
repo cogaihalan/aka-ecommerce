@@ -13,28 +13,20 @@ import { Edit, MoreVertical, Trash2, Image } from "lucide-react";
 import { useState } from "react";
 import { ProductDialog } from "../product-dialog";
 import { ProductImageManager } from "../product-image-manager";
+import { unifiedProductService } from "@/lib/api/services/unified";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface CellActionProps {
   data: Product;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
-  const [loading] = useState(false);
-  const [open, setOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [imageManagerOpen, setImageManagerOpen] = useState(false);
 
-  const onConfirm = async () => {};
-
   return (
     <>
-      <AlertModal
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        onConfirm={onConfirm}
-        loading={loading}
-      />
-
       <ProductDialog
         open={editDialogOpen}
         onOpenChange={setEditDialogOpen}
@@ -71,9 +63,6 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setImageManagerOpen(true)}>
             <Image className="mr-2 h-4 w-4" /> Manage Images
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash2 className="mr-2 h-4 w-4" /> Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

@@ -22,13 +22,8 @@ export const searchParams = {
   fulfillmentStatus: parseAsString,
   dateFrom: parseAsString,
   dateTo: parseAsString,
-  // Sorting parameter
-  sort: getSortingStateParser().withDefault([]),
-  // Timestamp for cache busting
+  sort: getSortingStateParser<any>().withDefault([{ id: "id", desc: true }]),
   t: parseAsString,
-  // advanced filter
-  // filters: getFiltersStateParser().withDefault([]),
-  // joinOperator: parseAsStringEnum(['and', 'or']).withDefault('and')
 };
 
 export const searchParamsCache = createSearchParamsCache(searchParams);

@@ -18,11 +18,7 @@ export default function SignInViewPage() {
           </p>
         </div>
 
-        <ClerkSignInForm
-          initialValues={{
-            emailAddress: "your_mail+clerk_test@example.com",
-          }}
-        />
+        <ClerkSignInForm />
 
         <p className="text-muted-foreground text-center text-sm">
           By clicking continue, you agree to our{" "}

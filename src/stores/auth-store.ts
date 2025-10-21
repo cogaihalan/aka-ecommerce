@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
-import { AppUser, UserRole, UserPermission } from "@/types/auth";
+import { User } from "@/types";
 
 interface AuthStore {
   // UI State
@@ -10,20 +10,22 @@ interface AuthStore {
   toggleDropdown: () => void;
   openDropdown: () => void;
   closeDropdown: () => void;
-  
+
+  // Loading State
+  isSigningOut: boolean;
+  setSigningOut: (loading: boolean) => void;
+
   // User State (for caching and offline support)
-  user: AppUser | null;
-  setUser: (user: AppUser | null) => void;
+  user: User | null;
+  setUser: (user: User | null) => void;
   clearUser: () => void;
-  
+
   // Permission checks (cached)
-  hasPermission: (permission: UserPermission) => boolean;
-  hasRole: (role: UserRole) => boolean;
-  hasAnyRole: (roles: UserRole[]) => boolean;
-  hasAnyPermission: (permissions: UserPermission[]) => boolean;
+  hasRole: (roleName: string) => boolean;
+  hasAnyRole: (roleNames: string[]) => boolean;
   canAccessDashboard: () => boolean;
   canAccessStorefront: () => boolean;
-  
+
   // Utility methods
   isAdmin: () => boolean;
   isUser: () => boolean;
@@ -36,64 +38,57 @@ export const useAuthStore = create<AuthStore>()(
       (set, get) => ({
         // UI State
         isDropdownOpen: false,
-        toggleDropdown: () => set((state) => ({ isDropdownOpen: !state.isDropdownOpen })),
+        toggleDropdown: () =>
+          set((state) => ({ isDropdownOpen: !state.isDropdownOpen })),
         openDropdown: () => set({ isDropdownOpen: true }),
         closeDropdown: () => set({ isDropdownOpen: false }),
-        
+
+        // Loading State
+        isSigningOut: false,
+        setSigningOut: (loading) => set({ isSigningOut: loading }),
+
         // User State
         user: null,
         setUser: (user) => set({ user }),
         clearUser: () => set({ user: null }),
-        
+
         // Permission checks
-        hasPermission: (permission) => {
+        hasRole: (roleName) => {
           const { user } = get();
-          if (!user || !user.isActive) return false;
-          return user.permissions.includes(permission);
+          if (!user || !user.enabled) return false;
+          return user.roles.some((role) => role.name === roleName);
         },
-        
-        hasRole: (role) => {
+
+        hasAnyRole: (roleNames) => {
           const { user } = get();
-          if (!user || !user.isActive) return false;
-          return user.role === role;
+          if (!user || !user.enabled) return false;
+          return user.roles.some((role) => roleNames.includes(role.name));
         },
-        
-        hasAnyRole: (roles) => {
-          const { user } = get();
-          if (!user || !user.isActive) return false;
-          return roles.includes(user.role);
-        },
-        
-        hasAnyPermission: (permissions) => {
-          const { user } = get();
-          if (!user || !user.isActive) return false;
-          return permissions.some(permission => user.permissions.includes(permission));
-        },
-        
+
         canAccessDashboard: () => {
-          const { hasPermission } = get();
-          return hasPermission(UserPermission.ACCESS_DASHBOARD);
+          const { hasRole } = get();
+          return hasRole("ADMIN");
         },
-        
+
         canAccessStorefront: () => {
-          const { hasPermission } = get();
-          return hasPermission(UserPermission.VIEW_PRODUCTS);
+          const { user } = get();
+          return !!(user && user.enabled);
         },
-        
+
         // Utility methods
         isAdmin: () => {
           const { hasRole } = get();
-          return hasRole(UserRole.ADMIN);
+          return hasRole("ADMIN");
         },
-        
+
         isUser: () => {
           const { hasRole } = get();
-          return hasRole(UserRole.USER);
+          return hasRole("USER");
         },
-        
+
         isAuthenticated: () => {
           const { user } = get();
-          return !!user && user.isActive;
+          return !!user && user.enabled;
         },
       }),
       {
@@ -110,10 +105,16 @@ export const useAuthStore = create<AuthStore>()(
 );
 
 // Selector hooks for better performance
-export const useAuthDropdownOpen = () => useAuthStore((state) => state.isDropdownOpen);
+export const useAuthDropdownOpen = () =>
+  useAuthStore((state) => state.isDropdownOpen);
+export const useAuthSigningOut = () =>
+  useAuthStore((state) => state.isSigningOut);
 export const useAuthUser = () => useAuthStore((state) => state.user);
-export const useAuthIsAuthenticated = () => useAuthStore((state) => state.isAuthenticated());
+export const useAuthIsAuthenticated = () =>
+  useAuthStore((state) => state.isAuthenticated());
 export const useAuthIsAdmin = () => useAuthStore((state) => state.isAdmin());
 export const useAuthIsUser = () => useAuthStore((state) => state.isUser());
-export const useAuthCanAccessDashboard = () => useAuthStore((state) => state.canAccessDashboard());
-export const useAuthCanAccessStorefront = () => useAuthStore((state) => state.canAccessStorefront());
+export const useAuthCanAccessDashboard = () =>
+  useAuthStore((state) => state.canAccessDashboard());
+export const useAuthCanAccessStorefront = () =>
+  useAuthStore((state) => state.canAccessStorefront());

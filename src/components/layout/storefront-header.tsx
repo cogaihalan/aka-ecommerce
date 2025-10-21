@@ -10,6 +10,7 @@ import Logo from "@/components/logo";
 import Link from "next/link";
 import { CartIcon } from "@/components/cart";
 import { AuthIcon } from "@/components/auth";
+import { SearchSuggestions } from "@/components/search";
 import {
   useWishlistItemCount,
   useWishlistAuthStatus,
@@ -37,16 +38,7 @@ export default function StorefrontHeader() {
             {/* Search Bar */}
             <div className="hidden lg:flex items-center space-x-2 flex-1 mx-4">
               <div className="relative w-70 transition-all duration-300 ease-in-out xl:focus-within:w-90">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder="Search products..."
-                  className="pl-10 transition-all duration-300 ease-in-out"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      window.location.href = "/search";
-                    }
-                  }}
-                />
+                <SearchSuggestions className="w-full" />
               </div>
             </div>
 
@@ -106,18 +98,10 @@ export default function StorefrontHeader() {
         {isMenuOpen && (
           <div className="lg:hidden border-t">
             <div className="px-3 py-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder="Search products..."
-                  className="pl-10"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      window.location.href = "/search";
-                    }
-                  }}
-                />
-              </div>
+              <SearchSuggestions
+                className="w-full"
+                onClose={() => setIsMenuOpen(false)}
+              />
             </div>
           </div>
         )}

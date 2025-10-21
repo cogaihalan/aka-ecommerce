@@ -18,6 +18,7 @@ import {
 } from "@/stores/wishlist-store";
 import { useAddToCart } from "@/hooks/use-add-to-cart";
 import { useCart } from "@/hooks/use-cart";
+import { formatPrice } from "@/lib/utils";
 
 export default function WishlistPage() {
   const router = useRouter();
@@ -72,7 +73,7 @@ export default function WishlistPage() {
           <h1 className="text-3xl font-bold mb-2">Wishlist</h1>
           <p className="text-muted-foreground">
             {itemCount > 0
-              ? `${itemCount} item${itemCount === 1 ? "" : "s"} saved • Total value: $${totalValue.toFixed(2)}`
+              ? `${itemCount} item${itemCount === 1 ? "" : "s"} saved • Total value: ${formatPrice(totalValue)}`
               : "Your saved items and favorites"}
           </p>
         </div>
@@ -165,13 +166,13 @@ export default function WishlistPage() {
                     {/* Price */}
                     <div className="flex items-center gap-2">
                       <span className="text-lg font-bold">
-                        ${item.product.pricing?.basePrice}
+                        {formatPrice(item.product.pricing?.basePrice || 0)}
                       </span>
                       {item.product.pricing?.compareAtPrice &&
                         item.product.pricing?.compareAtPrice >
                           item.product.pricing?.basePrice && (
                           <span className="text-sm text-muted-foreground line-through">
-                            ${item.product.pricing.compareAtPrice}
+                            {formatPrice(item.product.pricing.compareAtPrice)}
                           </span>
                         )}
                     </div>

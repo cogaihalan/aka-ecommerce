@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { AddressForm } from "@/features/storefront/components/account/addresses/address-form";
 import { OrderSummary } from "@/components/order/order-summary";
 import { useCheckoutPage } from "@/hooks/use-checkout-page";
+import { formatPrice } from "@/lib/utils";
 import {
   Loader2,
   MapPin,
@@ -342,9 +343,7 @@ export default function CheckoutPage() {
                             {method.description}
                           </p>
                           <p className="text-sm font-medium">
-                            {cost === 0
-                              ? "Free"
-                              : `${cost.toLocaleString()} VND`}
+                            {cost === 0 ? "Free" : formatPrice(cost)}
                           </p>
                         </div>
                         <div className="flex items-center gap-2">

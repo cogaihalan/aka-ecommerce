@@ -67,7 +67,7 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
       // Don't include category in filters since we're already filtering by category in fetchProducts
     },
   });
- 
+
   // View mode is handled separately from navigation state
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
@@ -220,7 +220,6 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
           filteredCount={displayCount}
           currentPageCount={paginatedProducts.length}
           currentPage={state.page}
-          itemsPerPage={itemsPerPage}
         />
         {/* Mobile Navigation */}
         <MobileNavigation

@@ -153,7 +153,14 @@ export abstract class BaseApiClient {
     };
 
     if (body && method !== "GET") {
-      requestOptions.body = JSON.stringify(body);
+      // Handle FormData differently - don't stringify it
+      if (body instanceof FormData) {
+        requestOptions.body = body;
+        // Remove Content-Type header for FormData to let browser set it with boundary
+        delete requestHeaders["Content-Type"];
+      } else {
+        requestOptions.body = JSON.stringify(body);
+      }
     }
 
     // Add timeout

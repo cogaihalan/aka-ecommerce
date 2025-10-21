@@ -1,7 +1,6 @@
-// Updated storefront product listing page with layered navigation
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import {
@@ -43,65 +42,92 @@ export default function ProductListingPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
 
-  // Fetch products
-  const fetchProducts = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
+  // Ref to track if we're currently fetching to prevent duplicate requests
+  const fetchingRef = useRef<boolean>(false);
 
-      const response = await storefrontCatalogService.getProducts({
-        page: state.page,
-        size: state.limit,
-        name: state.filters.search || undefined,
-        sort: state.filters.sort ? [state.filters.sort] : [],
-        categoryIds: state.filters.categoryIds,
-        minPrice: state.filters.priceRange?.[0],
-        maxPrice: state.filters.priceRange?.[1],
-      });
+  // Memoize the query parameters to prevent unnecessary re-fetches
+  const queryParams = useMemo(
+    () => ({
+      page: state.page,
+      size: state.limit,
+      name: state.filters.search || undefined,
+      sort:
+        state.filters.sort && state.filters.sort !== "featured"
+          ? [state.filters.sort]
+          : [],
+      categoryIds: state.filters.categoryIds,
+      minPrice: state.filters.priceRange?.[0],
+      maxPrice: state.filters.priceRange?.[1],
+    }),
+    [
+      state.page,
+      state.limit,
+      state.filters.search,
+      state.filters.sort,
+      state.filters.categoryIds,
+      state.filters.priceRange,
+    ]
+  );
 
-      setProducts(response.items || []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch products");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [state.page, state.limit, state.filters]);
+  // Fetch products with proper loading state management
+  const fetchProducts = useCallback(
+    async (showLoading = true) => {
+      // Prevent duplicate requests
+      if (fetchingRef.current) return;
 
-  // Use product filters hook for client-side filtering
-  const { filteredProducts, filterCounts, totalProducts, filteredCount } =
-    useProductFilters({
-      products: products,
-      filters: state.filters,
-    });
+      try {
+        fetchingRef.current = true;
+        if (showLoading) {
+          setIsLoading(true);
+        }
+        setError(null);
 
-  // Fetch products when filters change
-  useEffect(() => {
-    fetchProducts();
-  }, [state.filters, state.page, fetchProducts]);
+        const response =
+          await storefrontCatalogService.getProducts(queryParams);
+        setProducts(response.items || []);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch products"
+        );
+      } finally {
+        setIsLoading(false);
+        fetchingRef.current = false;
+        setIsInitialLoad(false);
+      }
+    },
+    [queryParams]
+  );
 
-  // Load initial products
+  // Use product filters hook for client-side filtering (only for search and additional client-side filters)
+  const { filterCounts } = useProductFilters({
+    products: products,
+    filters: state.filters,
+  });
+
+  // Single effect to handle data fetching
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
 
-  // Determine which products to display
+  // Determine which products to display - use server-filtered products directly
   const displayProducts = products;
   const displayCount = products.length;
   const displayTotal = products.length;
 
-  // Pagination logic
-  const itemsPerPage = state.limit;
-  const totalPages = Math.ceil(displayCount / itemsPerPage);
-  const startIndex = (state.page - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedProducts = displayProducts.slice(startIndex, endIndex);
+  // Since we're using server-side pagination, we don't need client-side pagination
+  const paginatedProducts = displayProducts;
+  // For now, we'll use a reasonable total pages estimate
+  // In a real implementation, you'd get this from the API response
+  const totalPages = Math.max(1, Math.ceil(displayTotal / state.limit));
 
   const handlePageChange = (page: number) => {
     updatePage(page);
   };
 
-  if (isLoading && products.length === 0) {
+  // Show loading skeleton only on initial load
+  if (isInitialLoad && isLoading) {
     return (
       <div className="space-y-6">
         {/* Header */}
@@ -153,7 +179,7 @@ export default function ProductListingPage() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <p className="text-red-500 mb-4">{error}</p>
-          <Button onClick={fetchProducts}>Try Again</Button>
+          <Button onClick={() => fetchProducts()}>Try Again</Button>
         </div>
       </div>
     );
@@ -205,7 +231,7 @@ export default function ProductListingPage() {
 
         {/* Products Grid - 3 columns */}
         <div className="flex-1">
-          <LoadingOverlay isLoading={isLoading && products.length > 0}>
+          <LoadingOverlay isLoading={isLoading && !isInitialLoad}>
             <AnimatedGrid
               className={`grid gap-6 layout-transition items-stretch ${
                 viewMode === "grid"
@@ -228,12 +254,12 @@ export default function ProductListingPage() {
             </AnimatedGrid>
           </LoadingOverlay>
 
-          {/* Loading indicator for pagination */}
-          {isLoading && products.length > 0 && (
+          {/* Loading indicator for filter changes */}
+          {isLoading && !isInitialLoad && (
             <div className="flex justify-center mt-6 animate-fade-in">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                <span className="text-sm">Loading more products...</span>
+                <span className="text-sm">Updating products...</span>
               </div>
             </div>
           )}

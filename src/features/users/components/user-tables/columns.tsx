@@ -9,28 +9,27 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { AppUser, UserRole } from "@/types/auth";
+import { User } from "@/types";
 import {
   MoreHorizontal,
   Shield,
   ShieldCheck,
   Calendar,
-  Edit,
-  Trash2,
-  UserCheck,
-  UserX,
-  CheckCircle,
-  XCircle,
+  Eye,
+  Lock,
+  Unlock,
 } from "lucide-react";
 import { format } from "date-fns";
-import { getUserInitials, getUserDisplayName } from "@/lib/auth/utils";
+import { UserDialog } from "../user-dialog";
+import { unifiedUserService } from "@/lib/api/services/unified";
+import { toast } from "sonner";
+import { useState } from "react";
 
-export const columns: ColumnDef<AppUser>[] = [
+export const columns: ColumnDef<User>[] = [
   {
-    id: "name", // Change from "email" to "name" to match server parameter
+    id: "name",
     accessorKey: "email",
     header: "User",
     cell: ({ row }) => {
@@ -38,11 +37,13 @@ export const columns: ColumnDef<AppUser>[] = [
       return (
         <div className="flex items-center gap-3">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user.imageUrl} />
-            <AvatarFallback>{getUserInitials(user)}</AvatarFallback>
+            <AvatarImage src={user.avatarUrl} />
+            <AvatarFallback>
+              {user.fullName.charAt(0).toUpperCase()}
+            </AvatarFallback>
           </Avatar>
           <div>
-            <div className="font-medium">{getUserDisplayName(user)}</div>
+            <div className="font-medium">{user.fullName}</div>
             <div className="text-sm text-muted-foreground">{user.email}</div>
           </div>
         </div>
@@ -56,54 +57,42 @@ export const columns: ColumnDef<AppUser>[] = [
     },
   },
   {
-    id: "role",
-    accessorKey: "role",
-    header: "Role",
+    id: "roles",
+    accessorKey: "roles",
+    header: "Roles",
     cell: ({ row }) => {
-      const role = row.getValue("role") as UserRole;
+      const user = row.original;
+      const roles = user.roles;
       return (
-        <Badge variant={role === UserRole.ADMIN ? "default" : "secondary"}>
-          {role === UserRole.ADMIN ? (
-            <ShieldCheck className="mr-1 h-3 w-3" />
-          ) : (
-            <Shield className="mr-1 h-3 w-3" />
-          )}
-          {role}
-        </Badge>
+        <div className="flex flex-wrap gap-1">
+          {roles.map((role) => (
+            <Badge
+              key={role.id}
+              variant={role.name === "ADMIN" ? "default" : "secondary"}
+            >
+              {role.name === "ADMIN" ? (
+                <ShieldCheck className="mr-1 h-3 w-3" />
+              ) : (
+                <Shield className="mr-1 h-3 w-3" />
+              )}
+              {role.name}
+            </Badge>
+          ))}
+        </div>
       );
-    },
-    enableColumnFilter: true,
-    meta: {
-      label: "Role",
-      variant: "select",
-      options: [
-        { label: "All Roles", value: "all" },
-        { label: "Admin", value: UserRole.ADMIN },
-        { label: "User", value: UserRole.USER },
-      ],
     },
   },
   {
-    id: "isActive",
-    accessorKey: "isActive",
+    id: "enabled",
+    accessorKey: "enabled",
     header: "Status",
     cell: ({ row }) => {
-      const isActive = row.getValue("isActive") as boolean;
+      const enabled = row.getValue("enabled") as boolean;
       return (
-        <Badge variant={isActive ? "default" : "secondary"}>
-          {isActive ? "Active" : "Inactive"}
+        <Badge variant={enabled ? "default" : "secondary"}>
+          {enabled ? "Active" : "Inactive"}
         </Badge>
       );
-    },
-    enableColumnFilter: true,
-    meta: {
-      label: "Status",
-      variant: "select",
-      options: [
-        { label: "All", value: "all" },
-        { label: "Active", value: "true" },
-        { label: "Inactive", value: "false" },
-      ],
     },
   },
   {
@@ -111,24 +100,11 @@ export const columns: ColumnDef<AppUser>[] = [
     accessorKey: "createdAt",
     header: "Created",
     cell: ({ row }) => {
-      const date = row.getValue("createdAt") as Date;
+      const date = row.getValue("createdAt") as string;
       return (
         <div className="flex items-center gap-1 text-sm text-muted-foreground">
           <Calendar className="h-3 w-3" />
-          {format(date, "MMM dd, yyyy")}
-        </div>
-      );
-    },
-  },
-  {
-    id: "lastSignInAt",
-    accessorKey: "lastSignInAt",
-    header: "Last Sign In",
-    cell: ({ row }) => {
-      const lastSignIn = row.getValue("lastSignInAt") as Date | undefined;
-      return (
-        <div className="text-sm text-muted-foreground">
-          {lastSignIn ? format(lastSignIn, "MMM dd, yyyy") : "Never"}
+          {format(new Date(date), "MMM dd, yyyy")}
         </div>
       );
     },
@@ -138,9 +114,10 @@ export const columns: ColumnDef<AppUser>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const user = row.original;
+      const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
       return (
-        <DropdownMenu>
+        <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
@@ -149,50 +126,55 @@ export const columns: ColumnDef<AppUser>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <UserDialog
+              user={user}
+              trigger={
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  <Eye className="mr-2 h-4 w-4" />
+                  View user details
+                </DropdownMenuItem>
+              }
+              onDialogClose={() => setIsDropdownOpen(false)}
+            />
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(user.id)}
+              onClick={async () => {
+                try {
+                  if (user.enabled) {
+                    await unifiedUserService.lockUser(user.id.toString());
+                    toast.success("User locked successfully");
+                  } else {
+                    await unifiedUserService.unlockUser(user.id.toString());
+                    toast.success("User unlocked successfully");
+                  }
+                  // Refresh the page to show updated status
+                  window.location.reload();
+                } catch (error) {
+                  console.error("Error updating user status:", error);
+                  toast.error(
+                    user.enabled
+                      ? "Failed to lock user"
+                      : "Failed to unlock user"
+                  );
+                }
+              }}
             >
-              Copy user ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Edit className="mr-2 h-4 w-4" />
-              Edit user
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              {user.role === UserRole.ADMIN ? (
+              {user.enabled ? (
                 <>
-                  <UserX className="mr-2 h-4 w-4" />
-                  Make User
+                  <Lock className="mr-2 h-4 w-4" />
+                  Lock User
                 </>
               ) : (
                 <>
-                  <UserCheck className="mr-2 h-4 w-4" />
-                  Make Admin
+                  <Unlock className="mr-2 h-4 w-4" />
+                  Unlock User
                 </>
               )}
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              {user.isActive ? (
-                <>
-                  <XCircle className="mr-2 h-4 w-4" />
-                  Deactivate
-                </>
-              ) : (
-                <>
-                  <CheckCircle className="mr-2 h-4 w-4" />
-                  Activate
-                </>
-              )}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive">
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete user
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
     },
+    size: 32,
+    maxSize: 32,
   },
 ];

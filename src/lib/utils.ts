@@ -50,32 +50,13 @@ export function formatBytes(
   }`;
 }
 
-export function formatImageUrl(url: string): string {
-  return `${process.env.NEXT_PUBLIC_BASE_URL}/${url}`;
-}
-
 /**
  * Check if a product is out of stock
  */
 export function isProductOutOfStock(product: Product): boolean {
-  // Check if product is not active
-  if (product.status !== "ACTIVE") {
-    return true;
-  }
-
   // Check if product stock is 0 or less
   if (product.stock <= 0) {
     return true;
-  }
-
-  // Check if all variants are out of stock
-  if (product.variants.length > 0) {
-    const hasAvailableVariant = product.variants.some(variant => 
-      variant.status !== "OUT_OF_STOCK" && variant.stock > 0
-    );
-    if (!hasAvailableVariant) {
-      return true;
-    }
   }
 
   return false;
@@ -85,27 +66,13 @@ export function isProductOutOfStock(product: Product): boolean {
  * Get stock status text for display
  */
 export function getStockStatusText(product: Product): string {
-  if (product.status !== "ACTIVE") {
-    return "Inactive";
-  }
-
   if (product.stock <= 0) {
     return "Out of Stock";
   }
 
-  // Check if all variants are out of stock
-  if (product.variants.length > 0) {
-    const availableVariants = product.variants.filter(variant => 
-      variant.status !== "OUT_OF_STOCK" && variant.stock > 0
-    );
-    
-    if (availableVariants.length === 0) {
-      return "Out of Stock";
-    }
-    
-    const totalVariantStock = availableVariants.reduce((sum, variant) => sum + variant.stock, 0);
-    return `${totalVariantStock} in stock`;
+  if (product.stock > 0 && product.stock < 10) {
+    return `Only ${product.stock} items left`;
   }
 
-  return `${product.stock} in stock`;
+  return "Add to Cart";
 }

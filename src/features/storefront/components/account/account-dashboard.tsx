@@ -13,13 +13,13 @@ import {
 } from "@/components/ui/table";
 import { ArrowRight, Edit, Mail, Phone, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useCurrentUser } from "@/hooks/use-auth";
+import { useUser } from "@clerk/nextjs";
 import { useUserAddresses } from "@/hooks/use-user-addresses";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { unifiedOrderService } from "@/lib/api/services/unified";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { Order, OrderStatus } from "@/lib/api/types";
+import type { Order, OrderStatus } from "@/types";
 
 interface DisplayOrder {
   id: string;
@@ -31,9 +31,8 @@ interface DisplayOrder {
 }
 
 export default function AccountDashboard() {
-  const user = useCurrentUser();
+  const { user } = useUser();
   const { addresses } = useUserAddresses();
-  console.log(addresses);
   const router = useRouter();
   const [orders, setOrders] = useState<DisplayOrder[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -50,13 +49,12 @@ export default function AccountDashboard() {
   // Helper function to get status color
   const getStatusColor = (status: OrderStatus): string => {
     switch (status) {
-      case "pending":
-      case "processing":
+      case "PENDING":
+      case "PROCESSING":
         return "text-yellow-600";
-      case "delivered":
+      case "DELIVERED":
         return "text-green-600";
-      case "cancelled":
-      case "refunded":
+      case "CANCELLED":
         return "text-red-600";
       default:
         return "text-gray-600";
@@ -66,16 +64,14 @@ export default function AccountDashboard() {
   // Helper function to format status for display
   const formatStatus = (status: OrderStatus): string => {
     switch (status) {
-      case "pending":
+      case "PENDING":
         return "PENDING";
-      case "processing":
+      case "PROCESSING":
         return "IN PROGRESS";
-      case "delivered":
+      case "DELIVERED":
         return "COMPLETED";
-      case "cancelled":
+      case "CANCELLED":
         return "CANCELED";
-      case "refunded":
-        return "REFUNDED";
       default:
         return status.toUpperCase();
     }
@@ -90,28 +86,25 @@ export default function AccountDashboard() {
 
         // Fetch recent orders (limit to 7 for display)
         const response = await unifiedOrderService.getOrders({
-          limit: 7,
-          sortBy: "createdAt",
-          sortOrder: "desc",
+          page: 1,
+          size: 7,
+          sort: ["createdAt,desc"],
         });
 
         // Transform orders for display
-        const displayOrders: DisplayOrder[] = response.orders.map(
+        const displayOrders: DisplayOrder[] = response.items.map(
           (order: Order) => ({
-            id: order.orderNumber,
+            id: order.id.toString(),
             status: formatStatus(order.status),
             date: formatDate(order.createdAt, {
               month: "short",
               day: "numeric",
-              year: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
+              year: order.createdAt.getFullYear().toString(),
             }),
-            total: order.pricing.total,
+            total: order.totalPrice,
             products: order.items.length,
             statusColor: getStatusColor(order.status),
-          })
-        );
+          }));
 
         setOrders(displayOrders);
       } catch (err) {

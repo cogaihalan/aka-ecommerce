@@ -92,7 +92,7 @@ export function Price({
       )}
 
       {showDiscount && calculatedDiscountPercentage > 0 && (
-        <span className="text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded">
+        <span className="absolute top-4 right-4 text-xs bg-red-100 text-red-600 px-2 py-1 rounded">
           -{calculatedDiscountPercentage}%
         </span>
       )}

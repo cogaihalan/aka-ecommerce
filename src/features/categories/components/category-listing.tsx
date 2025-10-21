@@ -12,7 +12,7 @@ export default async function CategoryListingPage() {
 
   // Build query parameters for the service using new structure
   const queryParams = {
-    page: page ? parseInt(page.toString()) : 0,
+    page: page ? parseInt(page.toString()) : 1,
     size: pageLimit ? parseInt(pageLimit.toString()) : 10,
     sort: sort
       ? Array.isArray(sort)

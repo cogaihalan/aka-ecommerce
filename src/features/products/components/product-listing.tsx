@@ -12,7 +12,7 @@ export default async function ProductListingPage() {
 
   // Build query parameters for the service using new structure
   const queryParams = {
-    page: page ? parseInt(page.toString()) : 0,
+    page: page ? parseInt(page.toString()) : 1,
     size: pageLimit ? parseInt(pageLimit.toString()) : 10,
     sort: sort
       ? Array.isArray(sort)
@@ -23,14 +23,13 @@ export default async function ProductListingPage() {
   };
 
   // Fetch products using the unified service
-  let result;
   let totalProducts = 0;
   let products: any[] = [];
 
   try {
-    result = await serverUnifiedProductService.getProducts(queryParams);
-    totalProducts = result.pagination?.total || result.items?.length || 0;
-    products = result.items || [];
+    const response = await serverUnifiedProductService.getProducts(queryParams);
+    totalProducts = response.pagination?.total || response.items?.length || 0;
+    products = response.items || [];
   } catch (error) {
     console.error("Error fetching products:", error);
   }

@@ -7,7 +7,9 @@ export class ServerApiClient extends BaseApiClient {
   protected async getAuthHeaders(): Promise<Record<string, string>> {
     try {
       const { getToken } = await auth();
-      const token = await getToken();
+      const token = await getToken({
+        template: process.env.NEXT_PUBLIC_CLERK_TEMPLATE || "aka",
+      });
 
       if (token) {
         return {

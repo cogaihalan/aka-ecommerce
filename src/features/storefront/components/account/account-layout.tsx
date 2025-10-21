@@ -16,7 +16,7 @@ import {
   LogOut,
   Menu,
 } from "lucide-react";
-import { SignOutButton } from "@clerk/nextjs";
+import { SignOutButton } from "@/components/auth";
 
 interface AccountLayoutProps {
   children: ReactNode;
@@ -42,16 +42,17 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
       // Handle Logout item with SignOutButton
       if (item.name === "Logout") {
         return (
-          <SignOutButton key={item.name} redirectUrl="/auth/sign-in">
-            <div
-              className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors cursor-pointer w-full text-left",
-                "hover:bg-muted"
-              )}
-            >
-              <Icon className="h-4 w-4" />
-              {item.name}
-            </div>
+          <SignOutButton
+            key={item.name}
+            redirectUrl="/auth/sign-in"
+            className={cn(
+              "flex items-center justify-start gap-3 px-3 py-2 rounded-md text-sm transition-colors cursor-pointer w-full text-left",
+              "hover:bg-muted"
+            )}
+            onClick={() => setIsOpen(false)}
+          >
+            <Icon className="h-4 w-4" />
+            {item.name}
           </SignOutButton>
         );
       }

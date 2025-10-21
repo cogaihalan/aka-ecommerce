@@ -1,12 +1,34 @@
 "use client";
 import { DataTableColumnHeader } from "@/components/ui/table/data-table-column-header";
-import { Product, ProductImage } from "@/types";
+import { Product, ProductImage, ProductStatus } from "@/types";
 import { Column, ColumnDef } from "@tanstack/react-table";
-import { Text } from "lucide-react";
+import {
+  Text,
+  CheckCircle,
+  XCircle,
+  Archive,
+  AlertCircle,
+  Clock,
+} from "lucide-react";
 import Image from "next/image";
 import { CellAction } from "./cell-action";
+import { formatPrice } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<Product>[] = [
+  {
+    id: "id",
+    accessorKey: "id",
+    header: ({ column }: { column: Column<Product, unknown> }) => (
+      <DataTableColumnHeader column={column} title="ID" />
+    ),
+    cell: ({ row }) => {
+      const id = row.getValue("id") as number;
+      return <div className="font-medium text-sm w-8">{id}</div>;
+    },
+    size: 32,
+    maxSize: 32,
+  },
   {
     id: "images",
     accessorKey: "images",
@@ -18,7 +40,7 @@ export const columns: ColumnDef<Product>[] = [
       return (
         <div className="relative aspect-square">
           <Image
-            src={primaryImage?.url || images[0].url}
+            src={primaryImage?.url || "/assets/placeholder-image.jpeg"}
             alt={row.getValue("name")}
             fill
             className="rounded-lg object-cover"
@@ -45,9 +67,7 @@ export const columns: ColumnDef<Product>[] = [
   {
     id: "stock",
     accessorKey: "stock",
-    header: ({ column }: { column: Column<Product, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Stock" />
-    ),
+    header: "Stock",
     cell: ({ row }) => {
       const stock = row.getValue("stock") as number;
       return <div className="font-medium">{stock || 0}</div>;
@@ -64,10 +84,10 @@ export const columns: ColumnDef<Product>[] = [
       const discountPrice = row.original.discountPrice;
       return (
         <div className="space-y-1">
-          <div className="font-medium">${price?.toFixed(2) || "0.00"}</div>
-          {discountPrice && discountPrice > 0 && (
+          <div className="font-medium">{formatPrice(price || 0)}</div>
+          {!!discountPrice && discountPrice > 0 && (
             <div className="text-sm text-green-600">
-              ${discountPrice.toFixed(2)}
+              {formatPrice(discountPrice)}
             </div>
           )}
         </div>
@@ -75,11 +95,66 @@ export const columns: ColumnDef<Product>[] = [
     },
   },
   {
+    id: "status",
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const status = row.getValue("status") as ProductStatus;
+
+      const statusConfig = {
+        DRAFT: { label: "Draft", variant: "secondary" as const, icon: Clock },
+        ACTIVE: {
+          label: "Active",
+          variant: "default" as const,
+          icon: CheckCircle,
+        },
+        INACTIVE: {
+          label: "Inactive",
+          variant: "destructive" as const,
+          icon: XCircle,
+        },
+        ARCHIVED: {
+          label: "Archived",
+          variant: "outline" as const,
+          icon: Archive,
+        },
+        OUT_OF_STOCK: {
+          label: "Out of Stock",
+          variant: "destructive" as const,
+          icon: AlertCircle,
+        },
+      };
+
+      const config = statusConfig[status];
+      const Icon = config.icon;
+
+      return (
+        <Badge variant={config.variant} className="flex items-center gap-1">
+          <Icon className="h-3 w-3" />
+          {config.label}
+        </Badge>
+      );
+    },
+    meta: {
+      label: "Status",
+      placeholder: "Filter by status...",
+      variant: "select",
+      options: [
+        { label: "Draft", value: "DRAFT" },
+        { label: "Active", value: "ACTIVE" },
+        { label: "Inactive", value: "INACTIVE" },
+        { label: "Archived", value: "ARCHIVED" },
+        { label: "Out of Stock", value: "OUT_OF_STOCK" },
+      ],
+    },
+    enableColumnFilter: true,
+    size: 120,
+    maxSize: 150,
+  },
+  {
     id: "description",
     accessorKey: "description",
-    header: ({ column }: { column: Column<Product, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Description" />
-    ),
+    header: "Description",
     cell: ({ row }) => {
       const description = row.getValue("description") as string;
       return (
@@ -88,10 +163,14 @@ export const columns: ColumnDef<Product>[] = [
         </div>
       );
     },
+    size: 200,
+    maxSize: 250,
   },
 
   {
     id: "actions",
     cell: ({ row }) => <CellAction data={row.original} />,
+    size: 32,
+    maxSize: 32,
   },
 ];

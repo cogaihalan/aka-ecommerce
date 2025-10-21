@@ -19,11 +19,11 @@ import { useAddToCart } from "@/hooks/use-add-to-cart";
 import { useCart } from "@/hooks/use-cart";
 import {
   useWishlistActions,
-  useIsInWishlist,
   useWishlistAuthStatus,
+  useIsInWishlist,
 } from "@/stores/wishlist-store";
 import { cn, isProductOutOfStock, getStockStatusText } from "@/lib/utils";
-import { Product } from "@/types/product";
+import { Product } from "@/types";
 
 interface ProductInfoProps {
   product: Product & {
@@ -61,15 +61,11 @@ export const ProductInfo = memo(function ProductInfo({
   });
 
   const { isInCart, getItemQuantity } = useCart();
-  const {
-    addItem: addToWishlist,
-    removeItem: removeFromWishlist,
-    isInWishlist,
-  } = useWishlistActions();
+  const { addItem: addToWishlist, removeItem: removeFromWishlist } =
+    useWishlistActions();
   const isAuthenticated = useWishlistAuthStatus();
   const isInCartState = isInCart(product.id);
-  const cartQuantity = getItemQuantity(product.id);
-  const isWishlisted = isInWishlist(product.id);
+  const isWishlisted = useIsInWishlist(product.id);
 
   // Stock status checks
   const isOutOfStock = isProductOutOfStock(product);
@@ -155,12 +151,8 @@ export const ProductInfo = memo(function ProductInfo({
       <div>
         <div className="flex items-center gap-2 mb-2">
           <Badge variant="secondary">
-            {product.primaryCategory?.name || "Uncategorized"}
+            {product.categories[0]?.name || "Uncategorized"}
           </Badge>
-          {product.brand && (
-            <Badge variant="outline">{product.brand.name}</Badge>
-          )}
-          {product.featured && <Badge variant="default">Featured</Badge>}
         </div>
 
         <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
@@ -180,10 +172,10 @@ export const ProductInfo = memo(function ProductInfo({
         {/* Price */}
         <div className="flex items-center gap-3 mb-4">
           <Price
-            price={product.pricing?.basePrice || 0}
-            originalPrice={product.pricing?.compareAtPrice}
+            price={product.discountPrice || product.price}
+            originalPrice={product.discountPrice ? product.price : undefined}
             size="3xl"
-            weight="bold"
+            weight="semibold"
           />
         </div>
 
@@ -281,7 +273,7 @@ export const ProductInfo = memo(function ProductInfo({
             {isOutOfStock
               ? stockStatusText
               : isInCartState
-                ? `In Cart (${cartQuantity})`
+                ? `In Cart (${getItemQuantity(product.id)})`
                 : "Add to Cart"}
           </Button>
           <Button

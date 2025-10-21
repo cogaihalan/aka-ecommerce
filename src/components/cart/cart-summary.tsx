@@ -101,7 +101,7 @@ export function CartSummary({
 
         <div className="flex justify-between font-bold text-lg">
           <span>Total</span>
-          <Price price={total} size="lg" weight="bold" />
+          <Price price={total} size="lg" weight="semibold" />
         </div>
 
         {/* Action Buttons */}
@@ -134,7 +134,7 @@ export function CartSummary({
                 <Truck className="w-4 h-4" />
                 <span>
                   {shipping > 0
-                    ? `Free shipping on orders over $50`
+                    ? `Free shipping on orders over 1,000,000 đ`
                     : "Free shipping applied"}
                 </span>
               </div>

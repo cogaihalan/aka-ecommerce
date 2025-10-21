@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Truck, CreditCard, Shield, Package } from "lucide-react";
 import { Price } from "@/components/ui/price";
 import { useCartStore } from "@/stores/cart-store";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 
 interface OrderSummaryProps {
   className?: string;
@@ -114,7 +114,7 @@ export function OrderSummary({
                   </p>
                 </div>
                 <p className="text-sm font-medium">
-                  {(item.price * item.quantity).toLocaleString()} VND
+                  {formatPrice(item.price * item.quantity)}
                 </p>
               </div>
             ))}
@@ -155,7 +155,7 @@ export function OrderSummary({
 
         <div className="flex justify-between font-bold text-lg">
           <span>Total</span>
-          <Price price={total} size="lg" weight="bold" />
+          <Price price={total} size="lg" weight="semibold" />
         </div>
 
         {/* Action Buttons */}

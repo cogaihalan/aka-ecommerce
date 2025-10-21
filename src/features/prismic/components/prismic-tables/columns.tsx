@@ -98,7 +98,7 @@ export const columns: ColumnDef<PrismicContent>[] = [
     },
     enableColumnFilter: true,
     meta: {
-      label: "category",
+      label: "Type",
       variant: "select",
       options: TYPE_OPTIONS,
     },

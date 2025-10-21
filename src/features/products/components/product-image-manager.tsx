@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -44,7 +43,7 @@ export function ProductImageManager({
   );
 
   const handleImageUpload = async (files: File[]) => {
-    setSelectedImages(files);
+    setSelectedImages((prev) => [...prev, ...files]);
   };
 
   const removeNewImage = (index: number) => {
@@ -127,6 +126,19 @@ export function ProductImageManager({
     }
   };
 
+  const handleClose = () => {
+    setSelectedImages([]);
+    setRemovedImageIds([]);
+    if (!primaryImageId) {
+      setPrimaryImageId(
+        existingImages.find((img) => img.primary)?.id ||
+          existingImages[0]?.id ||
+          null
+      );
+    }
+    onOpenChange(false);
+  };
+
   const visibleExistingImages = existingImages.filter(
     (img) => !removedImageIds.includes(img.id)
   );
@@ -157,9 +169,12 @@ export function ProductImageManager({
                 <p className="text-sm text-muted-foreground">
                   New images to upload ({selectedImages.length}):
                 </p>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="flex flex-wrap gap-4">
                   {selectedImages.map((file, index) => (
-                    <div key={index} className="relative border rounded-lg p-2">
+                    <div
+                      key={index}
+                      className="relative border rounded-lg p-2 w-40"
+                    >
                       <img
                         src={URL.createObjectURL(file)}
                         alt={`Preview ${index + 1}`}
@@ -218,7 +233,7 @@ export function ProductImageManager({
                       />
                       <label
                         htmlFor={`primary-${image.id}`}
-                        className="text-xs text-muted-foreground cursor-pointer"
+                        className="text-xs text-foreground cursor-pointer"
                       >
                         Primary
                       </label>
@@ -231,11 +246,7 @@ export function ProductImageManager({
         </div>
 
         <DialogFooter>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-          >
+          <Button type="button" variant="outline" onClick={handleClose}>
             Cancel
           </Button>
           <Button

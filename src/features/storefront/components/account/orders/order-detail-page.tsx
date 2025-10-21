@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Package, Truck, CheckCircle, Clock } from "lucide-react";
+import { formatPrice } from "@/lib/utils";
 
 interface OrderDetailPageProps {
   orderId: string;
@@ -83,7 +84,7 @@ export default function OrderDetailPage({ orderId }: OrderDetailPageProps) {
                     <p className="text-sm text-muted-foreground">
                       Quantity: {item.quantity}
                     </p>
-                    <p className="font-bold">${item.price}</p>
+                    <p className="font-bold">{formatPrice(item.price)}</p>
                   </div>
                 </div>
               ))}
@@ -140,22 +141,22 @@ export default function OrderDetailPage({ orderId }: OrderDetailPageProps) {
             <CardContent className="space-y-2">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span>${order.subtotal}</span>
+                <span>{formatPrice(order.subtotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Shipping</span>
                 <span>
-                  {order.shipping === 0 ? "Free" : `$${order.shipping}`}
+                  {order.shipping === 0 ? "Free" : formatPrice(order.shipping)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span>Tax</span>
-                <span>${order.tax}</span>
+                <span>{formatPrice(order.tax)}</span>
               </div>
               <Separator />
               <div className="flex justify-between font-bold text-lg">
                 <span>Total</span>
-                <span>${order.total}</span>
+                <span>{formatPrice(order.total)}</span>
               </div>
             </CardContent>
           </Card>

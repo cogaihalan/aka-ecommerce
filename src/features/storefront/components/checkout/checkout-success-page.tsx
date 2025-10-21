@@ -69,7 +69,11 @@ export default function CheckoutSuccessPage() {
                 </div>
                 <div className="flex justify-between">
                   <span>Tổng tiền:</span>
-                  <Price price={orderData.total} size="base" weight="bold" />
+                  <Price
+                    price={orderData.total}
+                    size="base"
+                    weight="semibold"
+                  />
                 </div>
                 <div className="flex justify-between">
                   <span>Phương thức thanh toán:</span>

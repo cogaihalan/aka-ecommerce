@@ -58,9 +58,7 @@ export class UnifiedProductService {
       ? `${this.basePath}?${queryString}`
       : this.basePath;
 
-    console.log(endpoint);
     const response = await apiClient.get<ProductListResponse>(endpoint);
-    console.log(response);
     return response.data!;
   }
 
@@ -110,12 +108,7 @@ export class UnifiedProductService {
 
     const response = await apiClient.post<Product>(
       `${this.basePath}/${data.id}/images`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
+      formData
     );
     return response.data!;
   }
@@ -123,7 +116,9 @@ export class UnifiedProductService {
   async updateProductImages(data: ProductImageUpdateRequest): Promise<Product> {
     const formData = new FormData();
     formData.append("id", data.id.toString());
-    formData.append("removedImageIds", JSON.stringify(data.removedImageIds));
+    data.removedImageIds.forEach((id) => {
+      formData.append("removedImageIds", id.toString());
+    });
     if (data.primaryImageId !== undefined) {
       formData.append("primaryImageId", data.primaryImageId?.toString() || "");
     }
@@ -133,12 +128,7 @@ export class UnifiedProductService {
 
     const response = await apiClient.put<Product>(
       `${this.basePath}/${data.id}/images`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
+      formData
     );
     return response.data!;
   }
@@ -156,9 +146,6 @@ export class UnifiedProductService {
       {
         method: "DELETE",
         body: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
       }
     );
     return response.data!;

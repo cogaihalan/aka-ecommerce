@@ -21,7 +21,7 @@ export function formatCurrency(
   currency: string = "VND",
   locale: string = "vi-VN"
 ) {
-  if (amount === undefined || amount === null) return "0 ₫";
+  if (amount === undefined || amount === null) return "0 đ";
 
   try {
     const numAmount = typeof amount === "string" ? parseFloat(amount) : amount;
@@ -30,7 +30,7 @@ export function formatCurrency(
       currency: currency,
     }).format(numAmount);
   } catch (_err) {
-    return "0 ₫";
+    return "0 đ";
   }
 }
 

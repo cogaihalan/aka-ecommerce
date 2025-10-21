@@ -16,7 +16,8 @@ import {
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth-store";
-import { useUser, SignOutButton } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
+import { SignOutButton } from "./sign-out-button";
 import { UserAvatarProfile } from "@/components/user-avatar-profile";
 
 interface MiniAuthDropdownProps {
@@ -243,18 +244,14 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
                 </Button>
               )}
 
-              <Button
-                variant="ghost"
-                className="w-full justify-start h-10 px-3 text-destructive hover:text-destructive hover:bg-destructive/10"
+              <SignOutButton
+                redirectUrl="/auth/sign-in"
+                className="w-full justify-start h-10 text-sm px-3 text-destructive hover:text-destructive hover:bg-destructive/10 flex items-center gap-3"
                 onClick={closeDropdown}
               >
-                <SignOutButton redirectUrl="/auth/sign-in">
-                  <div className="flex items-center gap-3">
-                    <LogOut className="w-4 h-4" />
-                    <span>Sign Out</span>
-                  </div>
-                </SignOutButton>
-              </Button>
+                <LogOut className="w-4 h-4" />
+                <span>Sign Out</span>
+              </SignOutButton>
             </div>
           </div>
         </>

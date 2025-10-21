@@ -42,7 +42,11 @@ const formSchema = z.object({
   description: z.string().min(1, "Description is required"),
   stock: z.number().min(0, "Stock must be non-negative"),
   price: z.number().min(0, "Price must be positive"),
-  discountPrice: z.number().min(0, "Discount price must be non-negative").optional(),
+  discountPrice: z
+    .number()
+    .min(0, "Discount price must be non-negative")
+    .optional(),
+  status: z.enum(["DRAFT", "ACTIVE", "INACTIVE", "ARCHIVED", "OUT_OF_STOCK"]),
   categoryIds: z.array(z.number()).min(1, "At least one category is required"),
 });
 
@@ -63,7 +67,7 @@ export function ProductDialog({
 }: ProductDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
   const { categories } = useApp();
-  
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -72,6 +76,7 @@ export function ProductDialog({
       stock: product?.stock || 0,
       price: product?.price || 0,
       discountPrice: product?.discountPrice || 0,
+      status: product?.status || "DRAFT",
       categoryIds: product?.categories?.map((c: any) => c.id) || [],
     },
   });
@@ -223,13 +228,41 @@ export function ProductDialog({
 
             <FormField
               control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Status</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select product status" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="DRAFT">Draft</SelectItem>
+                      <SelectItem value="ACTIVE">Active</SelectItem>
+                      <SelectItem value="INACTIVE">Inactive</SelectItem>
+                      <SelectItem value="ARCHIVED">Archived</SelectItem>
+                      <SelectItem value="OUT_OF_STOCK">Out of Stock</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="categoryIds"
               render={({ field }) => {
-                const selectedCategories = categories.filter(cat => 
+                const selectedCategories = categories.filter((cat) =>
                   field.value?.includes(cat.id)
                 );
-                const availableCategories = categories.filter(cat => 
-                  !field.value?.includes(cat.id)
+                const availableCategories = categories.filter(
+                  (cat) => !field.value?.includes(cat.id)
                 );
 
                 return (
@@ -252,7 +285,10 @@ export function ProductDialog({
                                 size="sm"
                                 className="h-4 w-4 p-0 hover:bg-transparent"
                                 onClick={() => {
-                                  const newIds = field.value?.filter(id => id !== category.id) || [];
+                                  const newIds =
+                                    field.value?.filter(
+                                      (id) => id !== category.id
+                                    ) || [];
                                   field.onChange(newIds);
                                 }}
                               >
@@ -262,50 +298,50 @@ export function ProductDialog({
                           ))}
                         </div>
                       )}
-                      
+
                       {/* Category selection dropdown */}
-                      <Select
-                        onValueChange={(value) => {
-                          const categoryId = parseInt(value);
-                          const currentIds = field.value || [];
-                          if (!currentIds.includes(categoryId)) {
-                            field.onChange([...currentIds, categoryId]);
-                          }
-                        }}
-                      >
-                        <SelectTrigger>
-                          <SelectValue 
-                            placeholder={
-                              selectedCategories.length > 0 
-                                ? "Add more categories..." 
-                                : "Select categories"
-                            } 
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {availableCategories.length > 0 ? (
-                            availableCategories.map((category) => (
+                      {availableCategories.length > 0 ? (
+                        <Select
+                          onValueChange={(value) => {
+                            const categoryId = parseInt(value);
+                            const currentIds = field.value || [];
+                            if (!currentIds.includes(categoryId)) {
+                              field.onChange([...currentIds, categoryId]);
+                            }
+                          }}
+                          value=""
+                        >
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder={
+                                selectedCategories.length > 0
+                                  ? "Add more categories..."
+                                  : "Select categories"
+                              }
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {availableCategories.map((category) => (
                               <SelectItem
                                 key={category.id}
                                 value={category.id.toString()}
                               >
                                 {category.name}
                               </SelectItem>
-                            ))
-                          ) : (
-                            <SelectItem value="" disabled>
-                              All categories selected
-                            </SelectItem>
-                          )}
-                        </SelectContent>
-                      </Select>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <div className="flex items-center justify-center h-10 px-3 py-2 text-sm text-muted-foreground border border-input rounded-md bg-muted/50">
+                          All categories selected
+                        </div>
+                      )}
                     </div>
                     <FormMessage />
                   </FormItem>
                 );
               }}
             />
-
 
             <DialogFooter>
               <Button

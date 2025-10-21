@@ -93,10 +93,6 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .glider-slide {
-    @apply px-2;
-  }
-
-  .product-image-gallery .glider-slide {
     @apply px-0;
   }
 }

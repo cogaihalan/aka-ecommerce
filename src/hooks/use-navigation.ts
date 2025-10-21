@@ -16,13 +16,14 @@ export function useNavigation(options: UseNavigationOptions = {}) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const { defaultFilters = {}, defaultPage = 0, defaultLimit = 12 } = options;
+  const { defaultFilters = {}, defaultPage = 1, defaultLimit = 12 } = options;
 
   // Parse URL parameters
   const parseUrlParams = useCallback((): NavigationState => {
     const filters: NavigationFilters = {
       ...DEFAULT_FILTERS,
       ...defaultFilters,
+      priceRange: DEFAULT_FILTERS.priceRange,
     };
 
     // Parse search
@@ -36,18 +37,29 @@ export function useNavigation(options: UseNavigationOptions = {}) {
     // Parse price range
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
-    if (minPrice && maxPrice) {
-      filters.priceRange = [parseInt(minPrice), parseInt(maxPrice)];
+    if (minPrice !== null || maxPrice !== null) {
+      const min =
+        minPrice !== null
+          ? parseInt(minPrice)
+          : (DEFAULT_FILTERS.priceRange[0] ?? 0);
+      const max =
+        maxPrice !== null
+          ? parseInt(maxPrice)
+          : (DEFAULT_FILTERS.priceRange[1] ?? 100000000);
+      filters.priceRange = [min, max];
     }
 
     // Parse categoryIds as comma-separated string
     const categoryIdsParam = searchParams.get("categoryIds");
     if (categoryIdsParam) {
-      filters.categoryIds = categoryIdsParam.split(",").map(id => id.trim()).filter(id => id);
+      filters.categoryIds = categoryIdsParam
+        .split(",")
+        .map((id) => id.trim())
+        .filter((id) => id);
     }
 
     // Parse pagination
-    const page = parseInt(searchParams.get("page") || "0");
+    const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(
       searchParams.get("limit") || defaultLimit.toString()
     );
@@ -79,15 +91,21 @@ export function useNavigation(options: UseNavigationOptions = {}) {
       // Add price range
       if (
         newState.filters.priceRange &&
-        (newState.filters.priceRange[0] !== DEFAULT_FILTERS.priceRange[0] ||
-          newState.filters.priceRange[1] !== DEFAULT_FILTERS.priceRange[1])
+        newState.filters.priceRange.length === 2
       ) {
-        params.set("minPrice", newState.filters.priceRange[0].toString());
-        params.set("maxPrice", newState.filters.priceRange[1].toString());
+        const [min, max] = newState.filters.priceRange;
+        const [defMin = 0, defMax = 100000000] = DEFAULT_FILTERS.priceRange as
+          | [number, number]
+          | [] as any;
+        if (min !== defMin) params.set("minPrice", min.toString());
+        if (max !== defMax) params.set("maxPrice", max.toString());
       }
 
       // Add categoryIds as comma-separated string
-      if (newState.filters.categoryIds && newState.filters.categoryIds.length > 0) {
+      if (
+        newState.filters.categoryIds &&
+        newState.filters.categoryIds.length > 0
+      ) {
         params.set("categoryIds", newState.filters.categoryIds.join(","));
       }
 
@@ -132,13 +150,13 @@ export function useNavigation(options: UseNavigationOptions = {}) {
           return prevState;
         }
 
-        const updatedState = {
+        const updatedState: NavigationState = {
           ...prevState,
           filters: {
             ...prevState.filters,
             ...newFilters,
           },
-          page: defaultPage, // Reset to first page when filters change
+          page: 1, // Reset to first page when filters change
         };
         updateUrl(updatedState);
         return updatedState;
@@ -164,7 +182,7 @@ export function useNavigation(options: UseNavigationOptions = {}) {
   // Reset filters
   const resetFilters = useCallback(() => {
     setState((prevState) => {
-      const updatedState = {
+      const updatedState: NavigationState = {
         ...prevState,
         filters: { ...DEFAULT_FILTERS, ...defaultFilters },
         page: defaultPage,
@@ -183,6 +201,7 @@ export function useNavigation(options: UseNavigationOptions = {}) {
     if (filters.sort && filters.sort !== "featured") count++;
     if (
       filters.priceRange &&
+      filters.priceRange.length === 2 &&
       (filters.priceRange[0] !== DEFAULT_FILTERS.priceRange[0] ||
         filters.priceRange[1] !== DEFAULT_FILTERS.priceRange[1])
     )
@@ -216,6 +235,6 @@ export function useNavigation(options: UseNavigationOptions = {}) {
     updateFilters,
     updatePage,
     resetFilters,
-    getActiveFiltersCount
+    getActiveFiltersCount,
   };
 }

@@ -10,7 +10,7 @@ import { Price } from "@/components/ui/price";
 import { Trash2, Plus, Minus, AlertCircle } from "lucide-react";
 import { CartItem as CartItemType } from "@/types/cart";
 import { useCartStore } from "@/stores/cart-store";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 
 interface CartItemProps {
   item: CartItemType;
@@ -104,11 +104,11 @@ export function CartItem({
         <div className="flex items-center gap-2">
           <div className="text-right">
             <div className="text-sm font-semibold">
-              ${(item.price * item.quantity).toFixed(2)}
+              {formatPrice(item.price * item.quantity)}
             </div>
             {item.compareAtPrice && item.compareAtPrice > item.price && (
               <div className="text-xs text-muted-foreground line-through">
-                ${(item.compareAtPrice * item.quantity).toFixed(2)}
+                {formatPrice(item.compareAtPrice * item.quantity)}
               </div>
             )}
           </div>
@@ -198,11 +198,11 @@ export function CartItem({
 
           <div className="text-right min-w-[80px]">
             <div className="font-medium">
-              ${(item.price * item.quantity).toFixed(2)}
+              {formatPrice(item.price * item.quantity)}
             </div>
             {item.compareAtPrice && item.compareAtPrice > item.price && (
               <div className="text-xs text-muted-foreground line-through">
-                ${(item.compareAtPrice * item.quantity).toFixed(2)}
+                {formatPrice(item.compareAtPrice * item.quantity)}
               </div>
             )}
           </div>
@@ -264,7 +264,7 @@ export function CartItem({
                 price={item.price}
                 originalPrice={item.compareAtPrice}
                 size="lg"
-                weight="bold"
+                weight="semibold"
                 showDiscount={true}
               />
             </div>
@@ -303,11 +303,11 @@ export function CartItem({
 
             <div className="text-right">
               <div className="text-lg font-bold">
-                ${(item.price * item.quantity).toFixed(2)}
+                {formatPrice(item.price * item.quantity)}
               </div>
               {item.compareAtPrice && item.compareAtPrice > item.price && (
                 <div className="text-sm text-muted-foreground line-through">
-                  ${(item.compareAtPrice * item.quantity).toFixed(2)}
+                  {formatPrice(item.compareAtPrice * item.quantity)}
                 </div>
               )}
             </div>

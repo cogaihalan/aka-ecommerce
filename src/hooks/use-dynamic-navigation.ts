@@ -106,9 +106,9 @@ export function useDynamicNavigation() {
   const defaultFilters = useMemo(
     () => ({
       search: "",
-      sort: "featured",
+      sort: "featured", // Keep "featured" as default option
       priceRange: [0, 100000000] as [number, number],
-      categories: [],
+      categoryIds: [],
     }),
     []
   );

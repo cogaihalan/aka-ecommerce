@@ -12,7 +12,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { VideoPlayerProps } from "@/types/course";
+import { VideoPlayerProps } from "@/types/extensions/course";
 
 export function VideoPlayer({
   src,

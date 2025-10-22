@@ -50,7 +50,7 @@ const ProductCarousel: FC<ProductCarouselProps> = ({ slice }) => {
   }, [fetchProducts]);
 
   // Loading state
-  if (!isLoading) {
+  if (isLoading) {
     return (
       <section
         data-slice-type={slice.slice_type}

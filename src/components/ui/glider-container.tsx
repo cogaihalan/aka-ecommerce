@@ -1,6 +1,6 @@
 "use client";
 
-import React, { forwardRef, ReactNode } from "react";
+import React, { forwardRef, ReactNode, useRef } from "react";
 import Glider from "react-glider";
 import { cn } from "@/lib/utils";
 
@@ -28,7 +28,7 @@ export interface GliderSettings {
   onAdd?: (event: any) => void;
   onRemove?: (event: any) => void;
   onRefresh?: (event: any) => void;
-  onLoaded?: (event: any) => void;
+  onLoad?: (event: any) => void;
   onDestroy?: (event: any) => void;
   onAnimated?: (event: any) => void;
   onJumped?: (event: any) => void;
@@ -42,10 +42,17 @@ export interface GliderContainerProps {
 }
 
 const GliderContainer = forwardRef<any, GliderContainerProps>(
-  ({ children, settings = {}, className, slideClassName }, ref) => {
+  ({ 
+    children, 
+    settings = {}, 
+    className, 
+    slideClassName,
+  }, ref) => {
+    const gliderRef = useRef<any>(null);
+
     const defaultSettings: GliderSettings = {
-      hasArrows: true,
-      hasDots: true,
+      hasArrows: false, // Disable default arrows
+      hasDots: false,   // Disable default dots
       slidesToShow: 3,
       slidesToScroll: 1,
       scrollLock: true,
@@ -85,7 +92,16 @@ const GliderContainer = forwardRef<any, GliderContainerProps>(
     return (
       <div className="relative">
         <Glider
-          ref={ref}
+          ref={(glider) => {
+            gliderRef.current = glider;
+            if (ref) {
+              if (typeof ref === 'function') {
+                ref(glider);
+              } else {
+                ref.current = glider;
+              }
+            }
+          }}
           {...mergedSettings}
           className={cn("glider-container", className)}
         >

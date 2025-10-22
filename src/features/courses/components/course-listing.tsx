@@ -6,25 +6,25 @@ import { convertSortToApiParams } from "@/lib/utils/sort-conversion";
 
 export default async function CourseListingPage() {
   const page = searchParamsCache.get("page");
-  const search = searchParamsCache.get("name"); // Use 'name' instead of 'search'
   const pageLimit = searchParamsCache.get("perPage");
-  const isActive = searchParamsCache.get("isActive");
   const sort = searchParamsCache.get("sort");
-
+  const name = searchParamsCache.get("name");
+  const status = searchParamsCache.get("status");
   const sortParams = convertSortToApiParams(sort);
 
   const filters = {
-    page,
-    limit: pageLimit,
-    ...(search && { search: search.toString() }),
-    ...(isActive !== null && { isActive: isActive === "true" }),
+    page: page ? parseInt(page.toString()) : 1,
+    size: pageLimit ? parseInt(pageLimit.toString()) : 10,
+    name: name?.toString(),
+    active: status?.toString() === "ACTIVE" ? true : false,
     ...sortParams,
   };
 
-  // Fetch courses from API
   const data = await serverUnifiedCourseService.getCourses(filters);
-  const totalCourses = data.total;
-  const courses = data.courses;
+  const totalCourses = data.pagination.total;
+  const courses = data.items;
+
+  console.log(courses, filters);
 
   return (
     <DataTableWrapper

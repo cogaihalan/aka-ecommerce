@@ -1,9 +1,9 @@
-import { serverApiClient } from "@/lib/api/server";
+import { apiClient } from "@/lib/api/client";
 import type { Course } from "@/types";
 import type { QueryParams, CourseListResponse, CourseCreateRequest, CourseUpdateRequest, CourseMediaUploadRequest } from "@/lib/api/types";
 
 
-class ServerUnifiedCourseService {
+class UnifiedCourseService {
   private basePath = "/admin/courses";
 
   async getCourses(params: QueryParams = {}): Promise<CourseListResponse> {
@@ -22,31 +22,28 @@ class ServerUnifiedCourseService {
 
     // Handle search
     if (params.name !== undefined) searchParams.append("name", params.name.toString());
-    
-    // Handle status filtering
-    if (params.active !== undefined) searchParams.append("active", params.active.toString());
 
     const queryString = searchParams.toString();
     const endpoint = queryString
       ? `${this.basePath}?${queryString}`
       : this.basePath;
 
-    const response = await serverApiClient.get<CourseListResponse>(endpoint);
+    const response = await apiClient.get<CourseListResponse>(endpoint);
     return response.data!;
   }
 
   async getCourse(id: number): Promise<Course> {
-    const response = await serverApiClient.get<Course>(`${this.basePath}/${id}`);
+    const response = await apiClient.get<Course>(`${this.basePath}/${id}`);
     return response.data!;
   }
 
   async createCourse(data: CourseCreateRequest): Promise<Course> {
-    const response = await serverApiClient.post<Course>(this.basePath, data);
+    const response = await apiClient.post<Course>(this.basePath, data);
     return response.data!;
   }
 
   async updateCourse(id: number, data: CourseUpdateRequest): Promise<Course> {
-    const response = await serverApiClient.put<Course>(
+    const response = await apiClient.put<Course>(
       `${this.basePath}/${id}`,
       data
     );
@@ -57,7 +54,7 @@ class ServerUnifiedCourseService {
     const formData = new FormData();
     formData.append("id", data.id.toString());
     formData.append("file", data.file);
-    const response = await serverApiClient.post<Course>(`${this.basePath}/${data.id}/upload-image`, formData);
+    const response = await apiClient.post<Course>(`${this.basePath}/${data.id}/upload-image`, formData);
     return response.data!;
   }
 
@@ -65,9 +62,9 @@ class ServerUnifiedCourseService {
     const formData = new FormData();
     formData.append("id", data.id.toString());
     formData.append("file", data.file);
-    const response = await serverApiClient.post<Course>(`${this.basePath}/${data.id}/upload-video`, formData);
+    const response = await apiClient.post<Course>(`${this.basePath}/${data.id}/upload-video`, formData);
     return response.data!;
   }
 }
 
-export const serverUnifiedCourseService = new ServerUnifiedCourseService();
+export const unifiedCourseService = new UnifiedCourseService();

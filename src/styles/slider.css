@@ -69,16 +69,7 @@
   @apply overflow-hidden;
 }
 
-/* Thumbnail slider arrows */
-.product-image-gallery .glider-prev,
-.product-image-gallery .glider-next {
-  @apply bg-white/90 hover:bg-white shadow-lg border border-gray-200;
-}
-
-.product-image-gallery .glider-prev:hover,
-.product-image-gallery .glider-next:hover {
-  @apply bg-white shadow-xl;
-}
+/* Custom navigation arrows are now handled by GliderContainer component */
 
 /* Navigation arrow styles */
 .product-gallery-nav {

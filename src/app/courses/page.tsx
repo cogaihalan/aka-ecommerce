@@ -6,7 +6,7 @@ import { CourseGridSkeleton } from "@/features/storefront/components/course/cour
 import { CourseFiltersSkeleton } from "@/features/storefront/components/course/course-filters-skeleton";
 import { searchParamsCache } from "@/lib/searchparams";
 import { serverUnifiedCourseService } from "@/lib/api/services/server";
-import { CourseListParams } from "@/types/course";
+import { QueryParams } from "@/lib/api/types";
 
 export const metadata: Metadata = {
   title: "Courses",
@@ -17,9 +17,8 @@ interface CoursesPageProps {
   searchParams: Promise<{
     page?: string;
     search?: string;
-    sortBy?: string;
-    sortOrder?: string;
-    isActive?: string;
+    perPage?: string;
+    sort?: string;
   }>;
 }
 
@@ -27,14 +26,11 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
   const params = await searchParams;
   searchParamsCache.parse(params);
 
-  const courseParams: CourseListParams = {
+  const courseParams: QueryParams = {
     page: params.page ? parseInt(params.page) : 1,
-    search: params.search,
-    sortBy: params.sortBy || "createdAt",
-    sortOrder: (params.sortOrder as "asc" | "desc") || "desc",
-    filters: {
-      isActive: true, // Always show only active courses
-    },
+    size: params.perPage ? parseInt(params.perPage) : 10,
+    sort: params.sort ? [`${params.sort},desc`] : ["createdAt,desc"],
+    name: params.search?.toString(),
   };
 
   const data = await serverUnifiedCourseService.getCourses(courseParams);
@@ -57,7 +53,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
 
         <div className="lg:w-3/4">
           <Suspense fallback={<CourseGridSkeleton />}>
-            <CourseGrid courses={data.courses} total={data.total} />
+            <CourseGrid courses={data.items} total={data.pagination.total} />
           </Suspense>
         </div>
       </div>

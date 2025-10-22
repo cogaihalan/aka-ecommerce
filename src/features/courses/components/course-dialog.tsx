@@ -17,7 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  Form,
+  Form, 
   FormControl,
   FormDescription,
   FormField,
@@ -30,11 +30,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { FileUploader } from "@/components/file-uploader";
 import {
-  Course,
   CourseCreateRequest,
   CourseUpdateRequest,
-} from "@/types/course";
+} from "@/lib/api/types";
 import { unifiedCourseService } from "@/lib/api/services/unified";
+import type { Course } from "@/types";
 
 const courseSchema = z.object({
   name: z.string().min(1, "Course name is required"),
@@ -42,7 +42,7 @@ const courseSchema = z.object({
   videoUrl: z.string().url("Please enter a valid video URL"),
   thumbnailUrl: z.string().url("Please enter a valid thumbnail URL").optional(),
   duration: z.number().min(1, "Duration must be at least 1 second").optional(),
-  isActive: z.boolean().default(true),
+  active: z.boolean().default(true),
 });
 
 type CourseFormValues = z.infer<typeof courseSchema>;
@@ -63,6 +63,10 @@ export function CourseDialog({
   const [thumbnailFiles, setThumbnailFiles] = useState<File[]>([]);
   const [useVideoUpload, setUseVideoUpload] = useState(false);
   const [useThumbnailUpload, setUseThumbnailUpload] = useState(false);
+  const [isUploadingVideo, setIsUploadingVideo] = useState(false);
+  const [isUploadingThumbnail, setIsUploadingThumbnail] = useState(false);
+  const [uploadedVideoUrl, setUploadedVideoUrl] = useState<string>("");
+  const [uploadedThumbnailUrl, setUploadedThumbnailUrl] = useState<string>("");
   const router = useRouter();
 
   const isEditMode = !!course;
@@ -75,7 +79,7 @@ export function CourseDialog({
       videoUrl: "",
       thumbnailUrl: "",
       duration: undefined,
-      isActive: true,
+      active: true,
     },
   });
 
@@ -89,7 +93,7 @@ export function CourseDialog({
         videoUrl: course.videoUrl,
         thumbnailUrl: course.thumbnailUrl || "",
         duration: course.duration,
-        isActive: course.isActive,
+        active: course.active,
       });
     } else {
       // Add mode - reset to default values
@@ -99,7 +103,7 @@ export function CourseDialog({
         videoUrl: "",
         thumbnailUrl: "",
         duration: undefined,
-        isActive: true,
+        active: true,
       });
     }
 
@@ -109,6 +113,10 @@ export function CourseDialog({
       setUseThumbnailUpload(false);
       setVideoFiles([]);
       setThumbnailFiles([]);
+      setUploadedVideoUrl("");
+      setUploadedThumbnailUrl("");
+      setIsUploadingVideo(false);
+      setIsUploadingThumbnail(false);
     }
   }, [course, form, open]);
 
@@ -121,14 +129,10 @@ export function CourseDialog({
         const updateData: CourseUpdateRequest = {
           ...data,
           videoUrl: useVideoUpload
-            ? videoFiles.length > 0
-              ? "uploaded-video-url"
-              : course.videoUrl
+            ? uploadedVideoUrl || course.videoUrl
             : data.videoUrl || course.videoUrl,
           thumbnailUrl: useThumbnailUpload
-            ? thumbnailFiles.length > 0
-              ? "uploaded-thumbnail-url"
-              : course.thumbnailUrl
+            ? uploadedThumbnailUrl || course.thumbnailUrl
             : data.thumbnailUrl || course.thumbnailUrl,
         };
 
@@ -136,20 +140,7 @@ export function CourseDialog({
         toast.success("Course updated successfully");
       } else {
         // Add mode
-        const createData: CourseCreateRequest = {
-          ...data,
-          videoUrl: useVideoUpload
-            ? videoFiles.length > 0
-              ? "uploaded-video-url"
-              : "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-            : data.videoUrl ||
-              "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-          thumbnailUrl: useThumbnailUpload
-            ? thumbnailFiles.length > 0
-              ? "uploaded-thumbnail-url"
-              : "/assets/placeholder-image.jpeg"
-            : data.thumbnailUrl || "/assets/placeholder-image.jpeg",
-        };
+        const createData: CourseCreateRequest = { ...data, active: data.active ?? true };
 
         await unifiedCourseService.createCourse(createData);
         toast.success("Course created successfully");
@@ -161,6 +152,10 @@ export function CourseDialog({
       setThumbnailFiles([]);
       setUseVideoUpload(false);
       setUseThumbnailUpload(false);
+      setUploadedVideoUrl("");
+      setUploadedThumbnailUrl("");
+      setIsUploadingVideo(false);
+      setIsUploadingThumbnail(false);
       router.refresh();
     } catch (error) {
       toast.error(`Failed to ${isEditMode ? "update" : "create"} course`);
@@ -174,34 +169,58 @@ export function CourseDialog({
   };
 
   const handleVideoUpload = async (files: File[]) => {
-    // In a real app, upload to storage service and get URL
-    toast.info("Video upload functionality would be implemented here");
-    setVideoFiles(files);
+    if (!course || files.length === 0) return;
+    
+    try {
+      setIsUploadingVideo(true);
+      const file = files[0];
+      
+      const uploadedCourse = await unifiedCourseService.uploadCourseVideo({
+        id: course.id,
+        file: file,
+      });
+      
+      setUploadedVideoUrl(uploadedCourse.videoUrl || "");
+      setVideoFiles(files);
+      toast.success("Video uploaded successfully");
+    } catch (error) {
+      toast.error("Failed to upload video");
+      console.error("Video upload error:", error);
+    } finally {
+      setIsUploadingVideo(false);
+    }
   };
 
   const handleThumbnailUpload = async (files: File[]) => {
-    // In a real app, upload to storage service and get URL
-    toast.info("Thumbnail upload functionality would be implemented here");
-    setThumbnailFiles(files);
+    if (!course || files.length === 0) return;
+    
+    try {
+      setIsUploadingThumbnail(true);
+      const file = files[0];
+      
+      const uploadedCourse = await unifiedCourseService.uploadCourseThumbnail({
+        id: course.id,
+        file: file,
+      });
+      
+      setUploadedThumbnailUrl(uploadedCourse.thumbnailUrl || "");
+      setThumbnailFiles(files);
+      toast.success("Thumbnail uploaded successfully");
+    } catch (error) {
+      toast.error("Failed to upload thumbnail");
+      console.error("Thumbnail upload error:", error);
+    } finally {
+      setIsUploadingThumbnail(false);
+    }
   };
 
   // Clear fields when switching modes
   const handleVideoModeChange = (useUpload: boolean) => {
     setUseVideoUpload(useUpload);
-    if (useUpload) {
-      form.setValue("videoUrl", "");
-    } else {
-      setVideoFiles([]);
-    }
   };
 
   const handleThumbnailModeChange = (useUpload: boolean) => {
     setUseThumbnailUpload(useUpload);
-    if (useUpload) {
-      form.setValue("thumbnailUrl", "");
-    } else {
-      setThumbnailFiles([]);
-    }
   };
 
   return (
@@ -258,105 +277,131 @@ export function CourseDialog({
                   )}
                 />
 
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <FormLabel>Video Source</FormLabel>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm text-muted-foreground">URL</span>
-                      <Switch
-                        checked={useVideoUpload}
-                        onCheckedChange={handleVideoModeChange}
-                      />
-                      <span className="text-sm text-muted-foreground">
-                        Upload
-                      </span>
+                {isEditMode && (
+                <>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <FormLabel>Video Source</FormLabel>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm text-muted-foreground">URL</span>
+                        <Switch
+                          checked={useVideoUpload}
+                          onCheckedChange={handleVideoModeChange}
+                        />
+                        <span className="text-sm text-muted-foreground">
+                          Upload
+                        </span>
+                      </div>
                     </div>
+
+                    {!useVideoUpload ? (
+                      <FormField
+                        control={form.control}
+                        name="videoUrl"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Video URL</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="https://example.com/video.mp4"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormDescription>
+                              Enter the URL of the video file
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    ) : (
+                      <div className="space-y-2">
+                        <FormLabel>Video Upload</FormLabel>
+                        <FileUploader
+                          value={videoFiles}
+                          onValueChange={setVideoFiles}
+                          onUpload={handleVideoUpload}
+                          accept={{ "video/*": [] }}
+                          maxSize={1024 * 1024 * 100} // 100MB
+                          maxFiles={1}
+                          disabled={isUploadingVideo}
+                        />
+                        {isUploadingVideo && (
+                          <div className="text-sm text-muted-foreground">
+                            Uploading video...
+                          </div>
+                        )}
+                        {uploadedVideoUrl && (
+                          <div className="text-sm text-green-600">
+                            Video uploaded successfully
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
 
-                  {!useVideoUpload ? (
-                    <FormField
-                      control={form.control}
-                      name="videoUrl"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Video URL</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="https://example.com/video.mp4"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            Enter the URL of the video file
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  ) : (
-                    <div className="space-y-2">
-                      <FormLabel>Video Upload</FormLabel>
-                      <FileUploader
-                        value={videoFiles}
-                        onValueChange={setVideoFiles}
-                        onUpload={handleVideoUpload}
-                        accept={{ "video/*": [] }}
-                        maxSize={1024 * 1024 * 100} // 100MB
-                        maxFiles={1}
-                      />
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <FormLabel>Thumbnail Source</FormLabel>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm text-muted-foreground">URL</span>
+                        <Switch
+                          checked={useThumbnailUpload}
+                          onCheckedChange={handleThumbnailModeChange}
+                        />
+                        <span className="text-sm text-muted-foreground">
+                          Upload
+                        </span>
+                      </div>
                     </div>
-                  )}
-                </div>
 
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <FormLabel>Thumbnail Source</FormLabel>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm text-muted-foreground">URL</span>
-                      <Switch
-                        checked={useThumbnailUpload}
-                        onCheckedChange={handleThumbnailModeChange}
+                    {!useThumbnailUpload ? (
+                      <FormField
+                        control={form.control}
+                        name="thumbnailUrl"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Thumbnail URL</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="https://example.com/thumbnail.jpg"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormDescription>
+                              Enter the URL of the thumbnail image
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
-                      <span className="text-sm text-muted-foreground">
-                        Upload
-                      </span>
-                    </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <FormLabel>Thumbnail Upload</FormLabel>
+                        <FileUploader
+                          value={thumbnailFiles}
+                          onValueChange={setThumbnailFiles}
+                          onUpload={handleThumbnailUpload}
+                          accept={{ "image/*": [] }}
+                          maxSize={1024 * 1024 * 5} // 5MB
+                          maxFiles={1}
+                          disabled={isUploadingThumbnail}
+                        />
+                        {isUploadingThumbnail && (
+                          <div className="text-sm text-muted-foreground">
+                            Uploading thumbnail...
+                          </div>
+                        )}
+                        {uploadedThumbnailUrl && (
+                          <div className="text-sm text-green-600">
+                            Thumbnail uploaded successfully
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
-
-                  {!useThumbnailUpload ? (
-                    <FormField
-                      control={form.control}
-                      name="thumbnailUrl"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Thumbnail URL</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="https://example.com/thumbnail.jpg"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            Enter the URL of the thumbnail image
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  ) : (
-                    <div className="space-y-2">
-                      <FormLabel>Thumbnail Upload</FormLabel>
-                      <FileUploader
-                        value={thumbnailFiles}
-                        onValueChange={setThumbnailFiles}
-                        onUpload={handleThumbnailUpload}
-                        accept={{ "image/*": [] }}
-                        maxSize={1024 * 1024 * 5} // 5MB
-                        maxFiles={1}
-                      />
-                    </div>
-                  )}
-                </div>
+                </>
+                )}
 
                 <div className="grid grid-cols-2 gap-3">
                   <FormField
@@ -384,7 +429,7 @@ export function CourseDialog({
 
                   <FormField
                     control={form.control}
-                    name="isActive"
+                    name="active"
                     render={({ field }) => (
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
                         <div className="space-y-0.5">

@@ -5,10 +5,8 @@ import { components } from "@/slices";
 
 interface PrismicPageRendererProps {
   content: PrismicContent;
-  type: "page" | "static_page" | "blog_post";
 }
 
-// Slice data structure interface
 interface SliceData {
   slice_type: string;
   variation: string;
@@ -19,17 +17,9 @@ interface SliceData {
   slice_label?: string | null;
 }
 
-// Page data with slices
-interface PageDataWithSlices {
-  slices: SliceData[];
-  meta_title?: string | null;
-  meta_description?: string | null;
-  meta_image?: any;
-}
 
 export function PrismicPageRenderer({
   content,
-  type,
 }: PrismicPageRendererProps) {
   // Type assertion to handle the data structure
   const data = content.data as any;

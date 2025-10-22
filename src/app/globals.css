@@ -285,3 +285,7 @@
     background-position: 200% 0;
   }
 }
+
+@utility background-overlay {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.24) 100%);
+}

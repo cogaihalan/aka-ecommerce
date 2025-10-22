@@ -1,5 +1,5 @@
 // Import comprehensive product types
-import type { Product, Category, Order, User, ProductStatus } from "@/types";
+import type { Product, Category, Order, User, ProductStatus, Course } from "@/types";
 
 // Base API types
 export interface PaginationResponse {
@@ -14,6 +14,7 @@ export interface QueryParams {
   size?: number;
   sort?: string[];
   name?: string;
+  active?: boolean;
   categoryIds?: string[];
   minPrice?: number;
   maxPrice?: number;
@@ -38,6 +39,11 @@ export interface OrderListResponse {
 
 export interface UserListResponse {
   items: User[];
+  pagination: PaginationResponse;
+}
+
+export interface CourseListResponse {
+  items: Course[];
   pagination: PaginationResponse;
 }
 
@@ -120,3 +126,38 @@ export interface UpdateCartItemRequest {
 export interface RemoveCartItemRequest {
   variantId: number;
 }
+
+
+// Extension API types
+
+// Course API types
+export interface CourseCreateRequest {
+  name: string;
+  description: string;
+  duration?: number;
+  active: boolean;
+}
+
+export interface CourseUpdateRequest {
+  id?: number;
+  name?: string;
+  description?: string;
+  videoUrl?: string;
+  thumbnailUrl?: string;
+  duration?: number;
+  active?: boolean;
+}
+
+export interface CourseMediaUploadRequest {
+  id: number;
+  file: File;
+}
+
+// Contest API types
+
+// Hairstyles API types
+
+// Contest API types
+
+// Submissions API types
+

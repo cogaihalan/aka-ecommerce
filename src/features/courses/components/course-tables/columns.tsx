@@ -1,15 +1,15 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
+import { Column, ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DataTableColumnHeader } from "@/components/ui/table/data-table-column-header";
-import { Course } from "@/types/course";
+import { Course } from "@/types/extensions/course";
 import {
   MoreHorizontal,
   Play,
   Edit,
-  Trash2,
+  Text,
   Eye,
   EyeOff,
   Clock,
@@ -28,12 +28,23 @@ import { formatDuration } from "@/lib/format";
 import { useState } from "react";
 import { VideoPreviewDialog } from "../video-preview-dialog";
 import { CourseDialog } from "../course-dialog";
-import { unifiedCourseService } from "@/lib/api/services/unified";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 export const columns: ColumnDef<Course>[] = [
   {
+    id: "id",
+    accessorKey: "id",
+    header: ({ column }: { column: Column<Course, unknown> }) => (
+      <DataTableColumnHeader column={column} title="ID" />
+    ),
+    cell: ({ row }) => {
+      const id = row.getValue("id") as number;
+      return <div className="font-medium text-sm w-8">{id}</div>;
+    },
+    size: 32,
+    maxSize: 32,
+  },
+  {
+    id: "name",
     accessorKey: "name",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Course Name" />
@@ -49,6 +60,13 @@ export const columns: ColumnDef<Course>[] = [
         </div>
       );
     },
+    meta: {
+      label: "Course Name",
+      placeholder: "Search courses...",
+      variant: "text",
+      icon: Text,
+    },
+    enableColumnFilter: true,
   },
   {
     accessorKey: "duration",
@@ -66,28 +84,22 @@ export const columns: ColumnDef<Course>[] = [
     },
   },
   {
-    accessorKey: "isActive",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
-    ),
+    id: "status",
+    accessorKey: "status",
+    header: 'Status',
     cell: ({ row }) => {
-      const isActive = row.getValue("isActive") as boolean;
-      return (
-        <Badge variant={isActive ? "default" : "secondary"}>
-          {isActive ? (
-            <>
-              <Eye className="mr-1 h-3 w-3" />
-              Active
-            </>
-          ) : (
-            <>
-              <EyeOff className="mr-1 h-3 w-3" />
-              Inactive
-            </>
-          )}
-        </Badge>
-      );
+      const isActive = row.getValue("active") as string;
+      return <Badge variant={isActive === "ACTIVE" ? "default" : "secondary"}>{isActive === "ACTIVE" ? "Active" : "Inactive"}</Badge>;
     },
+    meta: {
+      label: "Status",
+      variant: "select",
+      options: [
+        { label: "Active", value: "ACTIVE" },
+        { label: "Inactive", value: "INACTIVE" },
+      ],
+    },
+    enableColumnFilter: true,
   },
   {
     accessorKey: "createdAt",
@@ -103,6 +115,27 @@ export const columns: ColumnDef<Course>[] = [
         </div>
       );
     },
+    meta: {
+      label: "Created",
+      variant: "date",
+      icon: Calendar,
+    },
+    enableColumnFilter: true,
+  },
+  {
+    accessorKey: "updatedAt",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Updated" />
+    ),
+    cell: ({ row }) => {
+      const date = row.getValue("updatedAt") as string;
+      return (
+        <div className="flex items-center gap-2">
+          <Calendar className="h-4 w-4 text-muted-foreground" />
+          <span>{format(new Date(date), "MMM dd, yyyy")}</span>
+        </div>
+      );
+    },
   },
   {
     id: "actions",
@@ -110,24 +143,6 @@ export const columns: ColumnDef<Course>[] = [
       const course = row.original;
       const [showVideoPreview, setShowVideoPreview] = useState(false);
       const [showEditDialog, setShowEditDialog] = useState(false);
-      const router = useRouter();
-
-      const handleDeleteCourse = async () => {
-        if (
-          window.confirm(
-            `Are you sure you want to delete "${course.name}"? This action cannot be undone.`
-          )
-        ) {
-          try {
-            await unifiedCourseService.deleteCourse(course.id);
-            toast.success("Course deleted successfully");
-            router.refresh();
-          } catch (error) {
-            toast.error("Failed to delete course");
-            console.error("Error deleting course:", error);
-          }
-        }
-      };
 
       return (
         <>
@@ -154,13 +169,6 @@ export const columns: ColumnDef<Course>[] = [
               >
                 <Edit className="mr-2 h-4 w-4" />
                 Edit Course
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={handleDeleteCourse}
-                className="cursor-pointer text-destructive"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete Course
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

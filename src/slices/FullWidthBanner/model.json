@@ -1,0 +1,109 @@
+{
+  "id": "full_width_banner",
+  "name": "Full Width Banner",
+  "description": "A full-width banner with background image and absolutely positioned content",
+  "type": "SharedSlice",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default Full Width Banner",
+      "imageUrl": "",
+      "primary": {
+        "backgroundImage": {
+          "type": "Image",
+          "config": {
+            "label": "Desktop Background Image",
+            "constraint": {
+              "width": 1920,
+              "height": 800
+            },
+            "thumbnails": []
+          }
+        },
+        "mobileBackgroundImage": {
+          "type": "Image",
+          "config": {
+            "label": "Mobile Background Image",
+            "constraint": {
+              "width": 768,
+              "height": 600
+            },
+            "thumbnails": []
+          }
+        },
+        "title": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Title",
+            "placeholder": "Enter the banner title",
+            "single": "heading1,heading2,heading3,heading4,heading5,heading6"
+          }
+        },
+        "description": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Description",
+            "placeholder": "Enter a description or subtitle",
+            "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "callToActionText": {
+          "type": "Text",
+          "config": {
+            "label": "Call to Action Text",
+            "placeholder": "Enter button text"
+          }
+        },
+        "callToActionLink": {
+          "type": "Link",
+          "config": {
+            "label": "Call to Action Link",
+            "placeholder": "Link for the CTA button",
+            "select": null
+          }
+        },
+        "horizontalPosition": {
+          "type": "Select",
+          "config": {
+            "label": "Horizontal Position",
+            "options": [
+              "left",
+              "center",
+              "right"
+            ],
+            "default_value": "center"
+          }
+        },
+        "verticalPosition": {
+          "type": "Select",
+          "config": {
+            "label": "Vertical Position",
+            "options": [
+              "top",
+              "middle",
+              "bottom"
+            ],
+            "default_value": "middle"
+          }
+        },
+        "contentAlignment": {
+          "type": "Select",
+          "config": {
+            "label": "Content Alignment",
+            "placeholder": "Select the content alignment",
+            "options": [
+              "left",
+              "center",
+              "right"
+            ],
+            "default_value": "left"
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

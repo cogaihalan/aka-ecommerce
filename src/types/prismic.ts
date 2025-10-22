@@ -83,18 +83,16 @@ export interface PrismicMegaMenu extends PrismicDocument {
   data: {
     menu_title?: string;
     menu_items?: Array<{
-      label?: string;
+      label: string;
       link?: any;
       has_mega_menu?: boolean;
-      layout_type?: "columns" | "featured_products" | "categories" | "mixed";
-      columns?: number;
-      featured_image?: any;
-      description?: any;
-      section_title?: string;
-      section_links?: string;
-      is_featured?: boolean;
-      icon?: any;
+      child_links?: Array<{
+        child_label: string;
+        child_link?: any;
+      }>;
     }>;
+    meta_title?: string;
+    meta_description?: string;
   };
 }
 

@@ -10,7 +10,7 @@
         "type": "Text",
         "config": {
           "label": "Menu Title",
-          "placeholder": "Main Navigation"
+          "placeholder": "Enter the main menu title"
         }
       },
       "menu_items": {
@@ -22,14 +22,14 @@
               "type": "Text",
               "config": {
                 "label": "Menu Item Label",
-                "placeholder": "Menu Item Label"
+                "placeholder": "Enter menu item label"
               }
             },
             "link": {
               "type": "Link",
               "config": {
                 "label": "Menu Item Link",
-                "placeholder": "Menu Item Link",
+                "placeholder": "Select or enter a link",
                 "select": null
               }
             },
@@ -42,82 +42,46 @@
                 "placeholder_true": "Has mega menu dropdown"
               }
             },
-            "layout_type": {
-              "type": "Select",
+            "child_links": {
+              "type": "Group",
               "config": {
-                "label": "Layout Type",
-                "placeholder": "Choose layout type",
-                "options": [
-                  "columns",
-                  "featured_products",
-                  "categories",
-                  "mixed"
-                ],
-                "default_value": "columns"
-              }
-            },
-            "columns": {
-              "type": "Number",
-              "config": {
-                "label": "Number of Columns",
-                "placeholder": "3"
-              }
-            },
-            "featured_image": {
-              "type": "Image",
-              "config": {
-                "label": "Featured Image",
-                "constraint": {
-                  "width": 400,
-                  "height": 300
-                },
-                "thumbnails": []
-              }
-            },
-            "description": {
-              "type": "StructuredText",
-              "config": {
-                "label": "Description",
-                "placeholder": "Enter description for mega menu",
-                "single": "paragraph,heading3,heading4"
-              }
-            },
-            "section_title": {
-              "type": "Text",
-              "config": {
-                "label": "Section Title",
-                "placeholder": "Section Title"
-              }
-            },
-            "section_links": {
-              "type": "StructuredText",
-              "config": {
-                "label": "Section Links",
-                "placeholder": "Enter links (one per line)",
-                "single": "paragraph"
-              }
-            },
-            "is_featured": {
-              "type": "Boolean",
-              "config": {
-                "label": "Is Featured",
-                "default_value": false,
-                "placeholder_false": "Regular link",
-                "placeholder_true": "Featured link"
-              }
-            },
-            "icon": {
-              "type": "Image",
-              "config": {
-                "label": "Icon",
-                "constraint": {
-                  "width": 24,
-                  "height": 24
-                },
-                "thumbnails": []
+                "label": "Child Links",
+                "fields": {
+                  "child_label": {
+                    "type": "Text",
+                    "config": {
+                      "label": "Child Link Label",
+                      "placeholder": "Enter child link label"
+                    }
+                  },
+                  "child_link": {
+                    "type": "Link",
+                    "config": {
+                      "label": "Child Link",
+                      "placeholder": "Select or enter a child link",
+                      "select": null
+                    }
+                  }
+                }
               }
             }
           }
+        }
+      }
+    },
+    "SEO & Metadata": {
+      "meta_title": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Title",
+          "placeholder": "A title for the mega menu used for SEO"
+        }
+      },
+      "meta_description": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Description",
+          "placeholder": "A brief description of the mega menu"
         }
       }
     }

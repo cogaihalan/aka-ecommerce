@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Course } from "@/types/course";
+import type { Course } from "@/types";
 import {
   Dialog,
   DialogContent,
@@ -45,8 +45,8 @@ export function VideoPreviewDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             {course.name}
-            <Badge variant={course.isActive ? "default" : "secondary"}>
-              {course.isActive ? "Active" : "Inactive"}
+            <Badge variant={course.active ? "default" : "secondary"}>
+              {course.active ? "Active" : "Inactive"}
             </Badge>
           </DialogTitle>
         </DialogHeader>

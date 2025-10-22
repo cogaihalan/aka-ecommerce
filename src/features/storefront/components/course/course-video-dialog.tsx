@@ -1,5 +1,5 @@
 import { VideoPlayer } from "@/components/video-player";
-import { Course } from "@/types/course";
+import { Course } from "@/types/extensions/course";
 import {
   Dialog,
   DialogContent,

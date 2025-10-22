@@ -1,6 +1,6 @@
 export * from "./product";
 export * from "./dashboard";
-export * from "./course";
+export * from "./extensions/";
 export * from "./app";
 export * from "./wishlist";
 export * from "./address";

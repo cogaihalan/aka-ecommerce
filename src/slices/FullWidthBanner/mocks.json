@@ -1,0 +1,110 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"backgroundImage": {
+				"origin": {
+					"id": "main",
+					"url": "https://images.unsplash.com/photo-1547394765-185e1e68f34e",
+					"width": 6000,
+					"height": 4000
+				},
+				"url": "https://images.unsplash.com/photo-1547394765-185e1e68f34e?rect=0%2C750%2C6000%2C2500&w=1920&h=800",
+				"width": 1920,
+				"height": 800,
+				"edit": {
+					"zoom": 1,
+					"crop": {
+						"x": 0,
+						"y": 750
+					},
+					"background": "transparent"
+				},
+				"alt": "Desktop background",
+				"credits": null,
+				"__TYPE__": "ImageContent",
+				"thumbnails": {}
+			},
+			"mobileBackgroundImage": {
+				"origin": {
+					"id": "main",
+					"url": "https://images.unsplash.com/photo-1547394765-185e1e68f34e",
+					"width": 6000,
+					"height": 4000
+				},
+				"url": "https://images.unsplash.com/photo-1547394765-185e1e68f34e?rect=0%2C1000%2C6000%2C2000&w=768&h=600",
+				"width": 768,
+				"height": 600,
+				"edit": {
+					"zoom": 1,
+					"crop": {
+						"x": 0,
+						"y": 1000
+					},
+					"background": "transparent"
+				},
+				"alt": "Mobile background",
+				"credits": null,
+				"__TYPE__": "ImageContent",
+				"thumbnails": {}
+			},
+			"title": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading1",
+						"content": {
+							"text": "Secret"
+						}
+					}
+				]
+			},
+			"description": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Aliqua cillum anim nostrud quis sunt commodo Lorem esse anim do cupidatat elit tempor est voluptate. Laborum cillum officia cupidatat reprehenderit anim exercitation consequat ut nulla."
+						}
+					}
+				]
+			},
+			"callToActionText": {
+				"__TYPE__": "FieldContent",
+				"value": "hardly",
+				"type": "Text"
+			},
+			"callToActionLink": {
+				"key": "ccb88b1b-64ce-4213-be11-5ca751682cc6",
+				"__TYPE__": "LinkContent",
+				"value": {
+					"__TYPE__": "ExternalLink",
+					"url": "https://prismic.io"
+				}
+			},
+			"verticalPosition": {
+				"__TYPE__": "FieldContent",
+				"value": "middle",
+				"type": "Select"
+			},
+			"horizontalPosition": {
+				"__TYPE__": "FieldContent",
+				"value": "center",
+				"type": "Select"
+			},
+			"contentAlignment": {
+				"__TYPE__": "FieldContent",
+				"value": "right",
+				"type": "Select"
+			}
+		},
+		"items": [
+			{
+				"__TYPE__": "GroupItemContent",
+				"value": []
+			}
+		]
+	}
+]

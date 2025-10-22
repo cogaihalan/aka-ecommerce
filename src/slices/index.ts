@@ -4,14 +4,13 @@ import dynamic from "next/dynamic";
 
 export const components = {
   product_carousel: dynamic(() => import("./ProductCarousel")),
-  image_gallery: dynamic(() => import("./ImageGallery")),
   multi_column_cards: dynamic(() => import("./MultiColumnCards")),
   testimonials: dynamic(() => import("./Testimonials")),
   newsletter_signup: dynamic(() => import("./NewsletterSignup")),
-  pricing_table: dynamic(() => import("./PricingTable")),
+  pricing_table: dynamic(() => import("./PricingTable")),   
   stats_counter: dynamic(() => import("./StatsCounter")),
   faq_accordion: dynamic(() => import("./FAQAccordion")),
   hero_animated: dynamic(() => import("./HeroAnimated")),
   feature_grid_animated: dynamic(() => import("./FeatureGridAnimated")),
-  mega_menu: dynamic(() => import("./MegaMenu")),
+  full_width_banner: dynamic(() => import("./FullWidthBanner")),
 };

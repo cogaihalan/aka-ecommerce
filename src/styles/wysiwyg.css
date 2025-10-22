@@ -1,0 +1,86 @@
+/* Wysiwyg */
+.wysiwyg {
+    @apply body-core text-secondary;
+  
+    & b,
+    & strong {
+      @apply emphasis;
+    }
+  
+    & h1 {
+      @apply headline-1;
+    }
+  
+    & h2 {
+      @apply headline-2;
+    }
+  
+    & h3 {
+      @apply headline-3;
+    }
+  
+    & h4 {
+      @apply headline-4;
+    }
+  
+    & h5 {
+      @apply headline-5;
+    }
+  
+    & h1,
+    & h2,
+    & h3,
+    & h4,
+    & h5 {
+      @apply mb-2 text-primary;
+    }
+  
+    & h6 {
+      @apply mb-3 body-core;
+    }
+  
+    & ul,
+    & ol {
+      @apply pl-1.5;
+    }
+  
+    & ul {
+      @apply list-none;
+  
+      li {
+        @apply before:mr-2.5 before:body-large before:content-['•'];
+      }
+    }
+  
+    & ol {
+      @apply list-inside list-decimal;
+    }
+  
+    & iframe {
+      @apply max-w-full;
+    }
+  
+    &:not(.wysiwyg-article) a {
+      @apply button-plain inline-flex text-secondary hover:text-primary;
+    }
+  
+    & iframe {
+      @apply max-w-full;
+    }
+  
+    & p,
+    & ul,
+    & ol {
+      @apply mb-3 last:mb-0;
+  
+      & + h1,
+      & + h2,
+      & + h3,
+      & + h4,
+      & + h5,
+      & + h6 {
+        @apply mt-8;
+      }
+    }
+}    
+  

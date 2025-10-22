@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Course } from "@/types/course";
+import { Course } from "@/types/extensions/course";
 import { CourseCard } from "./course-card";
 import { CourseVideoDialog } from "./course-video-dialog";
 

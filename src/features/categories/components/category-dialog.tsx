@@ -36,6 +36,10 @@ import { useAppStore } from "@/stores/app-store";
 import { toast } from "sonner";
 import { Category } from "@/types";
 import { useApp } from "@/components/providers/app-provider";
+import { FileUploader } from "@/components/file-uploader";
+import { Progress } from "@/components/ui/progress";
+import { Image as ImageIcon, X } from "lucide-react";
+import Image from "next/image";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -59,6 +63,10 @@ export function CategoryDialog({
   onSuccess,
 }: CategoryDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<Record<string, number>>(
+    {}
+  );
+  const [isUploading, setIsUploading] = useState(false);
   const { categories } = useApp();
   const { addCategory, updateCategory } = useAppStore();
 
@@ -71,6 +79,71 @@ export function CategoryDialog({
     },
   });
 
+  const handleImageUpload = async (files: File[]) => {
+    if (!category || files.length === 0) return;
+
+    setIsUploading(true);
+    const file = files[0];
+
+    try {
+      // Simulate progress
+      setUploadProgress({ [file.name]: 0 });
+
+      const interval = setInterval(() => {
+        setUploadProgress((prev) => ({
+          ...prev,
+          [file.name]: Math.min(prev[file.name] + 10, 90),
+        }));
+      }, 100);
+
+      const updatedCategory = await unifiedCategoryService.uploadCategoryImage({
+        id: category.id,
+        file: file,
+      });
+
+      clearInterval(interval);
+      setUploadProgress({ [file.name]: 100 });
+
+      // Update the category immediately in the store
+      updateCategory(updatedCategory);
+
+      // Update the local category state to reflect changes immediately
+      Object.assign(category, updatedCategory);
+
+      toast.success("Thumbnail uploaded successfully");
+
+      // Reset progress after a short delay
+      setTimeout(() => {
+        setUploadProgress({});
+      }, 1000);
+    } catch (error) {
+      toast.error("Failed to upload thumbnail");
+      console.error("Error uploading thumbnail:", error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleDeleteThumbnail = async () => {
+    if (!category) return;
+
+    try {
+      await unifiedCategoryService.deleteCategoryThumbnail(category.id);
+      const updatedCategory = { ...category, thumbnailUrl: "" };
+
+      // Update the category immediately in the store
+      updateCategory(updatedCategory);
+
+      // Update the local category state to reflect changes immediately
+      Object.assign(category, updatedCategory);
+
+      toast.success("Thumbnail deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete thumbnail");
+      console.error("Error deleting thumbnail:", error);
+    }
+  };
+
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
     try {
@@ -80,16 +153,21 @@ export function CategoryDialog({
           id: category.id,
           ...data,
         };
-        const updatedCategory = await unifiedCategoryService.updateCategory(category.id, updateData);
+        const updatedCategory = await unifiedCategoryService.updateCategory(
+          category.id,
+          updateData
+        );
         updateCategory(updatedCategory);
         toast.success("Category updated successfully");
       } else {
         // Create new category
         const createData: CreateCategoryRequest = {
-          ...data,
-          parentId: data.parentId, // Already defaults to 0
+          name: data.name,
+          description: data.description,
+          ...(data.parentId !== 0 && { parentId: data.parentId }),
         };
-        const newCategory = await unifiedCategoryService.createCategory(createData);
+        const newCategory =
+          await unifiedCategoryService.createCategory(createData);
         addCategory(newCategory);
         toast.success("Category created successfully");
       }
@@ -106,7 +184,7 @@ export function CategoryDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>
             {category ? "Edit Category" : "Create New Category"}
@@ -161,13 +239,19 @@ export function CategoryDialog({
                     onValueChange={(value) => {
                       field.onChange(value === "none" ? 0 : parseInt(value));
                     }}
-                    value={field.value === 0 ? "none" : field.value?.toString() || "none"}
+                    value={
+                      field.value === 0
+                        ? "none"
+                        : field.value?.toString() || "none"
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select parent category" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none">No Parent (Root Category)</SelectItem>
+                      <SelectItem value="none">
+                        No Parent (Root Category)
+                      </SelectItem>
                       {categories
                         .filter((cat) => !category || cat.id !== category.id) // Don't allow self as parent
                         .map((cat) => (
@@ -181,6 +265,80 @@ export function CategoryDialog({
                 </FormItem>
               )}
             />
+
+            {/* Thumbnail Upload Section - Only show in edit mode */}
+            {category && (
+              <div className="flex flex-col gap-4">
+                <label className="text-sm font-medium">
+                  Category Thumbnail
+                </label>
+
+                {/* Current thumbnail preview - show when thumbnail exists */}
+                {category.thumbnailUrl ? (
+                  <div className="space-y-3">
+                    <div className="relative inline-block">
+                      <div className="relative w-32 h-32 rounded-lg overflow-hidden border">
+                        <Image
+                          src={category.thumbnailUrl}
+                          alt={category.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
+                        onClick={handleDeleteThumbnail}
+                        disabled={isUploading}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Click the delete icon to remove the current thumbnail
+                    </p>
+                  </div>
+                ) : (
+                  /* Upload new thumbnail - show only when no thumbnail exists */
+                  <div className="space-y-2">
+                    <FileUploader
+                      value={[]}
+                      onUpload={handleImageUpload}
+                      progresses={uploadProgress}
+                      accept={{
+                        "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp"],
+                      }}
+                      maxSize={5 * 1024 * 1024} // 5MB
+                      maxFiles={1}
+                      disabled={isUploading}
+                    />
+                    {isUploading && (
+                      <div className="space-y-2">
+                        <div className="flex items-center space-x-2">
+                          <ImageIcon className="h-4 w-4" />
+                          <span className="text-sm text-muted-foreground">
+                            Uploading thumbnail...
+                          </span>
+                        </div>
+                        {Object.entries(uploadProgress).map(
+                          ([fileName, progress]) => (
+                            <div key={fileName} className="space-y-1">
+                              <div className="flex justify-between text-sm">
+                                <span className="truncate">{fileName}</span>
+                                <span>{progress}%</span>
+                              </div>
+                              <Progress value={progress} className="h-2" />
+                            </div>
+                          )
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
 
             <DialogFooter>
               <Button

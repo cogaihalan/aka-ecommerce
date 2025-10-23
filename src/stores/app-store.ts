@@ -75,7 +75,7 @@ export const useAppStore = create<AppStore>()(
 
             // Fetch categories from API service
             const response = await unifiedCategoryService.getCategories();
-            setCategories(response);
+            setCategories(response.items);
           } catch (error) {
             setError(
               error instanceof Error

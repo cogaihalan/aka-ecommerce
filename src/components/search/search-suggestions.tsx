@@ -33,6 +33,7 @@ export function SearchSuggestions({
     searchTerm,
     setSearchTerm,
     clearSuggestions,
+    debouncedTerm,
   } = useProductSearchSuggestions({
     debounceMs: 300,
     limit: 5,
@@ -79,13 +80,6 @@ export function SearchSuggestions({
     }
   };
 
-  const handleSuggestionClick = (product: Product) => {
-    router.push(`/products/${product.id}`);
-    setIsOpen(false);
-    clearSuggestions();
-    onClose?.();
-  };
-
   const handleViewMoreClick = () => {
     if (searchTerm.trim()) {
       router.push(`/products?search=${encodeURIComponent(searchTerm.trim())}`);
@@ -123,7 +117,10 @@ export function SearchSuggestions({
 
       {/* Suggestions Dropdown */}
       {isOpen && (
-        <Card disableBlockPadding={true} className="absolute top-full left-0 right-0 z-50 mt-1 shadow-lg rounded-lg overflow-hidden border animate-in fade-in-0 zoom-in-95 duration-200">
+        <Card
+          disableBlockPadding={true}
+          className="absolute top-full left-0 right-0 z-50 mt-1 shadow-lg rounded-lg overflow-hidden border animate-in fade-in-0 zoom-in-95 duration-200"
+        >
           <CardContent className="p-0">
             {error && (
               <div className="p-4 text-sm text-destructive">
@@ -250,7 +247,8 @@ export function SearchSuggestions({
             {!error &&
               !isLoading &&
               suggestions.length === 0 &&
-              searchTerm.length >= 2 && (
+              searchTerm.length >= 2 &&
+              debouncedTerm === searchTerm && (
                 <div className="p-4 text-center text-muted-foreground">
                   <Search className="h-8 w-8 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">

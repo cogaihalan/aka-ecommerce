@@ -2,6 +2,7 @@ import { searchParamsCache } from "@/lib/searchparams";
 import { DataTableWrapper } from "@/components/ui/table/data-table-wrapper";
 import { columns } from "./category-tables/columns";
 import { serverUnifiedCategoryService } from "@/lib/api/services/server";
+import { Category } from "@/types/app";
 
 export default async function CategoryListingPage() {
   // Get search parameters for filtering
@@ -23,13 +24,15 @@ export default async function CategoryListingPage() {
   };
 
   // Fetch categories using the unified service
-  let categories: any[] = [];
+  let categories: Category[] = [];
   let totalCategories = 0;
 
   try {
-    categories = await serverUnifiedCategoryService.getCategories(queryParams);
-    totalCategories = categories.length;
-  } catch (error) {
+    const categoriesResponse =
+      await serverUnifiedCategoryService.getCategories(queryParams);
+    categories = categoriesResponse.items;
+    totalCategories = categoriesResponse.pagination.total;
+  } catch (error: unknown) {
     console.error("Error fetching categories:", error);
   }
 

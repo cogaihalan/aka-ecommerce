@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -12,6 +12,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { storefrontCatalogService } from "@/lib/api/services/storefront/catalog";
+import type { Product, Category } from "@/types";
 import { ProductCard } from "@/components/product/product-card";
 import { ProductCardSkeleton } from "@/components/product/product-card-skeleton";
 import {
@@ -21,20 +23,15 @@ import {
 } from "@/components/navigation";
 import { useNavigation } from "@/hooks/use-navigation";
 import { useProductFilters } from "@/hooks/use-product-filters";
-// Mock products removed - using API data only
-import type { Product } from "@/lib/api/types";
 import {
   AnimatedGrid,
   LoadingOverlay,
 } from "@/components/ui/animated-container";
-
-// Extended Product interface for additional properties
-interface ExtendedProduct extends Product {
-  rating?: number;
-  inStock?: boolean;
-  color?: string;
-  sizes?: string[];
-}
+import { generateSlug, slugToReadable } from "@/lib/utils/slug";
+import {
+  useCategories,
+  useAppLoading,
+} from "@/components/providers/app-provider";
 
 interface CategoryPageProps {
   categorySlug: string;
@@ -43,16 +40,6 @@ interface CategoryPageProps {
 export default function CategoryPage({ categorySlug }: CategoryPageProps) {
   const router = useRouter();
 
-  // Valid category slugs
-  const validCategorySlugs = [
-    "electronics",
-    "clothing",
-    "home",
-    "sports",
-    "books",
-    "beauty",
-  ];
-
   // Use navigation hook for URL state management
   const {
     state,
@@ -60,92 +47,164 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
     updatePage,
     resetFilters,
     getActiveFiltersCount,
-    isLoading,
-    setIsLoading,
-  } = useNavigation({
-    defaultFilters: {
-      // Don't include category in filters since we're already filtering by category in fetchProducts
-    },
-  });
+  } = useNavigation();
+
+  // Get categories from app store
+  const { categories } = useCategories();
+  const { isLoading: appLoading, error: appError } = useAppLoading();
 
   // View mode is handled separately from navigation state
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const [products, setProducts] = useState<ExtendedProduct[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  // Mock data removed - using API data only
+  const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
 
-  // Fetch products for the category
-  const fetchProducts = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
+  // Ref to track if we're currently fetching to prevent duplicate requests
+  const fetchingRef = useRef<boolean>(false);
 
-      // Mock data removed - using API data only
+  // Get category ID from slug using dynamic category data
+  const getCategoryIdFromSlug = useCallback(
+    (slug: string): string | null => {
+      const category = categories.find(
+        (cat) => generateSlug(cat.name) === slug.toLowerCase()
+      );
+      return category ? category.id.toString() : null;
+    },
+    [categories]
+  );
 
-      // TODO: Implement API call for category products
-      setProducts([]);
-      setIsLoading(false);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch products");
-      setIsLoading(false);
-    }
-  }, [categorySlug, setIsLoading]);
+  // Get category name from slug for display
+  const getCategoryNameFromSlug = useCallback(
+    (slug: string): string => {
+      const category = categories.find(
+        (cat) => generateSlug(cat.name) === slug.toLowerCase()
+      );
+      return category ? category.name : slugToReadable(slug);
+    },
+    [categories]
+  );
 
-  // Use product filters hook for client-side filtering
-  const { filteredProducts, filterCounts, totalProducts, filteredCount } =
-    useProductFilters({
-      products: products,
-      filters: state.filters,
-    });
+  // Memoize the query parameters to prevent unnecessary re-fetches
+  const queryParams = useMemo(() => {
+    const categoryId = getCategoryIdFromSlug(categorySlug);
+    return {
+      page: state.page,
+      size: state.limit,
+      name: state.filters.search || undefined,
+      sort:
+        state.filters.sort && state.filters.sort !== "featured"
+          ? [state.filters.sort]
+          : [],
+      categoryIds: categoryId ? [categoryId] : [],
+      minPrice: state.filters.priceRange?.[0],
+      maxPrice: state.filters.priceRange?.[1],
+    };
+  }, [
+    categorySlug,
+    state.page,
+    state.limit,
+    state.filters.search,
+    state.filters.sort,
+    state.filters.priceRange,
+    getCategoryIdFromSlug,
+  ]);
+
+  // Fetch products with proper loading state management
+  const fetchProducts = useCallback(
+    async (showLoading = true) => {
+      // Prevent duplicate requests
+      if (fetchingRef.current) return;
+
+      try {
+        fetchingRef.current = true;
+        if (showLoading) {
+          setIsLoading(true);
+        }
+        setError(null);
+
+        const response =
+          await storefrontCatalogService.getProducts(queryParams);
+        setProducts(response.items || []);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch products"
+        );
+      } finally {
+        setIsLoading(false);
+        fetchingRef.current = false;
+        setIsInitialLoad(false);
+      }
+    },
+    [queryParams]
+  );
+
+  // Use product filters hook for client-side filtering (only for search and additional client-side filters)
+  const { filterCounts } = useProductFilters({
+    products: products,
+    filters: state.filters,
+  });
 
   // Check if category is valid and redirect to 404 if not
   useEffect(() => {
-    if (!validCategorySlugs.includes(categorySlug.toLowerCase())) {
-      router.replace("/not-found");
-      return;
+    if (!appLoading && categories.length > 0) {
+      const categoryId = getCategoryIdFromSlug(categorySlug);
+      if (!categoryId) {
+        router.replace("/not-found");
+        return;
+      }
     }
-  }, [categorySlug, router]);
+  }, [categorySlug, router, getCategoryIdFromSlug, appLoading, categories]);
 
-  // Load products when component mounts or category changes
+  // Single effect to handle data fetching
   useEffect(() => {
-    // Only fetch products if category is valid
-    if (validCategorySlugs.includes(categorySlug.toLowerCase())) {
-      fetchProducts();
+    if (!appLoading && categories.length > 0) {
+      const categoryId = getCategoryIdFromSlug(categorySlug);
+      if (categoryId) {
+        fetchProducts();
+      }
     }
-  }, [fetchProducts, categorySlug]);
+  }, [
+    fetchProducts,
+    categorySlug,
+    getCategoryIdFromSlug,
+    appLoading,
+    categories,
+  ]);
 
-  // Determine which products to display
+  // Determine which products to display - use server-filtered products directly
   const displayProducts = products;
   const displayCount = products.length;
   const displayTotal = products.length;
 
-  // Pagination logic
-  const itemsPerPage = state.limit;
-  const totalPages = Math.ceil(displayCount / itemsPerPage);
-  const startIndex = (state.page - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedProducts = displayProducts.slice(startIndex, endIndex);
+  // Since we're using server-side pagination, we don't need client-side pagination
+  const paginatedProducts = displayProducts;
+  // For now, we'll use a reasonable total pages estimate
+  // In a real implementation, you'd get this from the API response
+  const totalPages = Math.max(1, Math.ceil(displayTotal / state.limit));
 
   const handlePageChange = (page: number) => {
     updatePage(page);
   };
 
   // Don't render anything if category is invalid (will redirect)
-  if (!validCategorySlugs.includes(categorySlug.toLowerCase())) {
+  const categoryId = getCategoryIdFromSlug(categorySlug);
+  if (!appLoading && categories.length > 0 && !categoryId) {
     return null;
   }
 
-  if (isLoading && products.length === 0) {
+  // Show loading skeleton while app is loading or on initial load
+  if (appLoading || (isInitialLoad && isLoading)) {
     return (
       <div className="space-y-6">
         {/* Header */}
         <div>
           <h1 className="text-3xl font-bold mb-2 capitalize">
-            {categorySlug.replace("-", " ")}
+            {getCategoryNameFromSlug(categorySlug)}
           </h1>
           <p className="text-muted-foreground">
-            Browse our {categorySlug.replace("-", " ")} collection
+            Browse our {getCategoryNameFromSlug(categorySlug)} collection
           </p>
         </div>
 
@@ -190,7 +249,7 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <p className="text-red-500 mb-4">{error}</p>
-          <Button onClick={fetchProducts}>Try Again</Button>
+          <Button onClick={() => fetchProducts()}>Try Again</Button>
         </div>
       </div>
     );
@@ -201,16 +260,16 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold mb-2 capitalize">
-          {categorySlug.replace("-", " ")}
+          {getCategoryNameFromSlug(categorySlug)}
         </h1>
         <p className="text-muted-foreground">
-          Browse our {categorySlug.replace("-", " ")} collection
+          
+          Browse our {getCategoryNameFromSlug(categorySlug)} collection
         </p>
-        {/* Mock data removed - using API data only */}
       </div>
 
       {/* Sort Controls */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-end lg:items-center justify-between gap-2">
         <SortControls
           sortBy={state.filters.sort || "featured"}
           viewMode={viewMode}
@@ -247,12 +306,12 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
 
         {/* Products Grid - 3 columns */}
         <div className="flex-1">
-          <LoadingOverlay isLoading={isLoading && products.length > 0}>
+          <LoadingOverlay isLoading={isLoading && !isInitialLoad}>
             <AnimatedGrid
               className={`grid gap-6 layout-transition items-stretch ${
                 viewMode === "grid"
                   ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-                  : "grid-cols-1"
+                  : "grid-cols-1 lg:grid-cols-2"
               }`}
             >
               {paginatedProducts.map((product, index) => (
@@ -270,12 +329,12 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
             </AnimatedGrid>
           </LoadingOverlay>
 
-          {/* Loading indicator for pagination */}
-          {isLoading && products.length > 0 && (
+          {/* Loading indicator for filter changes */}
+          {isLoading && !isInitialLoad && (
             <div className="flex justify-center mt-6 animate-fade-in">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                <span className="text-sm">Loading more products...</span>
+                <span className="text-sm">Updating products...</span>
               </div>
             </div>
           )}
@@ -336,15 +395,15 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
             </div>
           )}
 
-          {/* Show skeleton cards when no products and no additional filters applied */}
+          {/* Show skeleton cards when no products and no filters applied */}
           {!isLoading &&
             displayProducts.length === 0 &&
-            !(state.filters.search || getActiveFiltersCount() > 1) && (
+            !(state.filters.search || getActiveFiltersCount() > 0) && (
               <AnimatedGrid
                 className={`grid gap-6 items-stretch ${
                   viewMode === "grid"
                     ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-                    : "grid-cols-1"
+                    : "grid-cols-1 lg:grid-cols-2"
                 }`}
               >
                 {Array.from({ length: 6 }).map((_, index) => (
@@ -360,12 +419,10 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
           {/* No products message - only show when filters/search are applied */}
           {!isLoading &&
             displayProducts.length === 0 &&
-            (state.filters.search || getActiveFiltersCount() > 1) && (
+            (state.filters.search || getActiveFiltersCount() > 0) && (
               <div className="text-center py-12">
                 <p className="text-muted-foreground">
-                  {state.filters.search || getActiveFiltersCount() > 1
-                    ? "No products found matching your criteria"
-                    : "No products found in this category"}
+                  No products found matching your criteria
                 </p>
                 <div className="flex flex-col sm:flex-row gap-2 justify-center mt-4">
                   {state.filters.search && (
@@ -376,7 +433,7 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
                       Clear search
                     </Button>
                   )}
-                  {getActiveFiltersCount() > 1 && (
+                  {getActiveFiltersCount() > 0 && (
                     <Button variant="outline" onClick={resetFilters}>
                       Clear all filters
                     </Button>

@@ -12,14 +12,14 @@ import FullWidthBanner from "@/components/full-width-banner";
 
 export default function StorefrontHomePage() {
   return (
-    <div className="space-y-12">
+    <>
       {/* Hero Section - Full Width */}
       <div className="-mx-4 sm:-mx-6 lg:-mx-8">
         <FullWidthBanner />
       </div>
 
       {/* Features Section */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-6 py-6 lg:py-16">
         <Card>
           <CardHeader className="flex flex-row items-center space-y-0 pb-2">
             <Truck className="h-6 w-6 text-primary" />
@@ -58,6 +58,6 @@ export default function StorefrontHomePage() {
           </CardContent>
         </Card>
       </section>
-    </div>
+    </>
   );
 }

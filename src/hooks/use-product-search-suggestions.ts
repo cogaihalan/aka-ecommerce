@@ -17,6 +17,7 @@ interface UseProductSearchSuggestionsReturn {
   searchTerm: string;
   setSearchTerm: (term: string) => void;
   clearSuggestions: () => void;
+  debouncedTerm: string;
 }
 
 export function useProductSearchSuggestions(
@@ -99,5 +100,6 @@ export function useProductSearchSuggestions(
     searchTerm,
     setSearchTerm,
     clearSuggestions,
+    debouncedTerm,
   };
 }

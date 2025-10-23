@@ -9,7 +9,6 @@
 @custom-variant dark (&:is(.dark *));
 
 @import "../styles/slider.css";
-@import "../styles/mega-menu.css";
 
 :root {
   --radius: 0.625rem;
@@ -287,5 +286,9 @@
 }
 
 @utility background-overlay {
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.24) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.24) 100%
+  );
 }

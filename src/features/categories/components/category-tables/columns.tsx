@@ -4,9 +4,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/ui/table/data-table-column-header";
 import { Category } from "@/types";
 import { CellAction } from "./cell-action";
+import { Text } from "lucide-react";
 
 export const columns: ColumnDef<Category>[] = [
   {
+    id: "id",
     accessorKey: "id",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="ID" />
@@ -19,6 +21,7 @@ export const columns: ColumnDef<Category>[] = [
     maxSize: 32,
   },
   {
+    id: "name",
     accessorKey: "name",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Name" />
@@ -36,12 +39,17 @@ export const columns: ColumnDef<Category>[] = [
         </div>
       );
     },
+    meta: {
+      label: "Name",
+      placeholder: "Search categories...",
+      variant: "text",
+      icon: Text,
+    },
+    enableColumnFilter: true,
   },
   {
     accessorKey: "description",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Description" />
-    ),
+    header: "Description",
     cell: ({ row }) => {
       const description = row.getValue("description") as string;
       return (
@@ -53,14 +61,12 @@ export const columns: ColumnDef<Category>[] = [
   },
   {
     accessorKey: "parentId",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Parent Category" />
-    ),
+    header: "Parent Category",
     cell: ({ row }) => {
       const parentId = row.getValue("parentId") as number;
       return (
         <div className="text-sm">
-          {parentId === 0 ? (
+          {!parentId ? (
             <span className="text-muted-foreground">Root Category</span>
           ) : (
             <span>Parent ID: {parentId}</span>

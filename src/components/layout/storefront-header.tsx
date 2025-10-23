@@ -21,6 +21,7 @@ import {
 
 export default function StorefrontHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const router = useRouter();
   const wishlistCount = useWishlistItemCount();
   const isAuthenticated = useWishlistAuthStatus();
@@ -38,14 +39,14 @@ export default function StorefrontHeader() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Logo size="lg" href="/" />
-          
+
           {/* Desktop Navigation */}
           {megaMenuData?.menu_items && !megaMenuLoading && (
             <div className="hidden lg:flex flex-1 justify-center">
               <MegaMenu menuItems={megaMenuData.menu_items} />
             </div>
           )}
-          
+
           <div className="flex flex-row-reverse items-center gap-2 md:flex-row md:gap-3">
             {/* Search Bar */}
             <div className="hidden lg:flex items-center space-x-2 flex-1 mx-4">
@@ -90,28 +91,30 @@ export default function StorefrontHeader() {
               <AuthIcon />
 
               {/* Mobile Menu Button */}
-              {megaMenuData?.menu_items && !megaMenuLoading ? (
+              {megaMenuData?.menu_items && !megaMenuLoading && (
                 <MobileMegaMenu menuItems={megaMenuData.menu_items} />
-              ) : (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="lg:hidden"
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
-                >
-                  {isMenuOpen ? (
-                    <X className="h-5 w-5" />
-                  ) : (
-                    <Search className="h-5 w-5" />
-                  )}
-                </Button>
               )}
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden"
+                onClick={() => {
+                  setIsSearchOpen(!isSearchOpen);
+                }}
+              >
+                {isSearchOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Search className="h-5 w-5" />
+                )}
+              </Button>
             </div>
           </div>
         </div>
 
         {/* Mobile Search */}
-        {isMenuOpen && (
+        {isSearchOpen && (
           <div className="lg:hidden border-t">
             <div className="px-3 py-4">
               <SearchSuggestions

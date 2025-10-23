@@ -1,13 +1,14 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import {
   useCategories,
   useAppLoading,
 } from "@/components/providers/app-provider";
+import Image from "next/image";
+import { generateSlug } from "@/lib/utils/slug";
 
 export default function CategoryListingPage() {
   const { categories } = useCategories();
@@ -34,7 +35,7 @@ export default function CategoryListingPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 py-6 lg:py-12">
       <div>
         <h1 className="text-3xl font-bold mb-2">Categories</h1>
         <p className="text-muted-foreground">Browse products by category</p>
@@ -42,9 +43,23 @@ export default function CategoryListingPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {categories.map((category) => (
-          <Card key={category.id} className="group cursor-pointer">
-            <Link href={`/categories/${category.slug}`}>
-              <div className="aspect-video bg-muted rounded-t-lg"></div>
+          <Card
+            disableBlockPadding={true}
+            key={category.id}
+            className="group cursor-pointer overflow-hidden"
+          >
+            <Link href={`/categories/${generateSlug(category.name)}`}>
+              <div className="relative bg-muted overflow-hidden">
+                <Image
+                  src={
+                    category?.thumbnailUrl || "/assets/placeholder-image.jpeg"
+                  }
+                  alt={category.name}
+                  width={300}
+                  height={300}
+                  className="w-full h-full aspect-video object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
               <CardContent className="p-4">
                 <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">
                   {category.name}
@@ -54,9 +69,6 @@ export default function CategoryListingPage() {
                     {category.description}
                   </p>
                 )}
-                <Badge variant="secondary">
-                  {category.productCount} products
-                </Badge>
               </CardContent>
             </Link>
           </Card>

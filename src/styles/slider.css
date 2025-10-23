@@ -82,18 +82,8 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
+@media (max-width: 1023px) {
   .glider-slide {
-    @apply px-0;
-  }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-  .glider-slide {
-    @apply px-3;
-  }
-
-  .product-image-gallery .glider-slide {
     @apply px-0;
   }
 }

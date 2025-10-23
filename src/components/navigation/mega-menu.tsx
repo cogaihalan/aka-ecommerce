@@ -35,30 +35,24 @@ export const MegaMenu: FC<MegaMenuProps> = ({ menuItems, className }) => {
 
   const renderMegaMenuContent = (item: MenuItem) => {
     return (
-      <div className="absolute top-full left-0 w-full bg-white shadow-lg border-t border-gray-200 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          {/* Menu Section */}
-          <div className="space-y-3">
-            <h3 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">
-              {item.label}
-            </h3>
-            
-            {item.child_links && item.child_links.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {item.child_links.map((childLink, childIndex) => (
-                  <PrismicNextLink
-                    key={childIndex}
-                    field={childLink.child_link}
-                    className="block p-3 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    <span className="text-sm font-medium text-gray-700 hover:text-primary">
-                      {childLink.child_label}
-                    </span>
-                  </PrismicNextLink>
-                ))}
-              </div>
-            )}
-          </div>
+      <div className="absolute top-full left-0 min-w-40 max-w-2xl bg-white dark:bg-gray-900 shadow-2xl border border-gray-100 dark:border-gray-800 rounded-md z-50 overflow-hidden">
+        <div className="px-4 py-3">
+          {/* Content Grid */}
+          {item.child_links && item.child_links.length > 0 && (
+            <div className="space-y-4">
+              {item.child_links.map((childLink, childIndex) => (
+                <PrismicNextLink
+                  key={childIndex}
+                  field={childLink.child_link}
+                  className="group block px-4 py-2 rounded-lg hover:bg-gradient-to-br hover:from-primary/5 hover:to-primary/10 transition-all duration-200 hover:shadow-md border border-transparent hover:border-primary/20"
+                >
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors duration-200">
+                    {childLink.child_label}
+                  </span>
+                </PrismicNextLink>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -76,11 +70,16 @@ export const MegaMenu: FC<MegaMenuProps> = ({ menuItems, className }) => {
           >
             <PrismicNextLink
               field={item.link}
-              className="flex items-center gap-1 py-4 text-sm font-medium text-gray-700 hover:text-primary transition-colors"
+              className={cn("flex items-center gap-2 py-2 px-3 text-md font-medium text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-all duration-200", activeMenu === index.toString() ? "text-primary bg-gray-50 dark:bg-gray-800" : "")}
+              tabIndex={0}
+              aria-expanded={
+                item.has_mega_menu ? activeMenu === index.toString() : undefined
+              }
+              aria-haspopup={item.has_mega_menu ? "true" : undefined}
             >
               {item.label}
               {item.has_mega_menu && (
-                <ChevronDown className="w-4 h-4" />
+                <ChevronDown className="w-4 h-4 transition-transform duration-200 hover:rotate-180" />
               )}
             </PrismicNextLink>
 
@@ -88,11 +87,14 @@ export const MegaMenu: FC<MegaMenuProps> = ({ menuItems, className }) => {
             {item.has_mega_menu && (
               <div
                 className={cn(
-                  "transition-all duration-200 ease-in-out",
+                  "transition-all duration-300 ease-out transform",
                   activeMenu === index.toString()
-                    ? "opacity-100 visible"
-                    : "opacity-0 invisible"
+                    ? "opacity-100 visible translate-y-0 scale-100"
+                    : "opacity-0 invisible -translate-y-2 scale-95"
                 )}
+                role="menu"
+                aria-labelledby={`menu-${index}`}
+                aria-hidden={activeMenu !== index.toString()}
               >
                 {renderMegaMenuContent(item)}
               </div>

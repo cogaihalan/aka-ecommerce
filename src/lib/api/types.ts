@@ -1,5 +1,12 @@
 // Import comprehensive product types
-import type { Product, Category, Order, User, ProductStatus, Course } from "@/types";
+import type {
+  Product,
+  Category,
+  Order,
+  User,
+  ProductStatus,
+  Course,
+} from "@/types";
 
 // Base API types
 export interface PaginationResponse {
@@ -94,11 +101,16 @@ export interface ProductImageDeleteRequest {
 export interface CreateCategoryRequest {
   name: string;
   description: string;
-  parentId: number;
+  parentId?: number;
 }
 
 export interface UpdateCategoryRequest extends Partial<CreateCategoryRequest> {
   id?: number;
+}
+
+export interface CategoryMediaUploadRequest {
+  id: number;
+  file: File;
 }
 
 // Order API types
@@ -126,7 +138,6 @@ export interface UpdateCartItemRequest {
 export interface RemoveCartItemRequest {
   variantId: number;
 }
-
 
 // Extension API types
 
@@ -160,4 +171,3 @@ export interface CourseMediaUploadRequest {
 // Contest API types
 
 // Submissions API types
-

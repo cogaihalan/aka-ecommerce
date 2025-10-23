@@ -3,6 +3,8 @@ import type {
   CreateCategoryRequest,
   UpdateCategoryRequest,
   QueryParams,
+  CategoryListResponse,
+  CategoryMediaUploadRequest,
 } from "@/lib/api/types";
 import type { Category } from "@/types";
 
@@ -10,7 +12,7 @@ class ServerUnifiedCategoryService {
   private basePath = "/categories";
 
   // Get products with new query structure
-  async getCategories(params: QueryParams = {}): Promise<Category[]> {
+  async getCategories(params: QueryParams = {}): Promise<CategoryListResponse> {
     const searchParams = new URLSearchParams();
 
     // Handle pagination
@@ -34,7 +36,7 @@ class ServerUnifiedCategoryService {
       ? `${this.basePath}?${queryString}`
       : this.basePath;
 
-    const response = await serverApiClient.get<Category[]>(endpoint);
+    const response = await serverApiClient.get<CategoryListResponse>(endpoint);
 
     return response.data!;
   }
@@ -65,6 +67,23 @@ class ServerUnifiedCategoryService {
   async deleteCategory(id: number): Promise<void> {
     await serverApiClient.delete(`${this.basePath}/${id}`);
   }
+
+  async uploadCategoryImage(
+    data: CategoryMediaUploadRequest
+  ): Promise<Category> {
+    const formData = new FormData();
+    formData.append("id", data.id.toString());
+    formData.append("file", data.file);
+    const response = await serverApiClient.post<Category>(
+      `${this.basePath}/${data.id}/thumbnail`,
+      formData
+    );
+    return response.data!;
+  }
+
+  async deleteCategoryThumbnail(id: number): Promise<void> {
+    await serverApiClient.delete(`${this.basePath}/${id}/thumbnail`);
+  } 
 }
 
 // Export singleton instance

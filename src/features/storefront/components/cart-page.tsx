@@ -9,7 +9,6 @@ import Link from "next/link";
 import { useCart } from "@/hooks/use-cart";
 import { CartItem } from "@/components/cart";
 import { OrderSummary } from "@/components/order/order-summary";
-import { useAuth } from "@/hooks/use-auth";
 
 export default function CartPage() {
   const {
@@ -19,9 +18,6 @@ export default function CartPage() {
     clearError,
     validateCart,
   } = useCart();
-
-  const { user: authUser } = useAuth();
-  console.log(authUser);
 
   // Validate cart on mount
   useEffect(() => {

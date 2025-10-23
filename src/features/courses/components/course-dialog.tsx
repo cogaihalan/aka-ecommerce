@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
+import { useVideoDuration } from "@/hooks/use-video-duration";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -39,8 +39,8 @@ import type { Course } from "@/types";
 const courseSchema = z.object({
   name: z.string().min(1, "Course name is required"),
   description: z.string().min(1, "Description is required"),
-  videoUrl: z.string().url("Please enter a valid video URL"),
-  thumbnailUrl: z.string().url("Please enter a valid thumbnail URL").optional(),
+  videoUrl: z.string().optional(),
+  thumbnailUrl: z.string().optional(),
   duration: z.number().min(1, "Duration must be at least 1 second").optional(),
   active: z.boolean().default(true),
 });
@@ -51,12 +51,14 @@ interface CourseDialogProps {
   course?: Course; // Optional - if provided, it's edit mode
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
 }
 
 export function CourseDialog({
   course,
   open,
   onOpenChange,
+  onSuccess,
 }: CourseDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [videoFiles, setVideoFiles] = useState<File[]>([]);
@@ -67,7 +69,8 @@ export function CourseDialog({
   const [isUploadingThumbnail, setIsUploadingThumbnail] = useState(false);
   const [uploadedVideoUrl, setUploadedVideoUrl] = useState<string>("");
   const [uploadedThumbnailUrl, setUploadedThumbnailUrl] = useState<string>("");
-  const router = useRouter();
+
+  const { getVideoDuration, isLoading: isDetectingDuration, error: durationError } = useVideoDuration();
 
   const isEditMode = !!course;
 
@@ -139,24 +142,20 @@ export function CourseDialog({
         await unifiedCourseService.updateCourse(course.id, updateData);
         toast.success("Course updated successfully");
       } else {
-        // Add mode
-        const createData: CourseCreateRequest = { ...data, active: data.active ?? true };
-
+        // Add mode - only include fields that are in CourseCreateRequest interface
+        const createData: CourseCreateRequest = {
+          name: data.name,
+          description: data.description,
+          duration: data.duration,
+          active: data.active ?? true,
+        };
+        
         await unifiedCourseService.createCourse(createData);
         toast.success("Course created successfully");
+        onSuccess?.();
+        onOpenChange(false);
+        form.reset();
       }
-
-      onOpenChange(false);
-      form.reset();
-      setVideoFiles([]);
-      setThumbnailFiles([]);
-      setUseVideoUpload(false);
-      setUseThumbnailUpload(false);
-      setUploadedVideoUrl("");
-      setUploadedThumbnailUrl("");
-      setIsUploadingVideo(false);
-      setIsUploadingThumbnail(false);
-      router.refresh();
     } catch (error) {
       toast.error(`Failed to ${isEditMode ? "update" : "create"} course`);
       console.error(
@@ -175,11 +174,20 @@ export function CourseDialog({
       setIsUploadingVideo(true);
       const file = files[0];
       
+      // Detect video duration before uploading
+      const duration = await getVideoDuration(file);
+      if (duration) {
+        form.setValue("duration", duration);
+      } else if (durationError) {
+        toast.warning("Could not detect video duration automatically");
+      }
+      
       const uploadedCourse = await unifiedCourseService.uploadCourseVideo({
         id: course.id,
         file: file,
       });
       
+      form.setValue("videoUrl", uploadedCourse.videoUrl || "");
       setUploadedVideoUrl(uploadedCourse.videoUrl || "");
       setVideoFiles(files);
       toast.success("Video uploaded successfully");
@@ -187,6 +195,7 @@ export function CourseDialog({
       toast.error("Failed to upload video");
       console.error("Video upload error:", error);
     } finally {
+      setUseVideoUpload(false);
       setIsUploadingVideo(false);
     }
   };
@@ -202,7 +211,9 @@ export function CourseDialog({
         id: course.id,
         file: file,
       });
-      
+
+      // Update the form field with the uploaded thumbnail URL
+      form.setValue("thumbnailUrl", uploadedCourse.thumbnailUrl || "");
       setUploadedThumbnailUrl(uploadedCourse.thumbnailUrl || "");
       setThumbnailFiles(files);
       toast.success("Thumbnail uploaded successfully");
@@ -210,6 +221,7 @@ export function CourseDialog({
       toast.error("Failed to upload thumbnail");
       console.error("Thumbnail upload error:", error);
     } finally {
+      setUseThumbnailUpload(false);
       setIsUploadingThumbnail(false);
     }
   };
@@ -223,9 +235,66 @@ export function CourseDialog({
     setUseThumbnailUpload(useUpload);
   };
 
+  // Function to detect duration from video URL
+  const detectDurationFromUrl = async (videoUrl: string) => {
+    if (!videoUrl) return null;
+    
+    try {
+      const video = document.createElement('video');
+      video.crossOrigin = 'anonymous';
+      
+      return new Promise<number | null>((resolve) => {
+        const handleLoadedMetadata = () => {
+          const duration = Math.round(video.duration);
+          resolve(duration);
+        };
+
+        const handleError = () => {
+          resolve(null);
+        };
+
+        // Set a timeout to prevent hanging
+        const timeout = setTimeout(() => {
+          resolve(null);
+        }, 10000); // 10 second timeout
+
+        video.addEventListener('loadedmetadata', () => {
+          clearTimeout(timeout);
+          handleLoadedMetadata();
+        });
+        video.addEventListener('error', () => {
+          clearTimeout(timeout);
+          handleError();
+        });
+        
+        video.src = videoUrl;
+        video.load();
+      });
+    } catch (error) {
+      console.error('Error detecting duration from URL:', error);
+      return null;
+    }
+  };
+
+  // Auto-detect duration when video URL changes (debounced)
+  const handleVideoUrlChange = useCallback(
+    async (url: string) => {
+      form.setValue("videoUrl", url);
+      
+      if (url && !useVideoUpload) {
+        const duration = await detectDurationFromUrl(url);
+        if (duration) {
+          form.setValue("duration", duration);
+          toast.success(`Video duration detected: ${Math.floor(duration / 60)}:${(duration % 60).toString().padStart(2, '0')}`);
+        }
+      }
+    },
+    [form, useVideoUpload]
+  );
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
+      <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader className="flex-shrink-0">
           <DialogTitle>
             {isEditMode ? "Edit Course" : "Create New Course"}
@@ -240,7 +309,6 @@ export function CourseDialog({
         <div className="flex-1 overflow-y-auto pr-2">
           <Form {...form}>
             <form
-              id="course-form"
               onSubmit={form.handleSubmit(onSubmit)}
               className="space-y-4"
             >
@@ -305,10 +373,11 @@ export function CourseDialog({
                               <Input
                                 placeholder="https://example.com/video.mp4"
                                 {...field}
+                                onChange={(e) => handleVideoUrlChange(e.target.value)}
                               />
                             </FormControl>
                             <FormDescription>
-                              Enter the URL of the video file
+                              Enter the URL of the video file. Duration will be detected automatically.
                             </FormDescription>
                             <FormMessage />
                           </FormItem>
@@ -326,14 +395,19 @@ export function CourseDialog({
                           maxFiles={1}
                           disabled={isUploadingVideo}
                         />
-                        {isUploadingVideo && (
+                        {(isUploadingVideo || isDetectingDuration) && (
                           <div className="text-sm text-muted-foreground">
-                            Uploading video...
+                            {isDetectingDuration ? "Detecting video duration..." : "Uploading video..."}
                           </div>
                         )}
                         {uploadedVideoUrl && (
                           <div className="text-sm text-green-600">
                             Video uploaded successfully
+                          </div>
+                        )}
+                        {durationError && (
+                          <div className="text-sm text-yellow-600">
+                            {durationError}
                           </div>
                         )}
                       </div>
@@ -449,29 +523,28 @@ export function CourseDialog({
                   />
                 </div>
               </div>
+              <DialogFooter className="flex-shrink-0 border-t pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                  disabled={isLoading}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading
+                    ? isEditMode
+                      ? "Updating..."
+                      : "Creating..."
+                    : isEditMode
+                      ? "Update Course"
+                      : "Create Course"}
+                </Button>
+              </DialogFooter>
             </form>
           </Form>
         </div>
-
-        <DialogFooter className="flex-shrink-0 border-t pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={isLoading}
-          >
-            Cancel
-          </Button>
-          <Button type="submit" disabled={isLoading} form="course-form">
-            {isLoading
-              ? isEditMode
-                ? "Updating..."
-                : "Creating..."
-              : isEditMode
-                ? "Update Course"
-                : "Create Course"}
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

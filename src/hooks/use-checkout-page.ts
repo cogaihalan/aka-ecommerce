@@ -273,8 +273,7 @@ export function useCheckoutPage() {
       const orderData = {
         customerId: user.id,
         items: items.map((item) => ({
-          productId: item.productId,
-          variantId: item.variantId,
+          productId: item.product.id,
           quantity: item.quantity,
         })),
         shippingAddress: selectedShippingAddress,

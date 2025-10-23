@@ -11,7 +11,7 @@ export type OrderStatus =
 // Order item interface
 export interface OrderItem {
   id: number;
-  variantId: number;
+  variantId: number;  
   productName: string;
   variantName: string;
   quantity: number;

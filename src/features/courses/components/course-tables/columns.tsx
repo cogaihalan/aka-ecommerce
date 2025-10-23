@@ -10,8 +10,6 @@ import {
   Play,
   Edit,
   Text,
-  Eye,
-  EyeOff,
   Clock,
   Calendar,
 } from "lucide-react";
@@ -28,6 +26,7 @@ import { formatDuration } from "@/lib/format";
 import { useState } from "react";
 import { VideoPreviewDialog } from "../video-preview-dialog";
 import { CourseDialog } from "../course-dialog";
+import Image from "next/image";
 
 export const columns: ColumnDef<Course>[] = [
   {
@@ -44,6 +43,28 @@ export const columns: ColumnDef<Course>[] = [
     maxSize: 32,
   },
   {
+    id: "images",
+    accessorKey: "images",
+    header: "Thumbnail",
+    cell: ({ row }) => {
+      const thumbnail = row.original.thumbnailUrl;
+
+      return (
+        <div className="relative">
+          <Image
+            width={80}
+            height={80}
+            src={thumbnail || "/assets/placeholder-image.jpeg"}
+            alt={row.getValue("name")}
+            className="rounded-lg aspect-square object-cover"
+          />
+        </div>
+      );
+    },
+    size: 80,
+    maxSize: 80,
+  },
+  {
     id: "name",
     accessorKey: "name",
     header: ({ column }) => (
@@ -52,12 +73,7 @@ export const columns: ColumnDef<Course>[] = [
     cell: ({ row }) => {
       const course = row.original;
       return (
-        <div className="flex flex-col gap-1">
-          <div className="font-medium">{course.name}</div>
-          <div className="text-sm text-muted-foreground line-clamp-2">
-            {course.description}
-          </div>
-        </div>
+        <div className="max-w-45 font-medium line-clamp-2 whitespace-normal">{course.name}</div>
       );
     },
     meta: {
@@ -69,10 +85,19 @@ export const columns: ColumnDef<Course>[] = [
     enableColumnFilter: true,
   },
   {
+    id: "description",
+    accessorKey: "description",
+    header: "Description",
+    cell: ({ row }) => {
+      const description = row.original.description;
+      return <div className="max-w-60 line-clamp-4 text-sm text-muted-foreground whitespace-normal">{description}</div>;
+    },
+    size: 200,
+    maxSize: 250,
+  },
+  {
     accessorKey: "duration",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Duration" />
-    ),
+    header: "Duration",
     cell: ({ row }) => {
       const duration = row.getValue("duration") as number;
       return (
@@ -85,11 +110,11 @@ export const columns: ColumnDef<Course>[] = [
   },
   {
     id: "status",
-    accessorKey: "status",
+    accessorKey: "active",
     header: 'Status',
     cell: ({ row }) => {
-      const isActive = row.getValue("active") as string;
-      return <Badge variant={isActive === "ACTIVE" ? "default" : "secondary"}>{isActive === "ACTIVE" ? "Active" : "Inactive"}</Badge>;
+      const isActive = row.original.active;
+      return <Badge variant={isActive ? "default" : "secondary"}>{isActive ? "Active" : "Inactive"}</Badge>;
     },
     meta: {
       label: "Status",

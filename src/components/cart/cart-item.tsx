@@ -5,11 +5,10 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Price } from "@/components/ui/price";
-import { Trash2, Plus, Minus, AlertCircle } from "lucide-react";
+import { Trash2, Plus, Minus, Loader2 } from "lucide-react";
 import { CartItem as CartItemType } from "@/types/cart";
-import { useCartStore } from "@/stores/cart-store";
+import { useCartStore, useCartItemLoading } from "@/stores/cart-store";
 import { cn, formatPrice } from "@/lib/utils";
 
 interface CartItemProps {
@@ -28,17 +27,11 @@ export function CartItem({
   className,
 }: CartItemProps) {
   const { updateQuantity, removeItem } = useCartStore();
-  const [isUpdating, setIsUpdating] = useState(false);
+  const isItemLoading = useCartItemLoading(item.id);
 
   const handleQuantityChange = async (newQuantity: number) => {
     if (newQuantity < 0) return;
-
-    setIsUpdating(true);
-    try {
-      await updateQuantity(item.id, newQuantity);
-    } finally {
-      setIsUpdating(false);
-    }
+    await updateQuantity(item.id, newQuantity);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,24 +49,22 @@ export function CartItem({
   };
 
   const handleRemove = async () => {
-    setIsUpdating(true);
-    try {
-      await removeItem(item.id);
-    } finally {
-      setIsUpdating(false);
-    }
+    await removeItem(item.id);
   };
 
-  const isLowStock = item.maxQuantity && item.quantity > item.maxQuantity * 0.8;
-  const isOutOfStock = item.maxQuantity && item.quantity >= item.maxQuantity;
+  const imageUrl = item.product.images?.find((image) => image.primary)?.url || "/assets/placeholder-image.jpeg";
+
+
+  // Remove stock-related logic since CartItem doesn't have maxQuantity
+  const isOutOfStock = false;
 
   if (variant === "minimal") {
     return (
       <div className={cn("flex items-start gap-3 py-3 group", className)}>
         <div className="w-10 h-10 bg-muted rounded-md overflow-hidden flex-shrink-0">
           <Image
-            src={item.image || "/assets/placeholder-image.jpeg"}
-            alt={item.name}
+            src={imageUrl}
+            alt={item.product.name}
             width={40}
             height={40}
             className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
@@ -81,24 +72,10 @@ export function CartItem({
         </div>
         <div className="flex-1 min-w-0 space-y-1">
           <p className="text-sm font-medium group-hover:text-primary transition-colors line-clamp-2 leading-tight">
-            {item.name}
+            {item.product.name}
           </p>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span>Qty: {item.quantity}</span>
-            {Object.keys(item.attributes).length > 0 && (
-              <span className="truncate">
-                {Object.entries(item.attributes)
-                  .slice(0, 1)
-                  .map(([key, value]) => (
-                    <span key={key}>
-                      {key}: {value}
-                    </span>
-                  ))}
-                {Object.keys(item.attributes).length > 1 && (
-                  <span> +{Object.keys(item.attributes).length - 1}</span>
-                )}
-              </span>
-            )}
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -106,11 +83,6 @@ export function CartItem({
             <div className="text-sm font-semibold">
               {formatPrice(item.price * item.quantity)}
             </div>
-            {item.compareAtPrice && item.compareAtPrice > item.price && (
-              <div className="text-xs text-muted-foreground line-through">
-                {formatPrice(item.compareAtPrice * item.quantity)}
-              </div>
-            )}
           </div>
           {showRemoveButton && (
             <Button
@@ -118,9 +90,13 @@ export function CartItem({
               size="icon"
               className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10 transition-all duration-200"
               onClick={handleRemove}
-              disabled={isUpdating}
+              disabled={isItemLoading}
             >
-              <Trash2 className="h-4 w-4" />
+              {isItemLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Trash2 className="h-4 w-4" />
+              )}
             </Button>
           )}
         </div>
@@ -138,8 +114,8 @@ export function CartItem({
       >
         <div className="w-16 h-16 bg-muted rounded-md overflow-hidden flex-shrink-0">
           <Image
-            src={item.image || "/assets/placeholder-image.jpeg"}
-            alt={item.name}
+            src={imageUrl}
+            alt={item.product.name}
             width={64}
             height={64}
             className="w-full h-full object-cover"
@@ -147,20 +123,7 @@ export function CartItem({
         </div>
 
         <div className="flex-1 min-w-0">
-          <h3 className="font-medium text-sm truncate">{item.name}</h3>
-          <div className="flex items-center gap-2 mt-1">
-            {Object.entries(item.attributes).map(([key, value]) => (
-              <Badge key={key} variant="secondary" className="text-xs">
-                {key}: {value}
-              </Badge>
-            ))}
-          </div>
-          {isLowStock && (
-            <div className="flex items-center gap-1 mt-1 text-amber-600 text-xs">
-              <AlertCircle className="w-3 h-3" />
-              Low stock
-            </div>
-          )}
+          <h3 className="font-medium text-sm truncate">{item.product.name}</h3>
         </div>
 
         <div className="flex items-center gap-2">
@@ -171,9 +134,13 @@ export function CartItem({
                 size="icon"
                 className="h-8 w-8"
                 onClick={() => handleQuantityChange(item.quantity - 1)}
-                disabled={isUpdating || item.quantity <= 1}
+                disabled={isItemLoading || item.quantity <= 1}
               >
-                <Minus className="h-3 w-3" />
+                {isItemLoading ? (
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                ) : (
+                  <Minus className="h-3 w-3" />
+                )}
               </Button>
               <Input
                 type="number"
@@ -181,17 +148,20 @@ export function CartItem({
                 onChange={handleInputChange}
                 className="w-12 h-8 text-center text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 min="1"
-                max={item.maxQuantity}
-                disabled={isUpdating}
+                disabled={isItemLoading}
               />
               <Button
                 variant="outline"
                 size="icon"
                 className="h-8 w-8"
                 onClick={() => handleQuantityChange(item.quantity + 1)}
-                disabled={!!isUpdating || !!isOutOfStock}
+                disabled={!!isItemLoading || !!isOutOfStock}
               >
-                <Plus className="h-3 w-3" />
+                {isItemLoading ? (
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                ) : (
+                  <Plus className="h-3 w-3" />
+                )}
               </Button>
             </div>
           )}
@@ -200,11 +170,6 @@ export function CartItem({
             <div className="font-medium">
               {formatPrice(item.price * item.quantity)}
             </div>
-            {item.compareAtPrice && item.compareAtPrice > item.price && (
-              <div className="text-xs text-muted-foreground line-through">
-                {formatPrice(item.compareAtPrice * item.quantity)}
-              </div>
-            )}
           </div>
 
           {showRemoveButton && (
@@ -213,7 +178,7 @@ export function CartItem({
               size="icon"
               className="h-8 w-8 text-destructive hover:text-destructive"
               onClick={handleRemove}
-              disabled={isUpdating}
+              disabled={isItemLoading}
             >
               <Trash2 className="h-4 w-4" />
             </Button>
@@ -230,8 +195,8 @@ export function CartItem({
         <div className="flex gap-4">
           <div className="w-20 h-20 bg-muted rounded-md overflow-hidden flex-shrink-0">
             <Image
-              src={item.image || "/assets/placeholder-image.jpeg"}
-              alt={item.name}
+              src={imageUrl}
+              alt={item.product.name}
               width={80}
               height={80}
               className="w-full h-full object-cover"
@@ -239,33 +204,14 @@ export function CartItem({
           </div>
 
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold mb-1 truncate">{item.name}</h3>
-            <p className="text-sm text-muted-foreground mb-2">
-              SKU: {item.sku}
-            </p>
-
-            <div className="flex items-center gap-2 mb-2">
-              {Object.entries(item.attributes).map(([key, value]) => (
-                <Badge key={key} variant="secondary" className="text-xs">
-                  {key}: {value}
-                </Badge>
-              ))}
-            </div>
-
-            {isLowStock && (
-              <div className="flex items-center gap-1 text-amber-600 text-sm mb-2">
-                <AlertCircle className="w-4 h-4" />
-                Low stock - only {item.maxQuantity} available
-              </div>
-            )}
+            <h3 className="font-semibold mb-1 truncate">{item.product.name}</h3>
 
             <div className="flex items-center gap-2">
               <Price
                 price={item.price}
-                originalPrice={item.compareAtPrice}
                 size="lg"
                 weight="semibold"
-                showDiscount={true}
+                showDiscount={false}
               />
             </div>
           </div>
@@ -277,9 +223,13 @@ export function CartItem({
                   variant="outline"
                   size="icon"
                   onClick={() => handleQuantityChange(item.quantity - 1)}
-                  disabled={isUpdating || item.quantity <= 1}
+                  disabled={isItemLoading || item.quantity <= 1}
                 >
-                  <Minus className="h-4 w-4" />
+                  {isItemLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Minus className="h-4 w-4" />
+                  )}
                 </Button>
                 <Input
                   type="number"
@@ -287,16 +237,19 @@ export function CartItem({
                   onChange={handleInputChange}
                   className="w-16 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   min="1"
-                  max={item.maxQuantity}
-                  disabled={isUpdating}
+                  disabled={isItemLoading}
                 />
                 <Button
                   variant="outline"
                   size="icon"
                   onClick={() => handleQuantityChange(item.quantity + 1)}
-                  disabled={!!isUpdating || !!isOutOfStock}
+                  disabled={!!isItemLoading || !!isOutOfStock}
                 >
-                  <Plus className="h-4 w-4" />
+                  {isItemLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Plus className="h-4 w-4" />
+                  )}
                 </Button>
               </div>
             )}
@@ -305,11 +258,6 @@ export function CartItem({
               <div className="text-lg font-bold">
                 {formatPrice(item.price * item.quantity)}
               </div>
-              {item.compareAtPrice && item.compareAtPrice > item.price && (
-                <div className="text-sm text-muted-foreground line-through">
-                  {formatPrice(item.compareAtPrice * item.quantity)}
-                </div>
-              )}
             </div>
 
             {showRemoveButton && (
@@ -317,10 +265,14 @@ export function CartItem({
                 variant="ghost"
                 size="icon"
                 onClick={handleRemove}
-                disabled={isUpdating}
+                disabled={isItemLoading}
                 className="text-destructive hover:text-destructive"
               >
-                <Trash2 className="h-4 w-4" />
+                {isItemLoading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Trash2 className="h-4 w-4" />
+                )}
               </Button>
             )}
           </div>

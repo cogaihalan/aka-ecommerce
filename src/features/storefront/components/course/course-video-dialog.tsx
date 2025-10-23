@@ -6,7 +6,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
 import { Clock, Calendar } from "lucide-react";
 import { format } from "date-fns";
 import { formatDuration } from "@/lib/format";
@@ -26,13 +25,10 @@ export function CourseVideoDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-6xl">
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="text-left max-w-4/5">
             {course.name}
-            <Badge variant={course.isActive ? "default" : "secondary"}>
-              {course.isActive ? "Active" : "Inactive"}
-            </Badge>
           </DialogTitle>
         </DialogHeader>
 

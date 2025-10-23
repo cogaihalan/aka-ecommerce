@@ -18,6 +18,10 @@ export function AddCourseButton() {
       <CourseDialog
         open={open}
         onOpenChange={setOpen}
+        onSuccess={() => {
+          // Refresh the page or refetch data
+          window.location.reload();
+        }}
       />
     </>
   );

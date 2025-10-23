@@ -20,7 +20,7 @@ interface MiniCartProps {
 }
 
 export function MiniCart({ className }: MiniCartProps) {
-  const { isOpen, closeCart, getTotalItems } = useCartStore();
+  const { isOpen, closeCart } = useCartStore();
   const items = useCartItems();
   const total = useCartTotal();
   const itemCount = useCartItemCount();

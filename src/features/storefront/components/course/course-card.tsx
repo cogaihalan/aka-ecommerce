@@ -1,10 +1,10 @@
 "use client";
 
 import { Course } from "@/types/extensions/course";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Play, Lock } from "lucide-react";
+import { Clock, Play } from "lucide-react";
 import { formatDuration } from "@/lib/format";
 import Image from "next/image";
 
@@ -17,18 +17,22 @@ export function CourseCard({ course, onWatch }: CourseCardProps) {
   return (
     <Card disableBlockPadding={true} className="group hover:shadow-lg transition-shadow">
       <div className="relative aspect-video overflow-hidden rounded-t-lg">
-        {course.thumbnailUrl ? (
-          <Image
-            src={course.thumbnailUrl}
-            alt={course.name}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        ) : (
-          <div className="w-full h-full bg-muted flex items-center justify-center">
-            <Play className="h-12 w-12 text-muted-foreground" />
-          </div>
-        )}
+        <Image
+          src={course.thumbnailUrl || "/assets/placeholder-image.jpeg"}
+          alt={course.name}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+        <div className="absolute inset-0 flex items-center justify-center group-hover:bg-black/40 transition-colors cursor-pointer">
+          <Button
+            variant="default"
+            size="sm"
+            onClick={onWatch}
+            disabled={!course.active}
+          >
+            <Play className="h-6 w-6 text-white" />
+          </Button>
+        </div>
         
         {course.duration && (
           <div className="absolute top-2 right-2">
@@ -48,33 +52,6 @@ export function CourseCard({ course, onWatch }: CourseCardProps) {
           </p>
         </div>
       </CardContent>
-      
-      <CardFooter className="p-4 pt-0">
-        <div className="flex items-center justify-between w-full">
-          <Badge variant={course.isActive ? "default" : "secondary"}>
-            {course.isActive ? "Available" : "Coming Soon"}
-          </Badge>
-          
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onWatch}
-            disabled={!course.isActive}
-          >
-            {!course.isActive ? (
-              <>
-                <Lock className="h-4 w-4 mr-2" />
-                Locked
-              </>
-            ) : (
-              <>
-                <Play className="h-4 w-4 mr-2" />
-                Watch
-              </>
-            )}
-          </Button>
-        </div>
-      </CardFooter>
     </Card>
   );
 }

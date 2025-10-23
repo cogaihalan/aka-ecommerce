@@ -5,6 +5,7 @@ import { DataTableColumnHeader } from "@/components/ui/table/data-table-column-h
 import { Category } from "@/types";
 import { CellAction } from "./cell-action";
 import { Text } from "lucide-react";
+import Image from "next/image";
 
 export const columns: ColumnDef<Category>[] = [
   {
@@ -19,6 +20,27 @@ export const columns: ColumnDef<Category>[] = [
     },
     size: 32,
     maxSize: 32,
+  },
+  {
+    accessorKey: "image",
+    header: "Image",
+    cell: ({ row }) => {
+      const category = row.original;
+      const image = category?.thumbnailUrl || "/assets/placeholder-image.jpeg";
+      return (
+        <div className="relative">
+          <Image
+            src={image}
+            alt={category.name}
+            width={60}
+            height={60}
+            className="rounded-lg aspect-square object-cover"
+          />
+        </div>
+      );
+    },
+    size: 60,
+    maxSize: 60,
   },
   {
     id: "name",

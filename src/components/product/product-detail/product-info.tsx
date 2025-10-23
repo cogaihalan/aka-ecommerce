@@ -14,8 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Price } from "@/components/ui/price";
-import { Star, Heart, Share2, Minus, Plus } from "lucide-react";
-import { useAddToCart } from "@/hooks/use-add-to-cart";
+import { Heart, Share2, Minus, Plus } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import {
   useWishlistActions,
@@ -47,20 +46,7 @@ export const ProductInfo = memo(function ProductInfo({
   const [quantity, setQuantity] = useState(1);
   const router = useRouter();
 
-  const {
-    addToCart: handleAddToCart,
-    isAdding,
-    error,
-  } = useAddToCart({
-    onSuccess: (product, quantity) => {
-      console.log(`Added ${quantity} x ${product.name} to cart`);
-    },
-    onError: (error) => {
-      console.error("Add to cart error:", error);
-    },
-  });
-
-  const { isInCart, getItemQuantity } = useCart();
+  const { addToCart, isLoading, error, isInCart, getItemQuantity } = useCart();
   const { addItem: addToWishlist, removeItem: removeFromWishlist } =
     useWishlistActions();
   const isAuthenticated = useWishlistAuthStatus();
@@ -71,9 +57,9 @@ export const ProductInfo = memo(function ProductInfo({
   const isOutOfStock = isProductOutOfStock(product);
   const stockStatusText = getStockStatusText(product);
 
-  const onAddToCart = useCallback(() => {
-    handleAddToCart(product, undefined, quantity);
-  }, [handleAddToCart, product, quantity]);
+  const onAddToCart = useCallback(async () => {
+    await addToCart(product, quantity);
+  }, [addToCart, product, quantity]);
 
   const handleBuyNow = useCallback(() => {
     onAddToCart();
@@ -131,20 +117,6 @@ export const ProductInfo = memo(function ProductInfo({
     [product.stockCount]
   );
 
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <Star
-        key={i}
-        className={cn(
-          "h-4 w-4",
-          i < Math.floor(rating)
-            ? "fill-yellow-400 text-yellow-400"
-            : "text-muted-foreground"
-        )}
-      />
-    ));
-  };
-
   return (
     <div className={cn("space-y-6", className)}>
       {/* Product Header */}
@@ -156,18 +128,6 @@ export const ProductInfo = memo(function ProductInfo({
         </div>
 
         <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-
-        {/* Rating */}
-        {product.rating && (
-          <div className="flex items-center gap-2 mb-4">
-            <div className="flex items-center gap-1">
-              {renderStars(product.rating)}
-            </div>
-            <span className="text-sm text-muted-foreground">
-              {product.rating} ({product.reviewCount || 0} reviews)
-            </span>
-          </div>
-        )}
 
         {/* Price */}
         <div className="flex items-center gap-3 mb-4">
@@ -268,7 +228,7 @@ export const ProductInfo = memo(function ProductInfo({
               isOutOfStock && "opacity-50 cursor-not-allowed"
             )}
             onClick={onAddToCart}
-            disabled={isAdding || isOutOfStock}
+            disabled={isLoading || isOutOfStock}
           >
             {isOutOfStock
               ? stockStatusText
@@ -300,7 +260,7 @@ export const ProductInfo = memo(function ProductInfo({
             isOutOfStock && "opacity-50 cursor-not-allowed"
           )}
           onClick={handleBuyNow}
-          disabled={isAdding || isOutOfStock}
+          disabled={isLoading || isOutOfStock}
         >
           {isOutOfStock ? stockStatusText : "Buy Now"}
         </Button>

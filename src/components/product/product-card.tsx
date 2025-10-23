@@ -8,7 +8,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Price } from "@/components/ui/price";
 import { ShoppingCart, Heart, Eye } from "lucide-react";
-import { useAddToCart } from "@/hooks/use-add-to-cart";
 import { useCart } from "@/hooks/use-cart";
 import { useQuickView } from "@/components/providers/quick-view-provider";
 import {
@@ -34,14 +33,7 @@ export function ProductCard({
 }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
-  const { addToCart, isAdding, error } = useAddToCart({
-    onSuccess: (product, quantity) => {
-      console.log(`Added ${quantity} x ${product.name} to cart`);
-    },
-    onError: (error) => {
-      console.error("Add to cart error:", error);
-    },
-  });
+  const { addToCart, isLoading } = useCart();
 
   const { openQuickView } = useQuickView();
   const { addItem: addToWishlist, removeItem: removeFromWishlist } =
@@ -53,10 +45,10 @@ export function ProductCard({
   const isOutOfStock = isProductOutOfStock(product);
   const stockStatusText = getStockStatusText(product);
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCart(product, undefined, 1);
+    await addToCart(product, 1);
   };
 
   const handleWishlist = (e: React.MouseEvent) => {
@@ -161,7 +153,7 @@ export function ProductCard({
                   <Button
                     size="sm"
                     onClick={handleAddToCart}
-                    disabled={isAdding || isOutOfStock}
+                    disabled={isLoading || isOutOfStock}
                     className={cn(
                       "h-7 px-2 text-xs",
                       isOutOfStock && "opacity-50 cursor-not-allowed"
@@ -290,7 +282,7 @@ export function ProductCard({
               <Button
                 size="sm"
                 onClick={handleAddToCart}
-                disabled={isAdding || isOutOfStock}
+                disabled={isLoading || isOutOfStock}
                 className={cn(
                   "flex-1",
                   isOutOfStock && "opacity-50 cursor-not-allowed"
@@ -299,8 +291,6 @@ export function ProductCard({
                 {stockStatusText}
               </Button>
             </div>
-
-            {error && <p className="text-xs text-destructive">{error}</p>}
           </div>
         </CardContent>
       </Card>
@@ -413,7 +403,7 @@ export function ProductCard({
             <Button
               size="sm"
               onClick={handleAddToCart}
-              disabled={isAdding || isOutOfStock}
+              disabled={isLoading || isOutOfStock}
               className={cn(
                 "flex-1",
                 isOutOfStock && "opacity-50 cursor-not-allowed"
@@ -422,8 +412,6 @@ export function ProductCard({
               {stockStatusText}
             </Button>
           </div>
-
-          {error && <p className="text-xs text-destructive">{error}</p>}
         </div>
       </CardContent>
     </Card>

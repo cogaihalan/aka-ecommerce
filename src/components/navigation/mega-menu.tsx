@@ -70,7 +70,7 @@ export const MegaMenu: FC<MegaMenuProps> = ({ menuItems, className }) => {
           >
             <PrismicNextLink
               field={item.link}
-              className={cn("flex items-center gap-2 py-2 px-3 text-md font-medium text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-all duration-200", activeMenu === index.toString() ? "text-primary bg-gray-50 dark:bg-gray-800" : "")}
+              className={cn("flex items-center gap-2 py-2 px-3 text-md font-medium text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all duration-200", activeMenu === index.toString() ? "text-primary bg-gray-50 dark:bg-gray-800" : "")}
               tabIndex={0}
               aria-expanded={
                 item.has_mega_menu ? activeMenu === index.toString() : undefined

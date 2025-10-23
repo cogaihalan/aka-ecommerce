@@ -2,9 +2,11 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { v4 as uuidv4 } from "uuid";
+import { toast } from "sonner";
+import { unifiedCartService } from "@/lib/api/services/unified/cart";
 import { CartStore, CartItem, CartValidationResult } from "@/types/cart";
-import { Product, ProductVariant } from "@/types";
+import { Product } from "@/types";
+import { AddToCartRequest, UpdateCartItemRequest } from "@/lib/api/types";
 
 // Default cart calculation options for Vietnamese market
 const DEFAULT_CALCULATION_OPTIONS = {
@@ -24,167 +26,132 @@ export const useCartStore = create<CartStore>()(
       isLoading: false,
       error: null,
       lastUpdated: Date.now(),
+      // Individual item loading states
+      itemLoadingStates: {} as Record<number, boolean>,
 
       // Item management actions
-      addItem: (
+      addItem: async (
         product: Product,
-        variant?: ProductVariant,
         quantity: number = 1,
-        attributes: Record<string, string> = {}
       ) => {
         set({ isLoading: true, error: null });
 
-        try {
-          const state = get();
-          const variantToUse = variant || product.variants?.[0];
-          const itemId = `${product.id}-${variantToUse?.id || "default"}`;
+        const addToCartRequest: AddToCartRequest = {
+          productId: product.id,
+          quantity,
+        };
 
-          // Check if item already exists
-          const existingItemIndex = state.items.findIndex(
-            (item) =>
-              item.productId === product.id &&
-              item.variantId === variantToUse?.id
-          );
+        const addToCartPromise = unifiedCartService.createCart(addToCartRequest);
 
-          if (existingItemIndex >= 0) {
-            // Update existing item quantity
-            const updatedItems = [...state.items];
-            const existingItem = updatedItems[existingItemIndex];
-            const newQuantity = existingItem.quantity + quantity;
-
-            // Check stock limits
-            const maxQuantity =
-              variantToUse?.stock ||
-              product.stock ||
-              999;
-            if (newQuantity > maxQuantity) {
-              set({
-                error: `Only ${maxQuantity} items available in stock`,
-                isLoading: false,
-              });
-              return;
-            }
-
-            updatedItems[existingItemIndex] = {
-              ...existingItem,
-              quantity: newQuantity,
-            };
-
+        toast.promise(addToCartPromise, {
+          loading: "Adding to cart...",
+          success: (updatedCart) => {
             set({
-              items: updatedItems,
+              items: updatedCart.items,
               lastUpdated: Date.now(),
               isLoading: false,
             });
-          } else {
-            // Add new item
-            const newItem: CartItem = {
-              id: uuidv4(),
-              productId: product.id,
-              variantId: variantToUse?.id,
-              name: product.name,
-              price: variantToUse?.price || product.price,
-              compareAtPrice:
-                variantToUse?.discountPrice || product.discountPrice,
-              quantity,
-              image: product.images?.[0]?.url,
-              attributes: {
-                ...attributes,
-              },
-              sku: variantToUse?.name || product.name,
-              weight: 0, // Default weight
-              maxQuantity:
-                variantToUse?.stock ||
-                product.stock,
-            };
-
+            return `${product.name} has been added to your cart`;
+          },
+          error: (error) => {
+            const errorMessage = error instanceof Error
+              ? error.message
+              : "Failed to add item to cart";
+            
             set({
-              items: [...state.items, newItem],
-              lastUpdated: Date.now(),
+              error: errorMessage,
               isLoading: false,
             });
-          }
-        } catch (error) {
-          set({
-            error:
-              error instanceof Error
-                ? error.message
-                : "Failed to add item to cart",
-            isLoading: false,
-          });
-        }
+            return errorMessage;
+          },
+        });
       },
 
-      removeItem: (itemId: string) => {
-        set({ isLoading: true, error: null });
-
-        try {
-          const state = get();
-          const updatedItems = state.items.filter((item) => item.id !== itemId);
-
-          set({
-            items: updatedItems,
-            lastUpdated: Date.now(),
-            isLoading: false,
-          });
-        } catch (error) {
-          set({
-            error:
-              error instanceof Error
-                ? error.message
-                : "Failed to remove item from cart",
-            isLoading: false,
-          });
-        }
-      },
-
-      updateQuantity: (itemId: string, quantity: number) => {
-        set({ isLoading: true, error: null });
-
-        try {
-          if (quantity <= 0) {
-            get().removeItem(itemId);
-            return;
-          }
-
-          const state = get();
-          const updatedItems = state.items.map((item) => {
-            if (item.id === itemId) {
-              // Check stock limits
-              if (item.maxQuantity && quantity > item.maxQuantity) {
-                set({
-                  error: `Only ${item.maxQuantity} items available in stock`,
-                  isLoading: false,
-                });
-                return item;
-              }
-
-              return { ...item, quantity };
-            }
-            return item;
-          });
-
-          set({
-            items: updatedItems,
-            lastUpdated: Date.now(),
-            isLoading: false,
-          });
-        } catch (error) {
-          set({
-            error:
-              error instanceof Error
-                ? error.message
-                : "Failed to update quantity",
-            isLoading: false,
-          });
-        }
-      },
-
-      clearCart: () => {
-        set({
-          items: [],
-          lastUpdated: Date.now(),
-          isLoading: false,
+      removeItem: async (itemId: number) => {
+        set((state) => ({
+          itemLoadingStates: { ...state.itemLoadingStates, [itemId]: true },
           error: null,
+        }));
+
+        try {
+          const updatedCart = await unifiedCartService.removeCartItem(itemId);
+          set((state) => ({
+            items: updatedCart.items,
+            lastUpdated: Date.now(),
+            itemLoadingStates: { ...state.itemLoadingStates, [itemId]: false },
+          }));
+        } catch (error) {
+          const errorMessage = error instanceof Error
+            ? error.message
+            : "Failed to remove item from cart";
+          
+          set((state) => ({
+            error: errorMessage,
+            itemLoadingStates: { ...state.itemLoadingStates, [itemId]: false },
+          }));
+        }
+      },
+
+      updateQuantity: async (itemId: number, quantity: number) => {
+        set((state) => ({
+          itemLoadingStates: { ...state.itemLoadingStates, [itemId]: true },
+          error: null,
+        }));
+
+        if (quantity <= 0) {
+          await get().removeItem(itemId);
+          return;
+        }
+
+        try {
+          const updateRequest: UpdateCartItemRequest = {
+            quantity,
+          };
+
+          const updatedCart = await unifiedCartService.updateProduct(itemId, updateRequest);
+          set((state) => ({
+            items: updatedCart.items,
+            lastUpdated: Date.now(),
+            itemLoadingStates: { ...state.itemLoadingStates, [itemId]: false },
+          }));
+        } catch (error) {
+          const errorMessage = error instanceof Error
+            ? error.message
+            : "Failed to update quantity";
+          
+          set((state) => ({
+            error: errorMessage,
+            itemLoadingStates: { ...state.itemLoadingStates, [itemId]: false },
+          }));
+        }
+      },
+
+      clearCart: async () => {
+        set({ isLoading: true, error: null });
+
+        const clearCartPromise = unifiedCartService.clearCart();
+
+        toast.promise(clearCartPromise, {
+          loading: "Clearing cart...",
+          success: (updatedCart) => {
+            set({
+              items: updatedCart.items,
+              lastUpdated: Date.now(),
+              isLoading: false,
+            });
+            return "All items have been removed from your cart";
+          },
+          error: (error) => {
+            const errorMessage = error instanceof Error
+              ? error.message
+              : "Failed to clear cart";
+            
+            set({
+              error: errorMessage,
+              isLoading: false,
+            });
+            return errorMessage;
+          },
         });
       },
 
@@ -209,11 +176,22 @@ export const useCartStore = create<CartStore>()(
         set({ error });
       },
 
+      setItemLoading: (itemId: number, loading: boolean) => {
+        set((state) => ({
+          itemLoadingStates: { ...state.itemLoadingStates, [itemId]: loading },
+        }));
+      },
+
+      isItemLoading: (itemId: number) => {
+        const state = get();
+        return state.itemLoadingStates[itemId] || false;
+      },
+
       // Utility functions
-      getItemQuantity: (productId: number, variantId?: number) => {
+      getItemQuantity: (productId: number) => {
         const state = get();
         const item = state.items.find(
-          (item) => item.productId === productId && item.variantId === variantId
+          (item) => item.product.id === productId
         );
         return item?.quantity || 0;
       },
@@ -257,17 +235,41 @@ export const useCartStore = create<CartStore>()(
         return subtotal + shipping + tax;
       },
 
-      isItemInCart: (productId: number, variantId?: number) => {
+      isItemInCart: (productId: number) => {
         const state = get();
         return state.items.some(
-          (item) => item.productId === productId && item.variantId === variantId
+          (item) => item.product.id === productId
         );
       },
 
       // Persistence methods
-      loadCart: () => {
-        // This is handled by Zustand persist middleware
-        set({ isLoading: false });
+      loadCart: async () => {
+        set({ isLoading: true, error: null });
+
+        try {
+          const cart = await unifiedCartService.getCart();
+          
+          set({
+            items: cart.items,
+            lastUpdated: Date.now(),
+            isLoading: false,
+          });
+        } catch (error) {
+          const errorMessage = error instanceof Error
+            ? error.message
+            : "Failed to load cart";
+          
+          set({
+            error: errorMessage,
+            isLoading: false,
+          });
+
+          // Show error toast for load cart failures
+          toast.error("Failed to load cart", {
+            description: errorMessage,
+            duration: 4000,
+          });
+        }
       },
 
       saveCart: () => {
@@ -299,6 +301,8 @@ export const useCartItemCount = () =>
 export const useCartIsOpen = () => useCartStore((state) => state.isOpen);
 export const useCartLoading = () => useCartStore((state) => state.isLoading);
 export const useCartError = () => useCartStore((state) => state.error);
+export const useCartItemLoading = (itemId: number) => 
+  useCartStore((state) => state.isItemLoading(itemId));
 
 // Cart validation utility
 export const validateCart = (items: CartItem[]): CartValidationResult => {
@@ -309,24 +313,8 @@ export const validateCart = (items: CartItem[]): CartValidationResult => {
     // Check if item has valid quantity
     if (item.quantity <= 0) {
       errors.push({
-        itemId: item.id,
+        itemId: item.id.toString(),
         message: "Item quantity must be greater than 0",
-      });
-    }
-
-    // Check stock availability
-    if (item.maxQuantity && item.quantity > item.maxQuantity) {
-      errors.push({
-        itemId: item.id,
-        message: `Only ${item.maxQuantity} items available in stock`,
-      });
-    }
-
-    // Check if item is low in stock
-    if (item.maxQuantity && item.quantity > item.maxQuantity * 0.8) {
-      warnings.push({
-        itemId: item.id,
-        message: "Item is low in stock",
       });
     }
   });

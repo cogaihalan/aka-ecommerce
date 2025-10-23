@@ -26,7 +26,7 @@ export default function CategoryListingPage() {
     );
   }
 
-  if (!categories.length) {
+  if (!isLoading && !categories.length) {
     return (
       <div className="text-center py-8">
         <p className="text-muted-foreground">No categories available</p>

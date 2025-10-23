@@ -3,8 +3,8 @@ import type { Course } from "@/types";
 import type { QueryParams, CourseListResponse, CourseCreateRequest, CourseUpdateRequest, CourseMediaUploadRequest } from "@/lib/api/types";
 
 
-class UnifiedCourseService {
-  private basePath = "/admin/courses";
+export class UnifiedCourseService {
+  protected basePath = "/admin/courses";
 
   async getCourses(params: QueryParams = {}): Promise<CourseListResponse> {
     const searchParams = new URLSearchParams();

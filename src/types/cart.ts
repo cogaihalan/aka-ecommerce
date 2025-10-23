@@ -1,20 +1,14 @@
-// Cart item interface
+import { Product } from "./product";
+
+// Cart item interface based on your example
 export interface CartItem {
-  id: string;
-  productId: number;
-  variantId?: number;
-  name: string;
+  id: number;
+  product: Product;
   price: number;
-  compareAtPrice?: number;
   quantity: number;
-  image?: string;
-  attributes: Record<string, string>;
-  sku: string;
-  weight?: number;
-  maxQuantity?: number;
 }
 
-// Main cart interface
+// Main cart interface based on your example
 export interface Cart {
   id: number;
   userId: number;
@@ -29,35 +23,36 @@ export interface CartStore {
   isLoading: boolean;
   error: string | null;
   lastUpdated: number;
+  itemLoadingStates: Record<number, boolean>;
 
   // Actions
   addItem: (
     product: any,
-    variant?: any,
     quantity?: number,
-    attributes?: Record<string, string>
-  ) => void;
-  removeItem: (itemId: string) => void;
-  updateQuantity: (itemId: string, quantity: number) => void;
-  clearCart: () => void;
+  ) => Promise<void>;
+  removeItem: (itemId: number) => Promise<void>;
+  updateQuantity: (itemId: number, quantity: number) => Promise<void>;
+  clearCart: () => Promise<void>;
   toggleCart: () => void;
   openCart: () => void;
   closeCart: () => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
+  setItemLoading: (itemId: number, loading: boolean) => void;
+  isItemLoading: (itemId: number) => boolean;
 
   // Utility functions
-  getItemQuantity: (productId: number, variantId?: number) => number;
+  getItemQuantity: (productId: number) => number;
   getTotalItems: () => number;
   getTotalPrice: () => number;
   getSubtotal: () => number;
   getShipping: () => number;
   getTax: () => number;
   getTotal: () => number;
-  isItemInCart: (productId: number, variantId?: number) => boolean;
+  isItemInCart: (productId: number) => boolean;
 
   // Persistence
-  loadCart: () => void;
+  loadCart: () => Promise<void>;
   saveCart: () => void;
 }
 
@@ -66,11 +61,4 @@ export interface CartValidationResult {
   isValid: boolean;
   errors: { itemId: string; message: string }[];
   warnings: { itemId: string; message: string }[];
-}
-
-// Add to cart parameters
-export interface AddToCartParams {
-  product: any;
-  variant?: any;
-  quantity?: number;
 }

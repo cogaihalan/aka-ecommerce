@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, Heart, ShoppingCart, Trash2, ArrowLeft } from "lucide-react";
+import { Heart, ShoppingCart, Trash2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -16,7 +16,6 @@ import {
   useWishlistStore,
   useWishlistAuthStatus,
 } from "@/stores/wishlist-store";
-import { useAddToCart } from "@/hooks/use-add-to-cart";
 import { useCart } from "@/hooks/use-cart";
 import { formatPrice } from "@/lib/utils";
 
@@ -42,19 +41,10 @@ export default function WishlistPage() {
     (item) => !currentUserId || item.userId === currentUserId
   );
 
-  const { addToCart, isAdding } = useAddToCart({
-    onSuccess: (product, quantity) => {
-      console.log(`Added ${quantity} x ${product.name} to cart`);
-    },
-    onError: (error) => {
-      console.error("Add to cart error:", error);
-    },
-  });
+  const { addToCart, isLoading, isInCart, getItemQuantity } = useCart();
 
-  const { isInCart, getItemQuantity } = useCart();
-
-  const handleAddToCart = (product: any) => {
-    addToCart(product, undefined, 1);
+  const handleAddToCart = async (product: any) => {
+    await addToCart(product, 1);
   };
 
   const handleRemoveFromWishlist = (productId: number) => {
@@ -122,7 +112,7 @@ export default function WishlistPage() {
                         item.product.images?.[0]?.url ||
                         "/assets/placeholder-image.jpeg"
                       }
-                      alt={item.product.images?.[0]?.alt || item.product.name}
+                      alt={item.product.name}
                       width={300}
                       height={300}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
@@ -148,7 +138,7 @@ export default function WishlistPage() {
                   <div className="flex-1 space-y-3">
                     {/* Category badge */}
                     <Badge variant="secondary" className="text-xs w-fit">
-                      {item.product.primaryCategory?.name || "Uncategorized"}
+                      {item.product.categories ? item.product.categories[0].name : "Uncategorized"}
                     </Badge>
 
                     {/* Product name */}
@@ -166,13 +156,13 @@ export default function WishlistPage() {
                     {/* Price */}
                     <div className="flex items-center gap-2">
                       <span className="text-lg font-bold">
-                        {formatPrice(item.product.pricing?.basePrice || 0)}
+                        {formatPrice(item.product.discountPrice || item.product.price)}
                       </span>
-                      {item.product.pricing?.compareAtPrice &&
-                        item.product.pricing?.compareAtPrice >
-                          item.product.pricing?.basePrice && (
+                      {item.product.discountPrice &&
+                        item.product.discountPrice >
+                          item.product.price && (
                           <span className="text-sm text-muted-foreground line-through">
-                            {formatPrice(item.product.pricing.compareAtPrice)}
+                            {formatPrice(item.product.price)}
                           </span>
                         )}
                     </div>
@@ -183,7 +173,7 @@ export default function WishlistPage() {
                     <Button
                       size="sm"
                       onClick={() => handleAddToCart(item.product)}
-                      disabled={isAdding || item.product.status !== "active"}
+                      disabled={isLoading || item.product.stock <= 0}
                       className="w-full"
                     >
                       {isInCartState ? (

@@ -167,7 +167,7 @@ export function CartSummary({
             variant="destructive"
             size="sm"
             className="w-full"
-            onClick={() => clearCart()}
+            onClick={async () => await clearCart()}
           >
             Clear Cart
           </Button>

@@ -29,14 +29,15 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
   const courseParams: QueryParams = {
     page: params.page ? parseInt(params.page) : 1,
     size: params.perPage ? parseInt(params.perPage) : 10,
-    sort: params.sort ? [`${params.sort},desc`] : ["createdAt,desc"],
+    sort: params.sort ? [params.sort] : ["createdAt,desc"],
     name: params.search?.toString(),
+    active: true,
   };
 
   const data = await serverUnifiedCourseService.getCourses(courseParams);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Courses</h1>
         <p className="text-muted-foreground">

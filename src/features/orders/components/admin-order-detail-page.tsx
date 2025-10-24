@@ -1,21 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
 import {
   Package,
   Truck,
@@ -23,124 +20,144 @@ import {
   Clock,
   User,
   MapPin,
-  CreditCard,
-  Edit,
-  Save,
   X,
   ArrowLeft,
   RefreshCw,
   AlertCircle,
+  ChevronDown,
 } from "lucide-react";
-import { Order } from "@/lib/api/types";
+import { Order, OrderHistory } from "@/types";
 import { formatCurrency } from "@/lib/format";
 import { unifiedOrderService } from "@/lib/api/services/unified";
 import { toast } from "sonner";
 import PageContainer from "@/components/layout/page-container";
+import OrderTimeline from "./order-timeline";
 
 interface AdminOrderDetailPageProps {
   order: Order;
+  orderHistories: OrderHistory[];
 }
 
 export default function AdminOrderDetailPage({
   order,
+  orderHistories,
 }: AdminOrderDetailPageProps) {
   const router = useRouter();
-  const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [editedOrder, setEditedOrder] = useState<Partial<Order>>({
-    status: order.status,
-    paymentStatus: order.paymentStatus,
-    fulfillmentStatus: order.fulfillmentStatus,
-    notes: order.notes,
-    tags: order.tags,
-  });
 
-  const getStatusIcon = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "delivered":
+  // Status validation logic
+  const canConfirmOrder = order.status === "PENDING";
+  const canMarkAsShipping = order.status === "CONFIRMED";
+  const canMarkAsDelivered = order.status === "SHIPPING";
+  const canRefundOrder = order.status === "DELIVERED";
+  const canCancelOrder = ["PENDING", "CONFIRMED", "SHIPPING"].includes(order.status);
+
+  const getStatusIcon = useCallback((status: string) => {
+    switch (status.toUpperCase()) {
+      case "DELIVERED":
         return <CheckCircle className="h-5 w-5 text-green-500" />;
-      case "shipped":
+      case "SHIPPING":
         return <Truck className="h-5 w-5 text-blue-500" />;
-      case "processing":
+      case "CONFIRMED":
         return <RefreshCw className="h-5 w-5 text-yellow-500" />;
-      case "cancelled":
-      case "refunded":
+      case "CANCELLED":
+      case "REFUNDED":
         return <AlertCircle className="h-5 w-5 text-red-500" />;
       default:
         return <Clock className="h-5 w-5 text-gray-500" />;
     }
-  };
+  }, []);
 
-  const getStatusBadgeVariant = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "delivered":
-      case "paid":
-      case "fulfilled":
+  const getStatusBadgeVariant = useCallback((status: string) => {
+    switch (status.toUpperCase()) {
+      case "DELIVERED":
+      case "PAID":
         return "default";
-      case "shipped":
-      case "processing":
+      case "SHIPPING":
+      case "CONFIRMED":
         return "secondary";
-      case "cancelled":
-      case "failed":
-      case "refunded":
+      case "CANCELLED":
+      case "FAILED":
+      case "REFUNDED":
         return "destructive";
-      case "pending":
-      case "unfulfilled":
+      case "PENDING":
+      case "UNPAID":
       default:
         return "outline";
     }
-  };
+  }, []);
 
-  const handleStatusUpdate = async (field: keyof Order, value: any) => {
+  const handleConfirmOrder = async () => {
     setLoading(true);
     try {
-      await unifiedOrderService.updateOrder(order.id, {
-        id: order.id,
-        [field]: value,
-      });
-      toast.success(`Order ${field} updated successfully`);
+      await unifiedOrderService.confirmOrder(order.id, "Order confirmed by admin");
+      toast.success("Order confirmed successfully");
       router.refresh();
     } catch (error) {
-      toast.error(`Failed to update order ${field}`);
+      toast.error("Failed to confirm order");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSaveChanges = async () => {
+  const handleShippingUpdate = async () => {
     setLoading(true);
     try {
-      await unifiedOrderService.updateOrder(order.id, {
-        id: order.id,
-        ...editedOrder,
-      });
-      toast.success("Order updated successfully");
-      setIsEditing(false);
+      await unifiedOrderService.updateOrderShippingStatus(order.id, "Order shipped by admin");
+      toast.success("Order status updated to shipping");
       router.refresh();
     } catch (error) {
-      toast.error("Failed to update order");
+      toast.error("Failed to update order to shipping");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCancelEdit = () => {
-    setEditedOrder({
-      status: order.status,
-      paymentStatus: order.paymentStatus,
-      fulfillmentStatus: order.fulfillmentStatus,
-      notes: order.notes,
-      tags: order.tags,
-    });
-    setIsEditing(false);
+  const handleDeliveredUpdate = async () => {
+    setLoading(true);
+    try {
+      await unifiedOrderService.markDeliveredOrder(order.id, "Order delivered by admin");
+      toast.success("Order marked as delivered");
+      router.refresh();
+    } catch (error) {
+      toast.error("Failed to mark order as delivered");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancelOrder = async () => {
+    setLoading(true);
+    try {
+      await unifiedOrderService.cancelOrder(order.id, "Cancelled by admin");
+      toast.success("Order cancelled successfully");
+      router.refresh();
+    } catch (error) {
+      toast.error("Failed to cancel order");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRefundOrder = async () => {
+    setLoading(true);
+    try {
+      await unifiedOrderService.refundOrder(order.id, "Refunded by admin");
+      toast.success("Order refunded successfully");
+      router.refresh();
+    } catch (error) {
+      toast.error("Failed to refund order");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <PageContainer>
       <div className="flex flex-col flex-1 space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <Button
               variant="ghost"
               size="sm"
@@ -151,34 +168,84 @@ export default function AdminOrderDetailPage({
               Back
             </Button>
             <div>
-              <h1 className="text-3xl font-bold">Order {order.orderNumber}</h1>
+              <h1 className="text-xl font-semibold lg:text-2xl">Order {order.code}</h1>
               <p className="text-muted-foreground">
-                Created on {new Date(order.createdAt).toLocaleDateString()}
+                Created on {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            {isEditing ? (
-              <>
-                <Button
-                  variant="outline"
-                  onClick={handleCancelEdit}
-                  disabled={loading}
-                >
-                  <X className="mr-2 h-4 w-4" />
-                  Cancel
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
+            <Badge variant={"outline"} className="w-fit">
+              {getStatusIcon(order.status)}
+              {order.status}
+            </Badge>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="default" size="sm" className="flex items-center gap-2 w-full sm:w-auto">
+                  <span>Actions</span>
+                  <ChevronDown className="h-4 w-4" />
                 </Button>
-                <Button onClick={handleSaveChanges} disabled={loading}>
-                  <Save className="mr-2 h-4 w-4" />
-                  Save Changes
-                </Button>
-              </>
-            ) : (
-              <Button onClick={() => setIsEditing(true)}>
-                <Edit className="mr-2 h-4 w-4" />
-                Edit Order
-              </Button>
-            )}
+              </PopoverTrigger>
+              <PopoverContent className="w-64" align="end">
+                <div className="space-y-2">
+                  <div className="space-y-1">
+                    <Button
+                      className="w-full justify-start"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleConfirmOrder}
+                      disabled={loading || !canConfirmOrder}
+                    >
+                      <RefreshCw className="mr-2 h-4 w-4" />
+                      Confirm Order
+                    </Button>
+                    <Button
+                      className="w-full justify-start"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleShippingUpdate}
+                      disabled={loading || !canMarkAsShipping}
+                    >
+                      <Truck className="mr-2 h-4 w-4" />
+                      Mark as Shipping
+                    </Button>
+                    <Button
+                      className="w-full justify-start"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleDeliveredUpdate}
+                      disabled={loading || !canMarkAsDelivered}
+                    >
+                      <CheckCircle className="mr-2 h-4 w-4" />
+                      Mark as Delivered
+                    </Button>
+                  </div>
+                  <Separator />
+                  <div className="space-y-1">
+                    <Button
+                      className="w-full justify-start"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleRefundOrder}
+                      disabled={loading || !canRefundOrder}
+                    >
+                      <RefreshCw className="mr-2 h-4 w-4" />
+                      Refund Order
+                    </Button>
+                    <Button
+                      className="w-full justify-start"
+                      variant="destructive"
+                      size="sm"
+                      onClick={handleCancelOrder}
+                      disabled={loading || !canCancelOrder}
+                    >
+                      <X className="mr-2 h-4 w-4" />
+                      Cancel Order
+                    </Button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
 
@@ -203,22 +270,22 @@ export default function AdminOrderDetailPage({
                         </div>
                         <div className="flex-1">
                           <h3 className="font-semibold">
-                            {item.product?.name || "Product"}
+                            {item.productName || "Product"}
                           </h3>
                           <p className="text-sm text-muted-foreground">
-                            SKU: {item.product?.sku || "N/A"}
+                            Product ID: {item.productId}
                           </p>
                           <div className="flex items-center gap-4 mt-2">
                             <div className="text-sm text-muted-foreground">
                               Quantity: {item.quantity}
                             </div>
                             <div className="text-sm text-muted-foreground">
-                              Price: {formatCurrency(item.price)}
+                              Price: {formatCurrency(item.priceAtPurchase)}
                             </div>
                           </div>
                           <div className="mt-2">
                             <p className="font-bold">
-                              Total: {formatCurrency(item.total)}
+                              Total: {formatCurrency(item.priceAtPurchase * item.quantity)}
                             </p>
                           </div>
                         </div>
@@ -247,217 +314,64 @@ export default function AdminOrderDetailPage({
                   <div>
                     <Label className="text-sm font-medium">Name</Label>
                     <p className="text-sm">
-                      {order.customer?.firstName} {order.customer?.lastName}
+                      {order.user?.username || "N/A"}
                     </p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium">Email</Label>
-                    <p className="text-sm">{order.customer?.email}</p>
+                    <Label className="text-sm font-medium">User ID</Label>
+                    <p className="text-sm">{order.user?.id || "N/A"}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium">Phone</Label>
-                    <p className="text-sm">{order.customer?.phone || "N/A"}</p>
+                    <Label className="text-sm font-medium">Clerk ID</Label>
+                    <p className="text-sm">{order.user?.clerkId || "N/A"}</p>
                   </div>
                   <div>
-                    <Label className="text-sm font-medium">Status</Label>
-                    <Badge
-                      variant={getStatusBadgeVariant(
-                        order.customer?.status || "active"
-                      )}
-                    >
-                      {order.customer?.status}
-                    </Badge>
+                    <Label className="text-sm font-medium">Recipient Name</Label>
+                    <p className="text-sm">{order.recipientName || "N/A"}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Addresses */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Shipping Address */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <MapPin className="h-5 w-5" />
-                    Shipping Address
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm space-y-1">
-                    <p className="font-medium">
-                      {order.shippingAddress?.firstName}{" "}
-                      {order.shippingAddress?.lastName}
-                    </p>
-                    <p>{order.shippingAddress?.address1}</p>
-                    {order.shippingAddress?.address2 && (
-                      <p>{order.shippingAddress.address2}</p>
-                    )}
-                    <p>{order.shippingAddress?.phone}</p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Billing Address */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CreditCard className="h-5 w-5" />
-                    Billing Address
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm space-y-1">
-                    <p className="font-medium">
-                      {order.billingAddress?.firstName}{" "}
-                      {order.billingAddress?.lastName}
-                    </p>
-                    <p>{order.billingAddress?.address1}</p>
-                    {order.billingAddress?.address2 && (
-                      <p>{order.billingAddress.address2}</p>
-                    )}
-                    <p>{order.billingAddress?.phone}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Order Notes */}
+            {/* Shipping Information */}
             <Card>
               <CardHeader>
-                <CardTitle>Order Notes</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <MapPin className="h-5 w-5" />
+                  Shipping Information
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                {isEditing ? (
-                  <Textarea
-                    value={editedOrder.notes || ""}
-                    onChange={(e) =>
-                      setEditedOrder({ ...editedOrder, notes: e.target.value })
-                    }
-                    placeholder="Add order notes..."
-                    rows={3}
-                  />
-                ) : (
-                  <p className="text-sm">
-                    {order.notes || "No notes available"}
-                  </p>
-                )}
+                <div className="text-sm space-y-2">
+                  <div>
+                    <Label className="text-sm font-medium">Recipient Name</Label>
+                    <p>{order.recipientName}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium">Recipient Phone</Label>
+                    <p>{order.recipientPhone}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium">Shipping Address</Label>
+                    <p>{order.shippingAddress}</p>
+                  </div>
+                  {order.note && (
+                    <div>
+                      <Label className="text-sm font-medium">Note</Label>
+                      <p>{order.note}</p>
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
+
+            {/* Order Timeline */}
+            <OrderTimeline histories={orderHistories} />
+            
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Order Status */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Order Status</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label className="text-sm font-medium">Status</Label>
-                  {isEditing ? (
-                    <Select
-                      value={editedOrder.status}
-                      onValueChange={(value) =>
-                        setEditedOrder({ ...editedOrder, status: value as any })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="confirmed">Confirmed</SelectItem>
-                        <SelectItem value="processing">Processing</SelectItem>
-                        <SelectItem value="shipped">Shipped</SelectItem>
-                        <SelectItem value="delivered">Delivered</SelectItem>
-                        <SelectItem value="cancelled">Cancelled</SelectItem>
-                        <SelectItem value="refunded">Refunded</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <div className="flex items-center gap-3 mt-2">
-                      {getStatusIcon(order.status)}
-                      <Badge variant={getStatusBadgeVariant(order.status)}>
-                        {order.status}
-                      </Badge>
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium">Payment Status</Label>
-                  {isEditing ? (
-                    <Select
-                      value={editedOrder.paymentStatus}
-                      onValueChange={(value) =>
-                        setEditedOrder({
-                          ...editedOrder,
-                          paymentStatus: value as any,
-                        })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="paid">Paid</SelectItem>
-                        <SelectItem value="failed">Failed</SelectItem>
-                        <SelectItem value="refunded">Refunded</SelectItem>
-                        <SelectItem value="partially_refunded">
-                          Partially Refunded
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <div className="flex items-center gap-3 mt-2">
-                      <Badge
-                        variant={getStatusBadgeVariant(order.paymentStatus)}
-                      >
-                        {order.paymentStatus}
-                      </Badge>
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium">
-                    Fulfillment Status
-                  </Label>
-                  {isEditing ? (
-                    <Select
-                      value={editedOrder.fulfillmentStatus}
-                      onValueChange={(value) =>
-                        setEditedOrder({
-                          ...editedOrder,
-                          fulfillmentStatus: value as any,
-                        })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="unfulfilled">Unfulfilled</SelectItem>
-                        <SelectItem value="partial">Partial</SelectItem>
-                        <SelectItem value="fulfilled">Fulfilled</SelectItem>
-                        <SelectItem value="cancelled">Cancelled</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <div className="flex items-center gap-3 mt-2">
-                      <Badge
-                        variant={getStatusBadgeVariant(order.fulfillmentStatus)}
-                      >
-                        {order.fulfillmentStatus}
-                      </Badge>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
+          <div className="lg:col-span-1 space-y-6">
             {/* Order Summary */}
             <Card>
               <CardHeader>
@@ -466,24 +380,24 @@ export default function AdminOrderDetailPage({
               <CardContent className="space-y-2">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>{formatCurrency(order.pricing.subtotal)}</span>
+                  <span>{formatCurrency(order.subtotalAmount)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Tax</span>
-                  <span>{formatCurrency(order.pricing.tax)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Shipping</span>
+                  <span>Shipping Fee</span>
                   <span>
-                    {order.pricing.shipping === 0
+                    {order.shippingFee === 0
                       ? "Free"
-                      : formatCurrency(order.pricing.shipping)}
+                      : formatCurrency(order.shippingFee)}
                   </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Discount</span>
+                  <span>{formatCurrency(order.discountAmount)}</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between font-bold text-lg">
                   <span>Total</span>
-                  <span>{formatCurrency(order.pricing.total)}</span>
+                  <span>{formatCurrency(order.finalAmount)}</span>
                 </div>
               </CardContent>
             </Card>
@@ -496,150 +410,22 @@ export default function AdminOrderDetailPage({
               <CardContent className="space-y-2">
                 <div className="flex justify-between">
                   <span>Method</span>
-                  <span className="capitalize">{order.payment.method}</span>
+                  <span className="capitalize">{order.paymentMethod}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Gateway</span>
-                  <span className="capitalize">{order.payment.gateway}</span>
+                  <span>Status</span>
+                  <Badge variant={getStatusBadgeVariant(order.paymentStatus)}>
+                    {order.paymentStatus}
+                  </Badge>
                 </div>
-                {order.payment.transactionId && (
-                  <div className="flex justify-between">
-                    <span>Transaction ID</span>
-                    <span className="text-sm font-mono">
-                      {order.payment.transactionId}
-                    </span>
-                  </div>
-                )}
-                {order.payment.processedAt && (
-                  <div className="flex justify-between">
-                    <span>Processed</span>
-                    <span className="text-sm">
-                      {new Date(order.payment.processedAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                )}
               </CardContent>
             </Card>
 
-            {/* Shipping Information */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Shipping Information</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="flex justify-between">
-                  <span>Method</span>
-                  <span className="capitalize">{order.shipping.method}</span>
-                </div>
-                {order.shipping.carrier && (
-                  <div className="flex justify-between">
-                    <span>Carrier</span>
-                    <span>{order.shipping.carrier}</span>
-                  </div>
-                )}
-                {order.shipping.trackingNumber && (
-                  <div className="flex justify-between">
-                    <span>Tracking</span>
-                    <span className="text-sm font-mono">
-                      {order.shipping.trackingNumber}
-                    </span>
-                  </div>
-                )}
-                {order.shipping.estimatedDelivery && (
-                  <div className="flex justify-between">
-                    <span>Est. Delivery</span>
-                    <span className="text-sm">
-                      {new Date(
-                        order.shipping.estimatedDelivery
-                      ).toLocaleDateString()}
-                    </span>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
 
-            {/* Tags */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Tags</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {isEditing ? (
-                  <Input
-                    value={editedOrder.tags?.join(", ") || ""}
-                    onChange={(e) =>
-                      setEditedOrder({
-                        ...editedOrder,
-                        tags: e.target.value
-                          .split(",")
-                          .map((tag) => tag.trim())
-                          .filter(Boolean),
-                      })
-                    }
-                    placeholder="Enter tags separated by commas"
-                  />
-                ) : (
-                  <div className="flex flex-wrap gap-2">
-                    {order.tags?.map((tag, index) => (
-                      <Badge key={index} variant="outline">
-                        {tag}
-                      </Badge>
-                    )) || (
-                      <span className="text-muted-foreground">No tags</span>
-                    )}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Quick Actions */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <Button
-                  className="w-full justify-start"
-                  variant="outline"
-                  onClick={() => handleStatusUpdate("status", "processing")}
-                  disabled={loading || order.status === "processing"}
-                >
-                  <RefreshCw className="mr-2 h-4 w-4" />
-                  Mark as Processing
-                </Button>
-                <Button
-                  className="w-full justify-start"
-                  variant="outline"
-                  onClick={() => handleStatusUpdate("status", "shipped")}
-                  disabled={loading || order.status === "shipped"}
-                >
-                  <Truck className="mr-2 h-4 w-4" />
-                  Mark as Shipped
-                </Button>
-                <Button
-                  className="w-full justify-start"
-                  variant="outline"
-                  onClick={() => handleStatusUpdate("status", "delivered")}
-                  disabled={loading || order.status === "delivered"}
-                >
-                  <CheckCircle className="mr-2 h-4 w-4" />
-                  Mark as Delivered
-                </Button>
-                <Separator />
-                <Button
-                  className="w-full justify-start"
-                  variant="outline"
-                  onClick={() => handleStatusUpdate("paymentStatus", "paid")}
-                  disabled={loading || order.paymentStatus === "paid"}
-                >
-                  <CreditCard className="mr-2 h-4 w-4" />
-                  Mark Payment as Paid
-                </Button>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
     </PageContainer>
   );
 }
+

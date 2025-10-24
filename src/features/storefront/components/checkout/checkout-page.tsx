@@ -3,7 +3,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,7 +16,6 @@ import {
   MapPin,
   CreditCard,
   Truck,
-  Package,
   CheckCircle,
 } from "lucide-react";
 
@@ -431,7 +429,6 @@ export default function CheckoutPage() {
           {/* Order Summary */}
           <div className="lg:col-span-1">
             <OrderSummary
-              showPromoCode={true}
               showShippingInfo={false}
               showSecurityBadges={false}
               showActionButtons={false}

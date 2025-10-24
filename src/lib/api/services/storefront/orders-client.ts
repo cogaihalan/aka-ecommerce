@@ -1,12 +1,6 @@
-import { ServerUnifiedOrderService } from "@/lib/api/services/server/orders";
 import { UnifiedOrderService } from "@/lib/api/services/unified/orders";
 import type { Order } from "@/types";
 import { apiClient } from "@/lib/api/client";
-
-export class StorefrontServerOrderService extends ServerUnifiedOrderService {
-  protected basePath = "/orders";
-
-}
 
 export class StorefrontOrderService extends UnifiedOrderService {
   protected basePath = "/orders";
@@ -21,4 +15,3 @@ export class StorefrontOrderService extends UnifiedOrderService {
 
 // Export singleton instance
 export const storefrontOrderService = new StorefrontOrderService();
-export const storefrontServerOrderService = new StorefrontServerOrderService();

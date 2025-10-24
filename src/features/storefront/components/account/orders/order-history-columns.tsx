@@ -8,27 +8,22 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
   MoreHorizontal,
   Eye,
-  Package,
-  CreditCard,
-  Truck,
-  Download,
-  RefreshCw,
+  X,
 } from "lucide-react";
 import { Column, ColumnDef } from "@tanstack/react-table";
-import { Order } from "@/lib/api/types";
-import { formatCurrency } from "@/lib/format";
+import { Order, OrderItem } from "@/types";
+import { formatCurrency, formatDate } from "@/lib/format";
 import Link from "next/link";
 
 const STATUS_OPTIONS = [
   { label: "Pending", value: "pending" },
-  { label: "Processing", value: "processing" },
-  { label: "Shipped", value: "shipped" },
+  { label: "Confirmed", value: "confirmed" },
+  { label: "Shipping", value: "shipping" },
   { label: "Delivered", value: "delivered" },
   { label: "Cancelled", value: "cancelled" },
   { label: "Refunded", value: "refunded" },
@@ -38,36 +33,38 @@ const getStatusBadgeVariant = (status: string) => {
   switch (status.toLowerCase()) {
     case "delivered":
     case "paid":
-    case "fulfilled":
       return "default";
-    case "shipped":
-    case "processing":
+    case "shipping":
+    case "confirmed":
       return "secondary";
     case "cancelled":
     case "failed":
     case "refunded":
       return "destructive";
     case "pending":
-    case "unfulfilled":
       return "outline";
     default:
       return "outline";
   }
 };
 
+const handleCancelOrder = async (id: number) => {
+ 
+};
+
 export const columns: ColumnDef<Order>[] = [
   {
-    id: "orderNumber",
-    accessorKey: "orderNumber",
+    id: "code",
+    accessorKey: "code",
     header: ({ column }: { column: Column<Order, unknown> }) => (
       <DataTableColumnHeader column={column} title="Order #" />
     ),
     cell: ({ row }) => {
-      const orderNumber = row.getValue("orderNumber") as string;
-      return <div className="font-medium">{orderNumber}</div>;
+      const code = row.getValue("code") as string;
+      return <div className="font-medium">{code}</div>;
     },
     meta: {
-      label: "Order Number",
+      label: "Order Code",
       placeholder: "Search orders...",
       variant: "text",
     },
@@ -115,14 +112,13 @@ export const columns: ColumnDef<Order>[] = [
   },
   {
     id: "total",
-    accessorKey: "pricing.total",
+    accessorKey: "finalAmount",
     header: ({ column }: { column: Column<Order, unknown> }) => (
       <DataTableColumnHeader column={column} title="Total" />
     ),
     cell: ({ row }) => {
-      const order = row.original;
-      const total = order.pricing.total;
-      return <div className="font-medium">{formatCurrency(total)}</div>;
+      const finalAmount = row.getValue("finalAmount") as number;
+      return <div className="font-medium">{formatCurrency(finalAmount)}</div>;
     },
     meta: {
       label: "Total Amount",
@@ -135,8 +131,8 @@ export const columns: ColumnDef<Order>[] = [
     accessorKey: "items",
     header: "Items",
     cell: ({ row }) => {
-      const order = row.original;
-      const itemCount = order.items?.length || 0;
+      const items = row.getValue("items") as OrderItem[];
+      const itemCount = items?.length || 0;
       return (
         <div className="text-center">
           <span className="font-medium">{itemCount}</span>
@@ -151,9 +147,9 @@ export const columns: ColumnDef<Order>[] = [
       <DataTableColumnHeader column={column} title="Date" />
     ),
     cell: ({ row }) => {
-      const date = row.getValue("createdAt") as string;
+      const date = row.getValue("createdAt") as Date;
       return (
-        <div className="text-sm">{new Date(date).toLocaleDateString()}</div>
+        <div className="text-sm">{formatDate(date)}</div>
       );
     },
     meta: {
@@ -165,7 +161,7 @@ export const columns: ColumnDef<Order>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const order = row.original;
+      const id = row.getValue("id") as number;
 
       return (
         <DropdownMenu>
@@ -178,40 +174,13 @@ export const columns: ColumnDef<Order>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem asChild>
-              <Link href={`/account/orders/${order.id}`}>
-                <Eye className="mr-2 h-4 w-4" /> View Details
-              </Link>
+                <Link href={`/account/orders/${id}`}>
+                  <Eye className="mr-2 h-4 w-4" /> View Details
+                </Link>
             </DropdownMenuItem>
-
-            {order.status === "delivered" && (
-              <DropdownMenuItem asChild>
-                <Link href={`/account/orders/${order.id}/review`}>
-                  <RefreshCw className="mr-2 h-4 w-4" /> Leave Review
-                </Link>
-              </DropdownMenuItem>
-            )}
-
-            {order.status === "shipped" && (
-              <DropdownMenuItem asChild>
-                <Link href={`/account/orders/${order.id}/track`}>
-                  <Truck className="mr-2 h-4 w-4" /> Track Package
-                </Link>
-              </DropdownMenuItem>
-            )}
-
-            <DropdownMenuItem asChild>
-              <Link href={`/account/orders/${order.id}/invoice`}>
-                <Download className="mr-2 h-4 w-4" /> Download Invoice
-              </Link>
+            <DropdownMenuItem onClick={() => handleCancelOrder(id)}>
+              <X className="mr-2 h-4 w-4 text-destructive" /> Cancel Order
             </DropdownMenuItem>
-
-            {order.status === "pending" && (
-              <DropdownMenuItem asChild>
-                <Link href={`/checkout/payment/${order.id}`}>
-                  <CreditCard className="mr-2 h-4 w-4" /> Complete Payment
-                </Link>
-              </DropdownMenuItem>
-            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );

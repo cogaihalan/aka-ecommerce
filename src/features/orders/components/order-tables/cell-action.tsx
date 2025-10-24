@@ -13,21 +13,21 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   MoreHorizontal,
   Eye,
-  Edit,
-  Trash2,
   Package,
-  CreditCard,
   Truck,
-  Download,
-  Printer,
   X,
   RefreshCw,
 } from "lucide-react";
-import { Order } from "@/lib/api/types";
+import { Order, OrderStatus } from "@/types";
 import { unifiedOrderService } from "@/lib/api/services/unified";
-import { AlertModal } from "@/components/modal/alert-modal";
 
 interface CellActionProps {
   data: Order;
@@ -36,56 +36,77 @@ interface CellActionProps {
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
 
-  const onConfirm = async () => {
-    try {
-      setLoading(true);
-      await unifiedOrderService.deleteOrder(data.id);
-      toast.success("Order deleted successfully.");
-      router.refresh();
-    } catch (error) {
-      toast.error("Something went wrong.");
-    } finally {
-      setLoading(false);
-      setOpen(false);
+  // Status validation logic
+  const canConfirmOrder = data.status === "PENDING";
+  const canMarkAsShipping = data.status === "CONFIRMED";
+  const canMarkAsDelivered = data.status === "SHIPPING";
+  const canRefundOrder = data.status === "DELIVERED";
+  const canCancelOrder = ["PENDING", "CONFIRMED", "SHIPPING"].includes(data.status);
+
+  // Get status transition messages
+  const getStatusMessage = (action: string) => {
+    switch (action) {
+      case "confirm":
+        return canConfirmOrder 
+          ? "Confirm this order" 
+          : "Order must be PENDING to confirm";
+      case "shipping":
+        return canMarkAsShipping 
+          ? "Mark order as shipping" 
+          : "Order must be CONFIRMED to mark as shipping";
+      case "delivered":
+        return canMarkAsDelivered 
+          ? "Mark order as delivered" 
+          : "Order must be SHIPPING to mark as delivered";
+      case "refund":
+        return canRefundOrder 
+          ? "Refund this order" 
+          : "Order must be DELIVERED to refund";
+      case "cancel":
+        return canCancelOrder 
+          ? "Cancel this order" 
+          : "Order cannot be cancelled in current status";
+      default:
+        return "";
     }
   };
 
-  const handleStatusUpdate = async (status: string) => {
+  const handleConfirmOrder = async () => {
     try {
       setLoading(true);
-      await unifiedOrderService.updateOrderStatus(data.id, status as any);
-      toast.success(`Order status updated to ${status}`);
+      await unifiedOrderService.confirmOrder(data.id, "Order confirmed by admin");
+      toast.success("Order confirmed successfully");
       router.refresh();
     } catch (error) {
-      toast.error("Failed to update order status");
+      console.log(error);
+      toast.error("Failed to confirm order");
     } finally {
       setLoading(false);
     }
   };
 
-  const handlePaymentStatusUpdate = async (status: string) => {
+  const handleShippingUpdate = async () => {
     try {
       setLoading(true);
-      await unifiedOrderService.updatePaymentStatus(data.id, status as any);
-      toast.success(`Payment status updated to ${status}`);
+      await unifiedOrderService.updateOrderShippingStatus(data.id, "Order shipped by admin");
+      toast.success("Order status updated to shipping");
       router.refresh();
     } catch (error) {
-      toast.error("Failed to update payment status");
+      toast.error("Failed to update order to shipping");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleFulfillmentStatusUpdate = async (status: string) => {
+  const handleDeliveredUpdate = async () => {
     try {
       setLoading(true);
-      await unifiedOrderService.updateFulfillmentStatus(data.id, status as any);
-      toast.success(`Fulfillment status updated to ${status}`);
+      await unifiedOrderService.markDeliveredOrder(data.id, "Order delivered by admin");
+      toast.success("Order marked as delivered");
       router.refresh();
     } catch (error) {
-      toast.error("Failed to update fulfillment status");
+      toast.error("Failed to mark order as delivered");
     } finally {
       setLoading(false);
     }
@@ -107,11 +128,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const handleRefundOrder = async () => {
     try {
       setLoading(true);
-      await unifiedOrderService.refundOrder(
-        data.id,
-        undefined,
-        "Refunded by admin"
-      );
+      await unifiedOrderService.refundOrder(data.id, "Refunded by admin");
       toast.success("Order refunded successfully");
       router.refresh();
     } catch (error) {
@@ -121,54 +138,8 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     }
   };
 
-  const handlePrintOrder = async () => {
-    try {
-      setLoading(true);
-      const blob = await unifiedOrderService.printOrder(data.id, "pdf");
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `order-${data.orderNumber}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-      toast.success("Order printed successfully");
-    } catch (error) {
-      toast.error("Failed to print order");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handlePrintShippingLabel = async () => {
-    try {
-      setLoading(true);
-      const blob = await unifiedOrderService.printShippingLabel(data.id);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `shipping-label-${data.orderNumber}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-      toast.success("Shipping label printed successfully");
-    } catch (error) {
-      toast.error("Failed to print shipping label");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <>
-      <AlertModal
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        onConfirm={onConfirm}
-        loading={loading}
-      />
+    <TooltipProvider>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -186,88 +157,89 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuSeparator />
 
           <DropdownMenuLabel>Status Updates</DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={() => handleStatusUpdate("processing")}
-            disabled={loading}
-          >
-            <RefreshCw className="mr-2 h-4 w-4" /> Mark as Processing
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => handleStatusUpdate("shipped")}
-            disabled={loading}
-          >
-            <Truck className="mr-2 h-4 w-4" /> Mark as Shipped
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => handleStatusUpdate("delivered")}
-            disabled={loading}
-          >
-            <Package className="mr-2 h-4 w-4" /> Mark as Delivered
-          </DropdownMenuItem>
+          
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <DropdownMenuItem
+                onClick={handleConfirmOrder}
+                disabled={loading || !canConfirmOrder}
+                className={!canConfirmOrder ? "opacity-50 cursor-not-allowed" : ""}
+              >
+                <RefreshCw className="mr-2 h-4 w-4" /> Confirm Order
+              </DropdownMenuItem>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{getStatusMessage("confirm")}</p>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <DropdownMenuItem
+                onClick={handleShippingUpdate}
+                disabled={loading || !canMarkAsShipping}
+                className={!canMarkAsShipping ? "opacity-50 cursor-not-allowed" : ""}
+              >
+                <Truck className="mr-2 h-4 w-4" /> Mark as Shipping
+              </DropdownMenuItem>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{getStatusMessage("shipping")}</p>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <DropdownMenuItem
+                onClick={handleDeliveredUpdate}
+                disabled={loading || !canMarkAsDelivered}
+                className={!canMarkAsDelivered ? "opacity-50 cursor-not-allowed" : ""}
+              >
+                <Package className="mr-2 h-4 w-4" /> Mark as Delivered
+              </DropdownMenuItem>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{getStatusMessage("delivered")}</p>
+            </TooltipContent>
+          </Tooltip>
 
           <DropdownMenuSeparator />
 
-          <DropdownMenuLabel>Payment</DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={() => handlePaymentStatusUpdate("paid")}
-            disabled={loading}
-          >
-            <CreditCard className="mr-2 h-4 w-4" /> Mark as Paid
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => handleRefundOrder()}
-            disabled={loading}
-          >
-            <RefreshCw className="mr-2 h-4 w-4" /> Refund Order
-          </DropdownMenuItem>
+          <DropdownMenuLabel>Payment & Refunds</DropdownMenuLabel>
+          
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <DropdownMenuItem
+                onClick={handleRefundOrder}
+                disabled={loading || !canRefundOrder}
+                className={!canRefundOrder ? "opacity-50 cursor-not-allowed" : ""}
+              >
+                <RefreshCw className="mr-2 h-4 w-4" /> Refund Order
+              </DropdownMenuItem>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{getStatusMessage("refund")}</p>
+            </TooltipContent>
+          </Tooltip>
 
           <DropdownMenuSeparator />
 
-          <DropdownMenuLabel>Fulfillment</DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={() => handleFulfillmentStatusUpdate("fulfilled")}
-            disabled={loading}
-          >
-            <Package className="mr-2 h-4 w-4" /> Mark as Fulfilled
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => handleFulfillmentStatusUpdate("shipped")}
-            disabled={loading}
-          >
-            <Truck className="mr-2 h-4 w-4" /> Mark as Shipped
-          </DropdownMenuItem>
-
-          <DropdownMenuSeparator />
-
-          <DropdownMenuLabel>Print & Export</DropdownMenuLabel>
-          <DropdownMenuItem onClick={handlePrintOrder} disabled={loading}>
-            <Printer className="mr-2 h-4 w-4" /> Print Order
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={handlePrintShippingLabel}
-            disabled={loading}
-          >
-            <Download className="mr-2 h-4 w-4" /> Print Shipping Label
-          </DropdownMenuItem>
-
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem
-            onClick={() => handleCancelOrder()}
-            disabled={loading}
-            className="text-destructive"
-          >
-            <X className="mr-2 h-4 w-4" /> Cancel Order
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => setOpen(true)}
-            disabled={loading}
-            className="text-destructive"
-          >
-            <Trash2 className="mr-2 h-4 w-4" /> Delete Order
-          </DropdownMenuItem>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <DropdownMenuItem
+                onClick={handleCancelOrder}
+                disabled={loading || !canCancelOrder}
+                className={`text-destructive ${!canCancelOrder ? "opacity-50 cursor-not-allowed" : ""}`}
+              >
+                <X className="mr-2 h-4 w-4 text-destructive" /> Cancel Order
+              </DropdownMenuItem>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{getStatusMessage("cancel")}</p>
+            </TooltipContent>
+          </Tooltip>
         </DropdownMenuContent>
       </DropdownMenu>
-    </>
+    </TooltipProvider>
   );
 };

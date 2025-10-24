@@ -8,7 +8,9 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { useCartStore } from "@/stores/cart-store";
 import { useUserAddresses } from "@/hooks/use-user-addresses";
-import { Address } from "@/lib/api/types";
+import { Address } from "@/types";
+import { storefrontOrderService } from "@/lib/api/services/storefront/orders-client";
+import { useUser } from "@clerk/nextjs";
 
 // Form validation schema
 const checkoutSchema = z.object({
@@ -36,23 +38,33 @@ export const SHIPPING_METHODS = [
   },
 ];
 
-// Payment methods
+// Payment methods - updated to match new API format
 export const PAYMENT_METHODS = [
   {
-    id: "bank_transfer",
-    name: "Chuyển khoản ngân hàng",
-    description: "Thanh toán qua chuyển khoản ngân hàng",
-  },
-  {
-    id: "cod",
+    id: "COD",
     name: "Thanh toán khi nhận hàng",
     description: "Thanh toán bằng tiền mặt khi nhận hàng",
   },
+  {
+    id: "VNPAY",
+    name: "VNPay",
+    description: "Thanh toán qua VNPay",
+  }
+  // {
+  //   id: "MOMO",
+  //   name: "MoMo",
+  //   description: "Thanh toán qua ví MoMo",
+  // },
+  // {
+  //   id: "ZALO",
+  //   name: "ZaloPay",
+  //   description: "Thanh toán qua ZaloPay",
+  // },
 ];
 
 export function useCheckoutPage() {
   const router = useRouter();
-  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { user, isSignedIn: isAuthenticated, isLoaded: authLoading } = useUser();
   const { items, getSubtotal, getShipping, getTax, getTotal, clearCart } =
     useCartStore();
   const {
@@ -121,7 +133,7 @@ export function useCheckoutPage() {
 
   // Redirect if not authenticated
   useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
+    if (authLoading && !isAuthenticated) {
       router.push("/auth/sign-in?redirect_url=/checkout");
     }
   }, [isAuthenticated, authLoading, router]);
@@ -268,43 +280,25 @@ export function useCheckoutPage() {
     setIsSubmitting(true);
 
     try {
-      // Create order data
+      // Prepare order data according to new API format
       const orderData = {
-        customerId: user.id,
-        items: items.map((item) => ({
-          productId: item.product.id,
-          quantity: item.quantity,
-        })),
-        shippingAddress: selectedShippingAddress,
-        billingAddress: data.sameAsShipping
-          ? selectedShippingAddress
-          : selectedBillingAddress,
-        shippingMethod: data.shippingMethod,
-        paymentMethod: data.paymentMethod,
-        notes: data.orderNote,
-        pricing: {
-          subtotal,
-          shipping: shippingCost,
-          tax,
-          total,
-        },
+        cartItemId: items.map((item) => item.id), // Use cart item IDs
+        paymentMethod: data.paymentMethod as "COD" | "VNPAY" | "MOMO" | "ZALO",
+        recipientName: selectedShippingAddress.firstName + " " + selectedShippingAddress.lastName,
+        recipientPhone: selectedShippingAddress.phone || "",
+        shippingAddress: `${selectedShippingAddress.address1}${selectedShippingAddress.address2 ? `, ${selectedShippingAddress.address2}` : ""}`,
+        note: data.orderNote || undefined,
       };
 
-      // TODO: Implement actual order creation API call
-      console.log("Creating order:", orderData);
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Generate order ID
-      const orderId = `AKA-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 10000)).padStart(4, "0")}`;
+      // Create order using the new API
+      const createdOrder = await storefrontOrderService.createOrder(orderData);
 
       // Clear cart and redirect to success page
       clearCart();
       toast.success("Order placed successfully!");
 
       // Redirect to success page with order ID
-      router.push(`/checkout/success?order_id=${orderId}`);
+      router.push(`/checkout/success?order_id=${createdOrder.code}`);
     } catch (error) {
       console.error("Error creating order:", error);
       toast.error("Failed to place order. Please try again.");
@@ -391,7 +385,7 @@ export function useCheckoutPage() {
 
     // Loading states
     loading: {
-      auth: authLoading,
+      auth: !authLoading,
       addresses: addressesLoading,
       submitting: isSubmitting,
     },

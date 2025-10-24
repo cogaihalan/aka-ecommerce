@@ -3,11 +3,12 @@ import type {
   OrderListResponse,
   CreateOrderRequest,
   OrderQueryParams,
+  OrderHistoryListResponse,
 } from "@/lib/api/types";
 import type { Order } from "@/types";
 
-class ServerUnifiedOrderService {
-  private basePath = "/admin/orders";
+export class ServerUnifiedOrderService {
+  protected basePath = "/admin/orders";
 
   // Get all orders with filtering and pagination
   async getOrders(params: OrderQueryParams = {}): Promise<OrderListResponse> {
@@ -54,6 +55,12 @@ class ServerUnifiedOrderService {
   // Get a single order by ID
   async getOrder(id: number): Promise<Order> {
     const response = await serverApiClient.get<Order>(`${this.basePath}/${id}`);
+    return response.data!;
+  }
+  //
+  // Get order histories
+  async getOrderHistories(id: number): Promise<OrderHistoryListResponse> {
+    const response = await serverApiClient.get<OrderHistoryListResponse>(`${this.basePath}/${id}/histories`);
     return response.data!;
   }
 

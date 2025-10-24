@@ -14,9 +14,9 @@ export default function Logo({
   href = "/",
 }: LogoProps) {
   const sizeClasses = {
-    sm: "h-8 w-8",
-    md: "h-12 w-12",
-    lg: "h-16 w-16",
+    sm: "h-8 w-16",
+    md: "h-10 w-20",
+    lg: "h-12 w-24",
   };
 
   const iconSize = sizeClasses[size];

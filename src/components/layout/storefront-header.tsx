@@ -3,24 +3,23 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Heart, Menu, X } from "lucide-react";
+import { Search, Heart, X } from "lucide-react";
 import Logo from "@/components/logo";
 import Link from "next/link";
 import { CartIcon } from "@/components/cart";
 import { AuthIcon } from "@/components/auth";
 import { SearchSuggestions } from "@/components/search";
-import { MegaMenu } from "@/components/navigation/mega-menu";
-import { MobileMegaMenu } from "@/components/navigation/mobile-mega-menu";
+import { MegaMenu } from "@/components/mega-menu/mega-menu";
+import { MobileMegaMenu } from "@/components/mega-menu/mobile-mega-menu";
 import { useMegaMenu } from "@/hooks/use-mega-menu";
+import MegaMenuSkeleton from "@/components/mega-menu/mega-menu-skeleton";
 import {
   useWishlistItemCount,
   useWishlistAuthStatus,
 } from "@/stores/wishlist-store";
 
 export default function StorefrontHeader() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const router = useRouter();
   const wishlistCount = useWishlistItemCount();
@@ -41,11 +40,14 @@ export default function StorefrontHeader() {
           <Logo size="lg" href="/" />
 
           {/* Desktop Navigation */}
-          {megaMenuData?.menu_items && !megaMenuLoading && (
+          {megaMenuLoading ? (
+            <MegaMenuSkeleton itemCount={4} />
+          ) : (
+            megaMenuData?.menu_items && (
             <div className="hidden lg:flex flex-1 justify-center">
               <MegaMenu menuItems={megaMenuData.menu_items} />
             </div>
-          )}
+          ))}
 
           <div className="flex flex-row-reverse items-center gap-2 md:flex-row md:gap-3">
             {/* Search Bar */}
@@ -119,7 +121,7 @@ export default function StorefrontHeader() {
             <div className="px-3 py-4">
               <SearchSuggestions
                 className="w-full"
-                onClose={() => setIsMenuOpen(false)}
+                onClose={() => setIsSearchOpen(false)}
               />
             </div>
           </div>

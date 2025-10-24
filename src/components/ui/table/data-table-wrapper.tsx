@@ -13,6 +13,7 @@ interface DataTableWrapperProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   debounceMs?: number;
   shallow?: boolean;
+  position?: "absolute" | "relative";
 }
 
 export function DataTableWrapper<TData, TValue>({
@@ -21,6 +22,7 @@ export function DataTableWrapper<TData, TValue>({
   columns,
   debounceMs = 500,
   shallow = false,
+  position = "absolute",
 }: DataTableWrapperProps<TData, TValue>) {
   const [pageSize] = useQueryState("perPage", parseAsInteger.withDefault(10));
 
@@ -35,7 +37,7 @@ export function DataTableWrapper<TData, TValue>({
   });
 
   return (
-    <DataTable table={table}>
+    <DataTable table={table} position={position}>
       <DataTableToolbar table={table} />
     </DataTable>
   );

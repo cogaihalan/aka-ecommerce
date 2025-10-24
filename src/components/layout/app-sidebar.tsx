@@ -19,42 +19,19 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { navItems } from "@/constants/data";
-import { useMediaQuery } from "@/hooks/use-media-query";
 import { ChevronRight, Image as PhotoUp } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { Icons } from "@/components/icons";
 import Logo from "@/components/logo";
-export const company = {
-  name: "Acme Inc",
-  logo: PhotoUp,
-  plan: "Enterprise",
-};
-
-const tenants = [
-  { id: "1", name: "Acme Inc" },
-  { id: "2", name: "Beta Corp" },
-  { id: "3", name: "Gamma Ltd" },
-];
 
 export default function AppSidebar() {
   const pathname = usePathname();
-  const { isOpen } = useMediaQuery();
-  const handleSwitchTenant = (_tenantId: string) => {
-    // Tenant switching functionality would be implemented here
-  };
-
-  const activeTenant = tenants[0];
-
-  useEffect(() => {
-    // Side effects based on sidebar state changes
-  }, [isOpen]);
 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <Logo size="lg" href="/dashboard" />
+        <Logo size="md" href="/dashboard" />
       </SidebarHeader>
       <SidebarContent className="overflow-x-hidden">
         <SidebarGroup>

@@ -1,14 +1,18 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default function NotFound() {
   const router = useRouter();
+  const pathname = usePathname();
+  const isAdmin = pathname.includes("/admin");
 
-  return (
-    <div className="flex flex-col items-center justify-center text-center min-h-[60vh] py-16">
+  return (  
+    <div className={cn("flex flex-col items-center justify-center text-center py-16",
+     isAdmin ? "min-h-screen" : "min-h-[60vh] ")}>
       <span className="from-foreground bg-linear-to-b to-transparent bg-clip-text text-[10rem] leading-none font-extrabold text-transparent">
         404
       </span>

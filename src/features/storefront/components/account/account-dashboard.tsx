@@ -50,7 +50,6 @@ export default function AccountDashboard() {
   const getStatusColor = (status: OrderStatus): string => {
     switch (status) {
       case "PENDING":
-      case "PROCESSING":
         return "text-yellow-600";
       case "DELIVERED":
         return "text-green-600";
@@ -66,8 +65,6 @@ export default function AccountDashboard() {
     switch (status) {
       case "PENDING":
         return "PENDING";
-      case "PROCESSING":
-        return "IN PROGRESS";
       case "DELIVERED":
         return "COMPLETED";
       case "CANCELLED":
@@ -99,9 +96,9 @@ export default function AccountDashboard() {
             date: formatDate(order.createdAt, {
               month: "short",
               day: "numeric",
-              year: order.createdAt.getFullYear().toString(),
+              year: order.createdAt?.getFullYear()?.toString() as "numeric" | "2-digit" | undefined,
             }),
-            total: order.totalPrice,
+            total: order.finalAmount,
             products: order.items.length,
             statusColor: getStatusColor(order.status),
           }));
@@ -192,7 +189,7 @@ export default function AccountDashboard() {
           <CardContent className="space-y-4">
             <div className="flex flex-col items-center space-y-4">
               <Avatar className="h-20 w-20">
-                <AvatarImage src={user?.imageUrl} alt={user?.firstName} />
+                <AvatarImage src={user?.imageUrl || ""} alt={user?.firstName || ""} />
                 <AvatarFallback className="text-lg">
                   {user?.firstName?.[0]}
                   {user?.lastName?.[0]}
@@ -205,12 +202,12 @@ export default function AccountDashboard() {
                 <div className="space-y-1 text-sm">
                   <div className="flex items-center justify-center space-x-2">
                     <Mail className="h-4 w-4" />
-                    <span>{user?.email || "No email available"}</span>
+                    <span>{user?.primaryEmailAddress?.emailAddress || user?.emailAddresses[0]?.emailAddress || "No email available"}</span>
                   </div>
-                  {defaultShippingAddress?.phone && (
+                  {defaultShippingAddress?.phoneNumber && (
                     <div className="flex items-center justify-center space-x-2">
                       <Phone className="h-4 w-4" />
-                      <span>{defaultShippingAddress.phone}</span>
+                      <span>{defaultShippingAddress.phoneNumber}</span>
                     </div>
                   )}
                 </div>
@@ -249,10 +246,10 @@ export default function AccountDashboard() {
                       {defaultBillingAddress.address2 &&
                         `, ${defaultBillingAddress.address2}`}
                     </p>
-                    {defaultBillingAddress.phone && (
+                    {defaultBillingAddress.phoneNumber && (
                       <div className="flex items-center space-x-2 text-sm">
                         <Phone className="h-4 w-4" />
-                        <span>{defaultBillingAddress.phone}</span>
+                        <span>{defaultBillingAddress.phoneNumber}</span>
                       </div>
                     )}
                   </div>
@@ -275,10 +272,10 @@ export default function AccountDashboard() {
                       {defaultShippingAddress.address2 &&
                         `, ${defaultShippingAddress.address2}`}
                     </p>
-                    {defaultShippingAddress.phone && (
+                    {defaultShippingAddress.phoneNumber && (
                       <div className="flex items-center space-x-2 text-sm">
                         <Phone className="h-4 w-4" />
-                        <span>{defaultShippingAddress.phone}</span>
+                        <span>{defaultShippingAddress.phoneNumber}</span>
                       </div>
                     )}
                   </div>

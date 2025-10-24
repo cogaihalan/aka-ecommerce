@@ -1,57 +1,41 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useUser } from "@clerk/nextjs";
 import { DataTableWrapper } from "@/components/ui/table/data-table-wrapper";
-import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
 import { columns } from "./order-history-columns";
-import { unifiedOrderService } from "@/lib/api/services/unified";
-import { Order } from "@/lib/api/types";
-import { toast } from "sonner";
+import { OrderStatus, PaymentMethod, PaymentStatus } from "@/types";
+import { searchParamsCache } from "@/lib/searchparams";
+import { storefrontServerOrderService } from "@/lib/api/services/storefront/orders";
 
-export default function OrderHistoryPage() {
-  const { user } = useUser();
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [totalOrders, setTotalOrders] = useState(0);
+export default async function OrderHistoryPage() {
+  const page = searchParamsCache.get("page");
+  const code = searchParamsCache.get("orderCode");
+  const pageLimit = searchParamsCache.get("perPage");
+  const status = searchParamsCache.get("status");
+  const paymentStatus = searchParamsCache.get("paymentStatus");
+  const paymentMethod = searchParamsCache.get("paymentMethod");
+  const recipientName = searchParamsCache.get("recipientName");
+  const recipientPhone = searchParamsCache.get("recipientPhone");
+  const sort = searchParamsCache.get("sort");
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      if (!user?.id) return;
+  const orderQueryParams = {
+    page: page ? parseInt(page.toString()) : 1,
+    size: pageLimit ? parseInt(pageLimit.toString()) : 10,
+    sort: sort
+      ? Array.isArray(sort)
+        ? [`${sort[0]?.id},${sort[0]?.desc ? "desc" : "asc"}`]
+        : [`${(sort as any).id},${(sort as any).desc ? "desc" : "asc"}`]
+      : undefined,
+    code: code?.toString(),
+    status: status ? (status as OrderStatus) : undefined,
+    paymentMethod: paymentMethod ? (paymentMethod as PaymentMethod) : undefined,
+    paymentStatus: paymentStatus ? (paymentStatus as PaymentStatus) : undefined,
+    recipientName: recipientName?.toString(),
+    recipientPhone: recipientPhone?.toString(),
+  };
 
-      try {
-        setLoading(true);
-        const result = await unifiedOrderService.getOrders({
-          filters: {
-            userId: user.id,
-          },
-          limit: 50, // Limit for better performance
-        });
+  // Fetch orders from API
+  const result = await storefrontServerOrderService.getOrders(orderQueryParams);
+  const totalOrders = result.pagination?.total || result.items?.length || 0;
+  const orders = result.items || [];
 
-        setOrders(result.orders || []);
-        setTotalOrders(result.pagination?.total || 0);
-      } catch (error) {
-        console.error("Failed to fetch orders:", error);
-        toast.error("Failed to load order history");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrders();
-  }, [user?.id]);
-
-  if (loading) {
-    return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Order History</h1>
-          <p className="text-muted-foreground">View and track your orders</p>
-        </div>
-        <DataTableSkeleton columnCount={6} rowCount={5} filterCount={2} />
-      </div>
-    );
-  }
 
   if (orders.length === 0) {
     return (
@@ -85,6 +69,7 @@ export default function OrderHistoryPage() {
         columns={columns}
         debounceMs={500}
         shallow={false}
+        position="relative"
       />
     </div>
   );

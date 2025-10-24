@@ -1,12 +1,12 @@
 import { apiClient } from "@/lib/api/client";
 import type {
   OrderListResponse,
-  OrderHistoryListResponse,
   CreateOrderRequest,
   OrderQueryParams,
+  OrderHistoryListResponse,
 } from "@/lib/api/types";
 
-import type { Order, OrderHistory } from "@/types";
+import type { Order } from "@/types";
 
 export class UnifiedOrderService {
   protected basePath = "/admin/orders";
@@ -75,7 +75,7 @@ export class UnifiedOrderService {
   async updateOrderShippingStatus(id: number, note?: string): Promise<Order> {
     const queryString = note ? `?note=${note}` : "";
     const response = await apiClient.put<Order>(
-      `${this.basePath}/${id}/shipping${queryString}`
+      `${this.basePath}/${id}/shipping${queryString}`, {}
     );
     return response.data!;
   }
@@ -83,7 +83,7 @@ export class UnifiedOrderService {
   async markDeliveredOrder(id: number, note?: string): Promise<Order> {
     const queryString = note ? `?note=${note}` : "";
     const response = await apiClient.put<Order>(
-      `${this.basePath}/${id}/delivered${queryString}`
+      `${this.basePath}/${id}/delivered${queryString}`, {}
     );
     return response.data!;
   }
@@ -91,7 +91,7 @@ export class UnifiedOrderService {
   async refundOrder(id: number, note?: string): Promise<Order> {
     const queryString = note ? `?note=${note}` : "";
     const response = await apiClient.put<Order>(
-      `${this.basePath}/${id}/refund${queryString}`
+      `${this.basePath}/${id}/refund${queryString}`, {}
     );
     return response.data!;
   }
@@ -99,15 +99,15 @@ export class UnifiedOrderService {
   async confirmOrder(id: number, note?: string): Promise<Order> {
     const queryString = note ? `?note=${note}` : "";
     const response = await apiClient.put<Order>(
-      `${this.basePath}/${id}/confirm${queryString}`
+      `${this.basePath}/${id}/confirm${queryString}`, {}
     );
     return response.data!;
   }
 
-  protected async cancelOrder(id: number, reason?: string): Promise<Order> {
+  async cancelOrder(id: number, reason?: string): Promise<Order> {
     const queryString = reason ? `?reason=${reason}` : "";
     const response = await apiClient.put<Order>(
-      `${this.basePath}/${id}/cancel${queryString}`
+      `${this.basePath}/${id}/cancel${queryString}`, {}
     );
     return response.data!;
   }

@@ -8,10 +8,10 @@ import { Truck, CreditCard, Shield, Package } from "lucide-react";
 import { Price } from "@/components/ui/price";
 import { useCartStore } from "@/stores/cart-store";
 import { cn, formatPrice } from "@/lib/utils";
+import { CartItem } from "@/types/cart";
 
 interface OrderSummaryProps {
   className?: string;
-  showPromoCode?: boolean;
   showShippingInfo?: boolean;
   showSecurityBadges?: boolean;
   showActionButtons?: boolean;
@@ -22,18 +22,11 @@ interface OrderSummaryProps {
   customShippingCost?: number;
   customTax?: number;
   showItems?: boolean;
-  items?: Array<{
-    id: string;
-    name: string;
-    image?: string;
-    price: number;
-    quantity: number;
-  }>;
+  items?: CartItem[];
 }
 
 export function OrderSummary({
   className,
-  showPromoCode = true,
   showShippingInfo = true,
   showSecurityBadges = true,
   showActionButtons = true,
@@ -97,10 +90,10 @@ export function OrderSummary({
             {items.map((item) => (
               <div key={item.id} className="flex items-center space-x-3">
                 <div className="w-12 h-12 bg-muted rounded-md flex items-center justify-center">
-                  {item.image ? (
+                  {item.product.images && item.product.images.length > 0 ? (
                     <img
-                      src={item.image}
-                      alt={item.name}
+                      src={item.product.images[0].url}
+                      alt={item.product.name}
                       className="w-full h-full object-cover rounded-md"
                     />
                   ) : (
@@ -108,7 +101,7 @@ export function OrderSummary({
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{item.name}</p>
+                  <p className="text-sm font-medium truncate">{item.product.name}</p>
                   <p className="text-xs text-muted-foreground">
                     Qty: {item.quantity}
                   </p>

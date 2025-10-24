@@ -63,7 +63,6 @@ export interface OrderListResponse {
 
 export interface OrderHistoryListResponse {
   items: OrderHistory[];
-  pagination: PaginationResponse;
 }
 
 export interface UserListResponse {

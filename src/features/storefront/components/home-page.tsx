@@ -10,7 +10,7 @@ import {
 import { Truck, Shield, RotateCcw } from "lucide-react";
 import FullWidthBanner from "@/components/full-width-banner";
 
-export default function StorefrontHomePage() {
+export default async function StorefrontHomePage() {
   return (
     <>
       {/* Hero Section - Full Width */}

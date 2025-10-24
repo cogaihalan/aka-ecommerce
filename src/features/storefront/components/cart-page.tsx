@@ -136,7 +136,6 @@ export default function CartPage() {
         {/* Order Summary */}
         <div>
           <OrderSummary
-            showPromoCode={true}
             showShippingInfo={true}
             showSecurityBadges={true}
             showActionButtons={true}

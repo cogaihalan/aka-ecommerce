@@ -3,34 +3,39 @@
 import { Badge } from "@/components/ui/badge";
 import { DataTableColumnHeader } from "@/components/ui/table/data-table-column-header";
 import { Column, ColumnDef } from "@tanstack/react-table";
-import { Order } from "@/types";
+import { Order, OrderStatus, PaymentStatus } from "@/types";
 import { formatCurrency } from "@/lib/format";
 import { CellAction } from "./cell-action";
 
 const STATUS_OPTIONS = [
-  { label: "Pending", value: "pending" },
-  { label: "Processing", value: "processing" },
-  { label: "Shipped", value: "shipped" },
-  { label: "Delivered", value: "delivered" },
-  { label: "Cancelled", value: "cancelled" },
-  { label: "Refunded", value: "refunded" },
+  { label: "Pending", value: "PENDING" },
+  { label: "Confirmed", value: "CONFIRMED" },
+  { label: "Shipping", value: "SHIPPING" },
+  { label: "Delivered", value: "DELIVERED" },
+  { label: "Cancelled", value: "CANCELLED" },
+  { label: "Refunded", value: "REFUNDED" },
+];
+
+const PAYMENT_STATUS_OPTIONS = [
+  { label: "Unpaid", value: "UNPAID" },
+  { label: "Paid", value: "PAID" },
+  { label: "Failed", value: "FAILED" },
 ];
 
 const getStatusBadgeVariant = (status: string) => {
-  switch (status.toLowerCase()) {
-    case "delivered":
-    case "paid":
-    case "fulfilled":
+  switch (status.toUpperCase()) {
+    case "DELIVERED":
+    case "PAID":
       return "default";
-    case "shipped":
-    case "processing":
+    case "SHIPPING":
+    case "CONFIRMED":
       return "secondary";
-    case "cancelled":
-    case "failed":
-    case "refunded":
+    case "CANCELLED":
+    case "FAILED":
+    case "REFUNDED":
       return "destructive";
-    case "pending":
-    case "unfulfilled":
+    case "PENDING":
+    case "UNPAID":
       return "outline";
     default:
       return "outline";
@@ -40,7 +45,7 @@ const getStatusBadgeVariant = (status: string) => {
 export const columns: ColumnDef<Order>[] = [
   {
     id: "code",
-    accessorKey: "orderCode",
+    accessorKey: "code",
     header: ({ column }: { column: Column<Order, unknown> }) => (
       <DataTableColumnHeader column={column} title="Order #" />
     ),
@@ -101,38 +106,14 @@ export const columns: ColumnDef<Order>[] = [
     },
   },
   {
-    id: "fulfillmentStatus",
-    accessorKey: "fulfillmentStatus",
-    header: ({ column }: { column: Column<Order, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Fulfillment" />
-    ),
-    cell: ({ row }) => {
-      const fulfillmentStatus = row.getValue("fulfillmentStatus") as string;
-      return (
-        <Badge
-          variant={getStatusBadgeVariant(fulfillmentStatus)}
-          className="capitalize"
-        >
-          {fulfillmentStatus.replace("_", " ")}
-        </Badge>
-      );
-    },
-    enableColumnFilter: true,
-    meta: {
-      label: "Fulfillment Status",
-      variant: "select",
-      options: FULFILLMENT_STATUS_OPTIONS,
-    },
-  },
-  {
     id: "total",
-    accessorKey: "pricing.total",
+    accessorKey: "finalAmount",
     header: ({ column }: { column: Column<Order, unknown> }) => (
       <DataTableColumnHeader column={column} title="Total" />
     ),
     cell: ({ row }) => {
       const order = row.original;
-      const total = order.pricing.total;
+      const total = order.finalAmount;
       return <div className="font-medium">{formatCurrency(total)}</div>;
     },
     meta: {
@@ -170,7 +151,7 @@ export const columns: ColumnDef<Order>[] = [
       );
     },
     meta: {
-      label: "Order Date",
+      label: "Date",
       variant: "dateRange",
     },
     enableColumnFilter: true,

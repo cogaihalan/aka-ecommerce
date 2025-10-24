@@ -12,22 +12,25 @@ import {
 } from "@/components/ui/table";
 import { getCommonPinningStyles } from "@/lib/data-table";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData> extends React.ComponentProps<"div"> {
   table: TanstackTable<TData>;
   actionBar?: React.ReactNode;
+  position?: "absolute" | "relative";
 }
 
 export function DataTable<TData>({
   table,
   actionBar,
   children,
+  position = "absolute",
 }: DataTableProps<TData>) {
   return (
     <div className="flex flex-1 flex-col space-y-4">
       {children}
       <div className="relative flex flex-1">
-        <div className="absolute inset-0 flex overflow-hidden rounded-lg border">
+        <div className={cn("inset-0 flex overflow-hidden rounded-lg border", position)}>
           <ScrollArea className="h-full w-full">
             <Table>
               <TableHeader className="bg-muted sticky top-0 z-10">

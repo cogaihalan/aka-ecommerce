@@ -105,3 +105,8 @@ body {
     @apply !rounded-none !shadow-none;
   }
 }
+
+.rdp-button {
+  --primary: var(--color-primary-red);
+  --primary-foreground: var(--color-white);
+}

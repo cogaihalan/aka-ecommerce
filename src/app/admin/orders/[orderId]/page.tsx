@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { unifiedOrderService } from "@/lib/api/services/unified";
+import { serverUnifiedOrderService } from "@/lib/api/services/server";
 import AdminOrderDetailPage from "@/features/orders/components/admin-order-detail-page";
 
 interface OrderDetailPageProps {
@@ -15,10 +15,10 @@ export async function generateMetadata({
   const { orderId } = await params;
 
   try {
-    const order = await unifiedOrderService.getOrder(parseInt(orderId));
+    const order = await serverUnifiedOrderService.getOrder(parseInt(orderId));
     return {
-      title: `Order ${order.orderNumber} - Admin Dashboard`,
-      description: `Manage order ${order.orderNumber} details, status, and fulfillment`,
+      title: `Order ${order.code} - Admin Dashboard`,
+      description: `Manage order ${order.code} details, status, and fulfillment`,
     };
   } catch (error) {
     return {
@@ -34,9 +34,14 @@ export default async function OrderDetailPageRoute({
   const { orderId } = await params;
 
   try {
-    const order = await unifiedOrderService.getOrder(parseInt(orderId));
-    return <AdminOrderDetailPage order={order} />;
+    const [order, orderHistories] = await Promise.all([
+      serverUnifiedOrderService.getOrder(parseInt(orderId)),
+      serverUnifiedOrderService.getOrderHistories(parseInt(orderId))
+    ]);
+
+    return <AdminOrderDetailPage order={order} orderHistories={orderHistories.items || []} />;
   } catch (error) {
+    console.log(error);
     notFound();
   }
 }

@@ -2,6 +2,7 @@ import { searchParamsCache } from "@/lib/searchparams";
 import { DataTableWrapper } from "@/components/ui/table/data-table-wrapper";
 import { columns } from "./order-tables/columns";
 import { serverUnifiedOrderService } from "@/lib/api/services/server";
+import { OrderStatus, PaymentMethod, PaymentStatus } from "@/types";
 
 export default async function OrderListingPage() {
   const page = searchParamsCache.get("page");
@@ -23,9 +24,9 @@ export default async function OrderListingPage() {
         : [`${(sort as any).id},${(sort as any).desc ? "desc" : "asc"}`]
       : undefined,
     code: code?.toString(),
-    status: status as any,
-    paymentMethod: paymentMethod as any,
-    paymentStatus: paymentStatus as any,
+    status: status ? (status as OrderStatus) : undefined,
+    paymentMethod: paymentMethod ? (paymentMethod as PaymentMethod) : undefined,
+    paymentStatus: paymentStatus ? (paymentStatus as PaymentStatus) : undefined,
     recipientName: recipientName?.toString(),
     recipientPhone: recipientPhone?.toString(),
   };
@@ -36,12 +37,12 @@ export default async function OrderListingPage() {
   const orders = result.items || [];
 
   return (
-    <DataTableWrapper
-      data={orders}
-      totalItems={totalOrders}
-      columns={columns}
-      debounceMs={500}
-      shallow={false}
+      <DataTableWrapper
+        data={orders}
+        totalItems={totalOrders}
+        columns={columns}
+        debounceMs={500}
+        shallow={false}
     />
   );
 }

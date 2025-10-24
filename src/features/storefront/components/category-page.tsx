@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import {
@@ -13,7 +14,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { storefrontCatalogService } from "@/lib/api/services/storefront/catalog";
-import type { Product, Category } from "@/types";
+import type { Product } from "@/types";
 import { ProductCard } from "@/components/product/product-card";
 import { ProductCardSkeleton } from "@/components/product/product-card-skeleton";
 import {
@@ -64,7 +65,6 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
   // Ref to track if we're currently fetching to prevent duplicate requests
   const fetchingRef = useRef<boolean>(false);
 
-  // Get category ID from slug using dynamic category data
   const getCategoryIdFromSlug = useCallback(
     (slug: string): string | null => {
       const category = categories.find(
@@ -75,13 +75,22 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
     [categories]
   );
 
-  // Get category name from slug for display
   const getCategoryNameFromSlug = useCallback(
     (slug: string): string => {
       const category = categories.find(
         (cat) => generateSlug(cat.name) === slug.toLowerCase()
       );
       return category ? category.name : slugToReadable(slug);
+    },
+    [categories]
+  );
+
+  const getCategoryDescriptionFromSlug = useCallback(
+    (slug: string): string | undefined => {
+      const category = categories.find(
+        (cat) => generateSlug(cat.name) === slug.toLowerCase()
+      );
+      return category ? category.description : undefined;
     },
     [categories]
   );
@@ -204,7 +213,7 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
             {getCategoryNameFromSlug(categorySlug)}
           </h1>
           <p className="text-muted-foreground">
-            Browse our {getCategoryNameFromSlug(categorySlug)} collection
+            {getCategoryDescriptionFromSlug(categorySlug)}
           </p>
         </div>
 
@@ -263,8 +272,7 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
           {getCategoryNameFromSlug(categorySlug)}
         </h1>
         <p className="text-muted-foreground">
-          
-          Browse our {getCategoryNameFromSlug(categorySlug)} collection
+          {getCategoryDescriptionFromSlug(categorySlug)}
         </p>
       </div>
 
@@ -328,7 +336,6 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
               ))}
             </AnimatedGrid>
           </LoadingOverlay>
-
           {/* Loading indicator for filter changes */}
           {isLoading && !isInitialLoad && (
             <div className="flex justify-center mt-6 animate-fade-in">
@@ -338,7 +345,6 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
               </div>
             </div>
           )}
-
           {/* Pagination */}
           {totalPages > 1 && (
             <div className="mt-8">
@@ -394,9 +400,8 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
               </Pagination>
             </div>
           )}
-
           {/* Show skeleton cards when no products and no filters applied */}
-          {!isLoading &&
+          {isLoading &&
             displayProducts.length === 0 &&
             !(state.filters.search || getActiveFiltersCount() > 0) && (
               <AnimatedGrid
@@ -416,14 +421,26 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
               </AnimatedGrid>
             )}
 
+          {/* No products found message */}
+          {displayProducts.length === 0 && !isInitialLoad && (
+            <div className="flex justify-center mt-6 animate-fade-in items-center">
+              <div className="flex flex-col items-center gap-2">
+                <Image
+                  src="/assets/404.png"
+                  alt="No products found"
+                  width={200}
+                  height={200}
+                />
+                <h3 className="text-xl font-medium">No products found</h3>
+              </div>
+            </div>
+          )}
+
           {/* No products message - only show when filters/search are applied */}
           {!isLoading &&
             displayProducts.length === 0 &&
             (state.filters.search || getActiveFiltersCount() > 0) && (
               <div className="text-center py-12">
-                <p className="text-muted-foreground">
-                  No products found matching your criteria
-                </p>
                 <div className="flex flex-col sm:flex-row gap-2 justify-center mt-4">
                   {state.filters.search && (
                     <Button

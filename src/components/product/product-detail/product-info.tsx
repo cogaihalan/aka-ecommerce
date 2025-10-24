@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Price } from "@/components/ui/price";
-import { Heart, Share2, Minus, Plus } from "lucide-react";
+import { Heart, Share2, Minus, Plus, Loader2 } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import {
   useWishlistActions,
@@ -46,7 +46,8 @@ export const ProductInfo = memo(function ProductInfo({
   const [quantity, setQuantity] = useState(1);
   const router = useRouter();
 
-  const { addToCart, isLoading, error, isInCart, getItemQuantity } = useCart();
+  const { addToCart, isProductLoading, error, isInCart, getItemQuantity } =
+    useCart();
   const { addItem: addToWishlist, removeItem: removeFromWishlist } =
     useWishlistActions();
   const isAuthenticated = useWishlistAuthStatus();
@@ -228,13 +229,20 @@ export const ProductInfo = memo(function ProductInfo({
               isOutOfStock && "opacity-50 cursor-not-allowed"
             )}
             onClick={onAddToCart}
-            disabled={isLoading || isOutOfStock}
+            disabled={isProductLoading(product.id) || isOutOfStock}
           >
-            {isOutOfStock
-              ? stockStatusText
-              : isInCartState
-                ? `In Cart (${getItemQuantity(product.id)})`
-                : "Add to Cart"}
+            {isProductLoading(product.id) ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Adding...
+              </>
+            ) : isOutOfStock ? (
+              stockStatusText
+            ) : isInCartState ? (
+              `In Cart (${getItemQuantity(product.id)})`
+            ) : (
+              "Add to Cart"
+            )}
           </Button>
           <Button
             variant="outline"
@@ -260,9 +268,18 @@ export const ProductInfo = memo(function ProductInfo({
             isOutOfStock && "opacity-50 cursor-not-allowed"
           )}
           onClick={handleBuyNow}
-          disabled={isLoading || isOutOfStock}
+          disabled={isProductLoading(product.id) || isOutOfStock}
         >
-          {isOutOfStock ? stockStatusText : "Buy Now"}
+          {isProductLoading(product.id) ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              Processing...
+            </>
+          ) : isOutOfStock ? (
+            stockStatusText
+          ) : (
+            "Buy Now"
+          )}
         </Button>
 
         {error && <p className="text-sm text-destructive">{error}</p>}

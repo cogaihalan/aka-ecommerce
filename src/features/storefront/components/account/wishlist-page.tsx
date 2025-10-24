@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Heart, ShoppingCart, Trash2, ArrowLeft } from "lucide-react";
+import { Heart, ShoppingCart, Trash2, ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -41,7 +41,7 @@ export default function WishlistPage() {
     (item) => !currentUserId || item.userId === currentUserId
   );
 
-  const { addToCart, isLoading, isInCart, getItemQuantity } = useCart();
+  const { addToCart, isProductLoading, isInCart, getItemQuantity } = useCart();
 
   const handleAddToCart = async (product: any) => {
     await addToCart(product, 1);
@@ -138,7 +138,9 @@ export default function WishlistPage() {
                   <div className="flex-1 space-y-3">
                     {/* Category badge */}
                     <Badge variant="secondary" className="text-xs w-fit">
-                      {item.product.categories ? item.product.categories[0].name : "Uncategorized"}
+                      {item.product.categories
+                        ? item.product.categories[0].name
+                        : "Uncategorized"}
                     </Badge>
 
                     {/* Product name */}
@@ -156,11 +158,12 @@ export default function WishlistPage() {
                     {/* Price */}
                     <div className="flex items-center gap-2">
                       <span className="text-lg font-bold">
-                        {formatPrice(item.product.discountPrice || item.product.price)}
+                        {formatPrice(
+                          item.product.discountPrice || item.product.price
+                        )}
                       </span>
                       {item.product.discountPrice &&
-                        item.product.discountPrice >
-                          item.product.price && (
+                        item.product.discountPrice > item.product.price && (
                           <span className="text-sm text-muted-foreground line-through">
                             {formatPrice(item.product.price)}
                           </span>
@@ -173,10 +176,18 @@ export default function WishlistPage() {
                     <Button
                       size="sm"
                       onClick={() => handleAddToCart(item.product)}
-                      disabled={isLoading || item.product.stock <= 0}
+                      disabled={
+                        isProductLoading(item.product.id) ||
+                        item.product.stock <= 0
+                      }
                       className="w-full"
                     >
-                      {isInCartState ? (
+                      {isProductLoading(item.product.id) ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Adding...
+                        </>
+                      ) : isInCartState ? (
                         <>
                           <ShoppingCart className="h-4 w-4 mr-2" />
                           In Cart ({cartQuantity})

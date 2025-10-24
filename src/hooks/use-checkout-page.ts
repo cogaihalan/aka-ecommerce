@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { useAuth } from "@/hooks/use-auth";
 import { useCartStore } from "@/stores/cart-store";
 import { useUserAddresses } from "@/hooks/use-user-addresses";
 import { Address } from "@/lib/api/types";

@@ -2,47 +2,38 @@ import { searchParamsCache } from "@/lib/searchparams";
 import { DataTableWrapper } from "@/components/ui/table/data-table-wrapper";
 import { columns } from "./order-tables/columns";
 import { serverUnifiedOrderService } from "@/lib/api/services/server";
-import { convertSortToApiParams } from "@/lib/utils/sort-conversion";
 
 export default async function OrderListingPage() {
   const page = searchParamsCache.get("page");
-  const search = searchParamsCache.get("orderNumber");
+  const code = searchParamsCache.get("orderCode");
   const pageLimit = searchParamsCache.get("perPage");
   const status = searchParamsCache.get("status");
   const paymentStatus = searchParamsCache.get("paymentStatus");
-  const fulfillmentStatus = searchParamsCache.get("fulfillmentStatus");
-  const dateFrom = searchParamsCache.get("dateFrom");
-  const dateTo = searchParamsCache.get("dateTo");
+  const paymentMethod = searchParamsCache.get("paymentMethod");
+  const recipientName = searchParamsCache.get("recipientName");
+  const recipientPhone = searchParamsCache.get("recipientPhone");
   const sort = searchParamsCache.get("sort");
 
-  const sortParams = convertSortToApiParams(sort);
-
-  const filters = {
-    ...(page && { page: parseInt(page.toString()) }),
-    ...(pageLimit && { limit: parseInt(pageLimit.toString()) }),
-    ...(search && { search: search.toString() }),
-    ...sortParams,
-    ...((status ||
-      paymentStatus ||
-      fulfillmentStatus ||
-      dateFrom ||
-      dateTo) && {
-      filters: {
-        ...(status && { status: status as any }),
-        ...(paymentStatus && { paymentStatus: paymentStatus as any }),
-        ...(fulfillmentStatus && {
-          fulfillmentStatus: fulfillmentStatus as any,
-        }),
-        ...(dateFrom && { dateFrom }),
-        ...(dateTo && { dateTo }),
-      },
-    }),
+  const orderQueryParams = {
+    page: page ? parseInt(page.toString()) : 1,
+    size: pageLimit ? parseInt(pageLimit.toString()) : 10,
+    sort: sort
+      ? Array.isArray(sort)
+        ? [`${sort[0]?.id},${sort[0]?.desc ? "desc" : "asc"}`]
+        : [`${(sort as any).id},${(sort as any).desc ? "desc" : "asc"}`]
+      : undefined,
+    code: code?.toString(),
+    status: status as any,
+    paymentMethod: paymentMethod as any,
+    paymentStatus: paymentStatus as any,
+    recipientName: recipientName?.toString(),
+    recipientPhone: recipientPhone?.toString(),
   };
 
   // Fetch orders from API
-  const result = await serverUnifiedOrderService.getOrders(filters);
-  const totalOrders = result.pagination?.total || result.orders?.length || 0;
-  const orders = result.orders || [];
+  const result = await serverUnifiedOrderService.getOrders(orderQueryParams);
+  const totalOrders = result.pagination?.total || result.items?.length || 0;
+  const orders = result.items || [];
 
   return (
     <DataTableWrapper

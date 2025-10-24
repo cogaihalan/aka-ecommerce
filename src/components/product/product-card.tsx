@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Price } from "@/components/ui/price";
-import { ShoppingCart, Heart, Eye } from "lucide-react";
+import { ShoppingCart, Heart, Eye, Loader2 } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useQuickView } from "@/components/providers/quick-view-provider";
 import {
@@ -17,6 +17,7 @@ import {
 } from "@/stores/wishlist-store";
 import { Product } from "@/types";
 import { cn, isProductOutOfStock, getStockStatusText } from "@/lib/utils";
+import { QuantitySelector } from "@/components/ui/quantity-selector";
 
 interface ProductCardProps {
   product: Product;
@@ -33,7 +34,13 @@ export function ProductCard({
 }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
-  const { addToCart, isLoading } = useCart();
+  const {
+    addToCart,
+    isProductLoading,
+    isInCart,
+    getItemQuantity,
+    updateItemQuantity,
+  } = useCart();
 
   const { openQuickView } = useQuickView();
   const { addItem: addToWishlist, removeItem: removeFromWishlist } =
@@ -45,10 +52,21 @@ export function ProductCard({
   const isOutOfStock = isProductOutOfStock(product);
   const stockStatusText = getStockStatusText(product);
 
+  // Cart state
+  const productInCart = isInCart(product.id);
+  const cartQuantity = getItemQuantity(product.id);
+
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     await addToCart(product, 1);
+  };
+
+  const handleQuantityChange = async (newQuantity: number) => {
+    if (newQuantity <= 0) {
+      return;
+    }
+    await updateItemQuantity(product.id, newQuantity);
   };
 
   const handleWishlist = (e: React.MouseEvent) => {
@@ -112,7 +130,7 @@ export function ProductCard({
                 </p>
               </div>
 
-              <div className="flex items-center justify-between mt-2">
+              <div className="flex flex-col gap-2 items-start justify-between mt-2 md:flex-row md:items-center">
                 <Price
                   price={product.discountPrice || product.price}
                   originalPrice={
@@ -150,18 +168,34 @@ export function ProductCard({
                   >
                     <Eye className="h-3 w-3" />
                   </Button>
-                  <Button
-                    size="sm"
-                    onClick={handleAddToCart}
-                    disabled={isLoading || isOutOfStock}
-                    className={cn(
-                      "h-7 px-2 text-xs",
-                      isOutOfStock && "opacity-50 cursor-not-allowed"
-                    )}
-                    title={stockStatusText}
-                  >
-                    <ShoppingCart className="h-3 w-3" />
-                  </Button>
+                  {productInCart ? (
+                    <QuantitySelector
+                      value={cartQuantity}
+                      onChange={handleQuantityChange}
+                      size="md"
+                      variant="compact"
+                      disabled={isProductLoading(product.id) || isOutOfStock}
+                      isLoading={isProductLoading(product.id)}
+                      className="h-7"
+                    />
+                  ) : (
+                    <Button
+                      size="sm"
+                      onClick={handleAddToCart}
+                      disabled={isProductLoading(product.id) || isOutOfStock}
+                      className={cn(
+                        "h-7 px-2 text-xs",
+                        isOutOfStock && "opacity-50 cursor-not-allowed"
+                      )}
+                      title={stockStatusText}
+                    >
+                      {isProductLoading(product.id) ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <ShoppingCart className="h-3 w-3" />
+                      )}
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
@@ -223,19 +257,37 @@ export function ProductCard({
                   />
                 </Button>
               )}
-              <Button
-                variant="secondary"
-                size="icon"
-                onClick={handleAddToCart}
-                disabled={isOutOfStock}
-                className={cn(
-                  "h-10 w-10 rounded-full bg-white/90 hover:bg-white shadow-lg",
-                  isOutOfStock && "opacity-50 cursor-not-allowed"
-                )}
-                title={stockStatusText}
-              >
-                <ShoppingCart className="h-4 w-4 text-black" />
-              </Button>
+              {productInCart ? (
+                <div className="bg-white/90 rounded-full p-1 shadow-lg">
+                  <QuantitySelector
+                    value={cartQuantity}
+                    onChange={handleQuantityChange}
+                    size="sm"
+                    variant="compact"
+                    disabled={isProductLoading(product.id) || isOutOfStock}
+                    isLoading={isProductLoading(product.id)}
+                    className="h-8"
+                  />
+                </div>
+              ) : (
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  onClick={handleAddToCart}
+                  disabled={isProductLoading(product.id) || isOutOfStock}
+                  className={cn(
+                    "h-10 w-10 rounded-full bg-white/90 hover:bg-white shadow-lg",
+                    isOutOfStock && "opacity-50 cursor-not-allowed"
+                  )}
+                  title={stockStatusText}
+                >
+                  {isProductLoading(product.id) ? (
+                    <Loader2 className="h-4 w-4 text-black animate-spin" />
+                  ) : (
+                    <ShoppingCart className="h-4 w-4 text-black" />
+                  )}
+                </Button>
+              )}
               <Button
                 variant="secondary"
                 size="icon"
@@ -279,17 +331,38 @@ export function ProductCard({
 
           <div className="mt-auto space-y-2">
             <div className="flex items-center justify-between">
-              <Button
-                size="sm"
-                onClick={handleAddToCart}
-                disabled={isLoading || isOutOfStock}
-                className={cn(
-                  "flex-1",
-                  isOutOfStock && "opacity-50 cursor-not-allowed"
-                )}
-              >
-                {stockStatusText}
-              </Button>
+              {productInCart ? (
+                <div className="flex-1 flex justify-center">
+                  <QuantitySelector
+                    value={cartQuantity}
+                    onChange={handleQuantityChange}
+                    size="md"
+                    variant="default"
+                    disabled={isProductLoading(product.id) || isOutOfStock}
+                    isLoading={isProductLoading(product.id)}
+                    className="w-fit"
+                  />
+                </div>
+              ) : (
+                <Button
+                  size="sm"
+                  onClick={handleAddToCart}
+                  disabled={isProductLoading(product.id) || isOutOfStock}
+                  className={cn(
+                    "flex-1",
+                    isOutOfStock && "opacity-50 cursor-not-allowed"
+                  )}
+                >
+                  {isProductLoading(product.id) ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Adding...
+                    </>
+                  ) : (
+                    stockStatusText
+                  )}
+                </Button>
+              )}
             </div>
           </div>
         </CardContent>
@@ -350,14 +423,18 @@ export function ProductCard({
               variant="secondary"
               size="icon"
               onClick={handleAddToCart}
-              disabled={isOutOfStock}
+              disabled={isProductLoading(product.id) || isOutOfStock}
               className={cn(
                 "h-10 w-10 rounded-full bg-white/90 hover:bg-white shadow-lg",
                 isOutOfStock && "opacity-50 cursor-not-allowed"
               )}
               title={stockStatusText}
             >
-              <ShoppingCart className="h-4 w-4 text-black" />
+              {isProductLoading(product.id) ? (
+                <Loader2 className="h-4 w-4 text-black animate-spin" />
+              ) : (
+                <ShoppingCart className="h-4 w-4 text-black" />
+              )}
             </Button>
             <Button
               variant="secondary"
@@ -400,17 +477,38 @@ export function ProductCard({
 
         <div className="mt-auto space-y-2">
           <div className="flex items-center justify-between">
-            <Button
-              size="sm"
-              onClick={handleAddToCart}
-              disabled={isLoading || isOutOfStock}
-              className={cn(
-                "flex-1",
-                isOutOfStock && "opacity-50 cursor-not-allowed"
-              )}
-            >
-              {stockStatusText}
-            </Button>
+            {productInCart ? (
+              <div className="flex-1">
+                <QuantitySelector
+                  value={cartQuantity}
+                  onChange={handleQuantityChange}
+                  size="lg"
+                  variant="pill"
+                  disabled={isProductLoading(product.id) || isOutOfStock}
+                  isLoading={isProductLoading(product.id)}
+                  className="w-full"
+                />
+              </div>
+            ) : (
+              <Button
+                size="sm"
+                onClick={handleAddToCart}
+                disabled={isProductLoading(product.id) || isOutOfStock}
+                className={cn(
+                  "flex-1",
+                  isOutOfStock && "opacity-50 cursor-not-allowed"
+                )}
+              >
+                {isProductLoading(product.id) ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Adding...
+                  </>
+                ) : (
+                  stockStatusText
+                )}
+              </Button>
+            )}
           </div>
         </div>
       </CardContent>

@@ -88,7 +88,7 @@ function CategoryListingSkeleton() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {Array.from({ length: 6 }).map((_, i) => (
-          <Card key={i}>
+          <Card disableBlockPadding={true} key={i}>
             <Skeleton className="aspect-video rounded-t-lg" />
             <CardContent className="p-4">
               <Skeleton className="h-6 w-32 mb-2" />

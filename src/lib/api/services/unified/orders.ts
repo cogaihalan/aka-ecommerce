@@ -1,17 +1,18 @@
 import { apiClient } from "@/lib/api/client";
 import type {
   OrderListResponse,
+  OrderHistoryListResponse,
   CreateOrderRequest,
-  QueryParams,
+  OrderQueryParams,
 } from "@/lib/api/types";
 
-import type { Order, OrderStatus } from "@/types";
+import type { Order, OrderHistory } from "@/types";
 
-class UnifiedOrderService {
-  private basePath = "/orders";
+export class UnifiedOrderService {
+  protected basePath = "/admin/orders";
 
   // Get all orders with filtering and pagination
-  async getOrders(params: QueryParams = {}): Promise<OrderListResponse> {
+  async getOrders(params: OrderQueryParams = {}): Promise<OrderListResponse> {
     const searchParams = new URLSearchParams();
 
     // Handle pagination
@@ -27,8 +28,20 @@ class UnifiedOrderService {
       });
     }
 
-    if (params.name !== undefined)
-      searchParams.append("name", params.name.toString());
+    if (params.status !== undefined)
+      searchParams.append("status", params.status.toString());
+
+    if (params.paymentMethod !== undefined)
+      searchParams.append("paymentMethod", params.paymentMethod.toString());
+
+    if (params.paymentStatus !== undefined)
+      searchParams.append("paymentStatus", params.paymentStatus.toString());
+
+    if (params.recipientName !== undefined)
+      searchParams.append("recipientName", params.recipientName.toString());
+
+    if (params.recipientPhone !== undefined)
+      searchParams.append("recipientPhone", params.recipientPhone.toString());
 
     const queryString = searchParams.toString();
     const endpoint = queryString
@@ -46,6 +59,12 @@ class UnifiedOrderService {
     return response.data!;
   }
 
+  // Get order histories
+  async getOrderHistories(id: number): Promise<OrderHistoryListResponse> {
+    const response = await apiClient.get<OrderHistoryListResponse>(`${this.basePath}/${id}/histories`);
+    return response.data!;
+  }
+
   // Create a new order
   async createOrder(data: CreateOrderRequest): Promise<Order> {
     const response = await apiClient.post<Order>(this.basePath, data);
@@ -53,10 +72,42 @@ class UnifiedOrderService {
   }
 
   // Order status management
-  async updateOrderStatus(id: number, status: OrderStatus): Promise<Order> {
-    const response = await apiClient.patch<Order>(
-      `${this.basePath}/${id}/status`,
-      { status }
+  async updateOrderShippingStatus(id: number, note?: string): Promise<Order> {
+    const queryString = note ? `?note=${note}` : "";
+    const response = await apiClient.put<Order>(
+      `${this.basePath}/${id}/shipping${queryString}`
+    );
+    return response.data!;
+  }
+
+  async markDeliveredOrder(id: number, note?: string): Promise<Order> {
+    const queryString = note ? `?note=${note}` : "";
+    const response = await apiClient.put<Order>(
+      `${this.basePath}/${id}/delivered${queryString}`
+    );
+    return response.data!;
+  }
+
+  async refundOrder(id: number, note?: string): Promise<Order> {
+    const queryString = note ? `?note=${note}` : "";
+    const response = await apiClient.put<Order>(
+      `${this.basePath}/${id}/refund${queryString}`
+    );
+    return response.data!;
+  }
+
+  async confirmOrder(id: number, note?: string): Promise<Order> {
+    const queryString = note ? `?note=${note}` : "";
+    const response = await apiClient.put<Order>(
+      `${this.basePath}/${id}/confirm${queryString}`
+    );
+    return response.data!;
+  }
+
+  protected async cancelOrder(id: number, reason?: string): Promise<Order> {
+    const queryString = reason ? `?reason=${reason}` : "";
+    const response = await apiClient.put<Order>(
+      `${this.basePath}/${id}/cancel${queryString}`
     );
     return response.data!;
   }

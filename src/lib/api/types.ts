@@ -1,5 +1,18 @@
 // Import comprehensive product types
-import type { Product, Category, Order, User, ProductStatus, Course, Contest, Hairstyle } from "@/types";
+import type {
+  Product,
+  Category,
+  Order,
+  User,
+  ProductStatus,
+  Course,
+  Contest,
+  Hairstyle,
+  PaymentMethod,
+  PaymentStatus,
+  OrderStatus,
+  OrderHistory,
+} from "@/types";
 
 // Base API types
 export interface PaginationResponse {
@@ -21,6 +34,17 @@ export interface QueryParams {
   statuses?: string[];
 }
 
+export interface OrderQueryParams {
+  page?: number;
+  size?: number;
+  sort?: string[];
+  status?: OrderStatus;
+  paymentMethod?: PaymentMethod;
+  paymentStatus?: PaymentStatus;
+  recipientName?: string;
+  recipientPhone?: string;
+}
+
 // API Response types
 export interface ProductListResponse {
   items: Product[];
@@ -34,6 +58,11 @@ export interface CategoryListResponse {
 
 export interface OrderListResponse {
   items: Order[];
+  pagination: PaginationResponse;
+}
+
+export interface OrderHistoryListResponse {
+  items: OrderHistory[];
   pagination: PaginationResponse;
 }
 
@@ -118,7 +147,12 @@ export interface CategoryMediaUploadRequest {
 
 // Order API types
 export interface CreateOrderRequest {
+  cartItemId: number[];
+  paymentMethod: "COD" | "VNPAY" | "MOMO" | "ZALO";
+  recipientName: string;
+  recipientPhone: string;
   shippingAddress: string;
+  note?: string;
 }
 
 // User API types

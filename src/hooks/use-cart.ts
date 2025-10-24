@@ -9,7 +9,6 @@ import { useCartStore } from "@/stores/cart-store";
 export function useCart() {
   const store = useCartStore();
 
-
   // Update item quantity with validation
   const updateItemQuantity = useCallback(
     async (productId: number, quantity: number) => {
@@ -55,7 +54,7 @@ export function useCart() {
     store.setError(null);
   }, [store]);
 
-      // Validate cart
+  // Validate cart
   const validateCart = useCallback(() => {
     const { items } = store;
     const errors: string[] = [];
@@ -96,6 +95,7 @@ export function useCart() {
     isInCart,
     getItemQuantity,
     validateCart,
+    isProductLoading: store.isItemLoading,
 
     // Direct store access for advanced usage
     store,

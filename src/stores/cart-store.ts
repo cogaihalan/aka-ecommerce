@@ -30,38 +30,46 @@ export const useCartStore = create<CartStore>()(
       itemLoadingStates: {} as Record<number, boolean>,
 
       // Item management actions
-      addItem: async (
-        product: Product,
-        quantity: number = 1,
-      ) => {
-        set({ isLoading: true, error: null });
+      addItem: async (product: Product, quantity: number = 1) => {
+        // Set individual product loading state
+        set((state) => ({
+          itemLoadingStates: { ...state.itemLoadingStates, [product.id]: true },
+          error: null,
+        }));
 
         const addToCartRequest: AddToCartRequest = {
           productId: product.id,
           quantity,
         };
 
-        const addToCartPromise = unifiedCartService.createCart(addToCartRequest);
+        const addToCartPromise =
+          unifiedCartService.createCart(addToCartRequest);
 
         toast.promise(addToCartPromise, {
-          loading: "Adding to cart...",
           success: (updatedCart) => {
-            set({
+            set((state) => ({
               items: updatedCart.items,
               lastUpdated: Date.now(),
-              isLoading: false,
-            });
+              itemLoadingStates: {
+                ...state.itemLoadingStates,
+                [product.id]: false,
+              },
+            }));
             return `${product.name} has been added to your cart`;
           },
           error: (error) => {
-            const errorMessage = error instanceof Error
-              ? error.message
-              : "Failed to add item to cart";
-            
-            set({
+            const errorMessage =
+              error instanceof Error
+                ? error.message
+                : "Failed to add item to cart";
+
+            set((state) => ({
               error: errorMessage,
-              isLoading: false,
-            });
+              itemLoadingStates: {
+                ...state.itemLoadingStates,
+                [product.id]: false,
+              },
+            }));
             return errorMessage;
           },
         });
@@ -81,10 +89,11 @@ export const useCartStore = create<CartStore>()(
             itemLoadingStates: { ...state.itemLoadingStates, [itemId]: false },
           }));
         } catch (error) {
-          const errorMessage = error instanceof Error
-            ? error.message
-            : "Failed to remove item from cart";
-          
+          const errorMessage =
+            error instanceof Error
+              ? error.message
+              : "Failed to remove item from cart";
+
           set((state) => ({
             error: errorMessage,
             itemLoadingStates: { ...state.itemLoadingStates, [itemId]: false },
@@ -108,17 +117,21 @@ export const useCartStore = create<CartStore>()(
             quantity,
           };
 
-          const updatedCart = await unifiedCartService.updateProduct(itemId, updateRequest);
+          const updatedCart = await unifiedCartService.updateProduct(
+            itemId,
+            updateRequest
+          );
           set((state) => ({
             items: updatedCart.items,
             lastUpdated: Date.now(),
             itemLoadingStates: { ...state.itemLoadingStates, [itemId]: false },
           }));
         } catch (error) {
-          const errorMessage = error instanceof Error
-            ? error.message
-            : "Failed to update quantity";
-          
+          const errorMessage =
+            error instanceof Error
+              ? error.message
+              : "Failed to update quantity";
+
           set((state) => ({
             error: errorMessage,
             itemLoadingStates: { ...state.itemLoadingStates, [itemId]: false },
@@ -142,10 +155,9 @@ export const useCartStore = create<CartStore>()(
             return "All items have been removed from your cart";
           },
           error: (error) => {
-            const errorMessage = error instanceof Error
-              ? error.message
-              : "Failed to clear cart";
-            
+            const errorMessage =
+              error instanceof Error ? error.message : "Failed to clear cart";
+
             set({
               error: errorMessage,
               isLoading: false,
@@ -190,9 +202,7 @@ export const useCartStore = create<CartStore>()(
       // Utility functions
       getItemQuantity: (productId: number) => {
         const state = get();
-        const item = state.items.find(
-          (item) => item.product.id === productId
-        );
+        const item = state.items.find((item) => item.product.id === productId);
         return item?.quantity || 0;
       },
 
@@ -237,9 +247,7 @@ export const useCartStore = create<CartStore>()(
 
       isItemInCart: (productId: number) => {
         const state = get();
-        return state.items.some(
-          (item) => item.product.id === productId
-        );
+        return state.items.some((item) => item.product.id === productId);
       },
 
       // Persistence methods
@@ -248,17 +256,16 @@ export const useCartStore = create<CartStore>()(
 
         try {
           const cart = await unifiedCartService.getCart();
-          
+
           set({
             items: cart.items,
             lastUpdated: Date.now(),
             isLoading: false,
           });
         } catch (error) {
-          const errorMessage = error instanceof Error
-            ? error.message
-            : "Failed to load cart";
-          
+          const errorMessage =
+            error instanceof Error ? error.message : "Failed to load cart";
+
           set({
             error: errorMessage,
             isLoading: false,
@@ -301,7 +308,7 @@ export const useCartItemCount = () =>
 export const useCartIsOpen = () => useCartStore((state) => state.isOpen);
 export const useCartLoading = () => useCartStore((state) => state.isLoading);
 export const useCartError = () => useCartStore((state) => state.error);
-export const useCartItemLoading = (itemId: number) => 
+export const useCartItemLoading = (itemId: number) =>
   useCartStore((state) => state.isItemLoading(itemId));
 
 // Cart validation utility

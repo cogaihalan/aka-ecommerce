@@ -4,12 +4,12 @@ import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Price } from "@/components/ui/price";
-import { Trash2, Plus, Minus, Loader2 } from "lucide-react";
+import { Trash2, Loader2 } from "lucide-react";
 import { CartItem as CartItemType } from "@/types/cart";
 import { useCartStore, useCartItemLoading } from "@/stores/cart-store";
 import { cn, formatPrice } from "@/lib/utils";
+import { QuantitySelector } from "@/components/ui/quantity-selector";
 
 interface CartItemProps {
   item: CartItemType;
@@ -31,29 +31,16 @@ export function CartItem({
 
   const handleQuantityChange = async (newQuantity: number) => {
     if (newQuantity < 0) return;
-    await updateQuantity(item.id, newQuantity);
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-
-    // If the input is empty, don't update quantity (keep current value)
-    if (value === "" || parseInt(value) <= 0) {
-      return;
-    }
-
-    const newQuantity = parseInt(value);
-    if (!isNaN(newQuantity) && newQuantity >= 0) {
-      handleQuantityChange(newQuantity);
-    }
+    await updateQuantity(item.product.id, newQuantity);
   };
 
   const handleRemove = async () => {
-    await removeItem(item.id);
+    await removeItem(item.product.id);
   };
 
-  const imageUrl = item.product.images?.find((image) => image.primary)?.url || "/assets/placeholder-image.jpeg";
-
+  const imageUrl =
+    item.product.images?.find((image) => image.primary)?.url ||
+    "/assets/placeholder-image.jpeg";
 
   // Remove stock-related logic since CartItem doesn't have maxQuantity
   const isOutOfStock = false;
@@ -128,42 +115,14 @@ export function CartItem({
 
         <div className="flex items-center gap-2">
           {showQuantityControls && (
-            <div className="flex items-center gap-1">
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => handleQuantityChange(item.quantity - 1)}
-                disabled={isItemLoading || item.quantity <= 1}
-              >
-                {isItemLoading ? (
-                  <Loader2 className="h-3 w-3 animate-spin" />
-                ) : (
-                  <Minus className="h-3 w-3" />
-                )}
-              </Button>
-              <Input
-                type="number"
-                value={item.quantity}
-                onChange={handleInputChange}
-                className="w-12 h-8 text-center text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                min="1"
-                disabled={isItemLoading}
-              />
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => handleQuantityChange(item.quantity + 1)}
-                disabled={!!isItemLoading || !!isOutOfStock}
-              >
-                {isItemLoading ? (
-                  <Loader2 className="h-3 w-3 animate-spin" />
-                ) : (
-                  <Plus className="h-3 w-3" />
-                )}
-              </Button>
-            </div>
+            <QuantitySelector
+              value={item.quantity}
+              onChange={handleQuantityChange}
+              size="sm"
+              variant="compact"
+              disabled={isItemLoading}
+              isLoading={isItemLoading}
+            />
           )}
 
           <div className="text-right min-w-[80px]">
@@ -218,40 +177,14 @@ export function CartItem({
 
           <div className="flex flex-col items-end gap-2">
             {showQuantityControls && (
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => handleQuantityChange(item.quantity - 1)}
-                  disabled={isItemLoading || item.quantity <= 1}
-                >
-                  {isItemLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Minus className="h-4 w-4" />
-                  )}
-                </Button>
-                <Input
-                  type="number"
-                  value={item.quantity}
-                  onChange={handleInputChange}
-                  className="w-16 text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  min="1"
-                  disabled={isItemLoading}
-                />
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => handleQuantityChange(item.quantity + 1)}
-                  disabled={!!isItemLoading || !!isOutOfStock}
-                >
-                  {isItemLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Plus className="h-4 w-4" />
-                  )}
-                </Button>
-              </div>
+              <QuantitySelector
+                value={item.quantity}
+                onChange={handleQuantityChange}
+                size="md"
+                variant="default"
+                disabled={isItemLoading}
+                isLoading={isItemLoading}
+              />
             )}
 
             <div className="text-right">

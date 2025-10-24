@@ -1,29 +1,9 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/table/data-table-column-header";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  MoreHorizontal,
-  Eye,
-  Edit,
-  Trash2,
-  Package,
-  CreditCard,
-  Truck,
-  Download,
-  Printer,
-} from "lucide-react";
 import { Column, ColumnDef } from "@tanstack/react-table";
-import { Order } from "@/lib/api/types";
+import { Order } from "@/types";
 import { formatCurrency } from "@/lib/format";
 import { CellAction } from "./cell-action";
 
@@ -34,22 +14,6 @@ const STATUS_OPTIONS = [
   { label: "Delivered", value: "delivered" },
   { label: "Cancelled", value: "cancelled" },
   { label: "Refunded", value: "refunded" },
-];
-
-const PAYMENT_STATUS_OPTIONS = [
-  { label: "Pending", value: "pending" },
-  { label: "Paid", value: "paid" },
-  { label: "Failed", value: "failed" },
-  { label: "Refunded", value: "refunded" },
-  { label: "Partially Refunded", value: "partially_refunded" },
-];
-
-const FULFILLMENT_STATUS_OPTIONS = [
-  { label: "Unfulfilled", value: "unfulfilled" },
-  { label: "Fulfilled", value: "fulfilled" },
-  { label: "Partially Fulfilled", value: "partially_fulfilled" },
-  { label: "Shipped", value: "shipped" },
-  { label: "Delivered", value: "delivered" },
 ];
 
 const getStatusBadgeVariant = (status: string) => {
@@ -75,43 +39,18 @@ const getStatusBadgeVariant = (status: string) => {
 
 export const columns: ColumnDef<Order>[] = [
   {
-    id: "orderNumber",
-    accessorKey: "orderNumber",
+    id: "code",
+    accessorKey: "orderCode",
     header: ({ column }: { column: Column<Order, unknown> }) => (
       <DataTableColumnHeader column={column} title="Order #" />
     ),
     cell: ({ row }) => {
-      const orderNumber = row.getValue("orderNumber") as string;
-      return <div className="font-medium">{orderNumber}</div>;
+      const orderCode = row.getValue("code") as string;
+      return <div className="font-medium">{orderCode}</div>;
     },
     meta: {
-      label: "Order Number",
+      label: "Order Code",
       placeholder: "Search orders...",
-      variant: "text",
-    },
-    enableColumnFilter: true,
-  },
-  {
-    id: "customer",
-    accessorKey: "customer",
-    header: ({ column }: { column: Column<Order, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Customer" />
-    ),
-    cell: ({ row }) => {
-      const order = row.original;
-      const customer = order.customer;
-      return (
-        <div className="space-y-1">
-          <div className="font-medium">
-            {customer?.firstName} {customer?.lastName}
-          </div>
-          <div className="text-sm text-muted-foreground">{customer?.email}</div>
-        </div>
-      );
-    },
-    meta: {
-      label: "Customer",
-      placeholder: "Search customers...",
       variant: "text",
     },
     enableColumnFilter: true,

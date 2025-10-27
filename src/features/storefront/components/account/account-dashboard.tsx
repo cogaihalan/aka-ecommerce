@@ -39,11 +39,8 @@ export default function AccountDashboard() {
   const [error, setError] = useState<string | null>(null);
 
   // Get default billing address
-  const defaultBillingAddress = addresses.find(
-    (addr) => addr.type === "billing" && addr.isDefault
-  );
-  const defaultShippingAddress = addresses.find(
-    (addr) => addr.type === "shipping" && addr.isDefault
+  const defaultAddress = addresses.find(
+    (addr) => addr.isDefault
   );
 
   // Helper function to get status color
@@ -204,10 +201,10 @@ export default function AccountDashboard() {
                     <Mail className="h-4 w-4" />
                     <span>{user?.primaryEmailAddress?.emailAddress || user?.emailAddresses[0]?.emailAddress || "No email available"}</span>
                   </div>
-                  {defaultShippingAddress?.phoneNumber && (
+                  {defaultAddress?.recipientPhone && (
                     <div className="flex items-center justify-center space-x-2">
                       <Phone className="h-4 w-4" />
-                      <span>{defaultShippingAddress.phoneNumber}</span>
+                      <span>{defaultAddress.recipientPhone}</span>
                     </div>
                   )}
                 </div>
@@ -231,51 +228,22 @@ export default function AccountDashboard() {
           <CardContent className="space-y-4">
             <div className="space-y-4">
               {/* Billing Address */}
-              {defaultBillingAddress && (
+              {defaultAddress && (
                 <div className="space-y-2">
                   <h4 className="font-medium text-sm text-muted-foreground">
-                    BILLING ADDRESS
+                    DEFAULT ADDRESS
                   </h4>
                   <div className="space-y-1">
                     <h3 className="font-semibold">
-                      {defaultBillingAddress.firstName}{" "}
-                      {defaultBillingAddress.lastName}
+                      {defaultAddress.recipientName}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {defaultBillingAddress.address1}
-                      {defaultBillingAddress.address2 &&
-                        `, ${defaultBillingAddress.address2}`}
+                      {defaultAddress.recipientAddress}
                     </p>
-                    {defaultBillingAddress.phoneNumber && (
+                    {defaultAddress.recipientPhone && (
                       <div className="flex items-center space-x-2 text-sm">
                         <Phone className="h-4 w-4" />
-                        <span>{defaultBillingAddress.phoneNumber}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Shipping Address */}
-              {defaultShippingAddress && (
-                <div className="space-y-2">
-                  <h4 className="font-medium text-sm text-muted-foreground">
-                    SHIPPING ADDRESS
-                  </h4>
-                  <div className="space-y-1">
-                    <h3 className="font-semibold">
-                      {defaultShippingAddress.firstName}{" "}
-                      {defaultShippingAddress.lastName}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {defaultShippingAddress.address1}
-                      {defaultShippingAddress.address2 &&
-                        `, ${defaultShippingAddress.address2}`}
-                    </p>
-                    {defaultShippingAddress.phoneNumber && (
-                      <div className="flex items-center space-x-2 text-sm">
-                        <Phone className="h-4 w-4" />
-                        <span>{defaultShippingAddress.phoneNumber}</span>
+                        <span>{defaultAddress.recipientPhone}</span>
                       </div>
                     )}
                   </div>
@@ -283,7 +251,7 @@ export default function AccountDashboard() {
               )}
 
               {/* No addresses message */}
-              {!defaultBillingAddress && !defaultShippingAddress && (
+              {!defaultAddress && (
                 <div className="text-center py-4">
                   <p className="text-sm text-muted-foreground mb-2">
                     No addresses set

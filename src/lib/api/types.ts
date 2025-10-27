@@ -12,6 +12,9 @@ import type {
   PaymentStatus,
   OrderStatus,
   OrderHistory,
+  Submission,
+  SubmissionStatus,
+  Gender
 } from "@/types";
 
 // Base API types
@@ -32,6 +35,9 @@ export interface QueryParams {
   minPrice?: number;
   maxPrice?: number;
   statuses?: string[];
+  status?: SubmissionStatus;
+  barberName?: string;
+  gender?: Gender;
 }
 
 export interface OrderQueryParams {
@@ -86,6 +92,11 @@ export interface ContestListResponse {
 
 export interface HairstyleListResponse {
   items: Hairstyle[];
+  pagination: PaginationResponse;
+}
+
+export interface SubmissionListResponse {
+  items: Submission[];
   pagination: PaginationResponse;
 }
 
@@ -230,6 +241,41 @@ export interface ContestMediaUploadRequest {
 
 // Hairstyles API types
 
-// Contest API types
+export interface CreateHairstyleRequest {
+  name: string,
+  barberName: string,
+  gender: string
+}
+
+export interface UpdateHairstyleRequest extends Partial<CreateHairstyleRequest> {
+  id?: number
+}
+
+export interface HairStyleMediaUploadRequest {
+  id: number;
+  files: File[];
+}
+
+export interface HairStyleMediaDeleteRequest {
+  id: number;
+  photoIds: number[];
+}
 
 // Submissions API types
+
+export interface AdminUpdateSubmissionStatusRequest {
+  id: number;
+  status: SubmissionStatus;
+}
+
+export interface CreateSubmissionRequest {
+  name: string;
+  description: string;
+  barberName: string;
+  barberAddress: string;
+}
+
+export interface SubmissionMediaUploadRequest {
+  submissionId: number;
+  files: File[];
+}

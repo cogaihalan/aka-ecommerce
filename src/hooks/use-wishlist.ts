@@ -6,7 +6,7 @@ import {
   useWishlistItems,
   useWishlistTotalValue,
 } from "@/stores/wishlist-store";
-import { Product } from "@/lib/api/types";
+import type { Product } from "@/types";
 
 export function useWishlist() {
   const {

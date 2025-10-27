@@ -15,19 +15,3 @@ export interface Hairstyle {
   photos: HairstylePhoto[];
   liked: boolean;
 }
-
-export interface CreateHairstyleRequest {
-  name: string;
-  barberName: string;
-  gender: Gender;
-  photos: Omit<HairstylePhoto, 'id'>[];
-}
-
-export interface UpdateHairstyleRequest extends Partial<CreateHairstyleRequest> {
-  id?: number;
-}
-
-export interface VoteHairstyleRequest {
-  hairstyleId: number;
-  liked: boolean;
-}

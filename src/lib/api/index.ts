@@ -5,17 +5,15 @@ export * from "./types";
 // Unified services (recommended for most use cases)
 export {
   unifiedProductService,
-  unifiedAnalyticsService,
 } from "./services/unified";
 
 // Admin services (aliases to unified services for backward compatibility)
-export {
-  unifiedProductService as adminProductService,
-  unifiedCategoryService as adminCategoryService,
-  unifiedOrderService as adminOrderService,
-  unifiedAnalyticsService as adminAnalyticsService,
-  unifiedUserService as adminUserService,
-} from "./services/unified";
+  export {
+    unifiedProductService as adminProductService,
+    unifiedCategoryService as adminCategoryService,
+    unifiedOrderService as adminOrderService,
+    unifiedUserService as adminUserService,
+  } from "./services/unified";
 
 // Storefront services
 export * from "./services/storefront";

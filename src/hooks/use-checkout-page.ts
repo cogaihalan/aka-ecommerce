@@ -11,6 +11,7 @@ import { useUserAddresses } from "@/hooks/use-user-addresses";
 import { Address } from "@/types";
 import { storefrontOrderService } from "@/lib/api/services/storefront/orders-client";
 import { useUser } from "@clerk/nextjs";
+import { unifiedPaymentService } from "@/lib/api/services/unified/payment";
 
 // Form validation schema
 const checkoutSchema = z.object({
@@ -49,7 +50,7 @@ export const PAYMENT_METHODS = [
     id: "VNPAY",
     name: "VNPay",
     description: "Thanh toán qua VNPay",
-  }
+  },
   // {
   //   id: "MOMO",
   //   name: "MoMo",
@@ -64,8 +65,12 @@ export const PAYMENT_METHODS = [
 
 export function useCheckoutPage() {
   const router = useRouter();
-  const { user, isSignedIn: isAuthenticated, isLoaded: authLoading } = useUser();
-  const { items, getSubtotal, getShipping, getTax, getTotal, clearCart } =
+  const {
+    user,
+    isSignedIn: isAuthenticated,
+    isLoaded: authLoading,
+  } = useUser();
+  const { items, getSubtotal, getTax, getTotal, clearCart } =
     useCartStore();
   const {
     addresses,
@@ -75,16 +80,9 @@ export function useCheckoutPage() {
   } = useUserAddresses();
 
   // Form state
-  const [showShippingForm, setShowShippingForm] = useState(false);
-  const [showBillingForm, setShowBillingForm] = useState(false);
-  const [editingShippingAddress, setEditingShippingAddress] =
-    useState<Address | null>(null);
-  const [editingBillingAddress, setEditingBillingAddress] =
-    useState<Address | null>(null);
-  const [selectedShippingAddress, setSelectedShippingAddress] =
-    useState<Address | null>(null);
-  const [selectedBillingAddress, setSelectedBillingAddress] =
-    useState<Address | null>(null);
+  const [showAddressForm, setShowAddressForm] = useState(false);
+  const [editingAddress, setEditingAddress] = useState<Address | null>(null);
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form setup
@@ -104,32 +102,18 @@ export function useCheckoutPage() {
     },
   });
 
-  const watchedSameAsShipping = watch("sameAsShipping");
   const watchedShippingMethod = watch("shippingMethod");
   const watchedPaymentMethod = watch("paymentMethod");
 
   // Get default addresses
-  const defaultShippingAddress = addresses.find(
-    (addr) => addr.type === "shipping" && addr.isDefault
-  );
-  const defaultBillingAddress = addresses.find(
-    (addr) => addr.type === "billing" && addr.isDefault
-  );
+  const defaultAddress = addresses.find((addr) => addr.isDefault);
 
   // Initialize selected addresses with defaults
   useEffect(() => {
-    if (defaultShippingAddress && !selectedShippingAddress) {
-      setSelectedShippingAddress(defaultShippingAddress);
+    if (defaultAddress && !selectedAddress) {
+      setSelectedAddress(defaultAddress);
     }
-    if (defaultBillingAddress && !selectedBillingAddress) {
-      setSelectedBillingAddress(defaultBillingAddress);
-    }
-  }, [
-    defaultShippingAddress,
-    defaultBillingAddress,
-    selectedShippingAddress,
-    selectedBillingAddress,
-  ]);
+  }, [defaultAddress, selectedAddress]);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -189,69 +173,34 @@ export function useCheckoutPage() {
   }, [subtotal, watchedShippingMethod, setValue]);
 
   // Handle address form submissions
-  const handleShippingAddressSubmit = async (data: any) => {
+  const handleAddressSubmit = async (data: any) => {
     try {
-      if (editingShippingAddress) {
-        await updateAddress(editingShippingAddress.id, {
+      if (editingAddress) {
+        await updateAddress(editingAddress.id, {
           ...data,
-          type: "shipping",
         });
-        toast.success("Shipping address updated successfully");
+        toast.success("Address updated successfully");
       } else {
-        await addAddress({ ...data, type: "shipping", isDefault: true });
-        toast.success("Shipping address added successfully");
+        await addAddress({ ...data, isDefault: true });
+        toast.success("Address added successfully");
       }
-      setShowShippingForm(false);
-      setEditingShippingAddress(null);
+      setShowAddressForm(false);
+      setEditingAddress(null);
       // Auto-select the newly created/updated address
-      const updatedAddresses = addresses.filter(
-        (addr) => addr.type === "shipping"
-      );
+      const updatedAddresses = addresses.filter((addr) => addr.isDefault);
       const newAddress = updatedAddresses[updatedAddresses.length - 1];
       if (newAddress) {
-        setSelectedShippingAddress(newAddress);
+        setSelectedAddress(newAddress);
       }
     } catch (error) {
       toast.error("Failed to save shipping address");
     }
   };
 
-  const handleBillingAddressSubmit = async (data: any) => {
-    try {
-      if (editingBillingAddress) {
-        await updateAddress(editingBillingAddress.id, {
-          ...data,
-          type: "billing",
-        });
-        toast.success("Billing address updated successfully");
-      } else {
-        await addAddress({ ...data, type: "billing", isDefault: true });
-        toast.success("Billing address added successfully");
-      }
-      setShowBillingForm(false);
-      setEditingBillingAddress(null);
-      // Auto-select the newly created/updated address
-      const updatedAddresses = addresses.filter(
-        (addr) => addr.type === "billing"
-      );
-      const newAddress = updatedAddresses[updatedAddresses.length - 1];
-      if (newAddress) {
-        setSelectedBillingAddress(newAddress);
-      }
-    } catch (error) {
-      toast.error("Failed to save billing address");
-    }
-  };
-
   // Handle opening address forms
-  const handleOpenShippingForm = (address?: Address) => {
-    setEditingShippingAddress(address || null);
-    setShowShippingForm(true);
-  };
-
-  const handleOpenBillingForm = (address?: Address) => {
-    setEditingBillingAddress(address || null);
-    setShowBillingForm(true);
+  const handleOpenAddressForm = (address?: Address) => {
+    setEditingAddress(address || null);
+    setShowAddressForm(true);
   };
 
   // Handle form submission
@@ -267,13 +216,8 @@ export function useCheckoutPage() {
     }
 
     // Validate addresses
-    if (!selectedShippingAddress) {
+    if (!selectedAddress) {
       toast.error("Please select a shipping address to continue");
-      return;
-    }
-
-    if (!data.sameAsShipping && !selectedBillingAddress) {
-      toast.error("Please select a billing address to continue");
       return;
     }
 
@@ -284,21 +228,29 @@ export function useCheckoutPage() {
       const orderData = {
         cartItemId: items.map((item) => item.id), // Use cart item IDs
         paymentMethod: data.paymentMethod as "COD" | "VNPAY" | "MOMO" | "ZALO",
-        recipientName: selectedShippingAddress.firstName + " " + selectedShippingAddress.lastName,
-        recipientPhone: selectedShippingAddress.phone || "",
-        shippingAddress: `${selectedShippingAddress.address1}${selectedShippingAddress.address2 ? `, ${selectedShippingAddress.address2}` : ""}`,
+        recipientName: selectedAddress.recipientName,
+        recipientPhone: selectedAddress.recipientPhone,
+        shippingAddress: selectedAddress.recipientAddress,
         note: data.orderNote || undefined,
       };
 
       // Create order using the new API
       const createdOrder = await storefrontOrderService.createOrder(orderData);
 
-      // Clear cart and redirect to success page
-      clearCart();
+      if (data.paymentMethod !== "COD") {
+        const paymentResponse = await unifiedPaymentService.createPayment({
+          orderId: createdOrder.id,
+          gateway: data.paymentMethod as "VNPAY" | "MOMO" | "ZALO",
+        });
+
+        window.open(paymentResponse.paymentUrl, "_blank");
+      }
+
       toast.success("Order placed successfully!");
+      await clearCart();
 
       // Redirect to success page with order ID
-      router.push(`/checkout/success?order_id=${createdOrder.code}`);
+      router.push(`/checkout/success?order_id=${createdOrder.id.toString()}`);
     } catch (error) {
       console.error("Error creating order:", error);
       toast.error("Failed to place order. Please try again.");
@@ -307,24 +259,8 @@ export function useCheckoutPage() {
     }
   };
 
-  // Handle same as shipping checkbox change
-  const handleSameAsShippingChange = (checked: boolean) => {
-    setValue("sameAsShipping", checked);
-    if (checked) {
-      setSelectedBillingAddress(selectedShippingAddress);
-    }
-  };
-
-  // Handle shipping address selection
-  const handleShippingAddressChange = (addressId: string) => {
-    const address = addresses.find((addr) => addr.id.toString() === addressId);
-    setSelectedShippingAddress(address || null);
-  };
-
-  // Handle billing address selection
-  const handleBillingAddressChange = (addressId: string) => {
-    const address = addresses.find((addr) => addr.id.toString() === addressId);
-    setSelectedBillingAddress(address || null);
+  const handleAddressChange = (address?: Address) => {
+    setSelectedAddress(address || null);
   };
 
   return {
@@ -335,43 +271,29 @@ export function useCheckoutPage() {
       watch,
       setValue,
       errors,
-      watchedSameAsShipping,
       watchedShippingMethod,
       watchedPaymentMethod,
+    },
+
+    modals: {
+      showAddressForm,
+      editingAddress,
+      setShowAddressForm,
+      setEditingAddress,
     },
 
     // Address state
     addresses: {
       all: addresses,
-      shipping: addresses.filter((addr) => addr.type === "shipping"),
-      billing: addresses.filter((addr) => addr.type === "billing"),
-      selectedShipping: selectedShippingAddress,
-      selectedBilling: selectedBillingAddress,
-      defaultShipping: defaultShippingAddress,
-      defaultBilling: defaultBillingAddress,
-    },
-
-    // Form modals
-    modals: {
-      showShippingForm,
-      showBillingForm,
-      editingShippingAddress,
-      editingBillingAddress,
-      setShowShippingForm,
-      setShowBillingForm,
-      setEditingShippingAddress,
-      setEditingBillingAddress,
+      selected: selectedAddress,
+      default: defaultAddress,
     },
 
     // Handlers
     handlers: {
-      handleOpenShippingForm,
-      handleOpenBillingForm,
-      handleShippingAddressSubmit,
-      handleBillingAddressSubmit,
-      handleSameAsShippingChange,
-      handleShippingAddressChange,
-      handleBillingAddressChange,
+      handleOpenAddressForm: handleOpenAddressForm,
+      handleAddressSubmit: handleAddressSubmit,
+      handleAddressChange: handleAddressChange,
     },
 
     // Cart and pricing

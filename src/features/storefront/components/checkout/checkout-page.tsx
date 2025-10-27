@@ -11,13 +11,8 @@ import { AddressForm } from "@/features/storefront/components/account/addresses/
 import { OrderSummary } from "@/components/order/order-summary";
 import { useCheckoutPage } from "@/hooks/use-checkout-page";
 import { formatPrice } from "@/lib/utils";
-import {
-  Loader2,
-  MapPin,
-  CreditCard,
-  Truck,
-  CheckCircle,
-} from "lucide-react";
+import { Loader2, MapPin, CreditCard, Truck, CheckCircle } from "lucide-react";
+import { Address } from "@/types";
 
 export default function CheckoutPage() {
   const {
@@ -70,51 +65,50 @@ export default function CheckoutPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MapPin className="h-5 w-5" />
-                  Shipping Address
+                  Address
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {addresses.shipping.length > 0 ? (
+                {addresses.all.length > 0 ? (
                   <div className="space-y-3">
                     <p className="text-sm text-muted-foreground">
-                      Select a shipping address:
+                      Select an address:
                     </p>
                     <RadioGroup
-                      value={addresses.selectedShipping?.id?.toString() || ""}
-                      onValueChange={handlers.handleShippingAddressChange}
-                      className="space-y-2"
+                      value={addresses.selected?.id?.toString() || ""}
+                      onValueChange={(value) =>
+                        handlers.handleAddressChange(
+                          addresses.all.find(
+                            (address) => address.id.toString() === value
+                          )
+                        )
+                      }
+                      className="grid grid-cols-2 gap-2"
                     >
-                      {addresses.shipping.map((address) => (
+                      {addresses.all.map((address) => (
                         <div
                           key={address.id}
-                          className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-muted/50"
+                          className="flex items-start space-x-3 p-3 border rounded-lg shadow-lg hover:bg-muted/50"
                         >
                           <RadioGroupItem
                             value={address.id.toString()}
-                            id={`shipping-${address.id}`}
+                            id={`address-${address.id}`}
                           />
                           <div className="flex-1">
                             <Label
-                              htmlFor={`shipping-${address.id}`}
+                              htmlFor={`address-${address.id}`}
                               className="cursor-pointer"
                             >
                               <div className="space-y-1">
                                 <p className="font-medium">
-                                  {address.firstName} {address.lastName}
+                                  {address.recipientName}
                                 </p>
                                 <p className="text-sm text-muted-foreground">
-                                  {address.address1}
+                                  {address.recipientAddress}
                                 </p>
-                                {address.address2 && (
-                                  <p className="text-sm text-muted-foreground">
-                                    {address.address2}
-                                  </p>
-                                )}
-                                {address.phone && (
-                                  <p className="text-sm text-muted-foreground">
-                                    {address.phone}
-                                  </p>
-                                )}
+                                <p className="text-sm text-muted-foreground">
+                                  {address.recipientPhone}
+                                </p>
                                 {address.isDefault && (
                                   <Badge
                                     variant="secondary"
@@ -131,7 +125,7 @@ export default function CheckoutPage() {
                             variant="ghost"
                             size="sm"
                             onClick={() =>
-                              handlers.handleOpenShippingForm(address)
+                              handlers.handleOpenAddressForm(address)
                             }
                           >
                             Edit
@@ -142,177 +136,35 @@ export default function CheckoutPage() {
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => handlers.handleOpenShippingForm()}
+                      onClick={() => handlers.handleOpenAddressForm()}
                       className="w-full"
                     >
-                      + Add New Shipping Address
+                      + Add New Address
                     </Button>
                   </div>
                 ) : (
                   <div className="text-center py-4">
                     <p className="text-muted-foreground mb-4">
-                      No shipping addresses found. Please add one to continue.
+                      No addresses found. Please add one to continue.
                     </p>
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => handlers.handleOpenShippingForm()}
+                      onClick={() => handlers.handleOpenAddressForm()}
                     >
-                      Add Shipping Address
+                      Add Address
                     </Button>
                   </div>
                 )}
               </CardContent>
             </Card>
 
-            {/* Billing Address Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CreditCard className="h-5 w-5" />
-                  Billing Address
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="sameAsShipping"
-                    checked={form.watchedSameAsShipping}
-                    onCheckedChange={handlers.handleSameAsShippingChange}
-                  />
-                  <Label htmlFor="sameAsShipping">
-                    My billing address is the same as shipping address
-                  </Label>
-                </div>
-
-                {!form.watchedSameAsShipping && (
-                  <div className="space-y-3">
-                    {addresses.billing.length > 0 ? (
-                      <>
-                        <p className="text-sm text-muted-foreground">
-                          Select a billing address:
-                        </p>
-                        <RadioGroup
-                          value={
-                            addresses.selectedBilling?.id?.toString() || ""
-                          }
-                          onValueChange={handlers.handleBillingAddressChange}
-                          className="space-y-2"
-                        >
-                          {addresses.billing.map((address) => (
-                            <div
-                              key={address.id}
-                              className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-muted/50"
-                            >
-                              <RadioGroupItem
-                                value={address.id.toString()}
-                                id={`billing-${address.id}`}
-                              />
-                              <div className="flex-1">
-                                <Label
-                                  htmlFor={`billing-${address.id}`}
-                                  className="cursor-pointer"
-                                >
-                                  <div className="space-y-1">
-                                    <p className="font-medium">
-                                      {address.firstName} {address.lastName}
-                                    </p>
-                                    <p className="text-sm text-muted-foreground">
-                                      {address.address1}
-                                    </p>
-                                    {address.address2 && (
-                                      <p className="text-sm text-muted-foreground">
-                                        {address.address2}
-                                      </p>
-                                    )}
-                                    {address.phone && (
-                                      <p className="text-sm text-muted-foreground">
-                                        {address.phone}
-                                      </p>
-                                    )}
-                                    {address.isDefault && (
-                                      <Badge
-                                        variant="secondary"
-                                        className="text-xs"
-                                      >
-                                        Default
-                                      </Badge>
-                                    )}
-                                  </div>
-                                </Label>
-                              </div>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() =>
-                                  handlers.handleOpenBillingForm(address)
-                                }
-                              >
-                                Edit
-                              </Button>
-                            </div>
-                          ))}
-                        </RadioGroup>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => handlers.handleOpenBillingForm()}
-                          className="w-full"
-                        >
-                          + Add New Billing Address
-                        </Button>
-                      </>
-                    ) : (
-                      <div className="text-center py-4">
-                        <p className="text-muted-foreground mb-4">
-                          No billing addresses found. Please add one to
-                          continue.
-                        </p>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => handlers.handleOpenBillingForm()}
-                        >
-                          Add Billing Address
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {form.watchedSameAsShipping && addresses.selectedShipping && (
-                  <div className="p-4 border rounded-lg bg-green-50">
-                    <div className="flex items-center gap-2 text-green-700">
-                      <CheckCircle className="h-4 w-4" />
-                      <span className="text-sm font-medium">
-                        Using shipping address as billing address
-                      </span>
-                    </div>
-                    <div className="text-sm text-muted-foreground mt-2">
-                      <p>
-                        {addresses.selectedShipping.firstName}{" "}
-                        {addresses.selectedShipping.lastName}
-                      </p>
-                      <p>{addresses.selectedShipping.address1}</p>
-                      {addresses.selectedShipping.address2 && (
-                        <p>{addresses.selectedShipping.address2}</p>
-                      )}
-                      {addresses.selectedShipping.phone && (
-                        <p>{addresses.selectedShipping.phone}</p>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Shipping Methods */}
+            {/* Shipping Fee */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Truck className="h-5 w-5" />
-                  Shipping Method
+                  Shipping Fee
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -465,35 +317,15 @@ export default function CheckoutPage() {
       </form>
 
       {/* Shipping Address Form Modal */}
-      {modals.showShippingForm && (
+      {modals.showAddressForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <AddressForm
-              address={
-                modals.editingShippingAddress || ({ type: "shipping" } as any)
-              }
-              onSubmit={handlers.handleShippingAddressSubmit}
+              address={modals.editingAddress as Address}
+              onSubmit={handlers.handleAddressSubmit}
               onCancel={() => {
-                modals.setShowShippingForm(false);
-                modals.setEditingShippingAddress(null);
-              }}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Billing Address Form Modal */}
-      {modals.showBillingForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <AddressForm
-              address={
-                modals.editingBillingAddress || ({ type: "billing" } as any)
-              }
-              onSubmit={handlers.handleBillingAddressSubmit}
-              onCancel={() => {
-                modals.setShowBillingForm(false);
-                modals.setEditingBillingAddress(null);
+                modals.setShowAddressForm(false);
+                modals.setEditingAddress(null);
               }}
             />
           </div>

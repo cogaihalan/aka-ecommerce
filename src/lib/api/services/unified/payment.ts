@@ -1,19 +1,13 @@
 import { apiClient } from "@/lib/api/client";
+import { CreatePaymentRequest, PaymentResponse } from "@/lib/api/types";
 
 class UnifiedPaymentService {
-  private basePath = "/payment";
+  private basePath = "/payments";
 
   // Get payment link
-  async getPaymentLink(orderId: string): Promise<string> {
-    const response = await apiClient.get<string>(
-      `${this.basePath}/vnpay-create/${orderId}`
-    );
-    return response.data!;
-  }
-
-  async getPaymentResult(): Promise<string> {
-    const response = await apiClient.get<string>(
-      `${this.basePath}/vnpay-return`
+  async createPayment(data: CreatePaymentRequest): Promise<PaymentResponse> {
+    const response = await apiClient.post<PaymentResponse>(
+      `${this.basePath}/create?orderId=${data.orderId}&gateway=${data.gateway}`
     );
     return response.data!;
   }

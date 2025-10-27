@@ -65,6 +65,10 @@ export interface OrderHistoryListResponse {
   items: OrderHistory[];
 }
 
+export interface PaymentResponse {
+  paymentUrl: string;
+}
+
 export interface UserListResponse {
   items: User[];
   pagination: PaginationResponse;
@@ -152,6 +156,11 @@ export interface CreateOrderRequest {
   recipientPhone: string;
   shippingAddress: string;
   note?: string;
+}
+
+export interface CreatePaymentRequest {
+  orderId: number;
+  gateway: "VNPAY" | "MOMO" | "ZALO";
 }
 
 // User API types

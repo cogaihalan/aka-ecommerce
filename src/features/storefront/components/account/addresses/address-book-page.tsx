@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Edit, Trash2, MapPin } from "lucide-react";
 import { useUserAddresses } from "@/hooks/use-user-addresses";
 import { AddressForm } from "@/features/storefront/components/account/addresses/address-form";
-import { Address } from "@/lib/api/types";
+import { Address } from "@/types";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -85,7 +85,7 @@ export default function AddressBookPage() {
   const handleSetDefault = async (address: Address) => {
     try {
       await setDefaultAddress(address.id);
-      toast.success(`Default ${address.type} address updated`);
+      toast.success(`Default address updated`);
     } catch (error) {
       toast.error("Failed to set default address");
     }
@@ -181,26 +181,17 @@ export default function AddressBookPage() {
           {addresses.map((address) => (
             <Card key={address.id}>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="text-lg capitalize">
-                  {address.type} Address
-                </CardTitle>
                 <div className="flex items-center gap-2">
                   {address.isDefault && (
-                    <Badge variant="default">Default {address.type}</Badge>
+                    <Badge variant="default">Default</Badge>
                   )}
-                  <Badge variant="outline">{address.type}</Badge>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 text-sm">
-                  <p className="font-medium">
-                    {address.firstName} {address.lastName}
-                  </p>
-                  <p>{address.address1}</p>
-                  {address.address2 && <p>{address.address2}</p>}
-                  {address.phone && (
-                    <p className="text-gray-600">{address.phone}</p>
-                  )}
+                  <p className="font-medium">{address.recipientName}</p>
+                  <p>{address.recipientAddress}</p>
+                  <p className="text-gray-600">{address.recipientPhone}</p>
                 </div>
                 <div className="flex gap-2 mt-4">
                   <Button
@@ -217,7 +208,7 @@ export default function AddressBookPage() {
                       size="sm"
                       onClick={() => handleSetDefault(address)}
                     >
-                      Set Default {address.type}
+                      Set Default
                     </Button>
                   )}
                   <Button

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
-import { Address } from "@/lib/api/types";
+import { Address } from "@/types";
 
 interface UseUserAddressesReturn {
   addresses: Address[];
@@ -115,19 +115,19 @@ export function useUserAddresses(): UseUserAddressesReturn {
   const setDefaultAddress = async (id: number): Promise<void> => {
     try {
       setError(null);
-      
+
       // Find the address being set as default to get its type
-      const targetAddress = addresses.find(addr => addr.id === id);
+      const targetAddress = addresses.find((addr) => addr.id === id);
       if (!targetAddress) {
         throw new Error("Address not found");
       }
-      
+
       // Update addresses: set the target as default for its type, and remove default from others of the same type
       const updatedAddresses = addresses.map((addr) => ({
         ...addr,
-        isDefault: addr.id === id || (addr.type !== targetAddress.type && addr.isDefault),
+        isDefault: addr.id === id,
       }));
-      
+
       await updateUserMetadata(updatedAddresses);
       setAddresses(updatedAddresses);
     } catch (err) {

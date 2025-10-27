@@ -1,4 +1,4 @@
-name: 🚀 Deploy Next.js to Server via SSH
+name: 🚀 Deploy AKA E-commerce Website to Server via SSH
 
 on:
   push:
@@ -7,25 +7,25 @@ on:
 
 jobs:
   deploy:
-    name: Deploy
+    name: Deploy AKA E-commerce Website
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to server
+      - name: Deploy AKA E-commerce Website to server
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo systemctl stop aka
-
             cd /opt/webapps/aka
+
             echo "Pulling latest code..."
-            git pull origin main
+            git fetch origin main
+            git reset --hard origin/main
 
             echo "Installing dependencies..."
             pnpm run install
@@ -33,7 +33,7 @@ jobs:
             echo "Building Next.js app..."
             pnpm run build
 
-            echo "Starting Next.js app..."
-            pnpm run start
+            echo "Restarting systemd service..."
+            sudo systemctl restart aka
 
             echo "✅ Deployment complete!"

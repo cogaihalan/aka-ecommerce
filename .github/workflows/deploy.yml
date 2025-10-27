@@ -34,6 +34,8 @@ jobs:
             pnpm run build
 
             echo "Restarting systemd service..."
+            sudo systemctl daemon-reload
             sudo systemctl restart aka
+            sudo journalctl -u aka -f
 
             echo "✅ Deployment complete!"

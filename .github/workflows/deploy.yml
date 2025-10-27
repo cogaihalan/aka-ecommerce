@@ -21,14 +21,19 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            sudo systemctl stop aka
+
             cd /opt/webapps/aka
             echo "Pulling latest code..."
             git pull origin main
 
             echo "Installing dependencies..."
-            npm ci
+            pnpm run install
 
             echo "Building Next.js app..."
-            npm run build
+            pnpm run build
+
+            echo "Starting Next.js app..."
+            pnpm run start
 
             echo "✅ Deployment complete!"

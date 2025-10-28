@@ -26,10 +26,7 @@ export interface CartStore {
   itemLoadingStates: Record<number, boolean>;
 
   // Actions
-  addItem: (
-    product: any,
-    quantity?: number,
-  ) => Promise<void>;
+  addItem: (product: any, quantity?: number) => Promise<void>;
   removeItem: (itemId: number) => Promise<void>;
   updateQuantity: (itemId: number, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;

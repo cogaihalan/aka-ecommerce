@@ -30,12 +30,6 @@ export default async function OrdersPage(props: DashboardPageProps) {
             title="Orders"
             description="Manage orders, track fulfillment, and process returns"
           />
-          <Button
-            className={cn(buttonVariants(), "text-xs md:text-sm")}
-            disabled
-          >
-            <Plus className="mr-2 h-4 w-4" /> Export Orders
-          </Button>
         </div>
         <Separator />
         <Suspense

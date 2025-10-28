@@ -27,6 +27,9 @@ export class ServerUnifiedOrderService {
       });
     }
 
+    if (params.orderCode !== undefined)
+      searchParams.append("code", params.orderCode.toString());
+
     if (params.status !== undefined)
       searchParams.append("status", params.status.toString());
 

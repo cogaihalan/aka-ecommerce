@@ -10,23 +10,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  MoreHorizontal,
-  Eye,
-  X,
-} from "lucide-react";
+import { MoreHorizontal, Eye, X } from "lucide-react";
 import { Column, ColumnDef } from "@tanstack/react-table";
-import { Order, OrderItem } from "@/types";
+import { Order } from "@/types";
 import { formatCurrency, formatDate } from "@/lib/format";
 import Link from "next/link";
+import { storefrontOrderService } from "@/lib/api/services/storefront/orders-client";
+import { toast } from "sonner";
 
 const STATUS_OPTIONS = [
-  { label: "Pending", value: "pending" },
-  { label: "Confirmed", value: "confirmed" },
-  { label: "Shipping", value: "shipping" },
-  { label: "Delivered", value: "delivered" },
-  { label: "Cancelled", value: "cancelled" },
-  { label: "Refunded", value: "refunded" },
+  { label: "Pending", value: "PENDING" },
+  { label: "Confirmed", value: "CONFIRMED" },
+  { label: "Shipping", value: "SHIPPING" },
+  { label: "Delivered", value: "DELIVERED" },
+  { label: "Cancelled", value: "CANCELLED" },
+  { label: "Refunded", value: "REFUNDED" },
 ];
 
 const getStatusBadgeVariant = (status: string) => {
@@ -49,19 +47,25 @@ const getStatusBadgeVariant = (status: string) => {
 };
 
 const handleCancelOrder = async (id: number) => {
- 
+  const response = await storefrontOrderService.cancelOrder(id);
+  if (response) {
+    toast.success("Order cancelled successfully");
+    window.location.reload();
+  } else {
+    toast.error("Failed to cancel order");
+  }
 };
 
 export const columns: ColumnDef<Order>[] = [
   {
-    id: "code",
-    accessorKey: "code",
+    id: "orderCode",
+    accessorKey: "orderCode",
     header: ({ column }: { column: Column<Order, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Order #" />
+      <DataTableColumnHeader column={column} title="Order Code" />
     ),
     cell: ({ row }) => {
-      const code = row.getValue("code") as string;
-      return <div className="font-medium">{code}</div>;
+      const orderCode = row.original.code as string;
+      return <div className="font-medium">{orderCode}</div>;
     },
     meta: {
       label: "Order Code",
@@ -73,11 +77,9 @@ export const columns: ColumnDef<Order>[] = [
   {
     id: "status",
     accessorKey: "status",
-    header: ({ column }: { column: Column<Order, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Status" />
-    ),
+    header: "Status",
     cell: ({ row }) => {
-      const status = row.getValue("status") as string;
+      const status = row.original.status as string;
       return (
         <Badge variant={getStatusBadgeVariant(status)} className="capitalize">
           {status.replace("_", " ")}
@@ -94,9 +96,7 @@ export const columns: ColumnDef<Order>[] = [
   {
     id: "paymentStatus",
     accessorKey: "paymentStatus",
-    header: ({ column }: { column: Column<Order, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Payment" />
-    ),
+    header: "Payment Status",
     cell: ({ row }) => {
       const paymentStatus = row.getValue("paymentStatus") as string;
       return (
@@ -108,36 +108,23 @@ export const columns: ColumnDef<Order>[] = [
         </Badge>
       );
     },
-    enableColumnFilter: true,
+  },
+  {
+    id: "paymentMethod",
+    accessorKey: "paymentMethod",
+    header: "Payment Method",
+    cell: ({ row }) => {
+      const paymentMethod = row.original.paymentMethod as string;
+      return <div className="font-medium">{paymentMethod}</div>;
+    },
   },
   {
     id: "total",
     accessorKey: "finalAmount",
-    header: ({ column }: { column: Column<Order, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Total" />
-    ),
+    header: "Total",
     cell: ({ row }) => {
-      const finalAmount = row.getValue("finalAmount") as number;
+      const finalAmount = row.original.finalAmount;
       return <div className="font-medium">{formatCurrency(finalAmount)}</div>;
-    },
-    meta: {
-      label: "Total Amount",
-      variant: "range",
-    },
-    enableColumnFilter: true,
-  },
-  {
-    id: "items",
-    accessorKey: "items",
-    header: "Items",
-    cell: ({ row }) => {
-      const items = row.getValue("items") as OrderItem[];
-      const itemCount = items?.length || 0;
-      return (
-        <div className="text-center">
-          <span className="font-medium">{itemCount}</span>
-        </div>
-      );
     },
   },
   {
@@ -148,9 +135,7 @@ export const columns: ColumnDef<Order>[] = [
     ),
     cell: ({ row }) => {
       const date = row.getValue("createdAt") as Date;
-      return (
-        <div className="text-sm">{formatDate(date)}</div>
-      );
+      return <div className="text-sm">{formatDate(date)}</div>;
     },
     meta: {
       label: "Order Date",
@@ -161,7 +146,7 @@ export const columns: ColumnDef<Order>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const id = row.getValue("id") as number;
+      const id = row.original.id as number;
 
       return (
         <DropdownMenu>
@@ -174,9 +159,9 @@ export const columns: ColumnDef<Order>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem asChild>
-                <Link href={`/account/orders/${id}`}>
-                  <Eye className="mr-2 h-4 w-4" /> View Details
-                </Link>
+              <Link href={`/account/orders/${id}`}>
+                <Eye className="mr-2 h-4 w-4" /> View Details
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => handleCancelOrder(id)}>
               <X className="mr-2 h-4 w-4 text-destructive" /> Cancel Order

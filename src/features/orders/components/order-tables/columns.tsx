@@ -44,8 +44,8 @@ const getStatusBadgeVariant = (status: string) => {
 
 export const columns: ColumnDef<Order>[] = [
   {
-    id: "code",
-    accessorKey: "code",
+    id: "orderCode",
+    accessorKey: "orderCode",
     header: ({ column }: { column: Column<Order, unknown> }) => (
       <DataTableColumnHeader column={column} title="Order #" />
     ),

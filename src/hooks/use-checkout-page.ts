@@ -70,8 +70,7 @@ export function useCheckoutPage() {
     isSignedIn: isAuthenticated,
     isLoaded: authLoading,
   } = useUser();
-  const { items, getSubtotal, getTax, getTotal, clearCart } =
-    useCartStore();
+  const { items, getSubtotal, getTax, getTotal, clearCart } = useCartStore();
   const {
     addresses,
     isLoading: addressesLoading,

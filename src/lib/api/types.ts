@@ -45,6 +45,7 @@ export interface OrderQueryParams {
   size?: number;
   sort?: string[];
   status?: OrderStatus;
+  orderCode?: string;
   paymentMethod?: PaymentMethod;
   paymentStatus?: PaymentStatus;
   recipientName?: string;

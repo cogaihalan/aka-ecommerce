@@ -6,7 +6,7 @@ import { storefrontServerOrderService } from "@/lib/api/services/storefront/orde
 
 export default async function OrderHistoryPage() {
   const page = searchParamsCache.get("page");
-  const code = searchParamsCache.get("orderCode");
+  const orderCode = searchParamsCache.get("orderCode");
   const pageLimit = searchParamsCache.get("perPage");
   const status = searchParamsCache.get("status");
   const paymentStatus = searchParamsCache.get("paymentStatus");
@@ -23,7 +23,7 @@ export default async function OrderHistoryPage() {
         ? [`${sort[0]?.id},${sort[0]?.desc ? "desc" : "asc"}`]
         : [`${(sort as any).id},${(sort as any).desc ? "desc" : "asc"}`]
       : undefined,
-    code: code?.toString(),
+    orderCode: orderCode?.toString(),
     status: status ? (status as OrderStatus) : undefined,
     paymentMethod: paymentMethod ? (paymentMethod as PaymentMethod) : undefined,
     paymentStatus: paymentStatus ? (paymentStatus as PaymentStatus) : undefined,

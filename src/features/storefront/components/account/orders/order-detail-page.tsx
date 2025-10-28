@@ -4,15 +4,39 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Package, Truck, CheckCircle, Clock } from "lucide-react";
+import { Package, Truck, CheckCircle, Clock, ArrowLeft, X } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
-import { Order, OrderStatus, PaymentStatus } from "@/types/order";
+import { Order, OrderStatus } from "@/types/order";
+import Link from "next/link";
+import { storefrontOrderService } from "@/lib/api/services/storefront/orders-client";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface OrderDetailPageProps {
   order: Order;
 }
 
 export default function OrderDetailPage({ order }: OrderDetailPageProps) {
+  const router = useRouter();
+
+  const handleCancelOrder = async () => {
+    try {
+      await storefrontOrderService.cancelOrder(order.id);
+      toast.success("Order cancelled successfully");
+      router.refresh();
+    } catch (error) {
+      toast.error("Failed to cancel order");
+    }
+  };
+
+  const canCancelOrder = () => {
+    return (
+      order.status !== "CANCELLED" &&
+      order.status !== "DELIVERED" &&
+      order.status !== "REFUNDED"
+    );
+  };
+
   const getStatusIcon = (status: OrderStatus) => {
     switch (status) {
       case "DELIVERED":
@@ -46,6 +70,27 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
 
   return (
     <div className="space-y-6">
+      {/* Action Buttons */}
+      <div className="flex items-center justify-between">
+        <Link href="/account/orders">
+          <Button variant="outline" className="flex items-center gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Order History
+          </Button>
+        </Link>
+
+        {canCancelOrder() && (
+          <Button
+            variant="destructive"
+            onClick={handleCancelOrder}
+            className="flex items-center gap-2"
+          >
+            <X className="h-4 w-4" />
+            Cancel Order
+          </Button>
+        )}
+      </div>
+
       <div>
         <h1 className="text-3xl font-bold mb-2">Order #{order.code}</h1>
         <p className="text-muted-foreground">
@@ -65,8 +110,10 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
             </CardHeader>
             <CardContent className="space-y-4">
               {order.items.map((item) => (
-                <div key={item.id} className="flex gap-4">
-                  <div className="w-16 h-16 bg-muted rounded-md"></div>
+                <div key={item.productId} className="flex gap-4">
+                  <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center">
+                    <Package className="h-10 w-10 text-gray-500" />
+                  </div>
                   <div className="flex-1">
                     <h3 className="font-semibold">{item.productName}</h3>
                     <p className="text-sm text-muted-foreground">
@@ -159,8 +206,6 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
               </div>
             </CardContent>
           </Card>
-
-          <Button className="w-full">Track Package</Button>
         </div>
       </div>
     </div>

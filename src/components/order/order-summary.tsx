@@ -101,7 +101,9 @@ export function OrderSummary({
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{item.product.name}</p>
+                  <p className="text-sm font-medium truncate">
+                    {item.product.name}
+                  </p>
                   <p className="text-xs text-muted-foreground">
                     Qty: {item.quantity}
                   </p>
@@ -138,10 +140,12 @@ export function OrderSummary({
             </div>
           )}
 
-          <div className="flex justify-between text-sm">
-            <span>Tax</span>
-            <Price price={tax} size="sm" />
-          </div>
+          {tax > 0 && (
+            <div className="flex justify-between text-sm">
+              <span>Tax</span>
+              <Price price={tax} size="sm" />
+            </div>
+          )}
         </div>
 
         <Separator />

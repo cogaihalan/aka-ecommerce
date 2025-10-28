@@ -6,7 +6,7 @@ import { OrderStatus, PaymentMethod, PaymentStatus } from "@/types";
 
 export default async function OrderListingPage() {
   const page = searchParamsCache.get("page");
-  const code = searchParamsCache.get("orderCode");
+  const orderCode = searchParamsCache.get("orderCode");
   const pageLimit = searchParamsCache.get("perPage");
   const status = searchParamsCache.get("status");
   const paymentStatus = searchParamsCache.get("paymentStatus");
@@ -23,7 +23,7 @@ export default async function OrderListingPage() {
         ? [`${sort[0]?.id},${sort[0]?.desc ? "desc" : "asc"}`]
         : [`${(sort as any).id},${(sort as any).desc ? "desc" : "asc"}`]
       : undefined,
-    code: code?.toString(),
+    orderCode: orderCode?.toString(),
     status: status ? (status as OrderStatus) : undefined,
     paymentMethod: paymentMethod ? (paymentMethod as PaymentMethod) : undefined,
     paymentStatus: paymentStatus ? (paymentStatus as PaymentStatus) : undefined,
@@ -37,12 +37,12 @@ export default async function OrderListingPage() {
   const orders = result.items || [];
 
   return (
-      <DataTableWrapper
-        data={orders}
-        totalItems={totalOrders}
-        columns={columns}
-        debounceMs={500}
-        shallow={false}
+    <DataTableWrapper
+      data={orders}
+      totalItems={totalOrders}
+      columns={columns}
+      debounceMs={500}
+      shallow={false}
     />
   );
 }

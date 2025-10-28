@@ -12,7 +12,7 @@ import { AddToCartRequest, UpdateCartItemRequest } from "@/lib/api/types";
 const DEFAULT_CALCULATION_OPTIONS = {
   shippingThreshold: 1000000, // 1 million VND
   shippingCost: 30000, // 30k VND for Hanoi
-  taxRate: 0.1, // 10% tax rate
+  taxRate: 0, // 10% tax rate
   freeShippingThreshold: 1000000, // 1 million VND
 };
 

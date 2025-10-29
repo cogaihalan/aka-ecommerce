@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import Image from "next/image";
-import { storefrontHairstyleService } from "@/lib/api/services/storefront/extensions/hairstyles";
+import { storefrontHairstyleService } from "@/lib/api/services/storefront/extensions/hairstyles/hairstyles-client";
 import { toast } from "sonner";
 
 interface HairstyleDetailProps {

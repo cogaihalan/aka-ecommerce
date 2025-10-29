@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { Content, isFilled } from "@prismicio/client";
 import { SliceComponentProps, PrismicRichText } from "@prismicio/react";
+import { HeadingField, RichTextField } from "@/components/prismic/fields";
 import { PrismicNextLink, PrismicNextImage } from "@prismicio/next";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -58,32 +59,16 @@ const MultiColumnCards: FC<MultiColumnCardsProps> = ({ slice }) => {
         {(isFilled.richText(slice.primary.title) || isFilled.richText(slice.primary.subtitle)) && (
           <div className={cn("mb-12", getAlignmentClasses())}>
             {isFilled.richText(slice.primary.title) && (
-              <div className="text-4xl font-bold mb-4 text-foreground">
-                <PrismicRichText 
-                  field={slice.primary.title}
-                  components={{
-                    heading1: ({ children }) => <h1 className="m-0">{children}</h1>,
-                    heading2: ({ children }) => <h2 className="m-0">{children}</h2>,
-                    heading3: ({ children }) => <h3 className="m-0">{children}</h3>,
-                    heading4: ({ children }) => <h4 className="m-0">{children}</h4>,
-                    heading5: ({ children }) => <h5 className="m-0">{children}</h5>,
-                    heading6: ({ children }) => <h6 className="m-0">{children}</h6>,
-                  }}
-                />
-              </div>
+              <HeadingField field={slice.primary.title} className="text-4xl font-bold mb-4 text-foreground" />
             )}
             {isFilled.richText(slice.primary.subtitle) && (
-              <div className={cn(
-                "text-lg text-muted-foreground max-w-2xl",
-                alignment === "center" && "mx-auto"
-              )}>
-                <PrismicRichText 
-                  field={slice.primary.subtitle}
-                  components={{
-                    paragraph: ({ children }) => <p className="m-0">{children}</p>,
-                  }}
-                />
-              </div>
+              <RichTextField 
+                field={slice.primary.subtitle}
+                className={cn(
+                  "text-lg text-muted-foreground max-w-2xl",
+                  alignment === "center" && "mx-auto"
+                )}
+              />
             )}
           </div>
         )}
@@ -106,6 +91,7 @@ const MultiColumnCards: FC<MultiColumnCardsProps> = ({ slice }) => {
                     <PrismicNextLink field={card.link}>
                       <PrismicNextImage
                         field={card.image}
+                        alt=""
                         className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                       />
                     </PrismicNextLink>
@@ -118,6 +104,7 @@ const MultiColumnCards: FC<MultiColumnCardsProps> = ({ slice }) => {
                     <div className="w-12 h-12 mb-4 flex items-center justify-center bg-muted rounded-lg">
                       <PrismicNextImage
                         field={card.icon}
+                        alt=""
                         className="w-6 h-6"
                       />
                     </div>

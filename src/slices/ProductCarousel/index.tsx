@@ -2,6 +2,7 @@
 import React, { FC, useState, useEffect, useCallback } from "react";
 import { isFilled } from "@prismicio/client";
 import { SliceComponentProps, PrismicRichText } from "@prismicio/react";
+import { HeadingField, RichTextField } from "@/components/prismic/fields";
 import { AnimatedContainer } from "@/components/ui/animated-container";
 import { GliderContainer } from "@/components/ui/glider-container";
 import { ProductCard } from "@/components/product";
@@ -140,43 +141,10 @@ const ProductCarousel: FC<ProductCarouselProps> = ({ slice }) => {
             className="text-center mb-12"
           >
             {isFilled.richText(slice.primary.title) && (
-              <div className="text-4xl font-bold mb-4">
-                <PrismicRichText
-                  field={slice.primary.title}
-                  components={{
-                    heading1: ({ children }) => (
-                      <h1 className="m-0">{children}</h1>
-                    ),
-                    heading2: ({ children }) => (
-                      <h2 className="m-0">{children}</h2>
-                    ),
-                    heading3: ({ children }) => (
-                      <h3 className="m-0">{children}</h3>
-                    ),
-                    heading4: ({ children }) => (
-                      <h4 className="m-0">{children}</h4>
-                    ),
-                    heading5: ({ children }) => (
-                      <h5 className="m-0">{children}</h5>
-                    ),
-                    heading6: ({ children }) => (
-                      <h6 className="m-0">{children}</h6>
-                    ),
-                  }}
-                />
-              </div>
+              <HeadingField field={slice.primary.title} className="text-4xl font-bold mb-4" />
             )}
             {isFilled.richText(slice.primary.subtitle) && (
-              <div className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                <PrismicRichText
-                  field={slice.primary.subtitle}
-                  components={{
-                    paragraph: ({ children }) => (
-                      <p className="m-0">{children}</p>
-                    ),
-                  }}
-                />
-              </div>
+              <RichTextField field={slice.primary.subtitle} className="text-lg text-muted-foreground max-w-2xl mx-auto" />
             )}
           </AnimatedContainer>
         )}

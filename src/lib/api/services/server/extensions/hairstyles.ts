@@ -59,7 +59,7 @@ export class ServerHairstyleService {
       formData.append("files", file);
     });
     const response = await serverApiClient.post<Hairstyle>(
-      `${this.basePath}/${data.id}/media`,
+      `${this.basePath}/${data.id}/photos`,
       formData
     );
     return response.data!;
@@ -70,7 +70,7 @@ export class ServerHairstyleService {
     formData.append("id", data.id.toString());
     formData.append("photoIds", JSON.stringify(data.photoIds));
     const response = await serverApiClient.request<Hairstyle>(
-      `${this.basePath}/${data.id}/media`,
+      `${this.basePath}/${data.id}/photos`,
       {
         method: "DELETE",
         body: formData,

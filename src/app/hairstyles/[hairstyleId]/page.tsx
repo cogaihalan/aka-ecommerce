@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { serverStorefrontHairstyleService } from "@/lib/api/services/server";
+import { serverUnifiedHairstyleService } from "@/lib/api/services/server";
 import { HairstyleDetail } from "@/features/storefront/components/hairstyle/hairstyle-detail";
 
 interface HairstylePageProps {
@@ -15,7 +15,7 @@ export async function generateMetadata({
   const { hairstyleId } = await params;
 
   try {
-    const hairstyle = await serverStorefrontHairstyleService.getHairstyle(
+    const hairstyle = await serverUnifiedHairstyleService.getHairstyle(
       parseInt(hairstyleId)
     );
 
@@ -35,7 +35,7 @@ export default async function HairstylePage({ params }: HairstylePageProps) {
   const { hairstyleId } = await params;
 
   try {
-    const hairstyle = await serverStorefrontHairstyleService.getHairstyle(
+    const hairstyle = await serverUnifiedHairstyleService.getHairstyle(
       parseInt(hairstyleId)
     );
 

@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { isFilled } from "@prismicio/client";
 import { SliceComponentProps, PrismicRichText } from "@prismicio/react";
+import { HeadingField, RichTextField } from "@/components/prismic/fields";
 import { PrismicNextLink, PrismicNextImage } from "@prismicio/next";
 import { cn } from "@/lib/utils";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
@@ -44,6 +45,7 @@ const HeroAnimated: FC<HeroAnimatedProps> = ({ slice }) => {
             <PrismicNextImage
               field={slice.primary.image}
               className="w-full h-auto self-center rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+              alt=""
             />
           )}
         </div>
@@ -69,41 +71,22 @@ const HeroAnimated: FC<HeroAnimatedProps> = ({ slice }) => {
               </p>
             )}
             {isFilled.richText(slice.primary.title) && (
-              <div 
+              <HeadingField 
+                field={slice.primary.title}
                 className={cn(
                   "text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold transition-all duration-500 ease-out",
                   hasIntersected ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
                 )}
-                style={{ transitionDelay: hasIntersected ? "800ms" : "0ms" }}
-              >
-                <PrismicRichText 
-                  field={slice.primary.title} 
-                  components={{
-                    heading1: ({ children }) => <h1 className="m-0">{children}</h1>,
-                    heading2: ({ children }) => <h2 className="m-0">{children}</h2>,
-                    heading3: ({ children }) => <h3 className="m-0">{children}</h3>,
-                    heading4: ({ children }) => <h4 className="m-0">{children}</h4>,
-                    heading5: ({ children }) => <h5 className="m-0">{children}</h5>,
-                    heading6: ({ children }) => <h6 className="m-0">{children}</h6>,
-                  }}
-                />
-              </div>
+              />
             )}
             {isFilled.richText(slice.primary.description) && (
-              <div 
+              <RichTextField 
+                field={slice.primary.description}
                 className={cn(
                   "text-lg xl:text-xl max-w-2xl transition-all duration-500 ease-out",
                   hasIntersected ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
                 )}
-                style={{ transitionDelay: hasIntersected ? "1000ms" : "0ms" }}
-              >
-                <PrismicRichText 
-                  field={slice.primary.description}
-                  components={{
-                    paragraph: ({ children }) => <p className="m-0">{children}</p>,
-                  }}
-                />
-              </div>
+              />
             )}
             {isFilled.link(slice.primary.callToActionLink) && (
               <div

@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { isFilled } from "@prismicio/client";
-import { SliceComponentProps, PrismicRichText } from "@prismicio/react";
+import { SliceComponentProps } from "@prismicio/react";
+import { HeadingField, RichTextField } from "@/components/prismic/fields";
 import { PrismicNextLink, PrismicNextImage } from "@prismicio/next";
 import { cn } from "@/lib/utils";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
@@ -74,6 +75,7 @@ const FullWidthBanner: FC<FullWidthBannerProps> = ({ slice }) => {
           field={slice.primary.backgroundImage}
           className="absolute inset-0 w-full h-full object-cover hidden md:block"
           priority
+          alt=""
         />
       )}
 
@@ -83,6 +85,7 @@ const FullWidthBanner: FC<FullWidthBannerProps> = ({ slice }) => {
           field={slice.primary.mobileBackgroundImage}
           className="absolute inset-0 w-full h-full object-cover block md:hidden"
           priority
+          alt=""
         />
       )}
 
@@ -92,6 +95,7 @@ const FullWidthBanner: FC<FullWidthBannerProps> = ({ slice }) => {
           field={slice.primary.backgroundImage}
           className="absolute inset-0 w-full h-full object-cover block md:hidden"
           priority
+          alt=""
         />
       )}
 
@@ -109,71 +113,24 @@ const FullWidthBanner: FC<FullWidthBannerProps> = ({ slice }) => {
         <div className={cn("w-full md:w-fit md:max-w-112", getContentAlignmentClass())}>
           {/* Title */}
           {isFilled.richText(slice.primary.title) && (
-            <div 
+            <HeadingField 
+              field={slice.primary.title}
               className={cn(
-                "mb-4 transition-all duration-500 ease-out",
+                "mb-4 transition-all duration-500 ease-out text-white",
                 hasIntersected ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
               )}
-              style={{ transitionDelay: hasIntersected ? "200ms" : "0ms" }}
-            >
-              <PrismicRichText 
-                field={slice.primary.title} 
-                components={{
-                  heading1: ({ children }) => (
-                    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white m-0">
-                      {children}
-                    </h1>
-                  ),
-                  heading2: ({ children }) => (
-                    <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white m-0">
-                      {children}
-                    </h2>
-                  ),
-                  heading3: ({ children }) => (
-                    <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white m-0">
-                      {children}
-                    </h3>
-                  ),
-                  heading4: ({ children }) => (
-                    <h4 className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-white m-0">
-                      {children}
-                    </h4>
-                  ),
-                  heading5: ({ children }) => (
-                    <h5 className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-bold text-white m-0">
-                      {children}
-                    </h5>
-                  ),
-                  heading6: ({ children }) => (
-                    <h6 className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-bold text-white m-0">
-                      {children}
-                    </h6>
-                  ),
-                }}
-              />
-            </div>
+            />
           )}
 
           {/* Description */}
           {isFilled.richText(slice.primary.description) && (
-            <div 
+            <RichTextField 
+              field={slice.primary.description}
               className={cn(
-                "mb-6 transition-all duration-500 ease-out",
+                "mb-6 transition-all duration-500 ease-out !text-white",
                 hasIntersected ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
               )}
-              style={{ transitionDelay: hasIntersected ? "400ms" : "0ms" }}
-            >
-              <PrismicRichText 
-                field={slice.primary.description}
-                components={{
-                  paragraph: ({ children }) => (
-                    <p className="text-sm sm:text-base md:text-lg text-foreground m-0 max-w-3xl mx-auto">
-                      {children}
-                    </p>
-                  ),
-                }}
-              />
-            </div>
+            />
           )}
 
           {/* Call to Action */}
@@ -187,7 +144,7 @@ const FullWidthBanner: FC<FullWidthBannerProps> = ({ slice }) => {
             >
               <PrismicNextLink
                 field={slice.primary.callToActionLink}
-                className="inline-flex items-center justify-center rounded-lg text-sm sm:text-base md:text-lg font-semibold px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-4 transition-all duration-300 bg-white text-gray-900 hover:bg-gray-100 hover:scale-105 hover:shadow-lg"
+                className="inline-flex items-center justify-center rounded-lg text-sm sm:text-base md:text-lg font-semibold px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-4 transition-all duration-300 bg-primary text-white hover:bg-primary/90 hover:shadow-lg"
               >
                 {slice.primary.callToActionText}
               </PrismicNextLink>

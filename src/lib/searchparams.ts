@@ -27,6 +27,7 @@ export const searchParams = {
   sort: getSortingStateParser<any>().withDefault([{ id: "id", desc: true }]),
   t: parseAsString,
   barberName: parseAsString,
+  uid: parseAsString,
 };
 
 export const searchParamsCache = createSearchParamsCache(searchParams);

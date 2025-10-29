@@ -5,8 +5,13 @@ import { HairstyleFilters } from "@/features/storefront/components/hairstyle/hai
 import { HairstyleGridSkeleton } from "@/features/storefront/components/hairstyle/hairstyle-grid-skeleton";
 import { HairstyleFiltersSkeleton } from "@/features/storefront/components/hairstyle/hairstyle-filters-skeleton";
 import { searchParamsCache } from "@/lib/searchparams";
-import { serverStorefrontHairstyleService } from "@/lib/api/services/server/extensions/storefront-hairstyles";
+import { serverStorefrontHairstyleService } from "@/lib/api/services/storefront/extensions/hairstyles/hairstyles";
 import { QueryParams } from "@/lib/api/types";
+
+export const metadata: Metadata = {
+  title: "Hairstyles",
+  description: "Browse our collection of hairstyles and barber work",
+};
 
 interface HairstylesPageProps {
   searchParams: Promise<{
@@ -36,6 +41,8 @@ export default async function HairstylesPage({
 
   const data =
     await serverStorefrontHairstyleService.getHairstyles(hairstyleParams);
+
+    console.log(data);
 
   return (
     <div className="container mx-auto">

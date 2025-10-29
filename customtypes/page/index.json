@@ -17,6 +17,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "text_and_image": {
+              "type": "SharedSlice"
+            },
             "full_width_banner": {
               "type": "SharedSlice"
             },

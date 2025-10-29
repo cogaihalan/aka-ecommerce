@@ -125,7 +125,7 @@ export function HairstyleImageManager({
           {existingImages.length > 0 && (
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Existing Images</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {existingImages
                   .filter((img) => !removedImageIds.includes(img.id))
                   .map((image) => (
@@ -194,7 +194,7 @@ export function HairstyleImageManager({
             {selectedImages.length > 0 && (
               <div className="space-y-2">
                 <h4 className="font-medium">Selected Images:</h4>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                   {selectedImages.map((file, index) => (
                     <div key={index} className="relative group">
                       <div className="aspect-square relative overflow-hidden rounded-lg border">

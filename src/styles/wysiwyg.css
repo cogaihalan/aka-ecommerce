@@ -1,30 +1,30 @@
 /* Wysiwyg */
 .wysiwyg {
-    @apply body-core text-secondary;
+    @apply text-base text-wysiwyg;
   
     & b,
     & strong {
-      @apply emphasis;
+      @apply font-semibold;
     }
   
     & h1 {
-      @apply headline-1;
+      @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl;
     }
   
     & h2 {
-      @apply headline-2;
+      @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl;
     }
   
     & h3 {
-      @apply headline-3;
+      @apply text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl;
     }
   
     & h4 {
-      @apply headline-4;
+      @apply text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl;
     }
   
     & h5 {
-      @apply headline-5;
+      @apply text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl;
     }
   
     & h1,
@@ -32,24 +32,15 @@
     & h3,
     & h4,
     & h5 {
-      @apply mb-2 text-primary;
+      @apply mb-2 font-semibold;
     }
   
     & h6 {
-      @apply mb-3 body-core;
-    }
-  
-    & ul,
-    & ol {
-      @apply pl-1.5;
+      @apply mb-3 font-semibold;
     }
   
     & ul {
-      @apply list-none;
-  
-      li {
-        @apply before:mr-2.5 before:body-large before:content-['•'];
-      }
+      @apply list-inside list-disc;
     }
   
     & ol {
@@ -60,8 +51,8 @@
       @apply max-w-full;
     }
   
-    &:not(.wysiwyg-article) a {
-      @apply button-plain inline-flex text-secondary hover:text-primary;
+    & a {
+      @apply inline-flex text-primary underline;
     }
   
     & iframe {

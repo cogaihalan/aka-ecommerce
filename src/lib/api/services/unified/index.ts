@@ -8,3 +8,4 @@ export { unifiedCartService } from "./cart";
 
 // Types are available through the main API index
 export { unifiedCourseService } from "./extensions/courses";
+export { unifiedContestService } from "./extensions/contest";

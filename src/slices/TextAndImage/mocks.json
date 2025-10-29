@@ -1,0 +1,67 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"title": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading2",
+						"content": {
+							"text": "Railroad"
+						}
+					}
+				]
+			},
+			"description": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Aliqua ipsum dolor irure sint. Esse adipisicing minim dolor duis non proident Lorem ut nostrud magna ad. Irure ad enim amet."
+						}
+					}
+				]
+			},
+			"primary_button": {
+				"key": "34cd1153-1122-4a00-89cd-de5d599db2ca",
+				"__TYPE__": "LinkContent",
+				"value": {
+					"__TYPE__": "ExternalLink",
+					"url": "http://google.com",
+					"text": "grain"
+				}
+			},
+			"image": {
+				"origin": {
+					"id": "main",
+					"url": "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+					"width": 3882,
+					"height": 2584
+				},
+				"url": "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+				"width": 3882,
+				"height": 2584,
+				"edit": {
+					"zoom": 1,
+					"crop": {
+						"x": 0,
+						"y": 0
+					},
+					"background": "transparent"
+				},
+				"alt": "basic",
+				"credits": null,
+				"__TYPE__": "ImageContent"
+			},
+			"image_position": {
+				"__TYPE__": "FieldContent",
+				"value": "right",
+				"type": "Select"
+			}
+		},
+		"items": []
+	}
+]

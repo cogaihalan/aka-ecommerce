@@ -1,106 +1,46 @@
 "use client";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/table/data-table-column-header";
 import { PrismicContent } from "@/types/prismic";
 import { Column, ColumnDef } from "@tanstack/react-table";
-import { Edit, Eye, FileText, Calendar, Tag } from "lucide-react";
+import { Edit, Eye, Calendar, Text } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
-const STATUS_OPTIONS = [
-  { label: "Published", value: "published" },
-  { label: "Draft", value: "draft" },
-];
-
-const TYPE_OPTIONS = [
-  { label: "Page", value: "page" },
-  { label: "Static Page", value: "static_page" },
-];
+const convertUIDToPageTitle = (uid: string) => {
+  return uid.replace(/-/g, " ").replace(/_/g, " ");
+};
 
 export const columns: ColumnDef<PrismicContent>[] = [
   {
-    id: "title",
+    id: "name",
     accessorKey: "data.title",
-    header: ({ column }: { column: Column<PrismicContent, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Title" />
-    ),
+    header: "Title",
     cell: ({ row }) => {
+      const uid = row.original.uid as string;
       const data = row.original.data as any;
-      const title = data?.title || data?.name || "Untitled";
-      return <div className="font-medium max-w-[200px] truncate">{title}</div>;
+      const title = data?.meta_title || convertUIDToPageTitle(uid);
+      return <div className="font-medium max-w-[200px] truncate capitalize">{title}</div>;
     },
-    meta: {
-      label: "name",
-      placeholder: "Search pages...",
-      variant: "text",
-      icon: FileText,
-    },
-    enableColumnFilter: true,
   },
   {
-    id: "uid",
     accessorKey: "uid",
-    header: ({ column }: { column: Column<PrismicContent, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Slug" />
-    ),
+    header: "UID",
     cell: ({ row }) => {
       const uid = row.original.uid;
       return (
-        <div className="text-muted-foreground font-mono text-sm">/{uid}</div>
+        <div className="text-primary text-sm">/{uid}</div>
       );
-    },
-    meta: {
-      label: "Slug",
-      placeholder: "Search slugs...",
-      variant: "text",
-      icon: Tag,
-    },
-    enableColumnFilter: true,
-  },
-  {
-    id: "status",
-    accessorKey: "data.status",
-    header: ({ column }: { column: Column<PrismicContent, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Status" />
-    ),
-    cell: ({ row }) => {
-      const data = row.original.data as any;
-      const status = data?.status || "draft";
-      return (
-        <Badge
-          variant={status === "published" ? "default" : "secondary"}
-          className="capitalize"
-        >
-          {status}
-        </Badge>
-      );
-    },
-    enableColumnFilter: true,
-    meta: {
-      label: "Status",
-      variant: "select",
-      options: STATUS_OPTIONS,
     },
   },
   {
-    id: "type",
-    accessorKey: "type",
-    header: ({ column }: { column: Column<PrismicContent, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Type" />
-    ),
+    id: "url",
+    accessorKey: "url",
+    header: "URL",
     cell: ({ row }) => {
-      const type = row.original.type;
+      const url = row.original.url;
       return (
-        <Badge variant="outline" className="capitalize">
-          {type}
-        </Badge>
+        <div className="text-primary font-medium text-sm">{url}</div>
       );
-    },
-    enableColumnFilter: true,
-    meta: {
-      label: "Type",
-      variant: "select",
-      options: TYPE_OPTIONS,
     },
   },
   {
@@ -116,13 +56,7 @@ export const columns: ColumnDef<PrismicContent>[] = [
           {formatDistanceToNow(new Date(date), { addSuffix: true })}
         </div>
       );
-    },
-    meta: {
-      label: "Last Modified",
-      variant: "date",
-      icon: Calendar,
-    },
-    enableColumnFilter: true,
+    }
   },
   {
     id: "actions",

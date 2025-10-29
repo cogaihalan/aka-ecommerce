@@ -5,4 +5,4 @@ export { serverUnifiedCourseService } from "./courses";
 export { serverUnifiedUserService } from "./users";
 export { serverUnifiedCategoryService } from "./categories";
 export { serverUnifiedHairstyleService } from "./extensions/hairstyles";
-export { serverStorefrontHairstyleService } from "./extensions/storefront-hairstyles";
+export { serverUnifiedContestService } from "./extensions/contest";

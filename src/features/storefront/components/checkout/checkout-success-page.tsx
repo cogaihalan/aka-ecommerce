@@ -1,73 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Price } from "@/components/ui/price";
-import { CheckCircle, Package, Mail, Phone, Loader2 } from "lucide-react";
+import { CheckCircle, Package, Mail, Phone } from "lucide-react";
 import Link from "next/link";
-import { storefrontOrderService } from "@/lib/api/services/storefront/orders-client";
 import { Order } from "@/types";
 
-interface OrderDataState {
-  data: Order | null;
-  isLoading: boolean;
-  error: string | null;
+interface OrderDataProps {
+  order: Order | null;
 }
 
-export default function CheckoutSuccessPage() {
-  const searchParams = useSearchParams();
-  const [orderState, setOrderState] = useState<OrderDataState>({
-    data: null,
-    isLoading: true,
-    error: null,
-  });
+export default function CheckoutSuccessPage(props: OrderDataProps) {
 
-  useEffect(() => {
-    const fetchOrder = async () => {
-      const orderId = searchParams.get("order_id");
-
-      if (!orderId) {
-        setOrderState({
-          data: null,
-          isLoading: false,
-          error: "Không tìm thấy mã đơn hàng",
-        });
-        return;
-      }
-
-      try {
-        setOrderState((prev) => ({ ...prev, isLoading: true, error: null }));
-        const order = await storefrontOrderService.getOrder(+orderId);
-
-        if (order) {
-          setOrderState({
-            data: order,
-            isLoading: false,
-            error: null,
-          });
-        } else {
-          setOrderState({
-            data: null,
-            isLoading: false,
-            error: "Không tìm thấy thông tin đơn hàng",
-          });
-        }
-      } catch (error) {
-        setOrderState({
-          data: null,
-          isLoading: false,
-          error: "Có lỗi xảy ra khi tải thông tin đơn hàng",
-        });
-      }
-    };
-
-    fetchOrder();
-  }, [searchParams]);
-
-  const { data: orderData, isLoading, error } = orderState;
+  const { order } = props;
 
   return (
     <div className="max-w-4xl mx-auto py-8 lg:py-16 space-y-6">
@@ -84,9 +31,9 @@ export default function CheckoutSuccessPage() {
           </p>
         </div>
 
-        {orderData && (
+        {order && (
           <Badge variant="secondary" className="text-lg px-4 py-2">
-            Mã đơn hàng: {orderData.code}
+            Mã đơn hàng: {order.code}
           </Badge>
         )}
       </div>
@@ -101,23 +48,14 @@ export default function CheckoutSuccessPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {isLoading ? (
-              <div className="flex items-center justify-center py-8">
-                <Loader2 className="h-6 w-6 animate-spin" />
-                <span className="ml-2">Đang tải thông tin đơn hàng...</span>
-              </div>
-            ) : error ? (
-              <div className="text-center py-4">
-                <p className="text-red-500">{error}</p>
-              </div>
-            ) : orderData ? (
+            {order && (
               <>
-                <OrderDetailRow label="Mã đơn hàng" value={orderData.code} />
+                <OrderDetailRow label="Mã đơn hàng" value={order.code} />
                 <OrderDetailRow
                   label="Tổng tiền"
                   value={
                     <Price
-                      price={orderData.finalAmount}
+                      price={order.finalAmount}
                       size="base"
                       weight="semibold"
                     />
@@ -125,23 +63,17 @@ export default function CheckoutSuccessPage() {
                 />
                 <OrderDetailRow
                   label="Phương thức thanh toán"
-                  value={orderData.paymentMethod}
+                  value={order.paymentMethod}
                 />
                 <OrderDetailRow
                   label="Địa chỉ giao hàng"
-                  value={orderData.shippingAddress}
+                  value={order.shippingAddress}
                 />
                 <OrderDetailRow
                   label="Trạng thái"
-                  value={<Badge variant="default">Đã xác nhận</Badge>}
+                  value={<Badge variant="default">{order.status}</Badge>}
                 />
               </>
-            ) : (
-              <div className="text-center py-4">
-                <p className="text-muted-foreground">
-                  Không có thông tin đơn hàng
-                </p>
-              </div>
             )}
           </CardContent>
         </Card>
@@ -220,7 +152,7 @@ function OrderDetailRow({ label, value }: OrderDetailRowProps) {
   return (
     <div className="flex justify-between">
       <span>{label}:</span>
-      <span className="font-mono">{value}</span>
+      <span>{value}</span>
     </div>
   );
 }

@@ -16,9 +16,6 @@ export class PrismicApiService {
     page = 1,
     pageSize = 10,
     filters?: {
-      search?: string;
-      status?: string;
-      type?: string;
       sort?: Array<{ id: string; desc: boolean }>;
     },
     forceRefresh = false
@@ -43,44 +40,16 @@ export class PrismicApiService {
         }),
       };
 
-      // Add search filter
-      if (filters?.search) {
-        queryOptions.q = `[fulltext(document, "${filters.search}")]`;
-      }
-
-      // Add status filter
-      if (filters?.status && filters.status !== "all") {
-        const statusQuery = `[at(document.data.status, "${filters.status}")]`;
-        queryOptions.q = queryOptions.q
-          ? `${queryOptions.q}${statusQuery}`
-          : statusQuery;
-      }
-
-      // Add type filter
-      if (filters?.type && filters.type !== "all") {
-        const typeQuery = `[at(document.type, "${filters.type}")]`;
-        queryOptions.q = queryOptions.q
-          ? `${queryOptions.q}${typeQuery}`
-          : typeQuery;
-      }
-
       // Add sorting
       if (filters?.sort && filters.sort.length > 0) {
         const sortOrderings = filters.sort.map((sort) => ({
-          field:
-            sort.id === "title"
-              ? "document.data.title"
-              : sort.id === "status"
-                ? "document.data.status"
-                : sort.id === "type"
-                  ? "document.type"
-                  : sort.id === "last_publication_date"
-                    ? "document.last_publication_date"
-                    : "document.last_publication_date",
+          field: "document.last_publication_date",
           direction: sort.desc ? "desc" : "asc",
         }));
         queryOptions.orderings = sortOrderings;
       }
+
+      console.log(queryOptions.orderings);
 
       const response = await this.client.getAllByType("page", queryOptions);
 

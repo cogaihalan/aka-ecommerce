@@ -3,14 +3,15 @@
 import dynamic from "next/dynamic";
 
 export const components = {
-  product_carousel: dynamic(() => import("./ProductCarousel")),
-  multi_column_cards: dynamic(() => import("./MultiColumnCards")),
-  testimonials: dynamic(() => import("./Testimonials")),
-  newsletter_signup: dynamic(() => import("./NewsletterSignup")),
-  pricing_table: dynamic(() => import("./PricingTable")),   
-  stats_counter: dynamic(() => import("./StatsCounter")),
+  text_and_image: dynamic(() => import("./TextAndImage")),
   faq_accordion: dynamic(() => import("./FAQAccordion")),
-  hero_animated: dynamic(() => import("./HeroAnimated")),
   feature_grid_animated: dynamic(() => import("./FeatureGridAnimated")),
   full_width_banner: dynamic(() => import("./FullWidthBanner")),
+  hero_animated: dynamic(() => import("./HeroAnimated")),
+  multi_column_cards: dynamic(() => import("./MultiColumnCards")),
+  newsletter_signup: dynamic(() => import("./NewsletterSignup")),
+  pricing_table: dynamic(() => import("./PricingTable")),
+  product_carousel: dynamic(() => import("./ProductCarousel")),
+  stats_counter: dynamic(() => import("./StatsCounter")),
+  testimonials: dynamic(() => import("./Testimonials")),
 };

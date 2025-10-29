@@ -16,6 +16,7 @@ const footerLinks = {
     { name: "Categories", href: "/categories" },
     { name: "Hairstyles", href: "/hairstyles" },
     { name: "Courses", href: "/courses" },
+    { name: "Contests", href: "/contests" },
     { name: "New Arrivals", href: "/products?filter=new" },
     { name: "Best Sellers", href: "/products?filter=bestsellers" },
   ],

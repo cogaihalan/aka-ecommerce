@@ -1,0 +1,58 @@
+{
+  "type": "SharedSlice",
+  "id": "text_and_image",
+  "name": "TextAndImage",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "Image on the right, text content and CTA on the left.",
+      "version": "initial",
+      "imageUrl": "",
+      "docURL": "...",
+      "primary": {
+        "title": {
+          "type": "StructuredText",
+          "config": {
+            "single": "heading1,heading2,heading3,heading4,heading5,heading6",
+            "label": "Title"
+          }
+        },
+        "description": {
+          "type": "StructuredText",
+          "config": {
+            "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl",
+            "label": "Description"
+          }
+        },
+        "primary_button": {
+          "type": "Link",
+          "config": {
+            "label": "Primary Button",
+            "allowText": true,
+            "repeat": false,
+            "select": null
+          }
+        },
+        "image": {
+          "type": "Image",
+          "config": {
+            "label": "Image"
+          }
+        },
+        "image_position": {
+          "type": "Select",
+          "config": {
+            "label": "Image Position",
+            "placeholder": "Choose the default image position",
+            "options": [
+              "right",
+              "left"
+            ]
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

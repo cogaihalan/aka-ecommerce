@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Eye, User, Scissors } from "lucide-react";
 import Image from "next/image";
-import { storefrontHairstyleService } from "@/lib/api/services/storefront/extensions/hairstyles";
+import { storefrontHairstyleService } from "@/lib/api/services/storefront/extensions/hairstyles/hairstyles-client";
 import { toast } from "sonner";
 
 interface HairstyleCardProps {

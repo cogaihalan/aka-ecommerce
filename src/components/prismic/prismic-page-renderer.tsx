@@ -31,7 +31,7 @@ export function PrismicPageRenderer({
   }
 
   return (
-    <div className="prismic-page-content">
+    <div className="prismic-page-content pb-8 md:pb-12 lg:pb-16">
       {data.slices.map((slice: SliceData, index: number) => {
         // Map slice_type to component name
         const componentName = slice.slice_type;

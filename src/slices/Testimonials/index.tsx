@@ -2,6 +2,7 @@
 import React, { FC, useState } from "react";
 import { Content, isFilled } from "@prismicio/client";
 import { SliceComponentProps, PrismicRichText } from "@prismicio/react";
+import { HeadingField, RichTextField } from "@/components/prismic/fields";
 import { PrismicNextImage } from "@prismicio/next";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -119,43 +120,10 @@ const Testimonials: FC<TestimonialsProps> = ({ slice }) => {
           isFilled.richText(slice.primary.subtitle)) && (
           <div className="text-center mb-12">
             {isFilled.richText(slice.primary.title) && (
-              <div className="text-4xl font-bold mb-4 text-foreground">
-                <PrismicRichText
-                  field={slice.primary.title}
-                  components={{
-                    heading1: ({ children }) => (
-                      <h1 className="m-0">{children}</h1>
-                    ),
-                    heading2: ({ children }) => (
-                      <h2 className="m-0">{children}</h2>
-                    ),
-                    heading3: ({ children }) => (
-                      <h3 className="m-0">{children}</h3>
-                    ),
-                    heading4: ({ children }) => (
-                      <h4 className="m-0">{children}</h4>
-                    ),
-                    heading5: ({ children }) => (
-                      <h5 className="m-0">{children}</h5>
-                    ),
-                    heading6: ({ children }) => (
-                      <h6 className="m-0">{children}</h6>
-                    ),
-                  }}
-                />
-              </div>
+              <HeadingField field={slice.primary.title} className="text-4xl font-bold mb-4 text-foreground" />
             )}
             {isFilled.richText(slice.primary.subtitle) && (
-              <div className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                <PrismicRichText
-                  field={slice.primary.subtitle}
-                  components={{
-                    paragraph: ({ children }) => (
-                      <p className="m-0">{children}</p>
-                    ),
-                  }}
-                />
-              </div>
+              <RichTextField field={slice.primary.subtitle} className="text-lg text-muted-foreground max-w-2xl mx-auto" />
             )}
           </div>
         )}
@@ -205,6 +173,7 @@ const Testimonials: FC<TestimonialsProps> = ({ slice }) => {
                             {isFilled.image(testimonial.avatar) && (
                               <div className="w-15 h-15 rounded-full overflow-hidden flex-shrink-0">
                                 <PrismicNextImage
+                                  alt=""
                                   field={testimonial.avatar}
                                   className="w-full h-full object-cover"
                                 />
@@ -345,6 +314,7 @@ const Testimonials: FC<TestimonialsProps> = ({ slice }) => {
                       {isFilled.image(testimonial.avatar) && (
                         <div className="w-15 h-15 rounded-full overflow-hidden flex-shrink-0">
                           <PrismicNextImage
+                            alt=""
                             field={testimonial.avatar}
                             className="w-full h-full object-cover"
                           />

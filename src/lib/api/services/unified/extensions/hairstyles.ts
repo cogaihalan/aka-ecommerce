@@ -59,7 +59,7 @@ export class UnifiedHairstyleService {
       formData.append("files", file);
     });
     const response = await apiClient.post<Hairstyle>(
-      `${this.basePath}/${data.id}/media`,
+      `${this.basePath}/${data.id}/photos`,
       formData
     );
     return response.data!;
@@ -70,7 +70,7 @@ export class UnifiedHairstyleService {
     formData.append("id", data.id.toString());
     formData.append("photoIds", JSON.stringify(data.photoIds));
     const response = await apiClient.request<Hairstyle>(
-      `${this.basePath}/${data.id}/media`,
+      `${this.basePath}/${data.id}/photos`,
       {
         method: "DELETE",
         body: formData,

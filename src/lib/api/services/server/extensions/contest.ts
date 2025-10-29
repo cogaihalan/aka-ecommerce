@@ -8,8 +8,8 @@ import type {
 } from "@/lib/api/types";
 import type { Contest } from "@/types";
 
-class UnifiedContestService {
-  private basePath = "/contests";
+export class ServerUnifiedContestService {
+  protected basePath = "/admin/contests";
 
   // Get products with new query structure
   async getContests(params: QueryParams = {}): Promise<ContestListResponse> {
@@ -75,4 +75,4 @@ class UnifiedContestService {
 }
 
 // Export singleton instance
-export const unifiedContestService = new UnifiedContestService();
+export const serverUnifiedContestService = new ServerUnifiedContestService();

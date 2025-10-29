@@ -214,6 +214,7 @@ export type MegaMenuDocument<Lang extends string = string> =
   >;
 
 type PageDocumentDataSlicesSlice =
+  | TextAndImageSlice
   | FullWidthBannerSlice
   | NewsletterSignupSlice
   | FeatureGridAnimatedSlice
@@ -1998,6 +1999,97 @@ export type TestimonialsSlice = prismic.SharedSlice<
   TestimonialsSliceVariation
 >;
 
+/**
+ * Primary content in *TextAndImage → Default → Primary*
+ */
+export interface TextAndImageSliceDefaultPrimary {
+  /**
+   * Title field in *TextAndImage → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: text_and_image.default.primary.title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  title: prismic.RichTextField;
+
+  /**
+   * Description field in *TextAndImage → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: text_and_image.default.primary.description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  description: prismic.RichTextField;
+
+  /**
+   * Primary Button field in *TextAndImage → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: text_and_image.default.primary.primary_button
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  primary_button: prismic.LinkField<
+    string,
+    string,
+    unknown,
+    prismic.FieldState,
+    never
+  >;
+
+  /**
+   * Image field in *TextAndImage → Default → Primary*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: text_and_image.default.primary.image
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  image: prismic.ImageField<never>;
+
+  /**
+   * Image Position field in *TextAndImage → Default → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: Choose the default image position
+   * - **API ID Path**: text_and_image.default.primary.image_position
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  image_position: prismic.SelectField<"right" | "left">;
+}
+
+/**
+ * Default variation for TextAndImage Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Image on the right, text content and CTA on the left.
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type TextAndImageSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<TextAndImageSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *TextAndImage*
+ */
+type TextAndImageSliceVariation = TextAndImageSliceDefault;
+
+/**
+ * TextAndImage Shared Slice
+ *
+ * - **API ID**: `text_and_image`
+ * - **Description**: *None*
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type TextAndImageSlice = prismic.SharedSlice<
+  "text_and_image",
+  TextAndImageSliceVariation
+>;
+
 declare module "@prismicio/client" {
   interface CreateClient {
     (
@@ -2079,6 +2171,10 @@ declare module "@prismicio/client" {
       TestimonialsSliceDefaultItem,
       TestimonialsSliceVariation,
       TestimonialsSliceDefault,
+      TextAndImageSlice,
+      TextAndImageSliceDefaultPrimary,
+      TextAndImageSliceVariation,
+      TextAndImageSliceDefault,
     };
   }
 }

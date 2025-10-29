@@ -27,6 +27,7 @@ import {
   Plus,
   Settings,
   Sun,
+  Trophy,
   Trash2,
   User,
   UserCheck,
@@ -77,4 +78,5 @@ export const Icons = {
   percent: Percent,
   package: Package,
   scissors: Scissors,
+  trophy: Trophy,
 };

@@ -58,6 +58,8 @@ export default async function StorefrontHomePage() {
           </CardContent>
         </Card>
       </section>
+
+      
     </>
   );
 }

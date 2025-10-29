@@ -43,6 +43,14 @@ export const navItems: NavItem[] = [
     items: [],
   },
   {
+    title: "Hairstyles",
+    url: "/admin/hairstyles",
+    icon: "scissors",
+    shortcut: ["h", "h"],
+    isActive: false,
+    items: [],
+  },
+  {
     title: "Pages",
     url: "/admin/pages",
     icon: "page",

@@ -80,4 +80,4 @@ export class ServerHairstyleService {
   }
 }
 
-export const serverHairstyleService = new ServerHairstyleService();
+export const serverUnifiedHairstyleService = new ServerHairstyleService();

@@ -6,8 +6,8 @@ import type {
 } from "@/lib/api/types";
 import type { User } from "@/types";
 
-class UnifiedUserService {
-  private basePath = "/users";
+export class UnifiedUserService {
+  protected basePath = "/admin/users";
 
   async getUsers(params: QueryParams): Promise<UserListResponse> {
     const searchParams = new URLSearchParams();

@@ -13,7 +13,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { unifiedUserService } from "@/lib/api/services/unified/users";
+import { storefrontUserService } from "@/lib/api/services/storefront/user";
 import { useAuthUser } from "@/stores/auth-store";
 import type { UpdateUserRequest } from "@/lib/api/types";
 import { toast } from "sonner";
@@ -65,7 +65,7 @@ export function GeneralProfileForm() {
         phoneNumber: data.phoneNumber,
       };
 
-      await unifiedUserService.updateUser(user.id.toString(), updateData);
+      await storefrontUserService.updateUserProfile(updateData);
       
       toast.success("Your profile has been updated successfully.");
       form.reset();

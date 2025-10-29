@@ -18,6 +18,7 @@ import {
   Loader2,
   LogIn,
   Package,
+  Scissors,
   ShoppingBag,
   Moon,
   MoreVertical,
@@ -75,4 +76,5 @@ export const Icons = {
   "user-check": UserCheck,
   percent: Percent,
   package: Package,
+  scissors: Scissors,
 };

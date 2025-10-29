@@ -14,6 +14,8 @@ const footerLinks = {
   shop: [
     { name: "All Products", href: "/products" },
     { name: "Categories", href: "/categories" },
+    { name: "Hairstyles", href: "/hairstyles" },
+    { name: "Courses", href: "/courses" },
     { name: "New Arrivals", href: "/products?filter=new" },
     { name: "Best Sellers", href: "/products?filter=bestsellers" },
   ],

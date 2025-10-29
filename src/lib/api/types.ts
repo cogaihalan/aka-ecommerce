@@ -14,7 +14,6 @@ import type {
   OrderHistory,
   Submission,
   SubmissionStatus,
-  Gender
 } from "@/types";
 
 // Base API types
@@ -37,7 +36,7 @@ export interface QueryParams {
   statuses?: string[];
   status?: SubmissionStatus;
   barberName?: string;
-  gender?: Gender;
+  gender?: string;
 }
 
 export interface OrderQueryParams {
@@ -243,13 +242,14 @@ export interface ContestMediaUploadRequest {
 // Hairstyles API types
 
 export interface CreateHairstyleRequest {
-  name: string,
-  barberName: string,
-  gender: string
+  name: string;
+  barberName: string;
+  gender: string;
 }
 
-export interface UpdateHairstyleRequest extends Partial<CreateHairstyleRequest> {
-  id?: number
+export interface UpdateHairstyleRequest
+  extends Partial<CreateHairstyleRequest> {
+  id?: number;
 }
 
 export interface HairStyleMediaUploadRequest {

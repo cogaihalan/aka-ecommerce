@@ -26,6 +26,7 @@ export const searchParams = {
   dateTo: parseAsString,
   sort: getSortingStateParser<any>().withDefault([{ id: "id", desc: true }]),
   t: parseAsString,
+  barberName: parseAsString,
 };
 
 export const searchParamsCache = createSearchParamsCache(searchParams);

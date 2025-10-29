@@ -147,6 +147,7 @@ export const columns: ColumnDef<Order>[] = [
     id: "actions",
     cell: ({ row }) => {
       const id = row.original.id as number;
+      const status = row.original.status as string;
 
       return (
         <DropdownMenu>
@@ -163,7 +164,11 @@ export const columns: ColumnDef<Order>[] = [
                 <Eye className="mr-2 h-4 w-4" /> View Details
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleCancelOrder(id)}>
+
+            <DropdownMenuItem
+              onClick={() => handleCancelOrder(id)}
+              disabled={status === "CANCELLED"}
+            >
               <X className="mr-2 h-4 w-4 text-destructive" /> Cancel Order
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -52,7 +52,7 @@ export function GeneralProfileForm() {
   }, [user, form]);
 
   const onSubmit = async (data: ProfileFormValues) => {
-    if (!user?.id) {
+    if (!user?.clerkId) {
       toast.error("User not found. Please try again.");
       return;
     }

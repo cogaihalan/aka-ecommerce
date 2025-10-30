@@ -10,8 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
 
 export const metadata: Metadata = {
-  title: "Hairstyles",
-  description: "Manage hairstyles and barber content for your platform",
+  title: "Kiểu tóc",
+  description: "Quản lý kiểu tóc và nội dung liên quan cho nền tảng",
 };
 
 export default async function HairstylesPage(props: DashboardPageProps) {
@@ -24,8 +24,8 @@ export default async function HairstylesPage(props: DashboardPageProps) {
       <div className="flex flex-1 flex-col space-y-4">
         <div className="flex items-start justify-between">
           <Heading
-            title="Hairstyles"
-            description="Manage hairstyles and barber content for your platform."
+            title="Kiểu tóc"
+            description="Quản lý kiểu tóc và nội dung liên quan cho nền tảng."
           />
           <AddHairstyleButton />
         </div>

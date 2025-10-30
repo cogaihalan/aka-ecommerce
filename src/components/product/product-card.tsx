@@ -18,6 +18,7 @@ import {
 import { Product } from "@/types";
 import { cn, isProductOutOfStock, getStockStatusText } from "@/lib/utils";
 import { QuantitySelector } from "@/components/ui/quantity-selector";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface ProductCardProps {
   product: Product;
@@ -32,6 +33,7 @@ export function ProductCard({
   showWishlist = true,
   className,
 }: ProductCardProps) {
+  const { t } = useI18n();
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
   const {
@@ -179,7 +181,7 @@ export function ProductCard({
                       className="h-7"
                     />
                   ) : (
-                    <Button
+                  <Button
                       size="sm"
                       onClick={handleAddToCart}
                       disabled={isProductLoading(product.id) || isOutOfStock}
@@ -356,7 +358,7 @@ export function ProductCard({
                   {isProductLoading(product.id) ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Adding...
+                      {t("product.adding")}
                     </>
                   ) : (
                     stockStatusText
@@ -502,7 +504,7 @@ export function ProductCard({
                 {isProductLoading(product.id) ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Adding...
+                    {t("product.adding")}
                   </>
                 ) : (
                   stockStatusText

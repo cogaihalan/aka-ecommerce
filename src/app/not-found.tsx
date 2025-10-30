@@ -4,8 +4,10 @@ import { usePathname, useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function NotFound() {
+  const { t } = useI18n();
   const router = useRouter();
   const pathname = usePathname();
   const isAdmin = pathname.includes("/admin");
@@ -17,18 +19,17 @@ export default function NotFound() {
         404
       </span>
       <h2 className="font-heading my-2 text-2xl font-bold">
-        Something&apos;s missing
+        {t("errors.notFound.title")}
       </h2>
       <p>
-        Sorry, the page you are looking for doesn&apos;t exist or has been
-        moved.
+        {t("errors.notFound.message")}
       </p>
       <div className="mt-8 flex justify-center gap-2">
         <Button onClick={() => router.back()} variant="default" size="lg">
-          Go back
+          {t("errors.notFound.goBack")}
         </Button>
         <Button onClick={() => router.push("/")} variant="ghost" size="lg">
-          Back to Home
+          {t("errors.notFound.backToHome")}
         </Button>
       </div>
     </div>

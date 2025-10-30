@@ -65,14 +65,14 @@ export default function OrderTimeline({ histories }: OrderTimelineProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Clock className="h-5 w-5" />
-            Order Timeline
+            Lịch sử đơn hàng
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-4">
             <Clock className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
             <p className="text-sm text-muted-foreground">
-              No timeline events found
+              Không có sự kiện trong mốc thời gian
             </p>
           </div>
         </CardContent>
@@ -85,7 +85,7 @@ export default function OrderTimeline({ histories }: OrderTimelineProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Clock className="h-5 w-5" />
-          Order Timeline
+          Lịch sử đơn hàng
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -120,7 +120,7 @@ export default function OrderTimeline({ histories }: OrderTimelineProps) {
                   </p>
                 )}
                 <div className="text-xs text-muted-foreground">
-                  by {history.actorName}
+                  bởi {history.actorName}
                 </div>
               </div>
             </div>

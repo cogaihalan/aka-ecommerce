@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -40,10 +41,10 @@ import { unifiedHairstyleService } from "@/lib/api/services/unified/extensions/h
 import type { Hairstyle } from "@/types";
 
 const hairstyleSchema = z.object({
-  name: z.string().min(1, "Hairstyle name is required"),
-  barberName: z.string().min(1, "Barber name is required"),
+  name: z.string().min(1, "Tên kiểu tóc là bắt buộc"),
+  barberName: z.string().min(1, "Tên thợ cắt tóc là bắt buộc"),
   gender: z.enum(["MALE", "FEMALE"], {
-    required_error: "Please select a gender",
+    required_error: "Vui lòng chọn giới tính",
   }),
 });
 
@@ -63,6 +64,7 @@ export function HairstyleDialog({
   onSuccess,
 }: HairstyleDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useI18n();
 
   const isEditMode = !!hairstyle;
 
@@ -105,7 +107,7 @@ export function HairstyleDialog({
         };
 
         await unifiedHairstyleService.updateHairstyle(hairstyle.id, updateData);
-        toast.success("Hairstyle updated successfully");
+        toast.success(t("hairstyles.dialog.toast.updated"));
       } else {
         const createData: CreateHairstyleRequest = {
           name: values.name,
@@ -116,14 +118,14 @@ export function HairstyleDialog({
         const newHairstyle =
           await unifiedHairstyleService.createHairstyles(createData);
 
-        toast.success("Hairstyle created successfully");
+        toast.success(t("hairstyles.dialog.toast.created"));
       }
 
       onSuccess?.();
       onOpenChange(false);
     } catch (error) {
       console.error("Error saving hairstyle:", error);
-      toast.error("Failed to save hairstyle");
+      toast.error(t("hairstyles.dialog.toast.failed"));
     } finally {
       setIsLoading(false);
     }
@@ -134,12 +136,12 @@ export function HairstyleDialog({
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {isEditMode ? "Edit Hairstyle" : "Add New Hairstyle"}
+            {isEditMode ? t("hairstyles.dialog.titleEdit") : t("hairstyles.dialog.titleCreate")}
           </DialogTitle>
           <DialogDescription>
             {isEditMode
-              ? "Update the hairstyle information and media."
-              : "Create a new hairstyle with details and media."}
+              ? t("hairstyles.dialog.descEdit")
+              : t("hairstyles.dialog.descCreate")}
           </DialogDescription>
         </DialogHeader>
 
@@ -151,9 +153,9 @@ export function HairstyleDialog({
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Hairstyle Name</FormLabel>
+                  <FormLabel>{t("hairstyles.dialog.name")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter hairstyle name" {...field} />
+                      <Input placeholder={t("hairstyles.dialog.namePlaceholder")} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -165,9 +167,9 @@ export function HairstyleDialog({
                 name="barberName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Barber Name</FormLabel>
+                  <FormLabel>{t("hairstyles.dialog.barberName")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter barber name" {...field} />
+                      <Input placeholder={t("hairstyles.dialog.barberNamePlaceholder")} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -180,19 +182,19 @@ export function HairstyleDialog({
               name="gender"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Gender</FormLabel>
+                  <FormLabel>{t("hairstyles.dialog.gender")}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select gender" />
+                        <SelectValue placeholder={t("hairstyles.dialog.genderPlaceholder")} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="MALE">Male</SelectItem>
-                      <SelectItem value="FEMALE">Female</SelectItem>
+                      <SelectItem value="MALE">{t("hairstyles.dialog.genderMale")}</SelectItem>
+                      <SelectItem value="FEMALE">{t("hairstyles.dialog.genderFemale")}</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -207,14 +209,14 @@ export function HairstyleDialog({
                 onClick={() => onOpenChange(false)}
                 disabled={isLoading}
               >
-                Cancel
+                {t("hairstyles.dialog.cancel")}
               </Button>
               <Button type="submit" disabled={isLoading}>
                 {isLoading
-                  ? "Saving..."
+                  ? t("hairstyles.dialog.saving")
                   : isEditMode
-                    ? "Update Hairstyle"
-                    : "Create Hairstyle"}
+                    ? t("hairstyles.dialog.update")
+                    : t("hairstyles.dialog.create")}
               </Button>
             </DialogFooter>
           </form>

@@ -14,7 +14,7 @@ export const columns: ColumnDef<PrismicContent>[] = [
   {
     id: "name",
     accessorKey: "data.title",
-    header: "Title",
+    header: "Tiêu đề",
     cell: ({ row }) => {
       const uid = row.original.uid as string;
       const data = row.original.data as any;
@@ -24,7 +24,7 @@ export const columns: ColumnDef<PrismicContent>[] = [
   },
   {
     accessorKey: "uid",
-    header: "UID",
+    header: "UID (Unique Identifier)",
     cell: ({ row }) => {
       const uid = row.original.uid;
       return (
@@ -35,7 +35,7 @@ export const columns: ColumnDef<PrismicContent>[] = [
   {
     id: "url",
     accessorKey: "url",
-    header: "URL",
+    header: "URL (Uniform Resource Locator)",
     cell: ({ row }) => {
       const url = row.original.url;
       return (
@@ -47,7 +47,7 @@ export const columns: ColumnDef<PrismicContent>[] = [
     id: "last_publication_date",
     accessorKey: "last_publication_date",
     header: ({ column }: { column: Column<PrismicContent, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Last Modified" />
+      <DataTableColumnHeader column={column} title="Cập nhật lúc" />
     ),
     cell: ({ row }) => {
       const date = row.original.last_publication_date;

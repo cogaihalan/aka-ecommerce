@@ -10,8 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
 
 export const metadata: Metadata = {
-  title: "Dashboard: Contests",
-  description: "Manage contests and competitions for your platform",
+  title: "Bảng quản trị: Cuộc thi",
+  description: "Quản lý các cuộc thi và chương trình thi đua cho nền tảng",
 };
 
 export default async function ContestPage(props: DashboardPageProps) {
@@ -24,8 +24,8 @@ export default async function ContestPage(props: DashboardPageProps) {
       <div className="flex flex-1 flex-col space-y-4">
         <div className="flex items-start justify-between">
           <Heading
-            title="Contests"
-            description="Manage contests and competitions for your platform."
+            title="Cuộc thi"
+            description="Quản lý các cuộc thi và chương trình thi đua cho nền tảng."
           />
           <AddContestButton />
         </div>

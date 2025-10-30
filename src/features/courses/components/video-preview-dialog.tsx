@@ -61,7 +61,7 @@ export function VideoPreviewDialog({
             )}
             <div className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />
-              <span>Created {format(new Date(course.createdAt), "MMM dd, yyyy")}</span>
+              <span>Tạo {format(new Date(course.createdAt), "MMM dd, yyyy")}</span>
             </div>
           </div>
           
@@ -81,7 +81,7 @@ export function VideoPreviewDialog({
                   <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
                     <div className="text-center text-white">
                       <Play className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                      <p className="text-lg font-medium">Video Preview</p>
+                      <p className="text-lg font-medium">Xem video</p>
                     </div>
                   </div>
                 )}
@@ -93,7 +93,7 @@ export function VideoPreviewDialog({
                     className="rounded-full bg-white/90 hover:bg-white text-black shadow-lg hover:shadow-xl transition-all"
                   >
                     <Play className="h-6 w-6 mr-2" />
-                    Play Video
+                    Phát video
                   </Button>
                 </div>
               </div>

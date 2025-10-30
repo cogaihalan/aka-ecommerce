@@ -28,10 +28,10 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     setLoading(true);
     try {
       await unifiedCategoryService.deleteCategory(data.id);
-      toast.success("Category deleted successfully");
+      toast.success("Xóa danh mục thành công");
       window.location.reload();
     } catch (error) {
-      toast.error("Failed to delete category");
+      toast.error("Xóa danh mục thất bại");
       console.error("Error deleting category:", error);
     } finally {
       setLoading(false);
@@ -61,18 +61,18 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">Mở menu</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Hành động</DropdownMenuLabel>
 
           <DropdownMenuItem onClick={() => setEditDialogOpen(true)}>
-            <Edit className="mr-2 h-4 w-4" /> Update
+            <Edit className="mr-2 h-4 w-4" /> Cập nhật
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash2 className="mr-2 h-4 w-4 text-destructive" /> Delete
+            <Trash2 className="mr-2 h-4 w-4 text-destructive" /> Xóa
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

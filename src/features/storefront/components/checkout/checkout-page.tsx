@@ -13,8 +13,10 @@ import { useCheckoutPage } from "@/hooks/use-checkout-page";
 import { formatPrice } from "@/lib/utils";
 import { Loader2, MapPin, CreditCard, Truck, CheckCircle } from "lucide-react";
 import { Address } from "@/types";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function CheckoutPage() {
+  const { t } = useI18n();
   const {
     form,
     addresses,
@@ -33,7 +35,7 @@ export default function CheckoutPage() {
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin" />
-          <span className="ml-2">Loading checkout...</span>
+          <span className="ml-2">{t("checkout.loading")}</span>
         </div>
       </div>
     );
@@ -52,8 +54,8 @@ export default function CheckoutPage() {
   return (
     <div className="w-full pb-8 space-y-6 lg:pb-16">
       <div>
-        <h1 className="text-3xl font-bold mb-2">Checkout</h1>
-        <p className="text-muted-foreground">Complete your purchase securely</p>
+        <h1 className="text-3xl font-bold mb-2">{t("checkout.title")}</h1>
+        <p className="text-muted-foreground">{t("checkout.subtitle")}</p>
       </div>
 
       <form onSubmit={form.handleSubmit} className="space-y-6">
@@ -65,15 +67,13 @@ export default function CheckoutPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MapPin className="h-5 w-5" />
-                  Address
+                  {t("checkout.address.title")}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {addresses.all.length > 0 ? (
                   <div className="space-y-3">
-                    <p className="text-sm text-muted-foreground">
-                      Select an address:
-                    </p>
+                    <p className="text-sm text-muted-foreground">{t("checkout.address.selectPrompt")}</p>
                     <RadioGroup
                       value={addresses.selected?.id?.toString() || ""}
                       onValueChange={(value) =>
@@ -114,7 +114,7 @@ export default function CheckoutPage() {
                                     variant="secondary"
                                     className="text-xs"
                                   >
-                                    Default
+                                    {t("checkout.address.default")}
                                   </Badge>
                                 )}
                               </div>
@@ -128,7 +128,7 @@ export default function CheckoutPage() {
                               handlers.handleOpenAddressForm(address)
                             }
                           >
-                            Edit
+                            {t("checkout.address.edit")}
                           </Button>
                         </div>
                       ))}
@@ -139,20 +139,18 @@ export default function CheckoutPage() {
                       onClick={() => handlers.handleOpenAddressForm()}
                       className="w-full"
                     >
-                      + Add New Address
+                      + {t("checkout.address.addNew")}
                     </Button>
                   </div>
                 ) : (
                   <div className="text-center py-4">
-                    <p className="text-muted-foreground mb-4">
-                      No addresses found. Please add one to continue.
-                    </p>
+                    <p className="text-muted-foreground mb-4">{t("checkout.address.noneFound")}</p>
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => handlers.handleOpenAddressForm()}
                     >
-                      Add Address
+                      {t("checkout.address.add")}
                     </Button>
                   </div>
                 )}
@@ -164,7 +162,7 @@ export default function CheckoutPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Truck className="h-5 w-5" />
-                  Shipping Fee
+                  {t("checkout.shipping.title")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -186,20 +184,20 @@ export default function CheckoutPage() {
                           <div className="flex items-center gap-2">
                             <span className="font-medium">{method.name}</span>
                             {isFree && method.id === "free" && (
-                              <Badge variant="secondary">Free</Badge>
+                              <Badge variant="secondary">{t("checkout.shipping.free")}</Badge>
                             )}
                           </div>
                           <p className="text-sm text-muted-foreground">
                             {method.description}
                           </p>
                           <p className="text-sm font-medium">
-                            {cost === 0 ? "Free" : formatPrice(cost)}
+                            {cost === 0 ? t("checkout.shipping.free") : formatPrice(cost)}
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
                           <CheckCircle className="h-5 w-5 text-green-600" />
                           <span className="text-sm font-medium text-green-600">
-                            Selected
+                            {t("checkout.shipping.selected")}
                           </span>
                         </div>
                       </div>
@@ -219,7 +217,7 @@ export default function CheckoutPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CreditCard className="h-5 w-5" />
-                  Payment Method
+                  {t("checkout.payment.title")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -266,12 +264,12 @@ export default function CheckoutPage() {
             {/* Order Notes */}
             <Card>
               <CardHeader>
-                <CardTitle>Order Notes (Optional)</CardTitle>
+                <CardTitle>{t("checkout.notes.title")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <Textarea
                   {...form.register("orderNote")}
-                  placeholder="Any special instructions for your order..."
+                  placeholder={t("checkout.notes.placeholder")}
                   className="min-h-[100px]"
                 />
               </CardContent>
@@ -305,10 +303,10 @@ export default function CheckoutPage() {
                 {loading.submitting ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Processing...
+                    {t("checkout.processing")}
                   </>
                 ) : (
-                  "Complete Purchase"
+                  t("checkout.complete")
                 )}
               </Button>
             </div>

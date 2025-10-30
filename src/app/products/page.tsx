@@ -3,9 +3,9 @@ import { Suspense } from "react";
 import ProductListingPage from "@/features/storefront/components/product-list/product-listing-page";
 
 export const metadata: Metadata = {
-  title: "All Products - AKA Store",
+  title: "Tất cả sản phẩm - AKA Store",
   description:
-    "Browse our complete collection of premium products. Find exactly what you're looking for.",
+    "Khám phá toàn bộ bộ sưu tập sản phẩm cao cấp của chúng tôi. Tìm đúng thứ bạn cần.",
 };
 
 function ProductsPageSkeleton() {
@@ -13,10 +13,8 @@ function ProductsPageSkeleton() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">All Products</h1>
-        <p className="text-muted-foreground">
-          Discover our complete collection of premium products
-        </p>
+        <h1 className="text-3xl font-bold mb-2">Tất cả sản phẩm</h1>
+        <p className="text-muted-foreground">Khám phá bộ sưu tập sản phẩm cao cấp</p>
       </div>
 
       {/* Loading skeleton grid */}

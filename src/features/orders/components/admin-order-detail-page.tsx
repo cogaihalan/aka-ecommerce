@@ -90,11 +90,11 @@ export default function AdminOrderDetailPage({
   const handleConfirmOrder = async () => {
     setLoading(true);
     try {
-      await unifiedOrderService.confirmOrder(order.id, "Order confirmed by admin");
-      toast.success("Order confirmed successfully");
+      await unifiedOrderService.confirmOrder(order.id, "Xác nhận bởi quản trị viên");
+      toast.success("Xác nhận đơn hàng thành công");
       router.refresh();
     } catch (error) {
-      toast.error("Failed to confirm order");
+      toast.error("Xác nhận đơn hàng thất bại");
     } finally {
       setLoading(false);
     }
@@ -103,11 +103,11 @@ export default function AdminOrderDetailPage({
   const handleShippingUpdate = async () => {
     setLoading(true);
     try {
-      await unifiedOrderService.updateOrderShippingStatus(order.id, "Order shipped by admin");
-      toast.success("Order status updated to shipping");
+      await unifiedOrderService.updateOrderShippingStatus(order.id, "Đã giao cho đơn vị vận chuyển bởi quản trị viên");
+      toast.success("Cập nhật trạng thái: Đang giao hàng");
       router.refresh();
     } catch (error) {
-      toast.error("Failed to update order to shipping");
+      toast.error("Cập nhật trạng thái giao hàng thất bại");
     } finally {
       setLoading(false);
     }
@@ -116,11 +116,11 @@ export default function AdminOrderDetailPage({
   const handleDeliveredUpdate = async () => {
     setLoading(true);
     try {
-      await unifiedOrderService.markDeliveredOrder(order.id, "Order delivered by admin");
-      toast.success("Order marked as delivered");
+      await unifiedOrderService.markDeliveredOrder(order.id, "Đã giao bởi quản trị viên");
+      toast.success("Đánh dấu đã giao thành công");
       router.refresh();
     } catch (error) {
-      toast.error("Failed to mark order as delivered");
+      toast.error("Đánh dấu đã giao thất bại");
     } finally {
       setLoading(false);
     }
@@ -129,11 +129,11 @@ export default function AdminOrderDetailPage({
   const handleCancelOrder = async () => {
     setLoading(true);
     try {
-      await unifiedOrderService.cancelOrder(order.id, "Cancelled by admin");
-      toast.success("Order cancelled successfully");
+      await unifiedOrderService.cancelOrder(order.id, "Hủy bởi quản trị viên");
+      toast.success("Hủy đơn hàng thành công");
       router.refresh();
     } catch (error) {
-      toast.error("Failed to cancel order");
+      toast.error("Hủy đơn hàng thất bại");
     } finally {
       setLoading(false);
     }
@@ -142,11 +142,11 @@ export default function AdminOrderDetailPage({
   const handleRefundOrder = async () => {
     setLoading(true);
     try {
-      await unifiedOrderService.refundOrder(order.id, "Refunded by admin");
-      toast.success("Order refunded successfully");
+      await unifiedOrderService.refundOrder(order.id, "Hoàn tiền bởi quản trị viên");
+      toast.success("Hoàn tiền đơn hàng thành công");
       router.refresh();
     } catch (error) {
-      toast.error("Failed to refund order");
+      toast.error("Hoàn tiền đơn hàng thất bại");
     } finally {
       setLoading(false);
     }

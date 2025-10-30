@@ -6,6 +6,8 @@ export interface Category {
   parentId: number;
 }
 
+import type { Contest } from "@/types";
+
 export interface AppStore {
   // Loading states
   isLoading: boolean;
@@ -13,6 +15,9 @@ export interface AppStore {
 
   // Categories
   categories: Category[];
+
+  // Contests
+  contests: Contest[];
 
   // Error states
   error: string | null;
@@ -26,4 +31,8 @@ export interface AppStore {
   addCategory: (category: Category) => void;
   updateCategory: (category: Category) => void;
   removeCategory: (categoryId: number) => void;
+
+  // Contest actions
+  setContests: (contests: Contest[]) => void;
+  refreshContests: () => Promise<void>;
 }

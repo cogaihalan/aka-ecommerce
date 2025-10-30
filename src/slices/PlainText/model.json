@@ -1,0 +1,90 @@
+{
+  "id": "plain_text",
+  "type": "SharedSlice",
+  "name": "PlainText",
+  "description": "PlainText",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "title": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Title",
+            "placeholder": "Enter the section title",
+            "allowTargetBlank": true,
+            "single": "heading1,heading2,heading3,heading4,heading5,heading6"
+          }
+        },
+        "description": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Description",
+            "placeholder": "Enter a subtitle or description",
+            "allowTargetBlank": true,
+            "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "call_to_actions": {
+          "type": "Link",
+          "config": {
+            "label": "Call To Actions",
+            "placeholder": "",
+            "select": null,
+            "allowTargetBlank": true,
+            "allowText": true,
+            "repeat": true,
+            "variants": [
+              "Primary",
+              "Secondary"
+            ]
+          }
+        },
+        "horizontal_position": {
+          "type": "Select",
+          "config": {
+            "label": "Horizontal Position",
+            "placeholder": "Choose the horizontal position of content",
+            "options": [
+              "left",
+              "center",
+              "right"
+            ],
+            "default_value": "left"
+          }
+        },
+        "vertical_position": {
+          "type": "Select",
+          "config": {
+            "label": "Vertical Position",
+            "placeholder": "Choose the vertical position of content",
+            "options": [
+              "top",
+              "middle",
+              "bottom"
+            ]
+          }
+        },
+        "content_alignment": {
+          "type": "Select",
+          "config": {
+            "label": "Content Alignment",
+            "placeholder": "Choose the text alignment for content",
+            "options": [
+              "left",
+              "center",
+              "right"
+            ],
+            "default_value": "left"
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

@@ -7,7 +7,7 @@ import type {
 import type { User } from "@/types";
 
 class ServerUnifiedUserService {
-  private basePath = "/users";
+  private basePath = "/admin/users";
 
   async getUsers(params: QueryParams): Promise<UserListResponse> {
     const searchParams = new URLSearchParams();

@@ -17,7 +17,7 @@ export const columns: ColumnDef<Hairstyle>[] = [
   {
     accessorKey: "id",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="ID" />
+        <DataTableColumnHeader column={column} title="ID" />
     ),
     cell: ({ row }) => <div className="w-[36px]">{row.getValue("id")}</div>,
     size: 36,
@@ -28,7 +28,7 @@ export const columns: ColumnDef<Hairstyle>[] = [
     id: "name",
     accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title="Tên" />
     ),
     cell: ({ row }) => {
       const hairstyle = row.original;
@@ -51,8 +51,8 @@ export const columns: ColumnDef<Hairstyle>[] = [
     minSize: 300,
     enableColumnFilter: true,
     meta: {
-      label: "Name",
-      placeholder: "Search hairstyles...",
+      label: "Tên",
+      placeholder: "Tìm kiếm kiểu tóc...",
       variant: "text",
       icon: Text,
     },
@@ -60,7 +60,7 @@ export const columns: ColumnDef<Hairstyle>[] = [
   {
     id: "gender",
     accessorKey: "gender",
-    header: "Gender",
+    header: "Giới tính",
     cell: ({ row }) => {
       const gender = row.getValue("gender") as string;
       const genderColors = {
@@ -78,14 +78,14 @@ export const columns: ColumnDef<Hairstyle>[] = [
     },
     enableColumnFilter: true,
     meta: {
-      label: "Gender",
+      label: "Giới tính",
       variant: "select",
       options: GENDER_OPTIONS,
     },
   },
   {
     accessorKey: "barberName",
-    header: "Barber",
+    header: "Tên thợ",
     cell: ({ row }) => (
       <div className="flex items-center space-x-2">
         <span>{row.getValue("barberName")}</span>
@@ -95,7 +95,7 @@ export const columns: ColumnDef<Hairstyle>[] = [
   {
     accessorKey: "voteCount",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Votes" />
+      <DataTableColumnHeader column={column} title="Bình chọn" />
     ),
     cell: ({ row }) => {
       const voteCount = row.getValue("voteCount") as number;

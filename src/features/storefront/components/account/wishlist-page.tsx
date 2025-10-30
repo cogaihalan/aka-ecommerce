@@ -18,8 +18,10 @@ import {
 } from "@/stores/wishlist-store";
 import { useCart } from "@/hooks/use-cart";
 import { formatPrice } from "@/lib/utils";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function WishlistPage() {
+  const { t } = useI18n();
   const router = useRouter();
   const allWishlistItems = useWishlistItems();
   const currentUserId = useWishlistStore((state) => state.currentUserId);
@@ -60,11 +62,11 @@ export default function WishlistPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Wishlist</h1>
+          <h1 className="text-3xl font-bold mb-2">{t("wishlist.title")}</h1>
           <p className="text-muted-foreground">
             {itemCount > 0
-              ? `${itemCount} item${itemCount === 1 ? "" : "s"} saved • Total value: ${formatPrice(totalValue)}`
-              : "Your saved items and favorites"}
+              ? t("wishlist.summaryWithCount", { count: itemCount, total: formatPrice(totalValue) })
+              : t("wishlist.subtitle")}
           </p>
         </div>
         {itemCount > 0 && (
@@ -74,7 +76,7 @@ export default function WishlistPage() {
             className="text-destructive hover:text-destructive"
           >
             <Trash2 className="h-4 w-4 mr-2" />
-            Clear All
+            {t("wishlist.clearAll")}
           </Button>
         )}
       </div>
@@ -82,14 +84,14 @@ export default function WishlistPage() {
       {wishlistItems.length === 0 ? (
         <div className="text-center py-12">
           <Heart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold mb-2">Your wishlist is empty</h3>
+          <h3 className="text-lg font-semibold mb-2">{t("wishlist.emptyTitle")}</h3>
           <p className="text-muted-foreground mb-6">
-            Save items you love to your wishlist by clicking the heart icon
+            {t("wishlist.emptySubtitle")}
           </p>
           <Link href="/products">
             <Button>
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Start Shopping
+              {t("wishlist.startShopping")}
             </Button>
           </Link>
         </div>
@@ -140,7 +142,7 @@ export default function WishlistPage() {
                     <Badge variant="secondary" className="text-xs w-fit">
                       {item.product.categories
                         ? item.product.categories[0].name
-                        : "Uncategorized"}
+                        : t("wishlist.uncategorized")}
                     </Badge>
 
                     {/* Product name */}
@@ -185,17 +187,17 @@ export default function WishlistPage() {
                       {isProductLoading(item.product.id) ? (
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Adding...
+                          {t("wishlist.adding")}
                         </>
                       ) : isInCartState ? (
                         <>
                           <ShoppingCart className="h-4 w-4 mr-2" />
-                          In Cart ({cartQuantity})
+                          {t("wishlist.inCartWithQty", { qty: cartQuantity })}
                         </>
                       ) : (
                         <>
                           <ShoppingCart className="h-4 w-4 mr-2" />
-                          Add to Cart
+                          {t("wishlist.addToCart")}
                         </>
                       )}
                     </Button>

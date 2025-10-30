@@ -12,32 +12,26 @@ export default function SignUpViewPage() {
     <div className="flex items-center justify-center bg-background">
       <div className="w-full max-w-md space-y-6 p-6">
         <div className="text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">Sign Up</h1>
-          <p className="text-muted-foreground">
-            Create a new account to get started
-          </p>
+          <h1 className="text-2xl font-semibold tracking-tight">Đăng ký</h1>
+          <p className="text-muted-foreground">Tạo tài khoản mới để bắt đầu</p>
         </div>
 
-        <ClerkSignUpForm
-          initialValues={{
-            emailAddress: "your_mail+clerk_test@example.com",
-          }}
-        />
+        <ClerkSignUpForm />
 
         <p className="text-muted-foreground text-center text-sm">
-          By clicking continue, you agree to our{" "}
+          Khi tiếp tục, bạn đồng ý với{" "}
           <Link
             href="/terms"
             className="hover:text-primary underline underline-offset-4"
           >
-            Terms of Service
+            Điều khoản dịch vụ
           </Link>{" "}
           and{" "}
           <Link
             href="/privacy"
             className="hover:text-primary underline underline-offset-4"
           >
-            Privacy Policy
+            Chính sách bảo mật
           </Link>
           .
         </p>

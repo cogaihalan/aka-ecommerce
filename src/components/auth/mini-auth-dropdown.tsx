@@ -12,6 +12,7 @@ import {
   Package,
   Heart,
   MapPin,
+  Award,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -19,12 +20,14 @@ import { useAuthStore } from "@/stores/auth-store";
 import { useUser } from "@clerk/nextjs";
 import { SignOutButton } from "./sign-out-button";
 import { UserAvatarProfile } from "@/components/user-avatar-profile";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface MiniAuthDropdownProps {
   className?: string;
 }
 
 export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
+  const { t } = useI18n();
   const { isDropdownOpen, closeDropdown } = useAuthStore();
   const { user, isSignedIn } = useUser();
   const [isVisible, setIsVisible] = useState(false);
@@ -76,7 +79,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
     <div
       ref={dropdownRef}
       className={cn(
-        "absolute right-0 top-full w-80 bg-background/95 backdrop-blur-md border border-border rounded-lg shadow-xl z-50",
+        "absolute right-0 translate-x-[30%] md:translate-x-0 top-full w-64 md:w-80 bg-background/95 backdrop-blur-md border border-border rounded-lg shadow-xl z-50",
         "transform transition-all duration-300 ease-out",
         "animate-in slide-in-from-top-2 fade-in-0 zoom-in-95",
         isDropdownOpen
@@ -90,7 +93,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <User className="w-5 h-5" />
-            <h3 className="font-semibold text-lg">Account</h3>
+            <h3 className="font-semibold text-lg">{t("auth.account")}</h3>
           </div>
           <Button
             variant="ghost"
@@ -107,9 +110,9 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
       {!isSignedIn ? (
         <div className="p-6 text-center">
           <UserCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <h4 className="font-medium text-lg mb-2">Welcome!</h4>
+          <h4 className="font-medium text-lg mb-2">{t("auth.welcome")}</h4>
           <p className="text-muted-foreground text-sm mb-6">
-            Sign in to access your account and enjoy personalized shopping
+            {t("auth.signInPrompt")}
           </p>
           <div className="space-y-2">
             <Button
@@ -118,7 +121,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
               size="lg"
               onClick={closeDropdown}
             >
-              <Link href="/auth/sign-in">Sign In</Link>
+              <Link href="/auth/sign-in">{t("auth.signIn")}</Link>
             </Button>
             <Button
               asChild
@@ -126,7 +129,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
               className="w-full"
               onClick={closeDropdown}
             >
-              <Link href="/auth/sign-up">Create Account</Link>
+              <Link href="/auth/sign-up">{t("auth.createAccount")}</Link>
             </Button>
           </div>
         </div>
@@ -138,7 +141,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
               <UserAvatarProfile user={user} />
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-sm truncate">
-                  {user.fullName || "User"}
+                  {user.fullName || t("auth.user")}
                 </p>
                 <p className="text-muted-foreground text-xs truncate">
                   {user.emailAddresses[0]?.emailAddress}
@@ -158,7 +161,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
               >
                 <Link href="/account" className="flex items-center gap-3">
                   <UserCircle className="w-4 h-4" />
-                  <span>My Account</span>
+                  <span>{t("auth.myAccount")}</span>
                 </Link>
               </Button>
 
@@ -173,7 +176,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
                   className="flex items-center gap-3"
                 >
                   <Package className="w-4 h-4" />
-                  <span>My Orders</span>
+                  <span>{t("auth.myOrders")}</span>
                 </Link>
               </Button>
 
@@ -188,7 +191,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
                   className="flex items-center gap-3"
                 >
                   <Heart className="w-4 h-4" />
-                  <span>Wishlist</span>
+                  <span>{t("auth.wishlist")}</span>
                 </Link>
               </Button>
 
@@ -203,9 +206,25 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
                   className="flex items-center gap-3"
                 >
                   <MapPin className="w-4 h-4" />
-                  <span>Addresses</span>
+                  <span>{t("auth.addresses")}</span>
                 </Link>
               </Button>
+
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start h-10 px-3"
+                onClick={closeDropdown}
+              >
+                <Link
+                  href="/account/submissions"
+                  className="flex items-center gap-3"
+                >
+                  <Award className="w-4 h-4" />
+                  <span>{t("auth.submissions")}</span>
+                </Link>
+              </Button>
+              
             </div>
           </div>
 
@@ -225,7 +244,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
                   className="flex items-center gap-3"
                 >
                   <Settings className="w-4 h-4" />
-                  <span>Settings</span>
+                  <span>{t("auth.settings")}</span>
                 </Link>
               </Button>
 
@@ -239,7 +258,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
                 >
                   <Link href="/dashboard" className="flex items-center gap-3">
                     <Settings className="w-4 h-4" />
-                    <span>Dashboard</span>
+                    <span>{t("auth.dashboard")}</span>
                   </Link>
                 </Button>
               )}
@@ -250,7 +269,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
                 onClick={closeDropdown}
               >
                 <LogOut className="w-4 h-4" />
-                <span>Sign Out</span>
+                <span>{t("auth.signOut")}</span>
               </SignOutButton>
             </div>
           </div>

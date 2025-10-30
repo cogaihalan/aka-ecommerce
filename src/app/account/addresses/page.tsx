@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import AddressBookPage from "@/features/storefront/components/account/addresses/address-book-page";
 
 export const metadata: Metadata = {
-  title: "Address Book - AKA Store",
-  description: "Manage your shipping and billing addresses.",
+  title: "Sổ địa chỉ - AKA Store",
+  description: "Quản lý địa chỉ giao hàng và thanh toán của bạn.",
 };
 
 export default function AddressBookPageRoute() {

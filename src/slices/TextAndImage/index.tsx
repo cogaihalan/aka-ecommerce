@@ -21,7 +21,7 @@ const TextAndImage: FC<TextAndImageProps> = ({ slice }) => {
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
       className={cn(
-        "relative min-w-0 bg-white text-gray-900",
+        "relative min-w-0 bg-white text-gray-900 py-8 lg:py-16",
         "transition-all duration-700 ease-out",
         hasIntersected ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
       )}

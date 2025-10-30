@@ -18,6 +18,7 @@ import {
   useWishlistItemCount,
   useWishlistAuthStatus,
 } from "@/stores/wishlist-store";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function StorefrontHeader() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -25,6 +26,8 @@ export default function StorefrontHeader() {
   const wishlistCount = useWishlistItemCount();
   const isAuthenticated = useWishlistAuthStatus();
   const { megaMenuData, loading: megaMenuLoading } = useMegaMenu();
+  const { locale, setLocale } = useI18n();
+  
 
   const handleWishlistClick = () => {
     if (!isAuthenticated) {
@@ -92,6 +95,16 @@ export default function StorefrontHeader() {
               {/* User Account */}
               <AuthIcon />
 
+              {/* Language Switcher */}
+              <Button
+                variant="outline"
+                size="sm"
+                className="hidden lg:inline-flex"
+                onClick={() => setLocale(locale === "vi" ? "en" : "vi")}
+              >
+                {locale === "vi" ? "VI" : "EN"}
+              </Button>
+
               {/* Mobile Menu Button */}
               {megaMenuData?.menu_items && !megaMenuLoading && (
                 <MobileMegaMenu menuItems={megaMenuData.menu_items} />
@@ -100,10 +113,8 @@ export default function StorefrontHeader() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden"
-                onClick={() => {
-                  setIsSearchOpen(!isSearchOpen);
-                }}
+                className={`lg:hidden ${isSearchOpen ? "pointer-events-none" : ""}`}
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
               >
                 {isSearchOpen ? (
                   <X className="h-5 w-5" />

@@ -15,23 +15,27 @@ import {
   Heart,
   LogOut,
   Menu,
+  Award,
 } from "lucide-react";
 import { SignOutButton } from "@/components/auth";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface AccountLayoutProps {
   children: ReactNode;
 }
 
 const accountNav = [
-  { name: "Dashboard", href: "/account", icon: User },
-  { name: "Orders", href: "/account/orders", icon: Package },
-  { name: "Addresses", href: "/account/addresses", icon: MapPin },
-  { name: "Profile", href: "/account/profile", icon: Settings },
-  { name: "Wishlist", href: "/account/wishlist", icon: Heart },
-  { name: "Logout", href: "/auth/sign-out", icon: LogOut },
+  { nameKey: "account.menu.dashboard", href: "/account", icon: User },
+  { nameKey: "account.menu.orders", href: "/account/orders", icon: Package },
+  { nameKey: "account.menu.addresses", href: "/account/addresses", icon: MapPin },
+  { nameKey: "account.menu.profile", href: "/account/profile", icon: Settings },
+  { nameKey: "account.menu.submissions", href: "/account/submissions", icon: Award },
+  { nameKey: "account.menu.wishlist", href: "/account/wishlist", icon: Heart },
+  { nameKey: "account.menu.signOut", href: "/auth/sign-out", icon: LogOut },
 ];
 
 export default function AccountLayout({ children }: AccountLayoutProps) {
+  const { t } = useI18n();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -40,10 +44,10 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
       const Icon = item.icon;
 
       // Handle Logout item with SignOutButton
-      if (item.name === "Logout") {
+      if (item.nameKey === "account.menu.signOut") {
         return (
           <SignOutButton
-            key={item.name}
+            key={item.nameKey}
             redirectUrl="/auth/sign-in"
             className={cn(
               "flex items-center justify-start gap-3 px-3 py-2 rounded-md text-sm transition-colors cursor-pointer w-full text-left",
@@ -52,14 +56,14 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
             onClick={() => setIsOpen(false)}
           >
             <Icon className="h-4 w-4" />
-            {item.name}
+            {t(item.nameKey)}
           </SignOutButton>
         );
       }
 
       return (
         <Link
-          key={item.name}
+          key={item.nameKey}
           href={item.href}
           onClick={() => setIsOpen(false)}
           className={cn(
@@ -68,7 +72,7 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
           )}
         >
           <Icon className="h-4 w-4" />
-          {item.name}
+          {t(item.nameKey)}
         </Link>
       );
     });
@@ -78,10 +82,8 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
     <div className="space-y-6 pb-8 lg:pb-16">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">My Account</h1>
-          <p className="text-muted-foreground">
-            Manage your account settings and orders
-          </p>
+          <h1 className="text-3xl font-bold mb-2">{t("account.title")}</h1>
+          <p className="text-muted-foreground">{t("account.subtitle")}</p>
         </div>
 
         {/* Mobile Navigation Button */}
@@ -94,10 +96,8 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
           <SheetContent side="left" className="w-80">
             <div className="space-y-4 p-4">
               <div>
-                <h2 className="text-lg font-semibold">Account Menu</h2>
-                <p className="text-sm text-muted-foreground">
-                  Navigate your account
-                </p>
+                <h2 className="text-lg font-semibold">{t("account.menu.title")}</h2>
+                <p className="text-sm text-muted-foreground">{t("account.menu.subtitle")}</p>
               </div>
               <nav className="space-y-2">{renderNavItems()}</nav>
             </div>

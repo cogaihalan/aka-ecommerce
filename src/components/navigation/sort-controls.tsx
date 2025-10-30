@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select";
 import { Grid, List, Filter } from "lucide-react";
 import { SORT_OPTIONS } from "@/constants/navigation";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface SortControlsProps {
     sortBy: string;
@@ -35,19 +36,20 @@ export function SortControls({
     filteredCount = 0,
     currentPageCount = 0,
 }: SortControlsProps) {
+    const { t } = useI18n();
     return (
         <div className="w-full flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
             {/* Results count */}
             <div className="text-sm text-muted-foreground">
                 {filteredCount > 0 ? (
                     <>
-                        Showing {currentPageCount} of {filteredCount} products
+                        {t("filters.showingOf", { current: currentPageCount, total: filteredCount })}
                         {filteredCount !== totalProducts && (
-                            <span> (filtered from {totalProducts} total)</span>
+                            <span> {t("filters.filteredFrom", { total: totalProducts })}</span>
                         )}
                     </>
                 ) : (
-                    <>{totalProducts} products</>
+                    <>{t("filters.totalProducts", { total: totalProducts })}</>
                 )}
             </div>
 
@@ -56,7 +58,7 @@ export function SortControls({
                 {/* Sort dropdown */}
                 <Select value={sortBy} onValueChange={onSortChange}>
                     <SelectTrigger className="w-48">
-                        <SelectValue placeholder="Sort by" />
+                        <SelectValue placeholder={t("filters.sortBy")} />
                     </SelectTrigger>
                     <SelectContent>
                         {SORT_OPTIONS.map((option) => (

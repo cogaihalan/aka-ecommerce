@@ -69,7 +69,7 @@ export const useWishlistStore = create<WishlistStore>()(
           // Check if user is authenticated
           if (!state.isAuthenticated) {
             set({
-              error: "Please sign in to add items to your wishlist",
+              error: "Vui lòng đăng nhập để thêm vào danh sách yêu thích",
               isLoading: false,
             });
             return;
@@ -82,7 +82,7 @@ export const useWishlistStore = create<WishlistStore>()(
 
           if (existingItem) {
             set({
-              error: "Item is already in your wishlist",
+              error: "Sản phẩm đã có trong danh sách yêu thích",
               isLoading: false,
             });
             return;
@@ -105,16 +105,16 @@ export const useWishlistStore = create<WishlistStore>()(
           });
 
           // Show success toast
-          toast.success("Added to wishlist", {
-            description: `${product.name} has been added to your wishlist`,
+          toast.success("Đã thêm vào danh sách yêu thích", {
+            description: `${product.name} đã được thêm vào danh sách yêu thích`,
             duration: 3000,
           });
         } catch (error) {
           set({
             error:
-              error instanceof Error
-                ? error.message
-                : "Failed to add item to wishlist",
+            error instanceof Error
+              ? error.message
+              : "Thêm sản phẩm vào danh sách yêu thích thất bại",
             isLoading: false,
           });
         }
@@ -130,7 +130,7 @@ export const useWishlistStore = create<WishlistStore>()(
           // Check if user is authenticated
           if (!state.isAuthenticated) {
             set({
-              error: "Please sign in to manage your wishlist",
+              error: "Vui lòng đăng nhập để quản lý danh sách yêu thích",
               isLoading: false,
             });
             return;
@@ -153,17 +153,17 @@ export const useWishlistStore = create<WishlistStore>()(
 
           // Show success toast
           if (itemToRemove) {
-            toast.success("Removed from wishlist", {
-              description: `${itemToRemove.product.name} has been removed from your wishlist`,
+            toast.success("Đã xóa khỏi danh sách yêu thích", {
+              description: `${itemToRemove.product.name} đã được xóa khỏi danh sách yêu thích`,
               duration: 3000,
             });
           }
         } catch (error) {
           set({
             error:
-              error instanceof Error
-                ? error.message
-                : "Failed to remove item from wishlist",
+            error instanceof Error
+              ? error.message
+              : "Xóa sản phẩm khỏi danh sách yêu thích thất bại",
             isLoading: false,
           });
         }
@@ -176,7 +176,7 @@ export const useWishlistStore = create<WishlistStore>()(
         // Check if user is authenticated
         if (!state.isAuthenticated) {
           set({
-            error: "Please sign in to manage your wishlist",
+            error: "Vui lòng đăng nhập để quản lý danh sách yêu thích",
             isLoading: false,
           });
           return;

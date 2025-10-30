@@ -103,19 +103,19 @@ export const columns: ColumnDef<Contest>[] = [
       const endDate = new Date(row.original.endDate);
 
       let statusText = isActive ? "Active" : "Inactive";
-      let variant: "default" | "secondary" | "destructive" | "outline" =
+      let variant: "default" | "secondary" | "destructive" | "outline" | "info" | "live" =
         isActive ? "default" : "secondary";
 
       if (isActive) {
         if (now < startDate) {
           statusText = "Upcoming";
-          variant = "outline";
+          variant = "info";
         } else if (now > endDate) {
           statusText = "Ended";
           variant = "secondary";
         } else {
           statusText = "Live";
-          variant = "default";
+          variant = "live";
         }
       }
 

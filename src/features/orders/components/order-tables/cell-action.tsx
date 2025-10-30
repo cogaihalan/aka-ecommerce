@@ -49,24 +49,24 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     switch (action) {
       case "confirm":
         return canConfirmOrder 
-          ? "Confirm this order" 
-          : "Order must be PENDING to confirm";
+          ? "Xác nhận đơn hàng này" 
+          : "Đơn hàng phải ở trạng thái PENDING để xác nhận";
       case "shipping":
         return canMarkAsShipping 
-          ? "Mark order as shipping" 
-          : "Order must be CONFIRMED to mark as shipping";
+          ? "Đánh dấu đơn hàng đang giao" 
+          : "Đơn hàng phải ở trạng thái CONFIRMED để chuyển sang đang giao";
       case "delivered":
         return canMarkAsDelivered 
-          ? "Mark order as delivered" 
-          : "Order must be SHIPPING to mark as delivered";
+          ? "Đánh dấu đơn hàng đã giao" 
+          : "Đơn hàng phải ở trạng thái SHIPPING để đánh dấu đã giao";
       case "refund":
         return canRefundOrder 
-          ? "Refund this order" 
-          : "Order must be DELIVERED to refund";
+          ? "Hoàn tiền đơn hàng này" 
+          : "Đơn hàng phải ở trạng thái DELIVERED để hoàn tiền";
       case "cancel":
         return canCancelOrder 
-          ? "Cancel this order" 
-          : "Order cannot be cancelled in current status";
+          ? "Hủy đơn hàng này" 
+          : "Không thể hủy ở trạng thái hiện tại";
       default:
         return "";
     }
@@ -75,12 +75,12 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const handleConfirmOrder = async () => {
     try {
       setLoading(true);
-      await unifiedOrderService.confirmOrder(data.id, "Order confirmed by admin");
-      toast.success("Order confirmed successfully");
+      await unifiedOrderService.confirmOrder(data.id, "Xác nhận bởi quản trị viên");
+      toast.success("Xác nhận đơn hàng thành công");
       router.refresh();
     } catch (error) {
       console.log(error);
-      toast.error("Failed to confirm order");
+      toast.error("Xác nhận đơn hàng thất bại");
     } finally {
       setLoading(false);
     }
@@ -89,11 +89,11 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const handleShippingUpdate = async () => {
     try {
       setLoading(true);
-      await unifiedOrderService.updateOrderShippingStatus(data.id, "Order shipped by admin");
-      toast.success("Order status updated to shipping");
+      await unifiedOrderService.updateOrderShippingStatus(data.id, "Đã giao cho đơn vị vận chuyển bởi quản trị viên");
+      toast.success("Cập nhật trạng thái: Đang giao hàng");
       router.refresh();
     } catch (error) {
-      toast.error("Failed to update order to shipping");
+      toast.error("Cập nhật trạng thái giao hàng thất bại");
     } finally {
       setLoading(false);
     }
@@ -102,11 +102,11 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const handleDeliveredUpdate = async () => {
     try {
       setLoading(true);
-      await unifiedOrderService.markDeliveredOrder(data.id, "Order delivered by admin");
-      toast.success("Order marked as delivered");
+      await unifiedOrderService.markDeliveredOrder(data.id, "Đã giao bởi quản trị viên");
+      toast.success("Đánh dấu đã giao thành công");
       router.refresh();
     } catch (error) {
-      toast.error("Failed to mark order as delivered");
+      toast.error("Đánh dấu đã giao thất bại");
     } finally {
       setLoading(false);
     }
@@ -115,11 +115,11 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const handleCancelOrder = async () => {
     try {
       setLoading(true);
-      await unifiedOrderService.cancelOrder(data.id, "Cancelled by admin");
-      toast.success("Order cancelled successfully");
+      await unifiedOrderService.cancelOrder(data.id, "Hủy bởi quản trị viên");
+      toast.success("Hủy đơn hàng thành công");
       router.refresh();
     } catch (error) {
-      toast.error("Failed to cancel order");
+      toast.error("Hủy đơn hàng thất bại");
     } finally {
       setLoading(false);
     }
@@ -128,11 +128,11 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const handleRefundOrder = async () => {
     try {
       setLoading(true);
-      await unifiedOrderService.refundOrder(data.id, "Refunded by admin");
-      toast.success("Order refunded successfully");
+      await unifiedOrderService.refundOrder(data.id, "Hoàn tiền bởi quản trị viên");
+      toast.success("Hoàn tiền đơn hàng thành công");
       router.refresh();
     } catch (error) {
-      toast.error("Failed to refund order");
+      toast.error("Hoàn tiền đơn hàng thất bại");
     } finally {
       setLoading(false);
     }
@@ -143,20 +143,20 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">Mở menu</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Hành động</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/orders/${data.id}`)}
           >
-            <Eye className="mr-2 h-4 w-4" /> View Details
+            <Eye className="mr-2 h-4 w-4" /> Xem chi tiết
           </DropdownMenuItem>
           <DropdownMenuSeparator />
 
-          <DropdownMenuLabel>Status Updates</DropdownMenuLabel>
+          <DropdownMenuLabel>Cập nhật trạng thái</DropdownMenuLabel>
           
           <Tooltip>
             <TooltipTrigger asChild>
@@ -165,7 +165,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                 disabled={loading || !canConfirmOrder}
                 className={!canConfirmOrder ? "opacity-50 cursor-not-allowed" : ""}
               >
-                <RefreshCw className="mr-2 h-4 w-4" /> Confirm Order
+                <RefreshCw className="mr-2 h-4 w-4" /> Xác nhận đơn hàng
               </DropdownMenuItem>
             </TooltipTrigger>
             <TooltipContent>
@@ -180,7 +180,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                 disabled={loading || !canMarkAsShipping}
                 className={!canMarkAsShipping ? "opacity-50 cursor-not-allowed" : ""}
               >
-                <Truck className="mr-2 h-4 w-4" /> Mark as Shipping
+                <Truck className="mr-2 h-4 w-4" /> Đang giao hàng
               </DropdownMenuItem>
             </TooltipTrigger>
             <TooltipContent>
@@ -195,7 +195,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                 disabled={loading || !canMarkAsDelivered}
                 className={!canMarkAsDelivered ? "opacity-50 cursor-not-allowed" : ""}
               >
-                <Package className="mr-2 h-4 w-4" /> Mark as Delivered
+                <Package className="mr-2 h-4 w-4" /> Đã giao
               </DropdownMenuItem>
             </TooltipTrigger>
             <TooltipContent>
@@ -205,7 +205,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
           <DropdownMenuSeparator />
 
-          <DropdownMenuLabel>Payment & Refunds</DropdownMenuLabel>
+          <DropdownMenuLabel>Thanh toán & Hoàn tiền</DropdownMenuLabel>
           
           <Tooltip>
             <TooltipTrigger asChild>
@@ -214,7 +214,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                 disabled={loading || !canRefundOrder}
                 className={!canRefundOrder ? "opacity-50 cursor-not-allowed" : ""}
               >
-                <RefreshCw className="mr-2 h-4 w-4" /> Refund Order
+                <RefreshCw className="mr-2 h-4 w-4" /> Hoàn tiền
               </DropdownMenuItem>
             </TooltipTrigger>
             <TooltipContent>
@@ -231,7 +231,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
                 disabled={loading || !canCancelOrder}
                 className={`text-destructive ${!canCancelOrder ? "opacity-50 cursor-not-allowed" : ""}`}
               >
-                <X className="mr-2 h-4 w-4 text-destructive" /> Cancel Order
+                <X className="mr-2 h-4 w-4 text-destructive" /> Hủy đơn hàng
               </DropdownMenuItem>
             </TooltipTrigger>
             <TooltipContent>

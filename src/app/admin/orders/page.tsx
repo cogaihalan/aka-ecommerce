@@ -13,8 +13,8 @@ import { DashboardPageProps } from "@/types";
 import OrderListingPage from "@/features/orders/components/order-listing";
 
 export const metadata: Metadata = {
-  title: "Dashboard: Orders",
-  description: "Manage orders, track fulfillment, and process returns",
+  title: "Bảng quản trị: Đơn hàng",
+  description: "Quản lý đơn hàng, theo dõi thực hiện và xử lý đổi trả",
 };
 
 export default async function OrdersPage(props: DashboardPageProps) {
@@ -27,8 +27,8 @@ export default async function OrdersPage(props: DashboardPageProps) {
       <div className="flex flex-1 flex-col space-y-4">
         <div className="flex items-start justify-between">
           <Heading
-            title="Orders"
-            description="Manage orders, track fulfillment, and process returns"
+            title="Đơn hàng"
+            description="Quản lý đơn hàng, theo dõi thực hiện và xử lý đổi trả"
           />
         </div>
         <Separator />

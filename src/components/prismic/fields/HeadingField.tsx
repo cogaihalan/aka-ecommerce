@@ -16,7 +16,7 @@ const defaultHeadingComponents: JSXMapSerializer = {
   heading6: ({ children }) => <h6 className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-semibold m-0">{children}</h6>,
 };
 
-export const HeadingField: FC<HeadingFieldProps> = ({ field, className, components }) => {
+export const HeadingField: FC<HeadingFieldProps> = ({ field, className = '', components }) => {
   return (
     <div className={`${className}`}>
       <PrismicRichText field={field} components={components ?? defaultHeadingComponents} />

@@ -17,6 +17,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Address } from "@/types";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 const addressSchema = z.object({
   recipientName: z.string().min(1, "Recipient name is required"),
@@ -46,6 +47,7 @@ export function AddressForm({
   onCancel,
   isLoading = false,
 }: AddressFormProps) {
+  const { t } = useI18n();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -85,17 +87,17 @@ export function AddressForm({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{address ? "Edit Address" : "Add New Address"}</CardTitle>
+        <CardTitle>{address ? t("address.editTitle") : t("address.addTitle")}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
           {/* Name Fields */}
           <div className="space-y-2">
-            <Label htmlFor="recipientName">Recipient Name *</Label>
+            <Label htmlFor="recipientName">{t("address.recipientName")} *</Label>
             <Input
               id="recipientName"
               {...register("recipientName")}
-              placeholder="Enter recipient name"
+              placeholder={t("address.recipientNamePlaceholder")}
             />
             {errors.recipientName && (
               <p className="text-sm text-red-500">
@@ -106,11 +108,11 @@ export function AddressForm({
 
           {/* Address Fields */}
           <div className="space-y-2">
-            <Label htmlFor="recipientAddress">Address *</Label>
+            <Label htmlFor="recipientAddress">{t("address.address")} *</Label>
             <Input
               id="recipientAddress"
               {...register("recipientAddress")}
-              placeholder="Enter address"
+              placeholder={t("address.addressPlaceholder")}
             />
             {errors.recipientAddress && (
               <p className="text-sm text-red-500">
@@ -121,11 +123,11 @@ export function AddressForm({
 
           {/* Phone */}
           <div className="space-y-2">
-            <Label htmlFor="recipientPhone">Phone Number *</Label>
+            <Label htmlFor="recipientPhone">{t("address.phone")} *</Label>
             <Input
               id="recipientPhone"
               {...register("recipientPhone")}
-              placeholder="Enter phone number"
+              placeholder={t("address.phonePlaceholder")}
             />
             {errors.recipientPhone && (
               <p className="text-sm text-red-500">
@@ -143,7 +145,7 @@ export function AddressForm({
                 setValue("isDefault", !!checked);
               }}
             />
-            <Label htmlFor="isDefault">Set as default address</Label>
+            <Label htmlFor="isDefault">{t("address.setDefault")}</Label>
             {errors.isDefault && (
               <p className="text-sm text-red-500">{errors.isDefault.message}</p>
             )}
@@ -157,14 +159,14 @@ export function AddressForm({
               onClick={onCancel}
               disabled={isSubmitting}
             >
-              Cancel
+              {t("common.close")}
             </Button>
             <Button type="submit" disabled={isSubmitting || isLoading}>
               {isSubmitting
-                ? "Saving..."
+                ? t("address.saving")
                 : address
-                  ? "Update Address"
-                  : "Add Address"}
+                  ? t("address.update")
+                  : t("address.add")}
             </Button>
           </div>
         </form>

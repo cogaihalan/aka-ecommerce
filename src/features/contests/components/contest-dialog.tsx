@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -67,6 +68,7 @@ export function ContestDialog({
   onSuccess,
 }: ContestDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useI18n();
   const [thumbnailFiles, setThumbnailFiles] = useState<File[]>([]);
   const [useThumbnailUpload, setUseThumbnailUpload] = useState(false);
   const [isUploadingThumbnail, setIsUploadingThumbnail] = useState(false);
@@ -136,7 +138,7 @@ export function ContestDialog({
         };
 
         await unifiedContestService.updateContest(contest.id, updateData);
-        toast.success("Contest updated successfully");
+        toast.success(t("contests.dialog.toast.updated"));
       } else {
         // Add mode
         const createData: CreateContestRequest = {
@@ -148,13 +150,13 @@ export function ContestDialog({
         };
         
         await unifiedContestService.createContest(createData);
-        toast.success("Contest created successfully");
+        toast.success(t("contests.dialog.toast.created"));
         onSuccess?.();
         onOpenChange(false);
         form.reset();
       }
     } catch (error) {
-      toast.error(`Failed to ${isEditMode ? "update" : "create"} contest`);
+      toast.error(t("contests.dialog.toast.failed", { action: isEditMode ? "update" : "create" }));
       console.error(
         `Error ${isEditMode ? "updating" : "creating"} contest:`,
         error
@@ -180,9 +182,9 @@ export function ContestDialog({
       form.setValue("thumbnailUrl", uploadedContest.thumbnailUrl || "");
       setUploadedThumbnailUrl(uploadedContest.thumbnailUrl || "");
       setThumbnailFiles(files);
-      toast.success("Thumbnail uploaded successfully");
+      toast.success(t("contests.dialog.thumbnailUploaded"));
     } catch (error) {
-      toast.error("Failed to upload thumbnail");
+      toast.error(t("contests.dialog.toast.uploadThumbFailed"));
       console.error("Thumbnail upload error:", error);
     } finally {
       setUseThumbnailUpload(false);
@@ -199,12 +201,12 @@ export function ContestDialog({
       <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader className="flex-shrink-0">
           <DialogTitle>
-            {isEditMode ? "Edit Contest" : "Create New Contest"}
+            {isEditMode ? t("contests.dialog.titleEdit") : t("contests.dialog.titleCreate")}
           </DialogTitle>
           <DialogDescription>
             {isEditMode
-              ? "Update the contest information and details."
-              : "Add a new contest to your platform."}
+              ? t("contests.dialog.descEdit")
+              : t("contests.dialog.descCreate")}
           </DialogDescription>
         </DialogHeader>
 
@@ -220,9 +222,9 @@ export function ContestDialog({
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Contest Name</FormLabel>
+                      <FormLabel>{t("contests.dialog.name")}</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter contest name" {...field} />
+                        <Input placeholder={t("contests.dialog.namePlaceholder")} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -234,10 +236,10 @@ export function ContestDialog({
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Description</FormLabel>
+                      <FormLabel>{t("contests.dialog.description")}</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Enter contest description"
+                          placeholder={t("contests.dialog.descriptionPlaceholder")}
                           className="min-h-[80px]"
                           {...field}
                         />
@@ -253,7 +255,7 @@ export function ContestDialog({
                     name="startDate"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Start Date</FormLabel>
+                        <FormLabel>{t("contests.dialog.startDate")}</FormLabel>
                         <FormControl>
                           <Input
                             type="date"
@@ -270,7 +272,7 @@ export function ContestDialog({
                     name="endDate"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>End Date</FormLabel>
+                        <FormLabel>{t("contests.dialog.endDate")}</FormLabel>
                         <FormControl>
                           <Input
                             type="date"
@@ -286,15 +288,15 @@ export function ContestDialog({
                 {isEditMode && (
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <FormLabel>Thumbnail Source</FormLabel>
+                      <FormLabel>{t("contests.dialog.thumbnailSource")}</FormLabel>
                       <div className="flex items-center space-x-2">
-                        <span className="text-sm text-muted-foreground">URL</span>
+                        <span className="text-sm text-muted-foreground">{t("contests.dialog.url")}</span>
                         <Switch
                           checked={useThumbnailUpload}
                           onCheckedChange={handleThumbnailModeChange}
                         />
                         <span className="text-sm text-muted-foreground">
-                          Upload
+                          {t("contests.dialog.upload")}
                         </span>
                       </div>
                     </div>
@@ -305,15 +307,15 @@ export function ContestDialog({
                         name="thumbnailUrl"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Thumbnail URL</FormLabel>
+                            <FormLabel>{t("contests.dialog.thumbnailUrl")}</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="https://example.com/thumbnail.jpg"
+                                placeholder={t("contests.dialog.thumbnailUrlPlaceholder")}
                                 {...field}
                               />
                             </FormControl>
                             <FormDescription>
-                              Enter the URL of the thumbnail image
+                              {t("contests.dialog.thumbnailUrlHelp")}
                             </FormDescription>
                             <FormMessage />
                           </FormItem>
@@ -333,12 +335,12 @@ export function ContestDialog({
                         />
                         {isUploadingThumbnail && (
                           <div className="text-sm text-muted-foreground">
-                            Uploading thumbnail...
+                            {t("contests.dialog.thumbnailUploading")}
                           </div>
                         )}
                         {uploadedThumbnailUrl && (
                           <div className="text-sm text-green-600">
-                            Thumbnail uploaded successfully
+                            {t("contests.dialog.thumbnailUploaded")}
                           </div>
                         )}
                       </div>
@@ -351,10 +353,10 @@ export function ContestDialog({
                   name="active"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
-                      <div className="space-y-0.5">
-                        <FormLabel className="text-sm">Active</FormLabel>
+                        <div className="space-y-0.5">
+                        <FormLabel className="text-sm">{t("contests.dialog.activeLabel")}</FormLabel>
                         <FormDescription className="text-xs">
-                          Visible to users
+                          {t("contests.dialog.activeHelp")}
                         </FormDescription>
                       </div>
                       <FormControl>
@@ -374,16 +376,12 @@ export function ContestDialog({
                   onClick={() => onOpenChange(false)}
                   disabled={isLoading}
                 >
-                  Cancel
+                  {t("contests.dialog.cancel")}
                 </Button>
                 <Button type="submit" disabled={isLoading}>
                   {isLoading
-                    ? isEditMode
-                      ? "Updating..."
-                      : "Creating..."
-                    : isEditMode
-                      ? "Update Contest"
-                      : "Create Contest"}
+                    ? (isEditMode ? t("contests.dialog.updating") : t("contests.dialog.creating"))
+                    : (isEditMode ? t("contests.dialog.update") : t("contests.dialog.create"))}
                 </Button>
               </DialogFooter>
             </form>

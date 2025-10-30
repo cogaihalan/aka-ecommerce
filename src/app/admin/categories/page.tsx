@@ -10,8 +10,8 @@ import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
 import CategoryListingPage from "@/features/categories/components/category-listing";
 
 export const metadata: Metadata = {
-  title: "Dashboard: Categories",
-  description: "Manage categories for your store",
+  title: "Bảng quản trị: Danh mục",
+  description: "Quản lý danh mục cho cửa hàng",
 };
 
 export default async function Page(props: DashboardPageProps) {
@@ -23,8 +23,8 @@ export default async function Page(props: DashboardPageProps) {
       <div className="flex flex-1 flex-col space-y-4">
         <div className="flex items-start justify-between">
           <Heading
-            title="Categories"
-            description="Manage categories for your store."
+            title="Danh mục"
+            description="Quản lý danh mục cho cửa hàng."
           />
           <AddCategoryButton />
         </div>

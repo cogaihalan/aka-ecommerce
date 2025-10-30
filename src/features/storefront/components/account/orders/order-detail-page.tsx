@@ -11,21 +11,23 @@ import Link from "next/link";
 import { storefrontOrderService } from "@/lib/api/services/storefront/orders-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface OrderDetailPageProps {
   order: Order;
 }
 
 export default function OrderDetailPage({ order }: OrderDetailPageProps) {
+  const { t } = useI18n();
   const router = useRouter();
 
   const handleCancelOrder = async () => {
     try {
       await storefrontOrderService.cancelOrder(order.id);
-      toast.success("Order cancelled successfully");
+      toast.success(t("orders.detail.cancelSuccess"));
       router.refresh();
     } catch (error) {
-      toast.error("Failed to cancel order");
+      toast.error(t("orders.detail.cancelFailed"));
     }
   };
 
@@ -75,7 +77,7 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
         <Link href="/account/orders">
           <Button variant="outline" className="flex items-center gap-2">
             <ArrowLeft className="h-4 w-4" />
-            Back to Order History
+            {t("orders.detail.backToHistory")}
           </Button>
         </Link>
 
@@ -86,18 +88,15 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
             className="flex items-center gap-2"
           >
             <X className="h-4 w-4" />
-            Cancel Order
+            {t("orders.detail.cancelOrder")}
           </Button>
         )}
       </div>
 
       <div>
-        <h1 className="text-3xl font-bold mb-2">Order #{order.code}</h1>
+        <h1 className="text-3xl font-bold mb-2">{t("orders.detail.titleWithCode", { code: order.code })}</h1>
         <p className="text-muted-foreground">
-          Placed on{" "}
-          {order.createdAt
-            ? new Date(order.createdAt).toLocaleDateString()
-            : "Unknown date"}
+          {t("orders.detail.placedOn")} {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : t("orders.detail.unknownDate")}
         </p>
       </div>
 
@@ -106,7 +105,7 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
           {/* Order Items */}
           <Card>
             <CardHeader>
-              <CardTitle>Order Items</CardTitle>
+              <CardTitle>{t("orders.detail.items")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {order.items.map((item) => (
@@ -117,7 +116,7 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
                   <div className="flex-1">
                     <h3 className="font-semibold">{item.productName}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Quantity: {item.quantity}
+                      {t("orders.detail.quantity")}: {item.quantity}
                     </p>
                     <p className="font-bold">
                       {formatPrice(item.priceAtPurchase)}
@@ -131,7 +130,7 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
           {/* Shipping Address */}
           <Card>
             <CardHeader>
-              <CardTitle>Shipping Address</CardTitle>
+              <CardTitle>{t("orders.detail.shippingAddress")}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-sm">
@@ -140,7 +139,7 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
                 <p>{order.shippingAddress}</p>
                 {order.note && (
                   <div className="mt-2 p-2 bg-muted rounded-md">
-                    <p className="text-xs text-muted-foreground">Note:</p>
+                    <p className="text-xs text-muted-foreground">{t("orders.detail.note")}</p>
                     <p className="text-sm">{order.note}</p>
                   </div>
                 )}
@@ -153,7 +152,7 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
           {/* Order Status */}
           <Card>
             <CardHeader>
-              <CardTitle>Order Status</CardTitle>
+              <CardTitle>{t("orders.detail.status")}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-3">
@@ -164,11 +163,11 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
               </div>
               <div className="mt-2">
                 <p className="text-sm text-muted-foreground">
-                  Payment:{" "}
+                  {t("orders.detail.payment")} {" "}
                   <span className="font-medium">{order.paymentStatus}</span>
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Method:{" "}
+                  {t("orders.detail.method")} {" "}
                   <span className="font-medium">{order.paymentMethod}</span>
                 </p>
               </div>
@@ -178,30 +177,28 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
           {/* Order Summary */}
           <Card>
             <CardHeader>
-              <CardTitle>Order Summary</CardTitle>
+              <CardTitle>{t("orders.detail.summary")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="flex justify-between">
-                <span>Subtotal</span>
+                <span>{t("orders.detail.subtotal")}</span>
                 <span>{formatPrice(order.subtotalAmount)}</span>
               </div>
               <div className="flex justify-between">
-                <span>Shipping</span>
+                <span>{t("orders.detail.shipping")}</span>
                 <span>
-                  {order.shippingFee === 0
-                    ? "Free"
-                    : formatPrice(order.shippingFee)}
+                  {order.shippingFee === 0 ? t("checkout.shipping.free") : formatPrice(order.shippingFee)}
                 </span>
               </div>
               {order.discountAmount > 0 && (
                 <div className="flex justify-between text-green-600">
-                  <span>Discount</span>
+                  <span>{t("orders.detail.discount")}</span>
                   <span>-{formatPrice(order.discountAmount)}</span>
                 </div>
               )}
               <Separator />
               <div className="flex justify-between font-bold text-lg">
-                <span>Total</span>
+                <span>{t("orders.detail.total")}</span>
                 <span>{formatPrice(order.finalAmount)}</span>
               </div>
             </CardContent>

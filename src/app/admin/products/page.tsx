@@ -10,8 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
 
 export const metadata: Metadata = {
-  title: "Dashboard: Products",
-  description: "Manage products for your store",
+  title: "Bảng quản trị: Sản phẩm",
+  description: "Quản lý sản phẩm cho cửa hàng",
 };
 
 export default async function Page(props: DashboardPageProps) {
@@ -23,8 +23,8 @@ export default async function Page(props: DashboardPageProps) {
       <div className="flex flex-1 flex-col space-y-4">
         <div className="flex items-start justify-between">
           <Heading
-            title="Products"
-            description="Manage products for your store."
+            title="Sản phẩm"
+            description="Quản lý sản phẩm cho cửa hàng."
           />
           <AddProductButton />
         </div>

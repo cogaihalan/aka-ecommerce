@@ -24,6 +24,7 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useState, useMemo, useCallback, type MouseEvent } from "react";
 import { CheckIcon } from "@radix-ui/react-icons";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface DataTableFacetedFilterProps<TData, TValue> {
   column?: Column<TData, TValue>;
@@ -38,6 +39,7 @@ export function DataTableFacetedFilter<TData, TValue>({
   options,
   multiple,
 }: DataTableFacetedFilterProps<TData, TValue>) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
 
   const columnFilterValue = column?.getFilterValue();
@@ -82,7 +84,7 @@ export function DataTableFacetedFilter<TData, TValue>({
           {selectedValues?.size > 0 ? (
             <div
               role="button"
-              aria-label={`Clear ${title} filter`}
+              aria-label={t("table.clearFilter", { title })}
               tabIndex={0}
               onClick={onReset}
               className="focus-visible:ring-ring rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-1 focus-visible:outline-none"
@@ -135,7 +137,7 @@ export function DataTableFacetedFilter<TData, TValue>({
         <Command>
           <CommandInput placeholder={title} />
           <CommandList className="max-h-full">
-            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandEmpty>{t("table.noResults")}</CommandEmpty>
             <CommandGroup className="max-h-[18.75rem] overflow-x-hidden overflow-y-auto">
               {options.map((option) => {
                 const isSelected = selectedValues.has(option.value);
@@ -174,7 +176,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                     onSelect={() => onReset()}
                     className="justify-center text-center"
                   >
-                    Clear filters
+                    {t("table.clearFilters")}
                   </CommandItem>
                 </CommandGroup>
               </>

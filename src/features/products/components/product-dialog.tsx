@@ -35,19 +35,20 @@ import { z } from "zod";
 import { CreateProductRequest, UpdateProductRequest } from "@/lib/api/types";
 import { unifiedProductService } from "@/lib/api/services/unified";
 import { toast } from "sonner";
+import { useI18n } from "@/components/providers/i18n-provider";
 import { useApp } from "@/components/providers/app-provider";
 
 const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  description: z.string().min(1, "Description is required"),
-  stock: z.number().min(0, "Stock must be non-negative"),
-  price: z.number().min(0, "Price must be positive"),
+  name: z.string().min(1, "Tên là bắt buộc"),
+  description: z.string().min(1, "Mô tả là bắt buộc"),
+  stock: z.number().min(0, "Tồn kho phải không âm"),
+  price: z.number().min(0, "Giá phải là số dương"),
   discountPrice: z
     .number()
-    .min(0, "Discount price must be non-negative")
+    .min(0, "Giá khuyến mãi phải không âm")
     .optional(),
   status: z.enum(["DRAFT", "ACTIVE", "INACTIVE", "ARCHIVED", "OUT_OF_STOCK"]),
-  categoryIds: z.array(z.number()).min(1, "At least one category is required"),
+  categoryIds: z.array(z.number()).min(1, "Cần ít nhất một danh mục"),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -66,6 +67,7 @@ export function ProductDialog({
   onSuccess,
 }: ProductDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useI18n();
   const { categories } = useApp();
 
   const form = useForm<FormData>({
@@ -91,18 +93,18 @@ export function ProductDialog({
           ...data,
         };
         await unifiedProductService.updateProduct(product.id, updateData);
-        toast.success("Product updated successfully");
+        toast.success(t("products.dialog.toast.updated"));
       } else {
         // Create new product
         const createData: CreateProductRequest = data;
         await unifiedProductService.createProduct(createData);
-        toast.success("Product created successfully");
+        toast.success(t("products.dialog.toast.created"));
       }
       onSuccess?.();
       onOpenChange(false);
       form.reset();
     } catch (error) {
-      toast.error("Failed to save product");
+      toast.error(t("products.dialog.toast.failed"));
       console.error("Error saving product:", error);
     } finally {
       setIsLoading(false);
@@ -114,12 +116,12 @@ export function ProductDialog({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {product ? "Edit Product" : "Create New Product"}
+            {product ? t("products.dialog.titleEdit") : t("products.dialog.titleCreate")}
           </DialogTitle>
           <DialogDescription>
             {product
-              ? "Update the product information below."
-              : "Add a new product to your store."}
+              ? t("products.dialog.descEdit")
+              : t("products.dialog.descCreate")}
           </DialogDescription>
         </DialogHeader>
 
@@ -130,9 +132,9 @@ export function ProductDialog({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Product Name</FormLabel>
+                  <FormLabel>{t("products.dialog.name")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter product name" {...field} />
+                    <Input placeholder={t("products.dialog.namePlaceholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -144,10 +146,10 @@ export function ProductDialog({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>{t("products.dialog.description")}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Enter product description"
+                      placeholder={t("products.dialog.descriptionPlaceholder")}
                       {...field}
                     />
                   </FormControl>
@@ -162,12 +164,12 @@ export function ProductDialog({
                 name="stock"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Stock</FormLabel>
+                    <FormLabel>{t("products.dialog.stock")}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         min="0"
-                        placeholder="0"
+                        placeholder={t("products.dialog.stockPlaceholder")}
                         {...field}
                         onChange={(e) =>
                           field.onChange(parseInt(e.target.value) || 0)
@@ -184,13 +186,13 @@ export function ProductDialog({
                 name="price"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Price</FormLabel>
+                    <FormLabel>{t("products.dialog.price")}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         step="0.01"
                         min="0"
-                        placeholder="0.00"
+                        placeholder={t("products.dialog.pricePlaceholder")}
                         {...field}
                         onChange={(e) =>
                           field.onChange(parseFloat(e.target.value) || 0)
@@ -208,13 +210,13 @@ export function ProductDialog({
               name="discountPrice"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Discount Price (Optional)</FormLabel>
+                  <FormLabel>{t("products.dialog.discountPrice")}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       step="0.01"
                       min="0"
-                      placeholder="0.00"
+                      placeholder={t("products.dialog.discountPricePlaceholder")}
                       {...field}
                       onChange={(e) =>
                         field.onChange(parseFloat(e.target.value) || 0)
@@ -231,22 +233,22 @@ export function ProductDialog({
               name="status"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Status</FormLabel>
+                  <FormLabel>{t("products.dialog.status")}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select product status" />
+                        <SelectValue placeholder={t("products.dialog.statusPlaceholder")} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="DRAFT">Draft</SelectItem>
-                      <SelectItem value="ACTIVE">Active</SelectItem>
-                      <SelectItem value="INACTIVE">Inactive</SelectItem>
-                      <SelectItem value="ARCHIVED">Archived</SelectItem>
-                      <SelectItem value="OUT_OF_STOCK">Out of Stock</SelectItem>
+                      <SelectItem value="DRAFT">{t("products.dialog.statusOptions.DRAFT")}</SelectItem>
+                      <SelectItem value="ACTIVE">{t("products.dialog.statusOptions.ACTIVE")}</SelectItem>
+                      <SelectItem value="INACTIVE">{t("products.dialog.statusOptions.INACTIVE")}</SelectItem>
+                      <SelectItem value="ARCHIVED">{t("products.dialog.statusOptions.ARCHIVED")}</SelectItem>
+                      <SelectItem value="OUT_OF_STOCK">{t("products.dialog.statusOptions.OUT_OF_STOCK")}</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -267,7 +269,7 @@ export function ProductDialog({
 
                 return (
                   <FormItem>
-                    <FormLabel>Categories</FormLabel>
+                    <FormLabel>{t("products.dialog.categories")}</FormLabel>
                     <div className="space-y-2">
                       {/* Display selected categories */}
                       {selectedCategories.length > 0 && (
@@ -315,8 +317,8 @@ export function ProductDialog({
                             <SelectValue
                               placeholder={
                                 selectedCategories.length > 0
-                                  ? "Add more categories..."
-                                  : "Select categories"
+                                  ? t("products.dialog.addMoreCategories")
+                                  : t("products.dialog.selectCategories")
                               }
                             />
                           </SelectTrigger>
@@ -333,7 +335,7 @@ export function ProductDialog({
                         </Select>
                       ) : (
                         <div className="flex items-center justify-center h-10 px-3 py-2 text-sm text-muted-foreground border border-input rounded-md bg-muted/50">
-                          All categories selected
+                          {t("products.dialog.allCategoriesSelected")}
                         </div>
                       )}
                     </div>
@@ -349,10 +351,10 @@ export function ProductDialog({
                 variant="outline"
                 onClick={() => onOpenChange(false)}
               >
-                Cancel
+                {t("products.dialog.cancel")}
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Saving..." : product ? "Update" : "Create"}
+                {isLoading ? t("products.dialog.saving") : (product ? t("products.dialog.update") : t("products.dialog.create"))}
               </Button>
             </DialogFooter>
           </form>

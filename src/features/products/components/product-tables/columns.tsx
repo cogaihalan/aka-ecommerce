@@ -32,7 +32,7 @@ export const columns: ColumnDef<Product>[] = [
   {
     id: "images",
     accessorKey: "images",
-    header: "Image",
+    header: "Hình ảnh",
     cell: ({ row }) => {
       const images = row.getValue("images") as ProductImage[];
       const primaryImage = images.find((image) => image.primary);
@@ -53,12 +53,12 @@ export const columns: ColumnDef<Product>[] = [
     id: "name",
     accessorKey: "name",
     header: ({ column }: { column: Column<Product, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title="Tên" />
     ),
     cell: ({ cell }) => <div>{cell.getValue<Product["name"]>()}</div>,
     meta: {
-      label: "Name",
-      placeholder: "Search products...",
+      label: "Tên",
+      placeholder: "Tìm sản phẩm...",
       variant: "text",
       icon: Text,
     },
@@ -67,7 +67,7 @@ export const columns: ColumnDef<Product>[] = [
   {
     id: "stock",
     accessorKey: "stock",
-    header: "Stock",
+    header: "Tồn kho",
     cell: ({ row }) => {
       const stock = row.getValue("stock") as number;
       return <div className="font-medium">{stock || 0}</div>;
@@ -77,7 +77,7 @@ export const columns: ColumnDef<Product>[] = [
     id: "price",
     accessorKey: "price",
     header: ({ column }: { column: Column<Product, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Price" />
+      <DataTableColumnHeader column={column} title="Giá" />
     ),
     cell: ({ row }) => {
       const price = row.getValue("price") as number;
@@ -97,29 +97,29 @@ export const columns: ColumnDef<Product>[] = [
   {
     id: "status",
     accessorKey: "status",
-    header: "Status",
+    header: "Trạng thái",
     cell: ({ row }) => {
       const status = row.getValue("status") as ProductStatus;
 
       const statusConfig = {
-        DRAFT: { label: "Draft", variant: "secondary" as const, icon: Clock },
+        DRAFT: { label: "Nháp", variant: "secondary" as const, icon: Clock },
         ACTIVE: {
-          label: "Active",
+          label: "Hoạt động",
           variant: "default" as const,
           icon: CheckCircle,
         },
         INACTIVE: {
-          label: "Inactive",
+          label: "Ngừng hoạt động",
           variant: "destructive" as const,
           icon: XCircle,
         },
         ARCHIVED: {
-          label: "Archived",
+          label: "Lưu trữ",
           variant: "outline" as const,
           icon: Archive,
         },
         OUT_OF_STOCK: {
-          label: "Out of Stock",
+          label: "Hết hàng",
           variant: "destructive" as const,
           icon: AlertCircle,
         },
@@ -136,15 +136,15 @@ export const columns: ColumnDef<Product>[] = [
       );
     },
     meta: {
-      label: "Status",
-      placeholder: "Filter by status...",
+      label: "Trạng thái",
+      placeholder: "Lọc theo trạng thái...",
       variant: "select",
       options: [
-        { label: "Draft", value: "DRAFT" },
-        { label: "Active", value: "ACTIVE" },
-        { label: "Inactive", value: "INACTIVE" },
-        { label: "Archived", value: "ARCHIVED" },
-        { label: "Out of Stock", value: "OUT_OF_STOCK" },
+        { label: "Nháp", value: "DRAFT" },
+        { label: "Hoạt động", value: "ACTIVE" },
+        { label: "Ngừng hoạt động", value: "INACTIVE" },
+        { label: "Lưu trữ", value: "ARCHIVED" },
+        { label: "Hết hàng", value: "OUT_OF_STOCK" },
       ],
     },
     enableColumnFilter: true,
@@ -154,12 +154,12 @@ export const columns: ColumnDef<Product>[] = [
   {
     id: "description",
     accessorKey: "description",
-    header: "Description",
+    header: "Mô tả",
     cell: ({ row }) => {
       const description = row.getValue("description") as string;
       return (
         <div className="max-w-50 line-clamp-4 text-sm text-muted-foreground whitespace-normal">
-          {description || "No description"}
+          {description || "Không có mô tả"}
         </div>
       );
     },

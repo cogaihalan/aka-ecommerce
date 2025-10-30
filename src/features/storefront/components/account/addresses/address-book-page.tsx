@@ -53,15 +53,15 @@ export default function AddressBookPage() {
     try {
       if (editingAddress) {
         await updateAddress(editingAddress.id, data);
-        toast.success("Address updated successfully");
+        toast.success("Cập nhật địa chỉ thành công");
       } else {
         await addAddress(data);
-        toast.success("Address added successfully");
+        toast.success("Thêm địa chỉ thành công");
       }
       setShowForm(false);
       setEditingAddress(null);
     } catch (error) {
-      toast.error("Failed to save address");
+      toast.error("Lưu địa chỉ thất bại");
     }
   };
 
@@ -75,19 +75,19 @@ export default function AddressBookPage() {
 
     try {
       await deleteAddress(deletingAddress.id);
-      toast.success("Address deleted successfully");
+      toast.success("Xóa địa chỉ thành công");
       setDeletingAddress(null);
     } catch (error) {
-      toast.error("Failed to delete address");
+      toast.error("Xóa địa chỉ thất bại");
     }
   };
 
   const handleSetDefault = async (address: Address) => {
     try {
       await setDefaultAddress(address.id);
-      toast.success(`Default address updated`);
+      toast.success(`Cập nhật địa chỉ mặc định thành công`);
     } catch (error) {
-      toast.error("Failed to set default address");
+      toast.error("Cài đặt địa chỉ mặc định thất bại");
     }
   };
 

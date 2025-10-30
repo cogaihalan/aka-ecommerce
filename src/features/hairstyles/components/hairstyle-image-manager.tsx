@@ -114,9 +114,9 @@ export function HairstyleImageManager({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Manage Hairstyle Images</DialogTitle>
+          <DialogTitle>Quản lý ảnh kiểu tóc</DialogTitle>
           <DialogDescription>
-            Upload new images, remove existing ones, and set the primary image.
+            Tải lên ảnh mới, xóa ảnh hiện có và đặt ảnh chính.
           </DialogDescription>
         </DialogHeader>
 
@@ -124,7 +124,7 @@ export function HairstyleImageManager({
           {/* Existing Images */}
           {existingImages.length > 0 && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Existing Images</h3>
+              <h3 className="text-lg font-semibold">Ảnh hiện có</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {existingImages
                   .filter((img) => !removedImageIds.includes(img.id))
@@ -140,7 +140,7 @@ export function HairstyleImageManager({
                         {image.primary && (
                           <div className="absolute top-2 left-2">
                             <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded">
-                              Primary
+                              Ảnh chính
                             </span>
                           </div>
                         )}
@@ -162,7 +162,7 @@ export function HairstyleImageManager({
                             htmlFor={`primary-${image.id}`}
                             className="text-sm font-medium"
                           >
-                            Set as primary
+                            Đặt làm ảnh chính
                           </label>
                         </div>
 
@@ -183,7 +183,7 @@ export function HairstyleImageManager({
 
           {/* Upload New Images */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Upload New Images</h3>
+            <h3 className="text-lg font-semibold">Tải lên ảnh mới</h3>
             <FileUploader
               onUpload={handleImageUpload}
               accept={{ "image/*": [] }}
@@ -193,7 +193,7 @@ export function HairstyleImageManager({
 
             {selectedImages.length > 0 && (
               <div className="space-y-2">
-                <h4 className="font-medium">Selected Images:</h4>
+                <h4 className="font-medium">Ảnh đã chọn:</h4>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                   {selectedImages.map((file, index) => (
                     <div key={index} className="relative group">
@@ -228,7 +228,7 @@ export function HairstyleImageManager({
             onClick={handleClose}
             disabled={isLoading}
           >
-            Cancel
+            Hủy
           </Button>
           <Button
             type="button"
@@ -238,7 +238,7 @@ export function HairstyleImageManager({
               (selectedImages.length === 0 && removedImageIds.length === 0)
             }
           >
-            {isLoading ? "Saving..." : "Save Changes"}
+            {isLoading ? "Đang lưu..." : "Lưu thay đổi"}
           </Button>
         </DialogFooter>
       </DialogContent>

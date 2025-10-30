@@ -80,7 +80,7 @@ export function ProductImageManager({
           primaryImageId,
         };
         await unifiedProductService.updateProductImages(updateData);
-        toast.success("Product images updated successfully");
+        toast.success("Cập nhật ảnh sản phẩm thành công");
       } else if (selectedImages.length > 0) {
         // Upload: only adding new images
         const uploadData: ProductImageUploadRequest = {
@@ -88,7 +88,7 @@ export function ProductImageManager({
           files: selectedImages,
         };
         await unifiedProductService.uploadProductImages(uploadData);
-        toast.success("Product images uploaded successfully");
+        toast.success("Tải ảnh sản phẩm lên thành công");
       } else if (removedImageIds.length > 0) {
         // Delete: only removing existing images
         const deleteData: ProductImageDeleteRequest = {
@@ -97,7 +97,7 @@ export function ProductImageManager({
           removedImageIds,
         };
         await unifiedProductService.deleteProductImages(deleteData);
-        toast.success("Product images deleted successfully");
+        toast.success("Xóa ảnh sản phẩm thành công");
       } else if (
         primaryImageId !== null &&
         primaryImageId !==
@@ -111,7 +111,7 @@ export function ProductImageManager({
           primaryImageId,
         };
         await unifiedProductService.updateProductImages(updateData);
-        toast.success("Primary image updated successfully");
+        toast.success("Cập nhật ảnh chính thành công");
       }
 
       onSuccess?.();
@@ -119,7 +119,7 @@ export function ProductImageManager({
       setSelectedImages([]);
       setRemovedImageIds([]);
     } catch (error) {
-      toast.error("Failed to manage product images");
+      toast.error("Quản lý ảnh sản phẩm thất bại");
       console.error("Error managing product images:", error);
     } finally {
       setIsLoading(false);
@@ -147,16 +147,16 @@ export function ProductImageManager({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Manage Product Images</DialogTitle>
+          <DialogTitle>Quản lý ảnh sản phẩm</DialogTitle>
           <DialogDescription>
-            Upload new images or remove existing ones for this product.
+            Tải ảnh mới hoặc xóa ảnh hiện có cho sản phẩm này.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
           {/* Upload New Images */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium">Upload New Images</h3>
+            <h3 className="text-lg font-medium">Tải ảnh mới</h3>
             <FileUploader
               onUpload={handleImageUpload}
               accept={{ "image/*": [] }}
@@ -167,7 +167,7 @@ export function ProductImageManager({
             {selectedImages.length > 0 && (
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">
-                  New images to upload ({selectedImages.length}):
+                  Ảnh mới sẽ tải lên ({selectedImages.length}):
                 </p>
                 <div className="flex flex-wrap gap-4">
                   {selectedImages.map((file, index) => (
@@ -202,7 +202,7 @@ export function ProductImageManager({
           {/* Existing Images */}
           {visibleExistingImages.length > 0 && (
             <div className="space-y-4">
-              <h3 className="text-lg font-medium">Existing Images</h3>
+              <h3 className="text-lg font-medium">Ảnh hiện có</h3>
               <div className="flex flex-wrap gap-4">
                 {visibleExistingImages.map((image) => (
                   <div
@@ -235,7 +235,7 @@ export function ProductImageManager({
                         htmlFor={`primary-${image.id}`}
                         className="text-xs text-foreground cursor-pointer"
                       >
-                        Primary
+                        Ảnh chính
                       </label>
                     </div>
                   </div>
@@ -247,7 +247,7 @@ export function ProductImageManager({
 
         <DialogFooter>
           <Button type="button" variant="outline" onClick={handleClose}>
-            Cancel
+            Hủy
           </Button>
           <Button
             onClick={handleSubmit}
@@ -259,7 +259,7 @@ export function ProductImageManager({
                   (existingImages.find((img) => img.primary)?.id || null))
             }
           >
-            {isLoading ? "Saving..." : "Save Changes"}
+            {isLoading ? "Đang lưu..." : "Lưu thay đổi"}
           </Button>
         </DialogFooter>
       </DialogContent>

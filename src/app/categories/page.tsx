@@ -2,9 +2,9 @@ import { Metadata } from "next";
 import CategoryListingPage from "@/features/storefront/components/category-listing-page";
 
 export const metadata: Metadata = {
-  title: "Categories - AKA Store",
+  title: "Danh mục - AKA Store",
   description:
-    "Explore our product categories. Find products organized by type and style.",
+    "Khám phá các danh mục sản phẩm. Tìm sản phẩm theo loại và phong cách.",
 };
 
 export default function CategoriesPage() {

@@ -67,12 +67,12 @@ export function isProductOutOfStock(product: Product): boolean {
  */
 export function getStockStatusText(product: Product): string {
   if (product.stock <= 0) {
-    return "Out of Stock";
+    return "Hết hàng";
   }
 
   if (product.stock > 0 && product.stock < 10) {
-    return `Only ${product.stock} items left`;
+    return `Chỉ còn ${product.stock} sản phẩm`;
   }
 
-  return "Add to Cart";
+  return "Thêm vào giỏ";
 }

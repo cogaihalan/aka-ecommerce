@@ -59,6 +59,14 @@ export const navItems: NavItem[] = [
     items: [],
   },
   {
+    title: "Submissions",
+    url: "/admin/submissions",
+    icon: "award",
+    shortcut: ["s", "s"],
+    isActive: false,
+    items: [],
+  },
+  {
     title: "Pages",
     url: "/admin/pages",
     icon: "page",

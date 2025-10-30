@@ -10,8 +10,8 @@ import { searchParamsCache } from "@/lib/searchparams";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
 
 export const metadata = {
-  title: "Content Pages",
-  description: "Manage static pages and content using Prismic CMS",
+  title: "Trang nội dung",
+  description: "Quản lý trang tĩnh và nội dung sử dụng Prismic CMS",
 };
 
 export default async function PrismicPagesPage(props: DashboardPageProps) {
@@ -24,8 +24,8 @@ export default async function PrismicPagesPage(props: DashboardPageProps) {
       <div className="flex flex-1 flex-col space-y-4">
         <div className="flex items-start justify-between">
           <Heading
-            title="Content Pages"
-            description="Manage static pages and content using Prismic CMS"
+            title="Trang nội dung"
+            description="Quản lý trang tĩnh và nội dung sử dụng Prismic CMS"
           />
           <PrismicRefreshButton />
         </div>

@@ -271,6 +271,7 @@ export interface AdminUpdateSubmissionStatusRequest {
 
 export interface CreateSubmissionRequest {
   name: string;
+  contestId: number;
   description: string;
   barberName: string;
   barberAddress: string;

@@ -10,8 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
 
 export const metadata: Metadata = {
-  title: "Dashboard: Courses",
-  description: "Manage courses and video content for your platform",
+  title: "Bảng quản trị: Khoá học",
+  description: "Quản lý khoá học và nội dung video cho nền tảng",
 };
 
 export default async function CoursesPage(props: DashboardPageProps) {
@@ -24,8 +24,8 @@ export default async function CoursesPage(props: DashboardPageProps) {
       <div className="flex flex-1 flex-col space-y-4">
         <div className="flex items-start justify-between">
           <Heading
-            title="Courses"
-            description="Manage courses and video content for your platform."
+            title="Khoá học"
+            description="Quản lý khoá học và nội dung video cho nền tảng."
           />
           <AddCourseButton />
         </div>

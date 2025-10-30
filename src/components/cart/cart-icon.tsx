@@ -38,6 +38,7 @@ export function CartIcon({ className, showBadge = true }: CartIconProps) {
         onMouseLeave={() => setIsHovered(false)}
         className={cn(
           "relative transition-all duration-200 hover:bg-muted/50 size-9",
+          isOpen && "pointer-events-none",
           className
         )}
       >

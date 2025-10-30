@@ -8,18 +8,18 @@ import { formatCurrency } from "@/lib/format";
 import { CellAction } from "./cell-action";
 
 const STATUS_OPTIONS = [
-  { label: "Pending", value: "PENDING" },
-  { label: "Confirmed", value: "CONFIRMED" },
-  { label: "Shipping", value: "SHIPPING" },
-  { label: "Delivered", value: "DELIVERED" },
-  { label: "Cancelled", value: "CANCELLED" },
-  { label: "Refunded", value: "REFUNDED" },
+  { label: "Chờ xử lý", value: "PENDING" },
+  { label: "Đã xác nhận", value: "CONFIRMED" },
+  { label: "Đang giao", value: "SHIPPING" },
+  { label: "Đã giao", value: "DELIVERED" },
+  { label: "Đã hủy", value: "CANCELLED" },
+  { label: "Đã hoàn tiền", value: "REFUNDED" },
 ];
 
 const PAYMENT_STATUS_OPTIONS = [
-  { label: "Unpaid", value: "UNPAID" },
-  { label: "Paid", value: "PAID" },
-  { label: "Failed", value: "FAILED" },
+  { label: "Chưa thanh toán", value: "UNPAID" },
+  { label: "Đã thanh toán", value: "PAID" },
+  { label: "Thất bại", value: "FAILED" },
 ];
 
 const getStatusBadgeVariant = (status: string) => {
@@ -47,15 +47,15 @@ export const columns: ColumnDef<Order>[] = [
     id: "orderCode",
     accessorKey: "orderCode",
     header: ({ column }: { column: Column<Order, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Order #" />
+      <DataTableColumnHeader column={column} title="Mã đơn" />
     ),
     cell: ({ row }) => {
       const orderCode = row.getValue("code") as string;
       return <div className="font-medium">{orderCode}</div>;
     },
     meta: {
-      label: "Order Code",
-      placeholder: "Search orders...",
+      label: "Mã đơn hàng",
+      placeholder: "Tìm đơn hàng...",
       variant: "text",
     },
     enableColumnFilter: true,
@@ -64,19 +64,27 @@ export const columns: ColumnDef<Order>[] = [
     id: "status",
     accessorKey: "status",
     header: ({ column }: { column: Column<Order, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title="Trạng thái" />
     ),
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
+      const statusMap: Record<string, string> = {
+        PENDING: "Chờ xử lý",
+        CONFIRMED: "Đã xác nhận",
+        SHIPPING: "Đang giao",
+        DELIVERED: "Đã giao",
+        CANCELLED: "Đã hủy",
+        REFUNDED: "Đã hoàn tiền",
+      };
       return (
         <Badge variant={getStatusBadgeVariant(status)} className="capitalize">
-          {status.replace("_", " ")}
+          {statusMap[status.toUpperCase()] ?? status.replace("_", " ")}
         </Badge>
       );
     },
     enableColumnFilter: true,
     meta: {
-      label: "Status",
+      label: "Trạng thái",
       variant: "select",
       options: STATUS_OPTIONS,
     },
@@ -85,22 +93,27 @@ export const columns: ColumnDef<Order>[] = [
     id: "paymentStatus",
     accessorKey: "paymentStatus",
     header: ({ column }: { column: Column<Order, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Payment" />
+      <DataTableColumnHeader column={column} title="Thanh toán" />
     ),
     cell: ({ row }) => {
       const paymentStatus = row.getValue("paymentStatus") as string;
+      const payMap: Record<string, string> = {
+        UNPAID: "Chưa thanh toán",
+        PAID: "Đã thanh toán",
+        FAILED: "Thất bại",
+      };
       return (
         <Badge
           variant={getStatusBadgeVariant(paymentStatus)}
           className="capitalize"
         >
-          {paymentStatus.replace("_", " ")}
+          {payMap[paymentStatus.toUpperCase()] ?? paymentStatus.replace("_", " ")}
         </Badge>
       );
     },
     enableColumnFilter: true,
     meta: {
-      label: "Payment Status",
+      label: "Trạng thái thanh toán",
       variant: "select",
       options: PAYMENT_STATUS_OPTIONS,
     },
@@ -109,7 +122,7 @@ export const columns: ColumnDef<Order>[] = [
     id: "total",
     accessorKey: "finalAmount",
     header: ({ column }: { column: Column<Order, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Total" />
+      <DataTableColumnHeader column={column} title="Tổng" />
     ),
     cell: ({ row }) => {
       const order = row.original;
@@ -117,7 +130,7 @@ export const columns: ColumnDef<Order>[] = [
       return <div className="font-medium">{formatCurrency(total)}</div>;
     },
     meta: {
-      label: "Total Amount",
+      label: "Tổng tiền",
       variant: "range",
     },
     enableColumnFilter: true,
@@ -126,7 +139,7 @@ export const columns: ColumnDef<Order>[] = [
     id: "items",
     accessorKey: "items",
     header: ({ column }: { column: Column<Order, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Items" />
+      <DataTableColumnHeader column={column} title="Sản phẩm" />
     ),
     cell: ({ row }) => {
       const order = row.original;
@@ -142,7 +155,7 @@ export const columns: ColumnDef<Order>[] = [
     id: "createdAt",
     accessorKey: "createdAt",
     header: ({ column }: { column: Column<Order, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Date" />
+      <DataTableColumnHeader column={column} title="Ngày" />
     ),
     cell: ({ row }) => {
       const date = row.getValue("createdAt") as string;
@@ -151,7 +164,7 @@ export const columns: ColumnDef<Order>[] = [
       );
     },
     meta: {
-      label: "Date",
+      label: "Ngày",
       variant: "dateRange",
     },
     enableColumnFilter: true,

@@ -10,8 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
 
 export const metadata: Metadata = {
-  title: "User Management | AKA Store Dashboard",
-  description: "Manage user accounts, roles, and permissions",
+  title: "Quản lý người dùng | Bảng điều khiển AKA Store",
+  description: "Quản lý tài khoản, vai trò và quyền hạn người dùng",
 };
 
 export default async function UsersPage(props: DashboardPageProps) {
@@ -24,8 +24,8 @@ export default async function UsersPage(props: DashboardPageProps) {
       <div className="flex flex-1 flex-col space-y-4">
         <div className="flex items-start justify-between">
           <Heading
-            title="Users"
-            description="Manage user accounts, roles, and permissions for your store."
+            title="Người dùng"
+            description="Quản lý tài khoản, vai trò và quyền hạn cho cửa hàng của bạn."
           />
         </div>
         <Separator />

@@ -12,28 +12,26 @@ export default function SignInViewPage() {
     <div className="flex items-center justify-center bg-background">
       <div className="w-full max-w-md space-y-6 p-6">
         <div className="text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">Sign In</h1>
-          <p className="text-muted-foreground">
-            Enter your credentials to access your account
-          </p>
+          <h1 className="text-2xl font-semibold tracking-tight">Đăng nhập</h1>
+          <p className="text-muted-foreground">Nhập thông tin để truy cập tài khoản</p>
         </div>
 
         <ClerkSignInForm />
 
         <p className="text-muted-foreground text-center text-sm">
-          By clicking continue, you agree to our{" "}
+          Khi tiếp tục, bạn đồng ý với{" "}
           <Link
             href="/terms"
             className="hover:text-primary underline underline-offset-4"
           >
-            Terms of Service
+            Điều khoản dịch vụ
           </Link>{" "}
           and{" "}
           <Link
             href="/privacy"
             className="hover:text-primary underline underline-offset-4"
           >
-            Privacy Policy
+            Chính sách bảo mật
           </Link>
           .
         </p>

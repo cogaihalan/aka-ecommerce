@@ -11,32 +11,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ArrowRight, Edit, Mail, Phone, Loader2 } from "lucide-react";
+import { ArrowRight, Edit, Mail, Phone } from "lucide-react";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 import { useUserAddresses } from "@/hooks/use-user-addresses";
 import { formatCurrency, formatDate } from "@/lib/format";
-import { unifiedOrderService } from "@/lib/api/services/unified";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Order, OrderStatus } from "@/types";
 
-interface DisplayOrder {
-  id: string;
-  status: string;
-  date: string;
-  total: number;
-  products: number;
-  statusColor: string;
-}
-
-export default function AccountDashboard() {
+export default function AccountDashboard({ orders }: { orders: Order[] }) {
   const { user } = useUser();
   const { addresses } = useUserAddresses();
   const router = useRouter();
-  const [orders, setOrders] = useState<DisplayOrder[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   // Get default billing address
   const defaultAddress = addresses.find(
@@ -56,86 +42,6 @@ export default function AccountDashboard() {
         return "text-gray-600";
     }
   };
-
-  // Helper function to format status for display
-  const formatStatus = (status: OrderStatus): string => {
-    switch (status) {
-      case "PENDING":
-        return "PENDING";
-      case "DELIVERED":
-        return "COMPLETED";
-      case "CANCELLED":
-        return "CANCELED";
-      default:
-        return status.toUpperCase();
-    }
-  };
-
-  // Load orders data
-  useEffect(() => {
-    const loadOrders = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-
-        // Fetch recent orders (limit to 7 for display)
-        const response = await unifiedOrderService.getOrders({
-          page: 1,
-          size: 7,
-          sort: ["createdAt,desc"],
-        });
-
-        // Transform orders for display
-        const displayOrders: DisplayOrder[] = response.items.map(
-          (order: Order) => ({
-            id: order.id.toString(),
-            status: formatStatus(order.status),
-            date: formatDate(order.createdAt, {
-              month: "short",
-              day: "numeric",
-              year: order.createdAt?.getFullYear()?.toString() as "numeric" | "2-digit" | undefined,
-            }),
-            total: order.finalAmount,
-            products: order.items.length,
-            statusColor: getStatusColor(order.status),
-          }));
-
-        setOrders(displayOrders);
-      } catch (err) {
-        console.error("Failed to load orders:", err);
-        setError("Failed to load order data");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (user) {
-      loadOrders();
-    }
-  }, [user]);
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center py-8">
-        <p className="text-red-600">{error}</p>
-        <Button
-          onClick={() => window.location.reload()}
-          variant="outline"
-          className="mt-4"
-        >
-          Retry
-        </Button>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-8">
@@ -289,7 +195,7 @@ export default function AccountDashboard() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>ORDER ID</TableHead>
+                <TableHead>ORDER CODE</TableHead>
                 <TableHead>STATUS</TableHead>
                 <TableHead>DATE</TableHead>
                 <TableHead>TOTAL</TableHead>
@@ -299,16 +205,16 @@ export default function AccountDashboard() {
             <TableBody>
               {orders.length > 0 ? (
                 orders.map((order, index) => (
-                  <TableRow key={`${order.id}-${index}`}>
-                    <TableCell className="font-medium">#{order.id}</TableCell>
+                  <TableRow key={`${order.code}-${index}`}>
+                    <TableCell className="font-medium">{order.code}</TableCell>
                     <TableCell>
-                      <span className={`font-medium ${order.statusColor}`}>
+                      <span className={`font-medium ${getStatusColor(order.status)}`}>
                         {order.status}
                       </span>
                     </TableCell>
-                    <TableCell>{order.date}</TableCell>
+                    <TableCell>{formatDate(order.createdAt)}</TableCell>
                     <TableCell>
-                      {formatCurrency(order.total)} ({order.products} Items)
+                      {formatCurrency(order.finalAmount)} ({order.items.length} Items)
                     </TableCell>
                     <TableCell>
                       <button

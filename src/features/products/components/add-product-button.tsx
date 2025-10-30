@@ -12,7 +12,7 @@ export function AddProductButton() {
     <>
       <Button onClick={() => setOpen(true)}>
         <Plus className="mr-2 h-4 w-4" />
-        Add Product
+        Thêm sản phẩm
       </Button>
 
       <ProductDialog

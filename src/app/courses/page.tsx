@@ -9,8 +9,8 @@ import { serverUnifiedCourseService } from "@/lib/api/services/server";
 import { QueryParams } from "@/lib/api/types";
 
 export const metadata: Metadata = {
-  title: "Courses",
-  description: "Browse our collection of video courses and tutorials",
+  title: "Khoá học",
+  description: "Khám phá bộ sưu tập khoá học video và hướng dẫn",
 };
 
 interface CoursesPageProps {
@@ -39,10 +39,8 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Courses</h1>
-        <p className="text-muted-foreground">
-          Discover our collection of video courses and tutorials
-        </p>
+        <h1 className="text-3xl font-bold mb-2">Khoá học</h1>
+        <p className="text-muted-foreground">Khám phá bộ sưu tập khoá học video và hướng dẫn</p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">

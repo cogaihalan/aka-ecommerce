@@ -35,7 +35,7 @@ export const MegaMenu: FC<MegaMenuProps> = ({ menuItems, className }) => {
 
   const renderMegaMenuContent = (item: MenuItem) => {
     return (
-      <div className="absolute top-full left-0 min-w-40 max-w-2xl bg-white dark:bg-gray-900 shadow-2xl border border-gray-100 dark:border-gray-800 rounded-md z-50 overflow-hidden">
+      <div className="absolute top-[calc(100%+8px)] left-0 min-w-40 max-w-2xl bg-white dark:bg-gray-900 shadow-2xl border border-gray-100 dark:border-gray-800 rounded-md z-50 overflow-hidden">
         <div className="px-4 py-3">
           {/* Content Grid */}
           {item.child_links && item.child_links.length > 0 && (

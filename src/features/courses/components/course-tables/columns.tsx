@@ -68,7 +68,7 @@ export const columns: ColumnDef<Course>[] = [
     id: "name",
     accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Course Name" />
+      <DataTableColumnHeader column={column} title="Tên khoá học" />
     ),
     cell: ({ row }) => {
       const course = row.original;
@@ -79,8 +79,8 @@ export const columns: ColumnDef<Course>[] = [
       );
     },
     meta: {
-      label: "Course Name",
-      placeholder: "Search courses...",
+        label: "Tên khoá học",
+      placeholder: "Tìm kiếm khoá học...",
       variant: "text",
       icon: Text,
     },
@@ -89,7 +89,7 @@ export const columns: ColumnDef<Course>[] = [
   {
     id: "description",
     accessorKey: "description",
-    header: "Description",
+    header: "Mô tả",
     cell: ({ row }) => {
       const description = row.original.description;
       return (
@@ -103,7 +103,7 @@ export const columns: ColumnDef<Course>[] = [
   },
   {
     accessorKey: "duration",
-    header: "Duration",
+    header: "Thời lượng",
     cell: ({ row }) => {
       const duration = row.getValue("duration") as number;
       return (
@@ -117,7 +117,7 @@ export const columns: ColumnDef<Course>[] = [
   {
     id: "status",
     accessorKey: "active",
-    header: "Status",
+    header: "Trạng thái",
     cell: ({ row }) => {
       const isActive = row.original.active;
       return (
@@ -127,7 +127,7 @@ export const columns: ColumnDef<Course>[] = [
       );
     },
     meta: {
-      label: "Status",
+      label: "Trạng thái",
       variant: "select",
       options: [
         { label: "Active", value: "ACTIVE" },
@@ -151,7 +151,7 @@ export const columns: ColumnDef<Course>[] = [
       );
     },
     meta: {
-      label: "Created",
+      label: "Tạo lúc",
       variant: "date",
       icon: Calendar,
     },
@@ -160,7 +160,7 @@ export const columns: ColumnDef<Course>[] = [
   {
     accessorKey: "updatedAt",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated" />
+      <DataTableColumnHeader column={column} title="Cập nhật lúc" />
     ),
     cell: ({ row }) => {
       const date = row.getValue("updatedAt") as string;
@@ -184,18 +184,18 @@ export const columns: ColumnDef<Course>[] = [
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">Mở menu</span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>Hành động</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => setShowVideoPreview(true)}
                 className="cursor-pointer"
               >
                 <Play className="mr-2 h-4 w-4" />
-                Preview Video
+                Xem video
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -203,7 +203,7 @@ export const columns: ColumnDef<Course>[] = [
                 className="cursor-pointer"
               >
                 <Edit className="mr-2 h-4 w-4" />
-                Edit Course
+                Chỉnh sửa khoá học
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

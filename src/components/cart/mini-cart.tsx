@@ -14,12 +14,14 @@ import {
   useCartItemCount,
 } from "@/stores/cart-store";
 import { CartItem } from "./cart-item";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface MiniCartProps {
   className?: string;
 }
 
 export function MiniCart({ className }: MiniCartProps) {
+  const { t } = useI18n();
   const { isOpen, closeCart } = useCartStore();
   const items = useCartItems();
   const total = useCartTotal();
@@ -73,7 +75,7 @@ export function MiniCart({ className }: MiniCartProps) {
     <div
       ref={dropdownRef}
       className={cn(
-        "absolute right-0 top-full w-96 bg-background/95 backdrop-blur-md border border-border rounded-lg shadow-xl z-50",
+        "absolute left-1/2 lg:left-[unset] lg:right-0 top-full w-80 lg:w-96 -translate-x-1/2 lg:translate-x-0 bg-background/95 backdrop-blur-md border border-border rounded-lg shadow-xl z-50",
         "transform transition-all duration-300 ease-out",
         "animate-in slide-in-from-top-2 fade-in-0 zoom-in-95",
         isOpen
@@ -87,7 +89,7 @@ export function MiniCart({ className }: MiniCartProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ShoppingCart className="w-5 h-5" />
-            <h3 className="font-semibold text-lg">Cart ({itemCount})</h3>
+            <h3 className="font-semibold text-lg">{t("cart.titleWithCount", { count: itemCount })}</h3>
           </div>
           <Button
             variant="ghost"
@@ -104,13 +106,11 @@ export function MiniCart({ className }: MiniCartProps) {
       {items.length === 0 ? (
         <div className="p-8 text-center">
           <ShoppingBag className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <h4 className="font-medium text-lg mb-2">Your cart is empty</h4>
-          <p className="text-muted-foreground text-sm mb-6">
-            Add some items to get started
-          </p>
+          <h4 className="font-medium text-lg mb-2">{t("cart.emptyTitle")}</h4>
+          <p className="text-muted-foreground text-sm mb-6">{t("cart.emptySubtitle")}</p>
           <Button asChild onClick={closeCart}>
             <Link href="/products">
-              Start Shopping
+              {t("cart.startShopping")}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
           </Button>
@@ -145,7 +145,7 @@ export function MiniCart({ className }: MiniCartProps) {
           {/* Summary */}
           <div className="p-4 space-y-4">
             <div className="flex justify-between items-center">
-              <span className="font-medium">Total</span>
+              <span className="font-medium">{t("cart.total")}</span>
               <span className="font-bold text-lg">{formatPrice(total)}</span>
             </div>
 
@@ -153,7 +153,7 @@ export function MiniCart({ className }: MiniCartProps) {
             <div className="space-y-2">
               <Button asChild className="w-full" size="lg" onClick={closeCart}>
                 <Link href="/checkout">
-                  Checkout
+                  {t("cart.checkout")}
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
               </Button>
@@ -163,7 +163,7 @@ export function MiniCart({ className }: MiniCartProps) {
                 className="w-full"
                 onClick={closeCart}
               >
-                <Link href="/cart">View Cart</Link>
+                <Link href="/cart">{t("cart.viewCart")}</Link>
               </Button>
             </div>
           </div>

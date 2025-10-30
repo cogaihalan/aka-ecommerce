@@ -16,8 +16,8 @@ import { unifiedPaymentService } from "@/lib/api/services/unified/payment";
 // Form validation schema
 const checkoutSchema = z.object({
   sameAsShipping: z.boolean().optional(),
-  shippingMethod: z.string().min(1, "Please select a shipping method"),
-  paymentMethod: z.string().min(1, "Please select a payment method"),
+  shippingMethod: z.string().min(1, "Vui lòng chọn phương thức vận chuyển"),
+  paymentMethod: z.string().min(1, "Vui lòng chọn phương thức thanh toán"),
   orderNote: z.string().optional(),
 });
 
@@ -51,16 +51,6 @@ export const PAYMENT_METHODS = [
     name: "VNPay",
     description: "Thanh toán qua VNPay",
   },
-  // {
-  //   id: "MOMO",
-  //   name: "MoMo",
-  //   description: "Thanh toán qua ví MoMo",
-  // },
-  // {
-  //   id: "ZALO",
-  //   name: "ZaloPay",
-  //   description: "Thanh toán qua ZaloPay",
-  // },
 ];
 
 export function useCheckoutPage() {
@@ -178,10 +168,10 @@ export function useCheckoutPage() {
         await updateAddress(editingAddress.id, {
           ...data,
         });
-        toast.success("Address updated successfully");
+        toast.success("Cập nhật địa chỉ thành công");
       } else {
         await addAddress({ ...data, isDefault: true });
-        toast.success("Address added successfully");
+        toast.success("Thêm địa chỉ thành công");
       }
       setShowAddressForm(false);
       setEditingAddress(null);
@@ -192,7 +182,7 @@ export function useCheckoutPage() {
         setSelectedAddress(newAddress);
       }
     } catch (error) {
-      toast.error("Failed to save shipping address");
+      toast.error("Lưu địa chỉ giao hàng thất bại");
     }
   };
 
@@ -205,18 +195,18 @@ export function useCheckoutPage() {
   // Handle form submission
   const handleFormSubmit = async (data: CheckoutFormValues) => {
     if (!user) {
-      toast.error("Please sign in to continue");
+      toast.error("Vui lòng đăng nhập để tiếp tục");
       return;
     }
 
     if (items.length === 0) {
-      toast.error("Your cart is empty");
+      toast.error("Giỏ hàng của bạn đang trống");
       return;
     }
 
     // Validate addresses
     if (!selectedAddress) {
-      toast.error("Please select a shipping address to continue");
+      toast.error("Vui lòng chọn địa chỉ giao hàng để tiếp tục");
       return;
     }
 
@@ -245,14 +235,14 @@ export function useCheckoutPage() {
         window.open(paymentResponse.paymentUrl, "_blank");
       }
 
-      toast.success("Order placed successfully!");
+      toast.success("Đặt hàng thành công!");
       await clearCart();
 
       // Redirect to success page with order ID
       router.push(`/checkout/success?order_id=${createdOrder.id.toString()}`);
     } catch (error) {
       console.error("Error creating order:", error);
-      toast.error("Failed to place order. Please try again.");
+      toast.error("Đặt hàng thất bại. Vui lòng thử lại.");
     } finally {
       setIsSubmitting(false);
     }

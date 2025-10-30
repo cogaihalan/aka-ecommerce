@@ -9,38 +9,41 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 const footerLinks = {
   shop: [
-    { name: "All Products", href: "/products" },
-    { name: "Categories", href: "/categories" },
-    { name: "Hairstyles", href: "/hairstyles" },
-    { name: "Courses", href: "/courses" },
-    { name: "Contests", href: "/contests" },
-    { name: "New Arrivals", href: "/products?filter=new" },
-    { name: "Best Sellers", href: "/products?filter=bestsellers" },
+    { key: "footer.links.allProducts", href: "/products" },
+    { key: "footer.links.categories", href: "/categories" },
+    { key: "footer.links.hairstyles", href: "/hairstyles" },
+    { key: "footer.links.courses", href: "/courses" },
+    { key: "footer.links.contests", href: "/contests" },
+    { key: "footer.links.submissions", href: "/submissions" },
+    { key: "footer.links.newArrivals", href: "/products?filter=new" },
+    { key: "footer.links.bestSellers", href: "/products?filter=bestsellers" },
   ],
   support: [
-    { name: "Help Center", href: "/help" },
-    { name: "Contact Us", href: "/contact" },
-    { name: "Shipping Info", href: "/help/shipping" },
-    { name: "Returns", href: "/help/returns" },
+    { key: "footer.links.helpCenter", href: "/help" },
+    { key: "footer.links.contactUs", href: "/contact" },
+    { key: "footer.links.shippingInfo", href: "/help/shipping" },
+    { key: "footer.links.returns", href: "/help/returns" },
   ],
   company: [
-    { name: "About Us", href: "/about" },
-    { name: "Careers", href: "/about/careers" },
-    { name: "Press", href: "/about/press" },
-    { name: "Sustainability", href: "/about/sustainability" },
+    { key: "footer.links.aboutUs", href: "/about" },
+    { key: "footer.links.careers", href: "/about/careers" },
+    { key: "footer.links.press", href: "/about/press" },
+    { key: "footer.links.sustainability", href: "/about/sustainability" },
   ],
   legal: [
-    { name: "Privacy Policy", href: "/legal/privacy" },
-    { name: "Terms of Service", href: "/legal/terms" },
-    { name: "Cookie Policy", href: "/legal/cookies" },
-    { name: "Accessibility", href: "/legal/accessibility" },
+    { key: "footer.links.privacyPolicy", href: "/legal/privacy" },
+    { key: "footer.links.termsOfService", href: "/legal/terms" },
+    { key: "footer.links.cookiePolicy", href: "/legal/cookies" },
+    { key: "footer.links.accessibility", href: "/legal/accessibility" },
   ],
 };
 
 export default function StorefrontFooter() {
+  const { t } = useI18n();
   return (
     <>
       <Newsletter />
@@ -50,23 +53,22 @@ export default function StorefrontFooter() {
           <div className="mb-8">
             <Logo size="lg" href="/" />
             <p className="text-sm text-muted-foreground mb-4">
-              Premium ecommerce experience with quality products and exceptional
-              service.
+              {t("common.brandTagline")}
             </p>
 
             {/* Contact Info */}
             <div className="space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4" />
-                <span>support@akastore.com</span>
+                <span>{t("common.supportEmail")}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4" />
-                <span>+1 (555) 123-4567</span>
+                <span>{t("common.supportPhone")}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4" />
-                <span>123 Commerce St, City, State 12345</span>
+                <span>{t("common.supportAddress")}</span>
               </div>
             </div>
           </div>
@@ -79,17 +81,17 @@ export default function StorefrontFooter() {
           >
             <AccordionItem value="shop" className="md:border-0">
               <AccordionTrigger className="text-left md:pointer-events-none md:cursor-default md:[&>svg]:hidden">
-                <span className="font-semibold">Shop</span>
+                <span className="font-semibold">{t("footer.sections.shop")}</span>
               </AccordionTrigger>
               <AccordionContent className="md:pb-0">
                 <ul className="space-y-2">
                   {footerLinks.shop.map((link) => (
-                    <li key={link.name}>
+                    <li key={link.key}>
                       <Link
                         href={link.href}
                         className="text-sm text-muted-foreground hover:text-primary transition-colors"
                       >
-                        {link.name}
+                        {t(link.key)}
                       </Link>
                     </li>
                   ))}
@@ -99,17 +101,17 @@ export default function StorefrontFooter() {
 
             <AccordionItem value="support" className="md:border-0">
               <AccordionTrigger className="text-left md:pointer-events-none md:cursor-default md:[&>svg]:hidden">
-                <span className="font-semibold">Support</span>
+                <span className="font-semibold">{t("footer.sections.support")}</span>
               </AccordionTrigger>
               <AccordionContent className="md:pb-0">
                 <ul className="space-y-2">
                   {footerLinks.support.map((link) => (
-                    <li key={link.name}>
+                    <li key={link.key}>
                       <Link
                         href={link.href}
                         className="text-sm text-muted-foreground hover:text-primary transition-colors"
                       >
-                        {link.name}
+                        {t(link.key)}
                       </Link>
                     </li>
                   ))}
@@ -119,17 +121,17 @@ export default function StorefrontFooter() {
 
             <AccordionItem value="company" className="md:border-0">
               <AccordionTrigger className="text-left md:pointer-events-none md:cursor-default md:[&>svg]:hidden">
-                <span className="font-semibold">Company</span>
+                <span className="font-semibold">{t("footer.sections.company")}</span>
               </AccordionTrigger>
               <AccordionContent className="md:pb-0">
                 <ul className="space-y-2">
                   {footerLinks.company.map((link) => (
-                    <li key={link.name}>
+                    <li key={link.key}>
                       <Link
                         href={link.href}
                         className="text-sm text-muted-foreground hover:text-primary transition-colors"
                       >
-                        {link.name}
+                        {t(link.key)}
                       </Link>
                     </li>
                   ))}
@@ -139,17 +141,17 @@ export default function StorefrontFooter() {
 
             <AccordionItem value="legal" className="md:border-0">
               <AccordionTrigger className="text-left md:pointer-events-none md:cursor-default md:[&>svg]:hidden">
-                <span className="font-semibold">Legal</span>
+                <span className="font-semibold">{t("footer.sections.legal")}</span>
               </AccordionTrigger>
               <AccordionContent className="md:pb-0">
                 <ul className="space-y-2">
                   {footerLinks.legal.map((link) => (
-                    <li key={link.name}>
+                    <li key={link.key}>
                       <Link
                         href={link.href}
                         className="text-sm text-muted-foreground hover:text-primary transition-colors"
                       >
-                        {link.name}
+                        {t(link.key)}
                       </Link>
                     </li>
                   ))}
@@ -161,7 +163,7 @@ export default function StorefrontFooter() {
           {/* Copyright */}
           <div className="border-t mt-8 pt-8 text-center">
             <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} AKA Store. All rights reserved.
+              {t("common.copyright", { year: new Date().getFullYear() })}
             </p>
           </div>
         </div>

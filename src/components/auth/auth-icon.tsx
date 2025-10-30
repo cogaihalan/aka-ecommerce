@@ -28,6 +28,7 @@ export function AuthIcon({ className }: AuthIconProps) {
         className={cn(
           "relative transition-all duration-200 hover:bg-muted/50 size-9",
           isDropdownOpen && "bg-muted/50",
+          isDropdownOpen && "pointer-events-none",
           className
         )}
       >

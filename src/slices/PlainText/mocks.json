@@ -1,0 +1,62 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"description": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Non eiusmod amet aute amet excepteur eu veniam reprehenderit ut ad adipisicing commodo enim ex labore. Reprehenderit minim non aute exercitation. Do laboris aliqua elit."
+						}
+					}
+				]
+			},
+			"horizontal_position": {
+				"__TYPE__": "FieldContent",
+				"value": "right",
+				"type": "Select"
+			},
+			"vertical_position": {
+				"__TYPE__": "FieldContent",
+				"value": "bottom",
+				"type": "Select"
+			},
+			"call_to_actions": {
+				"__TYPE__": "RepeatableContent",
+				"type": "Link",
+				"value": [
+					{
+						"key": "9379a837-bde5-4fd6-b4e2-6cf52a83b8a1",
+						"__TYPE__": "LinkContent",
+						"value": {
+							"__TYPE__": "ExternalLink",
+							"url": "https://slicemachine.dev",
+							"text": "not",
+							"variant": "Secondary"
+						}
+					}
+				]
+			},
+			"content_alignment": {
+				"__TYPE__": "FieldContent",
+				"value": "left",
+				"type": "Select"
+			},
+			"title": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "heading1",
+						"content": {
+							"text": "Happen"
+						}
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]

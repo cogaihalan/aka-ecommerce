@@ -4,8 +4,8 @@ import Link from "next/link";
 
 export default function TopBar() {
     return (
-        <div className="bg-primary text-white py-2 px-6">
-            <div className="flex items-center justify-between">
+        <div className="bg-primary text-white py-2 px-3 md:px-6">
+            <div className="flex items-center justify-between gap-2">
                 {/* Welcome Message */}
                 <div className="text-sm font-medium">
                     Welcome to AKA E-commerce Store

@@ -23,7 +23,7 @@ export const columns: ColumnDef<Category>[] = [
   },
   {
     accessorKey: "image",
-    header: "Image",
+    header: "Hình ảnh",
     cell: ({ row }) => {
       const category = row.original;
       const image = category?.thumbnailUrl || "/assets/placeholder-image.jpeg";
@@ -46,7 +46,7 @@ export const columns: ColumnDef<Category>[] = [
     id: "name",
     accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title="Tên" />
     ),
     cell: ({ row }) => {
       const category = row.original;
@@ -62,8 +62,8 @@ export const columns: ColumnDef<Category>[] = [
       );
     },
     meta: {
-      label: "Name",
-      placeholder: "Search categories...",
+      label: "Tên",
+      placeholder: "Tìm danh mục...",
       variant: "text",
       icon: Text,
     },
@@ -71,27 +71,27 @@ export const columns: ColumnDef<Category>[] = [
   },
   {
     accessorKey: "description",
-    header: "Description",
+    header: "Mô tả",
     cell: ({ row }) => {
       const description = row.getValue("description") as string;
       return (
         <div className="max-w-[300px] truncate text-sm text-muted-foreground">
-          {description || "No description"}
+          {description || "Không có mô tả"}
         </div>
       );
     },
   },
   {
     accessorKey: "parentId",
-    header: "Parent Category",
+    header: "Danh mục cha",
     cell: ({ row }) => {
       const parentId = row.getValue("parentId") as number;
       return (
         <div className="text-sm">
           {!parentId ? (
-            <span className="text-muted-foreground">Root Category</span>
+            <span className="text-muted-foreground">Danh mục gốc</span>
           ) : (
-            <span>Parent ID: {parentId}</span>
+            <span>ID cha: {parentId}</span>
           )}
         </div>
       );

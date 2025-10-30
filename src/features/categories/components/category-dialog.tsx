@@ -42,8 +42,8 @@ import { Image as ImageIcon, X } from "lucide-react";
 import Image from "next/image";
 
 const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  description: z.string().min(1, "Description is required"),
+  name: z.string().min(1, "Tên là bắt buộc"),
+  description: z.string().min(1, "Mô tả là bắt buộc"),
   parentId: z.number().default(0),
 });
 
@@ -158,7 +158,7 @@ export function CategoryDialog({
           updateData
         );
         updateCategory(updatedCategory);
-        toast.success("Category updated successfully");
+        toast.success("Cập nhật danh mục thành công");
       } else {
         // Create new category
         const createData: CreateCategoryRequest = {
@@ -169,13 +169,13 @@ export function CategoryDialog({
         const newCategory =
           await unifiedCategoryService.createCategory(createData);
         addCategory(newCategory);
-        toast.success("Category created successfully");
+        toast.success("Tạo danh mục thành công");
       }
       onSuccess?.();
       onOpenChange(false);
       form.reset();
     } catch (error) {
-      toast.error("Failed to save category");
+      toast.error("Lưu danh mục thất bại");
       console.error("Error saving category:", error);
     } finally {
       setIsLoading(false);
@@ -187,12 +187,12 @@ export function CategoryDialog({
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>
-            {category ? "Edit Category" : "Create New Category"}
+            {category ? "Chỉnh sửa danh mục" : "Tạo danh mục mới"}
           </DialogTitle>
           <DialogDescription>
             {category
-              ? "Update the category information below."
-              : "Add a new category to your store."}
+              ? "Cập nhật thông tin danh mục bên dưới."
+              : "Thêm danh mục mới cho cửa hàng của bạn."}
           </DialogDescription>
         </DialogHeader>
 
@@ -203,9 +203,9 @@ export function CategoryDialog({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Category Name</FormLabel>
+                  <FormLabel>Tên danh mục</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter category name" {...field} />
+                    <Input placeholder="Nhập tên danh mục" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -217,10 +217,10 @@ export function CategoryDialog({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Mô tả</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Enter category description"
+                      placeholder="Nhập mô tả danh mục"
                       {...field}
                     />
                   </FormControl>
@@ -234,7 +234,7 @@ export function CategoryDialog({
               name="parentId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Parent Category (Optional)</FormLabel>
+                  <FormLabel>Danh mục cha (Không bắt buộc)</FormLabel>
                   <Select
                     onValueChange={(value) => {
                       field.onChange(value === "none" ? 0 : parseInt(value));
@@ -246,12 +246,10 @@ export function CategoryDialog({
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select parent category" />
+                      <SelectValue placeholder="Chọn danh mục cha" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none">
-                        No Parent (Root Category)
-                      </SelectItem>
+                      <SelectItem value="none">Không có (Danh mục gốc)</SelectItem>
                       {categories
                         .filter((cat) => !category || cat.id !== category.id) // Don't allow self as parent
                         .map((cat) => (
@@ -269,9 +267,7 @@ export function CategoryDialog({
             {/* Thumbnail Upload Section - Only show in edit mode */}
             {category && (
               <div className="flex flex-col gap-4">
-                <label className="text-sm font-medium">
-                  Category Thumbnail
-                </label>
+                <label className="text-sm font-medium">Ảnh danh mục</label>
 
                 {/* Current thumbnail preview - show when thumbnail exists */}
                 {category.thumbnailUrl ? (
@@ -296,9 +292,7 @@ export function CategoryDialog({
                         <X className="h-3 w-3" />
                       </Button>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      Click the delete icon to remove the current thumbnail
-                    </p>
+                    <p className="text-xs text-muted-foreground">Nhấn biểu tượng xóa để gỡ ảnh hiện tại</p>
                   </div>
                 ) : (
                   /* Upload new thumbnail - show only when no thumbnail exists */
@@ -318,9 +312,7 @@ export function CategoryDialog({
                       <div className="space-y-2">
                         <div className="flex items-center space-x-2">
                           <ImageIcon className="h-4 w-4" />
-                          <span className="text-sm text-muted-foreground">
-                            Uploading thumbnail...
-                          </span>
+                          <span className="text-sm text-muted-foreground">Đang tải ảnh thu nhỏ...</span>
                         </div>
                         {Object.entries(uploadProgress).map(
                           ([fileName, progress]) => (
@@ -346,10 +338,10 @@ export function CategoryDialog({
                 variant="outline"
                 onClick={() => onOpenChange(false)}
               >
-                Cancel
+                Hủy
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Saving..." : category ? "Update" : "Create"}
+                {isLoading ? "Đang lưu..." : category ? "Cập nhật" : "Tạo"}
               </Button>
             </DialogFooter>
           </form>

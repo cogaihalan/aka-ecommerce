@@ -40,7 +40,7 @@ export function PrismicRefreshButton() {
       <RefreshCw
         className={`mr-2 h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`}
       />
-      {isRefreshing ? "Refreshing..." : "Refresh"}
+      {isRefreshing ? "Đang làm mới..." : "Làm mới"}
     </Button>
   );
 }

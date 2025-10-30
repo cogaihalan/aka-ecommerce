@@ -31,7 +31,7 @@ export const columns: ColumnDef<User>[] = [
   {
     id: "name",
     accessorKey: "email",
-    header: "User",
+    header: "Người dùng",
     cell: ({ row }) => {
       const user = row.original;
       return (
@@ -51,15 +51,15 @@ export const columns: ColumnDef<User>[] = [
     },
     enableColumnFilter: true,
     meta: {
-      label: "User",
-      placeholder: "Search users...",
+      label: "Người dùng",
+      placeholder: "Tìm người dùng...",
       variant: "text",
     },
   },
   {
     id: "roles",
     accessorKey: "roles",
-    header: "Roles",
+    header: "Vai trò",
     cell: ({ row }) => {
       const user = row.original;
       const roles = user.roles;
@@ -85,12 +85,12 @@ export const columns: ColumnDef<User>[] = [
   {
     id: "enabled",
     accessorKey: "enabled",
-    header: "Status",
+    header: "Trạng thái",
     cell: ({ row }) => {
       const enabled = row.getValue("enabled") as boolean;
       return (
         <Badge variant={enabled ? "default" : "secondary"}>
-          {enabled ? "Active" : "Inactive"}
+          {enabled ? "Hoạt động" : "Ngừng hoạt động"}
         </Badge>
       );
     },
@@ -98,7 +98,7 @@ export const columns: ColumnDef<User>[] = [
   {
     id: "createdAt",
     accessorKey: "createdAt",
-    header: "Created",
+    header: "Tạo lúc",
     cell: ({ row }) => {
       const date = row.getValue("createdAt") as string;
       return (
@@ -120,18 +120,18 @@ export const columns: ColumnDef<User>[] = [
         <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Mở menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Hành động</DropdownMenuLabel>
             <UserDialog
               user={user}
               trigger={
                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                   <Eye className="mr-2 h-4 w-4" />
-                  View user details
+                  Xem chi tiết người dùng
                 </DropdownMenuItem>
               }
               onDialogClose={() => setIsDropdownOpen(false)}
@@ -141,10 +141,10 @@ export const columns: ColumnDef<User>[] = [
                 try {
                   if (user.enabled) {
                     await unifiedUserService.lockUser(user.id.toString());
-                    toast.success("User locked successfully");
+                    toast.success("Khóa tài khoản thành công");
                   } else {
                     await unifiedUserService.unlockUser(user.id.toString());
-                    toast.success("User unlocked successfully");
+                    toast.success("Mở khóa tài khoản thành công");
                   }
                   // Refresh the page to show updated status
                   window.location.reload();
@@ -152,8 +152,8 @@ export const columns: ColumnDef<User>[] = [
                   console.error("Error updating user status:", error);
                   toast.error(
                     user.enabled
-                      ? "Failed to lock user"
-                      : "Failed to unlock user"
+                      ? "Khóa tài khoản thất bại"
+                      : "Mở khóa tài khoản thất bại"
                   );
                 }
               }}
@@ -161,12 +161,12 @@ export const columns: ColumnDef<User>[] = [
               {user.enabled ? (
                 <>
                   <Lock className="mr-2 h-4 w-4" />
-                  Lock User
+                  Khóa tài khoản
                 </>
               ) : (
                 <>
                   <Unlock className="mr-2 h-4 w-4" />
-                  Unlock User
+                  Mở khóa tài khoản
                 </>
               )}
             </DropdownMenuItem>

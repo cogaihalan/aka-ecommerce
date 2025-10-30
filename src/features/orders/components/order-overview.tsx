@@ -66,7 +66,7 @@ export default function OrderOverview({ orders, totalOrders }: OrderOverviewProp
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="@container/card">
           <CardHeader>
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Orders</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Tổng đơn hàng</CardTitle>
             <div className="flex items-center justify-between">
               <div className="text-2xl font-bold tabular-nums @[250px]/card:text-3xl">
                 {stats.totalOrders}
@@ -76,14 +76,14 @@ export default function OrderOverview({ orders, totalOrders }: OrderOverviewProp
           </CardHeader>
           <CardContent className="pt-0">
             <p className="text-xs text-muted-foreground">
-              {stats.recentOrders} orders this week
+              {stats.recentOrders} đơn hàng trong tuần
             </p>
           </CardContent>
         </Card>
 
         <Card className="@container/card">
           <CardHeader>
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Tổng doanh thu</CardTitle>
             <div className="flex items-center justify-between">
               <div className="text-2xl font-bold tabular-nums @[250px]/card:text-3xl">
                 {formatCurrency(stats.totalRevenue)}
@@ -93,14 +93,14 @@ export default function OrderOverview({ orders, totalOrders }: OrderOverviewProp
           </CardHeader>
           <CardContent className="pt-0">
             <p className="text-xs text-muted-foreground">
-              Average: {formatCurrency(stats.averageOrderValue)}
+              Trung bình: {formatCurrency(stats.averageOrderValue)}
             </p>
           </CardContent>
         </Card>
 
         <Card className="@container/card">
           <CardHeader>
-            <CardTitle className="text-sm font-medium text-muted-foreground">Active Orders</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Đơn hàng hoạt động</CardTitle>
             <div className="flex items-center justify-between">
               <div className="text-2xl font-bold tabular-nums @[250px]/card:text-3xl">
                 {stats.statusCounts.PENDING + stats.statusCounts.CONFIRMED + stats.statusCounts.SHIPPING}
@@ -110,14 +110,14 @@ export default function OrderOverview({ orders, totalOrders }: OrderOverviewProp
           </CardHeader>
           <CardContent className="pt-0">
             <p className="text-xs text-muted-foreground">
-              Pending, Confirmed, Shipping
+              Chờ xử lý, Đã xác nhận, Đang giao
             </p>
           </CardContent>
         </Card>
 
         <Card className="@container/card">
           <CardHeader>
-            <CardTitle className="text-sm font-medium text-muted-foreground">Completed Orders</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Đơn hàng đã hoàn thành</CardTitle>
             <div className="flex items-center justify-between">
               <div className="text-2xl font-bold tabular-nums @[250px]/card:text-3xl">
                 {stats.statusCounts.DELIVERED}
@@ -127,7 +127,7 @@ export default function OrderOverview({ orders, totalOrders }: OrderOverviewProp
           </CardHeader>
           <CardContent className="pt-0">
             <p className="text-xs text-muted-foreground">
-              Successfully delivered
+              Đã giao thành công
             </p>
           </CardContent>
         </Card>

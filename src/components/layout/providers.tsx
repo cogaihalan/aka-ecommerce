@@ -9,6 +9,8 @@ import { QuickViewProvider } from "@/components/providers/quick-view-provider";
 import { WishlistAuthProvider } from "@/components/providers/wishlist-auth-provider";
 import { AppProvider } from "@/components/providers/app-provider";
 import { ApiAuthProvider } from "@/components/providers/api-auth-provider";
+import { AuthSyncProvider } from "@/components/providers/auth-sync-provider";
+import { I18nProvider } from "@/components/providers/i18n-provider";
 
 export default function Providers({
   activeThemeValue,
@@ -30,11 +32,15 @@ export default function Providers({
         >
           <AppProvider>
             <ApiAuthProvider>
-              <WishlistAuthProvider>
-                <CartProvider>
-                  <QuickViewProvider>{children}</QuickViewProvider>
-                </CartProvider>
-              </WishlistAuthProvider>
+              <AuthSyncProvider>
+                <WishlistAuthProvider>
+                  <CartProvider>
+                    <I18nProvider>
+                      <QuickViewProvider>{children}</QuickViewProvider>
+                    </I18nProvider>
+                  </CartProvider>
+                </WishlistAuthProvider>
+              </AuthSyncProvider>
             </ApiAuthProvider>
           </AppProvider>
         </ClerkProvider>

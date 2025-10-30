@@ -27,6 +27,7 @@ import { format } from "date-fns";
 import { User as UserType } from "@/types";
 import { unifiedUserService } from "@/lib/api/services/unified";
 import { toast } from "sonner";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 interface UserDialogProps {
   user?: UserType;
@@ -37,6 +38,7 @@ interface UserDialogProps {
 export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useI18n();
 
   const handleDialogClose = (open: boolean) => {
     setIsDialogOpen(open);
@@ -52,10 +54,10 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
     try {
       if (user.enabled) {
         await unifiedUserService.lockUser(user.id.toString());
-        toast.success("User locked successfully");
+        toast.success(t("users.dialog.toasts.lockSuccess"));
       } else {
         await unifiedUserService.unlockUser(user.id.toString());
-        toast.success("User unlocked successfully");
+        toast.success(t("users.dialog.toasts.unlockSuccess"));
       }
       // Close dialog and refresh the page to show updated status
       setIsDialogOpen(false);
@@ -66,7 +68,7 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
     } catch (error) {
       console.error("Error updating user status:", error);
       toast.error(
-        user.enabled ? "Failed to lock user" : "Failed to unlock user"
+        user.enabled ? t("users.dialog.toasts.lockFailed") : t("users.dialog.toasts.unlockFailed")
       );
     } finally {
       setIsLoading(false);
@@ -83,15 +85,15 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
         {trigger || (
           <Button variant="ghost" size="sm">
             <User className="mr-2 h-4 w-4" />
-            View Details
+            {t("users.dialog.trigger")}
           </Button>
         )}
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>User Information</DialogTitle>
+          <DialogTitle>{t("users.dialog.title")}</DialogTitle>
           <DialogDescription>
-            View detailed information about this user account.
+            {t("users.dialog.description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -109,9 +111,9 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
               <p className="text-sm text-muted-foreground">{user.email}</p>
               <div className="flex items-center space-x-2">
                 <Badge variant={user.enabled ? "default" : "secondary"}>
-                  {user.enabled ? "Active" : "Inactive"}
+                  {user.enabled ? t("users.dialog.statusActive") : t("users.dialog.statusInactive")}
                 </Badge>
-                <Badge variant="outline">ID: {user.id}</Badge>
+                <Badge variant="outline">{t("users.dialog.idLabel")}: {user.id}</Badge>
               </div>
             </div>
           </div>
@@ -124,7 +126,7 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">Email</p>
+                  <p className="text-sm font-medium">{t("users.dialog.fields.email")}</p>
                   <p className="text-sm text-muted-foreground">{user.email}</p>
                 </div>
               </div>
@@ -132,9 +134,9 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">Phone</p>
+                  <p className="text-sm font-medium">{t("users.dialog.fields.phone")}</p>
                   <p className="text-sm text-muted-foreground">
-                    {user.phoneNumber || "Not provided"}
+                    {user.phoneNumber || t("users.dialog.fields.phoneNotProvided")}
                   </p>
                 </div>
               </div>
@@ -142,7 +144,7 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
               <div className="flex items-center space-x-2">
                 <User className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">Username</p>
+                  <p className="text-sm font-medium">{t("users.dialog.fields.username")}</p>
                   <p className="text-sm text-muted-foreground">
                     {user.username}
                   </p>
@@ -154,7 +156,7 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
               <div className="flex items-center space-x-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">Created</p>
+                  <p className="text-sm font-medium">{t("users.dialog.fields.created")}</p>
                   <p className="text-sm text-muted-foreground">
                     {format(new Date(user.createdAt), "MMM dd, yyyy")}
                   </p>
@@ -164,7 +166,7 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
               <div className="flex items-center space-x-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">Last Updated</p>
+                  <p className="text-sm font-medium">{t("users.dialog.fields.updated")}</p>
                   <p className="text-sm text-muted-foreground">
                     {format(new Date(user.updatedAt), "MMM dd, yyyy")}
                   </p>
@@ -174,7 +176,7 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
               <div className="flex items-center space-x-2">
                 <User className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">Clerk ID</p>
+                  <p className="text-sm font-medium">{t("users.dialog.fields.clerkId")}</p>
                   <p className="text-xs text-muted-foreground font-mono">
                     {user.clerkId}
                   </p>
@@ -189,7 +191,7 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
           <div className="space-y-3">
             <h4 className="text-sm font-medium flex items-center">
               <Shield className="mr-2 h-4 w-4" />
-              Roles & Permissions
+              {t("users.dialog.rolesTitle")}
             </h4>
             <div className="space-y-2">
               {user.roles.map((role) => (
@@ -226,12 +228,12 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
               {user.enabled ? (
                 <>
                   <Lock className="mr-2 h-4 w-4" />
-                  {isLoading ? "Locking..." : "Lock User"}
+                  {isLoading ? t("users.dialog.actions.locking") : t("users.dialog.actions.lock")}
                 </>
               ) : (
                 <>
                   <Unlock className="mr-2 h-4 w-4" />
-                  {isLoading ? "Unlocking..." : "Unlock User"}
+                  {isLoading ? t("users.dialog.actions.unlocking") : t("users.dialog.actions.unlock")}
                 </>
               )}
             </Button>

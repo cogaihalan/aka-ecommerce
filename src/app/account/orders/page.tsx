@@ -6,8 +6,8 @@ import { DashboardPageProps } from "@/types";
 import { searchParamsCache } from "@/lib/searchparams";
 
 export const metadata: Metadata = {
-  title: "Order History - AKA Store",
-  description: "View your order history and track current orders.",
+  title: "Lịch sử đơn hàng - AKA Store",
+  description: "Xem lịch sử đơn hàng và theo dõi đơn hiện tại.",
 };
 
 export default async function OrderHistoryPageRoute(props: DashboardPageProps) {

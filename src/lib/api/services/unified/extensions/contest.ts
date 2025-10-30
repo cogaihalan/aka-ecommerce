@@ -30,6 +30,10 @@ export class UnifiedContestService {
 
     if (params.name !== undefined)
       searchParams.append("name", params.name.toString());
+    
+    if (params.active !== undefined)
+      searchParams.append("active", params.active.toString());
+
 
     const queryString = searchParams.toString();
     const endpoint = queryString

@@ -9,8 +9,8 @@ import { storefrontServerHairstyleService } from "@/lib/api/services/storefront/
 import { QueryParams } from "@/lib/api/types";
 
 export const metadata: Metadata = {
-  title: "Hairstyles",
-  description: "Browse our collection of hairstyles and barber work",
+  title: "Kiểu tóc",
+  description: "Khám phá bộ sưu tập kiểu tóc và tác phẩm barber",
 };
 
 interface HairstylesPageProps {
@@ -45,10 +45,8 @@ export default async function HairstylesPage({
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Hairstyles</h1>
-        <p className="text-muted-foreground">
-          Discover our collection of hairstyles and barber work
-        </p>
+        <h1 className="text-3xl font-bold mb-2">Kiểu tóc</h1>
+        <p className="text-muted-foreground">Khám phá bộ sưu tập kiểu tóc và tác phẩm barber</p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">

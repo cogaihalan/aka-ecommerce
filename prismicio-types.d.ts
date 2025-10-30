@@ -214,6 +214,7 @@ export type MegaMenuDocument<Lang extends string = string> =
   >;
 
 type PageDocumentDataSlicesSlice =
+  | PlainTextSlice
   | TextAndImageSlice
   | FullWidthBannerSlice
   | NewsletterSignupSlice
@@ -1356,6 +1357,114 @@ export type NewsletterSignupSlice = prismic.SharedSlice<
 >;
 
 /**
+ * Primary content in *PlainText → Default → Primary*
+ */
+export interface PlainTextSliceDefaultPrimary {
+  /**
+   * Title field in *PlainText → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: Enter the section title
+   * - **API ID Path**: plain_text.default.primary.title
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  title: prismic.RichTextField;
+
+  /**
+   * Description field in *PlainText → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: Enter a subtitle or description
+   * - **API ID Path**: plain_text.default.primary.description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  description: prismic.RichTextField;
+
+  /**
+   * Call To Actions field in *PlainText → Default → Primary*
+   *
+   * - **Field Type**: Link
+   * - **Placeholder**: *None*
+   * - **API ID Path**: plain_text.default.primary.call_to_actions
+   * - **Documentation**: https://prismic.io/docs/fields/link
+   */
+  call_to_actions: prismic.Repeatable<
+    prismic.LinkField<
+      string,
+      string,
+      unknown,
+      prismic.FieldState,
+      "Primary" | "Secondary"
+    >
+  >;
+
+  /**
+   * Horizontal Position field in *PlainText → Default → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: Choose the horizontal position of content
+   * - **Default Value**: left
+   * - **API ID Path**: plain_text.default.primary.horizontal_position
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  horizontal_position: prismic.SelectField<
+    "left" | "center" | "right",
+    "filled"
+  >;
+
+  /**
+   * Vertical Position field in *PlainText → Default → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: Choose the vertical position of content
+   * - **API ID Path**: plain_text.default.primary.vertical_position
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  vertical_position: prismic.SelectField<"top" | "middle" | "bottom">;
+
+  /**
+   * Content Alignment field in *PlainText → Default → Primary*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: Choose the text alignment for content
+   * - **Default Value**: left
+   * - **API ID Path**: plain_text.default.primary.content_alignment
+   * - **Documentation**: https://prismic.io/docs/fields/select
+   */
+  content_alignment: prismic.SelectField<"left" | "center" | "right", "filled">;
+}
+
+/**
+ * Default variation for PlainText Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Default
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type PlainTextSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<PlainTextSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *PlainText*
+ */
+type PlainTextSliceVariation = PlainTextSliceDefault;
+
+/**
+ * PlainText Shared Slice
+ *
+ * - **API ID**: `plain_text`
+ * - **Description**: PlainText
+ * - **Documentation**: https://prismic.io/docs/slices
+ */
+export type PlainTextSlice = prismic.SharedSlice<
+  "plain_text",
+  PlainTextSliceVariation
+>;
+
+/**
  * Primary content in *Pricing Table → Default → Primary*
  */
 export interface PricingTableSliceDefaultPrimary {
@@ -2152,6 +2261,10 @@ declare module "@prismicio/client" {
       NewsletterSignupSliceDefaultPrimary,
       NewsletterSignupSliceVariation,
       NewsletterSignupSliceDefault,
+      PlainTextSlice,
+      PlainTextSliceDefaultPrimary,
+      PlainTextSliceVariation,
+      PlainTextSliceDefault,
       PricingTableSlice,
       PricingTableSliceDefaultPrimary,
       PricingTableSliceDefaultItem,

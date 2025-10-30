@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
+import { useI18n } from "@/components/providers/i18n-provider";
 import { useVideoDuration } from "@/hooks/use-video-duration";
 
 import { Button } from "@/components/ui/button";
@@ -61,6 +62,7 @@ export function CourseDialog({
   onSuccess,
 }: CourseDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useI18n();
   const [videoFiles, setVideoFiles] = useState<File[]>([]);
   const [thumbnailFiles, setThumbnailFiles] = useState<File[]>([]);
   const [useVideoUpload, setUseVideoUpload] = useState(false);
@@ -140,7 +142,7 @@ export function CourseDialog({
         };
 
         await unifiedCourseService.updateCourse(course.id, updateData);
-        toast.success("Course updated successfully");
+        toast.success(t("courses.dialog.toast.updated"));
       } else {
         // Add mode - only include fields that are in CourseCreateRequest interface
         const createData: CourseCreateRequest = {
@@ -151,13 +153,13 @@ export function CourseDialog({
         };
         
         await unifiedCourseService.createCourse(createData);
-        toast.success("Course created successfully");
+        toast.success(t("courses.dialog.toast.created"));
         onSuccess?.();
         onOpenChange(false);
         form.reset();
       }
     } catch (error) {
-      toast.error(`Failed to ${isEditMode ? "update" : "create"} course`);
+      toast.error(t("courses.dialog.toast.failed", { action: isEditMode ? "update" : "create" }));
       console.error(
         `Error ${isEditMode ? "updating" : "creating"} course:`,
         error
@@ -179,7 +181,7 @@ export function CourseDialog({
       if (duration) {
         form.setValue("duration", duration);
       } else if (durationError) {
-        toast.warning("Could not detect video duration automatically");
+        toast.warning(t("courses.dialog.toast.detectDurationWarn"));
       }
       
       const uploadedCourse = await unifiedCourseService.uploadCourseVideo({
@@ -190,9 +192,9 @@ export function CourseDialog({
       form.setValue("videoUrl", uploadedCourse.videoUrl || "");
       setUploadedVideoUrl(uploadedCourse.videoUrl || "");
       setVideoFiles(files);
-      toast.success("Video uploaded successfully");
+      toast.success(t("courses.dialog.videoUploaded"));
     } catch (error) {
-      toast.error("Failed to upload video");
+      toast.error(t("courses.dialog.toast.uploadVideoFailed"));
       console.error("Video upload error:", error);
     } finally {
       setUseVideoUpload(false);
@@ -216,9 +218,9 @@ export function CourseDialog({
       form.setValue("thumbnailUrl", uploadedCourse.thumbnailUrl || "");
       setUploadedThumbnailUrl(uploadedCourse.thumbnailUrl || "");
       setThumbnailFiles(files);
-      toast.success("Thumbnail uploaded successfully");
+      toast.success(t("courses.dialog.thumbnailUploaded"));
     } catch (error) {
-      toast.error("Failed to upload thumbnail");
+      toast.error(t("courses.dialog.toast.uploadThumbFailed"));
       console.error("Thumbnail upload error:", error);
     } finally {
       setUseThumbnailUpload(false);
@@ -285,7 +287,9 @@ export function CourseDialog({
         const duration = await detectDurationFromUrl(url);
         if (duration) {
           form.setValue("duration", duration);
-          toast.success(`Video duration detected: ${Math.floor(duration / 60)}:${(duration % 60).toString().padStart(2, '0')}`);
+          const min = Math.floor(duration / 60);
+          const sec = (duration % 60).toString().padStart(2, '0');
+          toast.success(t("courses.dialog.toast.detectedDuration", { min, sec }));
         }
       }
     },
@@ -297,12 +301,12 @@ export function CourseDialog({
       <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader className="flex-shrink-0">
           <DialogTitle>
-            {isEditMode ? "Edit Course" : "Create New Course"}
+            {isEditMode ? t("courses.dialog.titleEdit") : t("courses.dialog.titleCreate")}
           </DialogTitle>
           <DialogDescription>
             {isEditMode
-              ? "Update the course information and video content."
-              : "Add a new course with video content to your platform."}
+              ? t("courses.dialog.descEdit")
+              : t("courses.dialog.descCreate")}
           </DialogDescription>
         </DialogHeader>
 
@@ -318,9 +322,9 @@ export function CourseDialog({
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Course Name</FormLabel>
+                      <FormLabel>{t("courses.dialog.name")}</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter course name" {...field} />
+                        <Input placeholder={t("courses.dialog.namePlaceholder")} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -332,10 +336,10 @@ export function CourseDialog({
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Description</FormLabel>
+                      <FormLabel>{t("courses.dialog.description")}</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Enter course description"
+                          placeholder={t("courses.dialog.descriptionPlaceholder")}
                           className="min-h-[80px]"
                           {...field}
                         />
@@ -349,15 +353,15 @@ export function CourseDialog({
                 <>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <FormLabel>Video Source</FormLabel>
+                      <FormLabel>{t("courses.dialog.videoSource")}</FormLabel>
                       <div className="flex items-center space-x-2">
-                        <span className="text-sm text-muted-foreground">URL</span>
+                        <span className="text-sm text-muted-foreground">{t("courses.dialog.url")}</span>
                         <Switch
                           checked={useVideoUpload}
                           onCheckedChange={handleVideoModeChange}
                         />
                         <span className="text-sm text-muted-foreground">
-                          Upload
+                          {t("courses.dialog.upload")}
                         </span>
                       </div>
                     </div>
@@ -368,16 +372,16 @@ export function CourseDialog({
                         name="videoUrl"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Video URL</FormLabel>
+                            <FormLabel>{t("courses.dialog.videoUrl")}</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="https://example.com/video.mp4"
+                                placeholder={t("courses.dialog.videoUrlPlaceholder")}
                                 {...field}
                                 onChange={(e) => handleVideoUrlChange(e.target.value)}
                               />
                             </FormControl>
                             <FormDescription>
-                              Enter the URL of the video file. Duration will be detected automatically.
+                              {t("courses.dialog.videoUrlHelp")}
                             </FormDescription>
                             <FormMessage />
                           </FormItem>
@@ -397,12 +401,12 @@ export function CourseDialog({
                         />
                         {(isUploadingVideo || isDetectingDuration) && (
                           <div className="text-sm text-muted-foreground">
-                            {isDetectingDuration ? "Detecting video duration..." : "Uploading video..."}
+                            {isDetectingDuration ? t("courses.dialog.videoDetecting") : t("courses.dialog.videoUploading")}
                           </div>
                         )}
                         {uploadedVideoUrl && (
                           <div className="text-sm text-green-600">
-                            Video uploaded successfully
+                            {t("courses.dialog.videoUploaded")}
                           </div>
                         )}
                         {durationError && (
@@ -416,15 +420,15 @@ export function CourseDialog({
 
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <FormLabel>Thumbnail Source</FormLabel>
+                      <FormLabel>{t("courses.dialog.thumbnailSource")}</FormLabel>
                       <div className="flex items-center space-x-2">
-                        <span className="text-sm text-muted-foreground">URL</span>
+                        <span className="text-sm text-muted-foreground">{t("courses.dialog.url")}</span>
                         <Switch
                           checked={useThumbnailUpload}
                           onCheckedChange={handleThumbnailModeChange}
                         />
                         <span className="text-sm text-muted-foreground">
-                          Upload
+                          {t("courses.dialog.upload")}
                         </span>
                       </div>
                     </div>
@@ -435,15 +439,15 @@ export function CourseDialog({
                         name="thumbnailUrl"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Thumbnail URL</FormLabel>
+                            <FormLabel>{t("courses.dialog.thumbnailUrl")}</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="https://example.com/thumbnail.jpg"
+                                placeholder={t("courses.dialog.thumbnailUrlPlaceholder")}
                                 {...field}
                               />
                             </FormControl>
                             <FormDescription>
-                              Enter the URL of the thumbnail image
+                              {t("courses.dialog.thumbnailUrlHelp")}
                             </FormDescription>
                             <FormMessage />
                           </FormItem>
@@ -463,12 +467,12 @@ export function CourseDialog({
                         />
                         {isUploadingThumbnail && (
                           <div className="text-sm text-muted-foreground">
-                            Uploading thumbnail...
+                            {t("courses.dialog.thumbnailUploading")}
                           </div>
                         )}
                         {uploadedThumbnailUrl && (
                           <div className="text-sm text-green-600">
-                            Thumbnail uploaded successfully
+                            {t("courses.dialog.thumbnailUploaded")}
                           </div>
                         )}
                       </div>
@@ -483,11 +487,11 @@ export function CourseDialog({
                     name="duration"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Duration (seconds)</FormLabel>
+                        <FormLabel>{t("courses.dialog.duration")}</FormLabel>
                         <FormControl>
                           <Input
                             type="number"
-                            placeholder="3600"
+                            placeholder={t("courses.dialog.durationPlaceholder")}
                             {...field}
                             onChange={(e) =>
                               field.onChange(
@@ -507,9 +511,9 @@ export function CourseDialog({
                     render={({ field }) => (
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
                         <div className="space-y-0.5">
-                          <FormLabel className="text-sm">Active</FormLabel>
+                          <FormLabel className="text-sm">{t("courses.dialog.activeLabel")}</FormLabel>
                           <FormDescription className="text-xs">
-                            Visible to users
+                            {t("courses.dialog.activeHelp")}
                           </FormDescription>
                         </div>
                         <FormControl>
@@ -530,16 +534,12 @@ export function CourseDialog({
                   onClick={() => onOpenChange(false)}
                   disabled={isLoading}
                 >
-                  Cancel
+                  {t("courses.dialog.cancel")}
                 </Button>
                 <Button type="submit" disabled={isLoading}>
                   {isLoading
-                    ? isEditMode
-                      ? "Updating..."
-                      : "Creating..."
-                    : isEditMode
-                      ? "Update Course"
-                      : "Create Course"}
+                    ? (isEditMode ? t("courses.dialog.updating") : t("courses.dialog.creating"))
+                    : (isEditMode ? t("courses.dialog.update") : t("courses.dialog.create"))}
                 </Button>
               </DialogFooter>
             </form>

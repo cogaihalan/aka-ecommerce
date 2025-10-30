@@ -16,7 +16,7 @@ export default function Logo({
   const sizeClasses = {
     sm: "h-8 w-16",
     md: "h-10 w-20",
-    lg: "h-12 w-24",
+    lg: "h-8 w-16 md:h-12 md:w-24",
   };
 
   const iconSize = sizeClasses[size];

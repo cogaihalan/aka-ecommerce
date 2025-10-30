@@ -2,9 +2,9 @@ import { Metadata } from "next";
 import StorefrontHomePage from "@/features/storefront/components/home-page";
 
 export const metadata: Metadata = {
-  title: "AKA Store - Premium Ecommerce",
+  title: "AKA Store - Mua sắm cao cấp",
   description:
-    "Discover premium products at AKA Store. Quality, style, and innovation in every purchase.",
+    "Khám phá sản phẩm cao cấp tại AKA Store. Chất lượng, phong cách và đổi mới trong từng lần mua.",
 };
 
 export default function HomePage() {

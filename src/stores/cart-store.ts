@@ -55,13 +55,13 @@ export const useCartStore = create<CartStore>()(
                 [product.id]: false,
               },
             }));
-            return `${product.name} has been added to your cart`;
+            return `${product.name} đã được thêm vào giỏ hàng của bạn`;
           },
           error: (error) => {
             const errorMessage =
               error instanceof Error
                 ? error.message
-                : "Failed to add item to cart";
+                : "Thêm sản phẩm vào giỏ hàng thất bại";
 
             set((state) => ({
               error: errorMessage,
@@ -92,7 +92,7 @@ export const useCartStore = create<CartStore>()(
           const errorMessage =
             error instanceof Error
               ? error.message
-              : "Failed to remove item from cart";
+              : "Xóa sản phẩm khỏi giỏ hàng thất bại";
 
           set((state) => ({
             error: errorMessage,
@@ -130,7 +130,7 @@ export const useCartStore = create<CartStore>()(
           const errorMessage =
             error instanceof Error
               ? error.message
-              : "Failed to update quantity";
+              : "Cập nhật số lượng thất bại";
 
           set((state) => ({
             error: errorMessage,
@@ -145,18 +145,18 @@ export const useCartStore = create<CartStore>()(
         const clearCartPromise = unifiedCartService.clearCart();
 
         toast.promise(clearCartPromise, {
-          loading: "Clearing cart...",
+          loading: "Đang xóa giỏ hàng...",
           success: (updatedCart) => {
             set({
               items: updatedCart.items,
               lastUpdated: Date.now(),
               isLoading: false,
             });
-            return "All items have been removed from your cart";
+            return "Tất cả sản phẩm đã được xóa khỏi giỏ hàng";
           },
           error: (error) => {
             const errorMessage =
-              error instanceof Error ? error.message : "Failed to clear cart";
+              error instanceof Error ? error.message : "Xóa giỏ hàng thất bại";
 
             set({
               error: errorMessage,
@@ -321,7 +321,7 @@ export const validateCart = (items: CartItem[]): CartValidationResult => {
     if (item.quantity <= 0) {
       errors.push({
         itemId: item.id.toString(),
-        message: "Item quantity must be greater than 0",
+        message: "Số lượng sản phẩm phải lớn hơn 0",
       });
     }
   });

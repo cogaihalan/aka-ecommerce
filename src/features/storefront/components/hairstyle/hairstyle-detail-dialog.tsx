@@ -58,11 +58,11 @@ export function HairstyleDetailDialog({
       setIsFavorite(updatedHairstyle.liked || false);
       setVoteCount(updatedHairstyle.voteCount);
       toast.success(
-        updatedHairstyle.liked ? "Added to favorites" : "Removed from favorites"
+        updatedHairstyle.liked ? "Thêm vào danh sách yêu thích" : "Xóa khỏi danh sách yêu thích"
       );
     } catch (error) {
       console.error("Error toggling favorite:", error);
-      toast.error("Failed to update favorite status");
+      toast.error("Không thể cập nhật trạng thái yêu thích");
     } finally {
       setIsFavoriting(false);
     }
@@ -170,7 +170,7 @@ export function HairstyleDetailDialog({
                 </div>
                 <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                   <Heart className="h-4 w-4" />
-                  <span>{voteCount} votes</span>
+                  <span>{voteCount} bình chọn</span>
                 </div>
               </div>
 
@@ -185,7 +185,7 @@ export function HairstyleDetailDialog({
                     isFavorite ? "fill-red-500 text-red-500" : ""
                   }`}
                 />
-                {isFavorite ? "Favorited" : "Add to Favorites"}
+                {isFavorite ? "Yêu thích" : "Thêm vào danh sách yêu thích"}
               </Button>
             </div>
           </div>

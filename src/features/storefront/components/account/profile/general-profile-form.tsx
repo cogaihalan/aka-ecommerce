@@ -20,9 +20,9 @@ import { toast } from "sonner";
 import { useState, useEffect } from "react";
 
 const profileFormSchema = z.object({
-  fullName: z.string().min(2, "Full name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  phoneNumber: z.string().min(10, "Phone number must be at least 10 characters"),
+  fullName: z.string().min(2, "Tên là bắt buộc và phải có ít nhất 2 ký tự"),
+  email: z.string().email("Vui lòng nhập địa chỉ email hợp lệ"),
+  phoneNumber: z.string().min(10, "Số điện thoại phải có ít nhất 10 ký tự"),
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
@@ -53,7 +53,7 @@ export function GeneralProfileForm() {
 
   const onSubmit = async (data: ProfileFormValues) => {
     if (!user?.clerkId) {
-      toast.error("User not found. Please try again.");
+      toast.error("Không tìm thấy người dùng. Vui lòng thử lại.");
       return;
     }
 
@@ -66,71 +66,76 @@ export function GeneralProfileForm() {
       };
 
       await storefrontUserService.updateUserProfile(updateData);
-      
-      toast.success("Your profile has been updated successfully.");
+
+      toast.success("Thông tin cá nhân đã được cập nhật thành công.");
       form.reset();
     } catch (error) {
-      toast.error("Failed to update profile. Please try again.");
+      toast.error("Lỗi khi cập nhật thông tin cá nhân. Vui lòng thử lại.");
     } finally {
       setIsLoading(false);
     }
-};
-    return (<div className="space-y-6">
+  };
+  return (
+    <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold">General Information</h2>
+        <h2 className="text-2xl font-bold">Thông tin cá nhân</h2>
         <p className="text-muted-foreground">
-          Update your personal information and contact details.
+          Cập nhật thông tin cá nhân và chi tiết liên hệ.
         </p>
       </div>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField
-                control={form.control}
-                name="fullName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Full Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your full name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="fullName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tên</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Nhập tên của bạn" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your email" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Nhập email của bạn" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="phoneNumber"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone Number</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your phone number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Saving..." : "Save Changes"}
-            </Button>
-          </form>
-        </Form>
-        </div>);
-    }
+            <FormField
+              control={form.control}
+              name="phoneNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Số điện thoại</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Nhập số điện thoạu của bạn"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? "Đang lưu..." : "Lưu thay đổi"}
+          </Button>
+        </form>
+      </Form>
+    </div>
+  );
+}

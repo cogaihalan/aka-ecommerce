@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Cross2Icon } from "@radix-ui/react-icons";
-import { useI18n } from "@/components/providers/i18n-provider";
 
 interface DataTableToolbarProps<TData> extends ComponentProps<"div"> {
   table: Table<TData>;
@@ -23,7 +22,6 @@ export function DataTableToolbar<TData>({
   className,
   ...props
 }: DataTableToolbarProps<TData>) {
-  const { t } = useI18n();
   const isFiltered = table.getState().columnFilters.length > 0;
 
   const columns = useMemo(
@@ -51,14 +49,14 @@ export function DataTableToolbar<TData>({
         ))}
         {isFiltered && (
           <Button
-            aria-label={t("table.resetFilters")}
+            aria-label="Đặt lại bộ lọc"
             variant="outline"
             size="sm"
             className="border-dashed"
             onClick={onReset}
           >
             <Cross2Icon />
-            {t("table.reset")}
+            Đặt lại
           </Button>
         )}
       </div>

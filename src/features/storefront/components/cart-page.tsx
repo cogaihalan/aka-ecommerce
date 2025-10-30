@@ -41,8 +41,8 @@ export default function CartPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Shopping Cart</h1>
-          <p className="text-muted-foreground">Loading your cart...</p>
+          <h1 className="text-3xl font-bold mb-2">Giỏ hàng</h1>
+          <p className="text-muted-foreground">Đang tải giỏ hàng...</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -76,16 +76,16 @@ export default function CartPage() {
     return (
       <div className="text-center py-12">
         <ShoppingBag className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-        <h1 className="text-2xl font-bold mb-4">Your cart is empty</h1>
+        <h1 className="text-2xl font-bold mb-4">Giỏ hàng của bạn đang trống</h1>
         <p className="text-muted-foreground mb-6">
-          Looks like you haven't added any items to your cart yet.
+          Có vẻ như bạn chưa thêm bất kỳ sản phẩm nào vào giỏ hàng của bạn.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button asChild size="lg">
-            <Link href="/products">Continue Shopping</Link>
+            <Link href="/products">Tiếp tục mua sắm</Link>
           </Button>
           <Button variant="outline" asChild size="lg">
-            <Link href="/">Back to Home</Link>
+            <Link href="/">Quay về trang chủ</Link>
           </Button>
         </div>
       </div>
@@ -105,15 +105,15 @@ export default function CartPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Shopping Cart</h1>
+          <h1 className="text-3xl font-bold mb-2">Giỏ hàng</h1>
           <p className="text-muted-foreground">
-            Review your items and proceed to checkout
+            Xem lại các sản phẩm trong giỏ hàng và tiến hành thanh toán
           </p>
         </div>
         <Button variant="outline" asChild>
           <Link href="/products">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Continue Shopping
+            Tiếp tục mua sắm
           </Link>
         </Button>
       </div>
@@ -154,17 +154,17 @@ export default function CartPage() {
 
       {/* Additional Info */}
       <div className="bg-muted/50 rounded-lg p-6">
-        <h3 className="font-semibold mb-2">Need Help?</h3>
+        <h3 className="font-semibold mb-2">Cần Giúp Đỡ?</h3>
         <p className="text-sm text-muted-foreground mb-4">
-          If you have any questions about your order or need assistance, our
-          customer service team is here to help.
+          Nếu bạn có bất kỳ câu hỏi nào về đơn hàng của bạn hoặc cần sự trợ
+          giúp, nhóm dịch vụ khách hàng của chúng tôi sẽ giúp bạn.
         </p>
         <div className="flex flex-col sm:flex-row gap-2">
           <Button variant="outline" size="sm" asChild>
-            <Link href="/contact">Contact Support</Link>
+            <Link href="/contact">Liên hệ hỗ trợ</Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
-            <Link href="/help">Help Center</Link>
+            <Link href="/help">Trung tâm hỗ trợ</Link>
           </Button>
         </div>
       </div>

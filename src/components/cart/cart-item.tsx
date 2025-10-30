@@ -42,7 +42,6 @@ export function CartItem({
     item.product.images?.find((image) => image.primary)?.url ||
     "/assets/placeholder-image.jpeg";
 
-  // Remove stock-related logic since CartItem doesn't have maxQuantity
   const isOutOfStock = false;
 
   if (variant === "minimal") {
@@ -62,7 +61,7 @@ export function CartItem({
             {item.product.name}
           </p>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span>Qty: {item.quantity}</span>
+            <span>Số lượng: {item.quantity}</span>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -147,7 +146,6 @@ export function CartItem({
     );
   }
 
-  // Default variant
   return (
     <Card className={cn("overflow-hidden", className)} disableBlockPadding>
       <CardContent className="p-4">

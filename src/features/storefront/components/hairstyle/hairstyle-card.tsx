@@ -73,12 +73,12 @@ export function HairstyleCard({ hairstyle, onView }: HairstyleCardProps) {
         setVoteCount(updatedHairstyle.voteCount);
         toast.success(
           updatedHairstyle.liked
-            ? "Added to favorites"
-            : "Removed from favorites"
+            ? "Thêm vào danh sách yêu thích"
+            : "Xóa khỏi danh sách yêu thích"
         );
       } catch (error) {
         console.error("Error toggling favorite:", error);
-        toast.error("Failed to update favorite status");
+        toast.error("Không thể cập nhật trạng thái yêu thích");
       } finally {
         setIsFavoriting(false);
       }
@@ -177,7 +177,7 @@ export function HairstyleCard({ hairstyle, onView }: HairstyleCardProps) {
           </div>
           <div className="flex items-center space-x-2 text-sm text-muted-foreground">
             <Heart className="h-4 w-4" />
-            <span>{voteCount} votes</span>
+            <span>{voteCount} bình chọn</span>
           </div>
           <Button
             variant="default"
@@ -189,7 +189,7 @@ export function HairstyleCard({ hairstyle, onView }: HairstyleCardProps) {
             className="w-full"
           >
             <Eye className="h-4 w-4 mr-2" />
-            View Details
+            Xem chi tiết
           </Button>
         </div>
       </CardContent>

@@ -20,7 +20,6 @@ import {
 import { cn } from "@/lib/utils";
 import { useMemo } from "react";
 import { CheckIcon, CaretSortIcon } from "@radix-ui/react-icons";
-import { useI18n } from "@/components/providers/i18n-provider";
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
@@ -29,7 +28,6 @@ interface DataTableViewOptionsProps<TData> {
 export function DataTableViewOptions<TData>({
   table,
 }: DataTableViewOptionsProps<TData>) {
-  const { t } = useI18n();
   const columns = useMemo(
     () =>
       table
@@ -45,22 +43,22 @@ export function DataTableViewOptions<TData>({
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          aria-label={t("table.toggleColumns")}
+          aria-label="Chuyển đổi cột"
           role="combobox"
           variant="outline"
           size="sm"
           className="ml-auto hidden h-8 lg:flex"
         >
           <Settings2 />
-          {t("table.view")}
+          Hiển thị
           <CaretSortIcon className="ml-auto opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-44 p-0">
         <Command>
-          <CommandInput placeholder={t("table.searchColumns")} />
+          <CommandInput placeholder="Tìm cột..." />
           <CommandList>
-            <CommandEmpty>{t("table.noColumns")}</CommandEmpty>
+            <CommandEmpty>Không tìm thấy cột nào.</CommandEmpty>
             <CommandGroup>
               {columns.map((column) => (
                 <CommandItem

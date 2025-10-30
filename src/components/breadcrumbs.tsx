@@ -19,22 +19,19 @@ export function Breadcrumbs() {
   return (
     <Breadcrumb className="my-6">
       <BreadcrumbList>
-        {/* Home icon link */}
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
             <Link href="/" className="flex items-center">
               <Home className="h-4 w-4" />
-              <span className="sr-only">Home</span>
+              <span className="sr-only">Trang chủ</span>
             </Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
 
-        {/* Separator after home */}
         <BreadcrumbSeparator>
           <Slash />
         </BreadcrumbSeparator>
 
-        {/* Breadcrumb items */}
         {items.map((item, index) => (
           <Fragment key={item.title}>
             {index !== items.length - 1 && (

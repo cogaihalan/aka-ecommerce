@@ -11,23 +11,21 @@ import Link from "next/link";
 import { storefrontOrderService } from "@/lib/api/services/storefront/orders-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useI18n } from "@/components/providers/i18n-provider";
 
 interface OrderDetailPageProps {
   order: Order;
 }
 
 export default function OrderDetailPage({ order }: OrderDetailPageProps) {
-  const { t } = useI18n();
   const router = useRouter();
 
   const handleCancelOrder = async () => {
     try {
       await storefrontOrderService.cancelOrder(order.id);
-      toast.success(t("orders.detail.cancelSuccess"));
+      toast.success("Hủy đơn hàng thành công");
       router.refresh();
     } catch (error) {
-      toast.error(t("orders.detail.cancelFailed"));
+      toast.error("Hủy đơn hàng thất bại");
     }
   };
 
@@ -77,7 +75,7 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
         <Link href="/account/orders">
           <Button variant="outline" className="flex items-center gap-2">
             <ArrowLeft className="h-4 w-4" />
-            {t("orders.detail.backToHistory")}
+            Quay lại lịch sử đơn hàng
           </Button>
         </Link>
 
@@ -88,15 +86,18 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
             className="flex items-center gap-2"
           >
             <X className="h-4 w-4" />
-            {t("orders.detail.cancelOrder")}
+            Hủy đơn hàng
           </Button>
         )}
       </div>
 
       <div>
-        <h1 className="text-3xl font-bold mb-2">{t("orders.detail.titleWithCode", { code: order.code })}</h1>
+        <h1 className="text-3xl font-bold mb-2">{`Đơn hàng #${order.code}`}</h1>
         <p className="text-muted-foreground">
-          {t("orders.detail.placedOn")} {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : t("orders.detail.unknownDate")}
+          Đặt ngày{" "}
+          {order.createdAt
+            ? new Date(order.createdAt).toLocaleDateString()
+            : "Không rõ ngày"}
         </p>
       </div>
 
@@ -105,7 +106,7 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
           {/* Order Items */}
           <Card>
             <CardHeader>
-              <CardTitle>{t("orders.detail.items")}</CardTitle>
+              <CardTitle>Sản phẩm trong đơn</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {order.items.map((item) => (
@@ -116,7 +117,7 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
                   <div className="flex-1">
                     <h3 className="font-semibold">{item.productName}</h3>
                     <p className="text-sm text-muted-foreground">
-                      {t("orders.detail.quantity")}: {item.quantity}
+                      Số lượng: {item.quantity}
                     </p>
                     <p className="font-bold">
                       {formatPrice(item.priceAtPurchase)}
@@ -130,7 +131,7 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
           {/* Shipping Address */}
           <Card>
             <CardHeader>
-              <CardTitle>{t("orders.detail.shippingAddress")}</CardTitle>
+              <CardTitle>Địa chỉ giao hàng</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-sm">
@@ -139,7 +140,7 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
                 <p>{order.shippingAddress}</p>
                 {order.note && (
                   <div className="mt-2 p-2 bg-muted rounded-md">
-                    <p className="text-xs text-muted-foreground">{t("orders.detail.note")}</p>
+                    <p className="text-xs text-muted-foreground">Ghi chú:</p>
                     <p className="text-sm">{order.note}</p>
                   </div>
                 )}
@@ -152,7 +153,7 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
           {/* Order Status */}
           <Card>
             <CardHeader>
-              <CardTitle>{t("orders.detail.status")}</CardTitle>
+              <CardTitle>Trạng thái đơn hàng</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-3">
@@ -163,11 +164,11 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
               </div>
               <div className="mt-2">
                 <p className="text-sm text-muted-foreground">
-                  {t("orders.detail.payment")} {" "}
+                  Thanh toán:{" "}
                   <span className="font-medium">{order.paymentStatus}</span>
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  {t("orders.detail.method")} {" "}
+                  Phương thức:{" "}
                   <span className="font-medium">{order.paymentMethod}</span>
                 </p>
               </div>
@@ -177,28 +178,30 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
           {/* Order Summary */}
           <Card>
             <CardHeader>
-              <CardTitle>{t("orders.detail.summary")}</CardTitle>
+              <CardTitle>Tổng quan đơn hàng</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="flex justify-between">
-                <span>{t("orders.detail.subtotal")}</span>
+                <span>Tạm tính</span>
                 <span>{formatPrice(order.subtotalAmount)}</span>
               </div>
               <div className="flex justify-between">
-                <span>{t("orders.detail.shipping")}</span>
+                <span>Vận chuyển</span>
                 <span>
-                  {order.shippingFee === 0 ? t("checkout.shipping.free") : formatPrice(order.shippingFee)}
+                  {order.shippingFee === 0
+                    ? "Miễn phí"
+                    : formatPrice(order.shippingFee)}
                 </span>
               </div>
               {order.discountAmount > 0 && (
                 <div className="flex justify-between text-green-600">
-                  <span>{t("orders.detail.discount")}</span>
+                  <span>Giảm giá</span>
                   <span>-{formatPrice(order.discountAmount)}</span>
                 </div>
               )}
               <Separator />
               <div className="flex justify-between font-bold text-lg">
-                <span>{t("orders.detail.total")}</span>
+                <span>Tổng</span>
                 <span>{formatPrice(order.finalAmount)}</span>
               </div>
             </CardContent>

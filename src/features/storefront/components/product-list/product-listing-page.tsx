@@ -132,9 +132,9 @@ export default function ProductListingPage() {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold mb-2">All Products</h1>
+          <h1 className="text-3xl font-bold mb-2">Tất cả sản phẩm</h1>
           <p className="text-muted-foreground">
-            Discover our complete collection of premium products
+            Khám phá bộ sưu tập đầy đủ của chúng tôi
           </p>
         </div>
 
@@ -179,7 +179,7 @@ export default function ProductListingPage() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <p className="text-red-500 mb-4">{error}</p>
-          <Button onClick={() => fetchProducts()}>Try Again</Button>
+          <Button onClick={() => fetchProducts()}>Thử lại</Button>
         </div>
       </div>
     );
@@ -189,9 +189,9 @@ export default function ProductListingPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">All Products</h1>
+        <h1 className="text-3xl font-bold mb-2">Tất cả sản phẩm</h1>
         <p className="text-muted-foreground">
-          Discover our complete collection of premium products
+          Khám phá bộ sưu tập đầy đủ của chúng tôi
         </p>
       </div>
 
@@ -259,7 +259,7 @@ export default function ProductListingPage() {
             <div className="flex justify-center mt-6 animate-fade-in">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                <span className="text-sm">Updating products...</span>
+                <span className="text-sm">Cập nhật sản phẩm...</span>
               </div>
             </div>
           )}
@@ -347,7 +347,7 @@ export default function ProductListingPage() {
             (state.filters.search || getActiveFiltersCount() > 0) && (
               <div className="text-center py-12">
                 <p className="text-muted-foreground">
-                  No products found matching your criteria
+                  Không tìm thấy sản phẩm phù hợp với tiêu chí của bạn
                 </p>
                 <div className="flex flex-col sm:flex-row gap-2 justify-center mt-4">
                   {state.filters.search && (
@@ -355,12 +355,12 @@ export default function ProductListingPage() {
                       variant="outline"
                       onClick={() => updateFilters({ search: "" })}
                     >
-                      Clear search
+                      Xóa tìm kiếm
                     </Button>
                   )}
                   {getActiveFiltersCount() > 0 && (
                     <Button variant="outline" onClick={resetFilters}>
-                      Clear all filters
+                      Xóa tất cả bộ lọc
                     </Button>
                   )}
                 </div>

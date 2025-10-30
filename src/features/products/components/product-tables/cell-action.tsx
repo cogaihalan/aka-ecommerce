@@ -1,5 +1,4 @@
 "use client";
-import { AlertModal } from "@/components/modal/alert-modal";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,9 +12,6 @@ import { Edit, MoreVertical, Trash2, Image } from "lucide-react";
 import { useState } from "react";
 import { ProductDialog } from "../product-dialog";
 import { ProductImageManager } from "../product-image-manager";
-import { unifiedProductService } from "@/lib/api/services/unified";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 interface CellActionProps {
   data: Product;
@@ -51,18 +47,18 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">Mở menu</span>
             <MoreVertical className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuLabel>Hành động</DropdownMenuLabel>
 
           <DropdownMenuItem onClick={() => setEditDialogOpen(true)}>
-            <Edit className="mr-2 h-4 w-4" /> Update
+            <Edit className="mr-2 h-4 w-4" /> Cập nhật
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setImageManagerOpen(true)}>
-            <Image className="mr-2 h-4 w-4" /> Manage Images
+            <Image className="mr-2 h-4 w-4" /> Quản lý ảnh
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

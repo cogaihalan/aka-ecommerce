@@ -258,7 +258,7 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <p className="text-red-500 mb-4">{error}</p>
-          <Button onClick={() => fetchProducts()}>Try Again</Button>
+          <Button onClick={() => fetchProducts()}>Thử lại</Button>
         </div>
       </div>
     );
@@ -341,7 +341,7 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
             <div className="flex justify-center mt-6 animate-fade-in">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                <span className="text-sm">Updating products...</span>
+                <span className="text-sm">Cập nhật sản phẩm...</span>
               </div>
             </div>
           )}
@@ -427,11 +427,11 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
               <div className="flex flex-col items-center gap-2">
                 <Image
                   src="/assets/404.png"
-                  alt="No products found"
+                  alt="Không tìm thấy sản phẩm"
                   width={200}
                   height={200}
                 />
-                <h3 className="text-xl font-medium">No products found</h3>
+                <h3 className="text-xl font-medium">Không tìm thấy sản phẩm</h3>
               </div>
             </div>
           )}
@@ -447,12 +447,12 @@ export default function CategoryPage({ categorySlug }: CategoryPageProps) {
                       variant="outline"
                       onClick={() => updateFilters({ search: "" })}
                     >
-                      Clear search
+                      Xóa tìm kiếm
                     </Button>
                   )}
                   {getActiveFiltersCount() > 0 && (
                     <Button variant="outline" onClick={resetFilters}>
-                      Clear all filters
+                      Xóa tất cả bộ lọc
                     </Button>
                   )}
                 </div>

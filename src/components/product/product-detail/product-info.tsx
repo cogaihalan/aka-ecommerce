@@ -23,7 +23,6 @@ import {
 } from "@/stores/wishlist-store";
 import { cn, isProductOutOfStock, getStockStatusText } from "@/lib/utils";
 import { Product } from "@/types";
-import { useI18n } from "@/components/providers/i18n-provider";
 
 interface ProductInfoProps {
   product: Product & {
@@ -42,7 +41,6 @@ export const ProductInfo = memo(function ProductInfo({
   product,
   className,
 }: ProductInfoProps) {
-  const { t } = useI18n();
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
@@ -126,7 +124,7 @@ export const ProductInfo = memo(function ProductInfo({
       <div>
         <div className="flex items-center gap-2 mb-2">
           <Badge variant="secondary">
-            {product.categories[0]?.name || t("wishlist.uncategorized")}
+            {product.categories[0]?.name || "Chưa phân loại"}
           </Badge>
         </div>
 
@@ -152,10 +150,10 @@ export const ProductInfo = memo(function ProductInfo({
         {/* Size Selection */}
         {product.sizes && product.sizes.length > 0 && (
           <div>
-            <label className="text-sm font-medium mb-2 block">{t("product.size")}</label>
+            <label className="text-sm font-medium mb-2 block">Kích cỡ</label>
             <Select value={selectedSize} onValueChange={setSelectedSize}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder={t("product.selectSize")} />
+                <SelectValue placeholder="Chọn kích cỡ" />
               </SelectTrigger>
               <SelectContent>
                 {product.sizes.map((size) => (
@@ -171,10 +169,10 @@ export const ProductInfo = memo(function ProductInfo({
         {/* Color Selection */}
         {product.colors && product.colors.length > 0 && (
           <div>
-            <label className="text-sm font-medium mb-2 block">{t("product.color")}</label>
+            <label className="text-sm font-medium mb-2 block">Màu sắc</label>
             <Select value={selectedColor} onValueChange={setSelectedColor}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder={t("product.selectColor")} />
+                <SelectValue placeholder="Chọn màu sắc" />
               </SelectTrigger>
               <SelectContent>
                 {product.colors.map((color) => (
@@ -189,7 +187,7 @@ export const ProductInfo = memo(function ProductInfo({
 
         {/* Quantity Selector */}
         <div>
-          <label className="text-sm font-medium mb-2 block">{t("product.quantity")}</label>
+          <label className="text-sm font-medium mb-2 block">Số lượng</label>
           <div className="flex items-center gap-2 w-fit">
             <Button
               variant="outline"
@@ -236,14 +234,14 @@ export const ProductInfo = memo(function ProductInfo({
             {isProductLoading(product.id) ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                {t("product.adding")}
+                Đang thêm...
               </>
             ) : isOutOfStock ? (
               stockStatusText
             ) : isInCartState ? (
-              t("product.inCartWithQty", { qty: getItemQuantity(product.id) })
+              `Trong giỏ (${getItemQuantity(product.id)})`
             ) : (
-              t("cart.checkout")
+              "Thanh toán"
             )}
           </Button>
           <Button
@@ -275,12 +273,12 @@ export const ProductInfo = memo(function ProductInfo({
           {isProductLoading(product.id) ? (
             <>
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              {t("checkout.processing")}
+              Đang xử lý...
             </>
           ) : isOutOfStock ? (
             stockStatusText
           ) : (
-            t("product.buyNow")
+            "Mua ngay"
           )}
         </Button>
 

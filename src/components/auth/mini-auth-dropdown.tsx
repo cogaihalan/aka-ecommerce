@@ -20,14 +20,12 @@ import { useAuthStore } from "@/stores/auth-store";
 import { useUser } from "@clerk/nextjs";
 import { SignOutButton } from "./sign-out-button";
 import { UserAvatarProfile } from "@/components/user-avatar-profile";
-import { useI18n } from "@/components/providers/i18n-provider";
 
 interface MiniAuthDropdownProps {
   className?: string;
 }
 
 export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
-  const { t } = useI18n();
   const { isDropdownOpen, closeDropdown } = useAuthStore();
   const { user, isSignedIn } = useUser();
   const [isVisible, setIsVisible] = useState(false);
@@ -93,7 +91,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <User className="w-5 h-5" />
-            <h3 className="font-semibold text-lg">{t("auth.account")}</h3>
+            <h3 className="font-semibold text-lg">Tài khoản</h3>
           </div>
           <Button
             variant="ghost"
@@ -110,9 +108,9 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
       {!isSignedIn ? (
         <div className="p-6 text-center">
           <UserCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <h4 className="font-medium text-lg mb-2">{t("auth.welcome")}</h4>
+          <h4 className="font-medium text-lg mb-2">Xin chào!</h4>
           <p className="text-muted-foreground text-sm mb-6">
-            {t("auth.signInPrompt")}
+            Đăng nhập để truy cập tài khoản và trải nghiệm mua sắm cá nhân hóa
           </p>
           <div className="space-y-2">
             <Button
@@ -121,7 +119,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
               size="lg"
               onClick={closeDropdown}
             >
-              <Link href="/auth/sign-in">{t("auth.signIn")}</Link>
+              <Link href="/auth/sign-in">Đăng nhập</Link>
             </Button>
             <Button
               asChild
@@ -129,7 +127,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
               className="w-full"
               onClick={closeDropdown}
             >
-              <Link href="/auth/sign-up">{t("auth.createAccount")}</Link>
+              <Link href="/auth/sign-up">Tạo tài khoản</Link>
             </Button>
           </div>
         </div>
@@ -141,7 +139,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
               <UserAvatarProfile user={user} />
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-sm truncate">
-                  {user.fullName || t("auth.user")}
+                  {user.fullName || "Người dùng"}
                 </p>
                 <p className="text-muted-foreground text-xs truncate">
                   {user.emailAddresses[0]?.emailAddress}
@@ -161,7 +159,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
               >
                 <Link href="/account" className="flex items-center gap-3">
                   <UserCircle className="w-4 h-4" />
-                  <span>{t("auth.myAccount")}</span>
+                  <span>Tài khoản của tôi</span>
                 </Link>
               </Button>
 
@@ -176,7 +174,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
                   className="flex items-center gap-3"
                 >
                   <Package className="w-4 h-4" />
-                  <span>{t("auth.myOrders")}</span>
+                  <span>Đơn hàng của tôi</span>
                 </Link>
               </Button>
 
@@ -191,7 +189,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
                   className="flex items-center gap-3"
                 >
                   <Heart className="w-4 h-4" />
-                  <span>{t("auth.wishlist")}</span>
+                  <span>Yêu thích</span>
                 </Link>
               </Button>
 
@@ -206,7 +204,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
                   className="flex items-center gap-3"
                 >
                   <MapPin className="w-4 h-4" />
-                  <span>{t("auth.addresses")}</span>
+                  <span>Địa chỉ</span>
                 </Link>
               </Button>
 
@@ -221,10 +219,9 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
                   className="flex items-center gap-3"
                 >
                   <Award className="w-4 h-4" />
-                  <span>{t("auth.submissions")}</span>
+                  <span>Bài dự thi</span>
                 </Link>
               </Button>
-              
             </div>
           </div>
 
@@ -244,7 +241,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
                   className="flex items-center gap-3"
                 >
                   <Settings className="w-4 h-4" />
-                  <span>{t("auth.settings")}</span>
+                  <span>Cài đặt</span>
                 </Link>
               </Button>
 
@@ -258,7 +255,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
                 >
                   <Link href="/dashboard" className="flex items-center gap-3">
                     <Settings className="w-4 h-4" />
-                    <span>{t("auth.dashboard")}</span>
+                    <span>Bảng điều khiển</span>
                   </Link>
                 </Button>
               )}
@@ -269,7 +266,7 @@ export function MiniAuthDropdown({ className }: MiniAuthDropdownProps) {
                 onClick={closeDropdown}
               >
                 <LogOut className="w-4 h-4" />
-                <span>{t("auth.signOut")}</span>
+                <span>Đăng xuất</span>
               </SignOutButton>
             </div>
           </div>

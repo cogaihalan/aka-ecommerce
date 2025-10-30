@@ -43,7 +43,7 @@ export function CourseVideoDialog({
             <div className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />
               <span>
-                Created {format(new Date(course.createdAt), "MMM dd, yyyy")}
+                Ngày tạo: {format(new Date(course.createdAt), "MMM dd, yyyy")}
               </span>
             </div>
           </div>

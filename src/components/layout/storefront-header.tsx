@@ -18,7 +18,6 @@ import {
   useWishlistItemCount,
   useWishlistAuthStatus,
 } from "@/stores/wishlist-store";
-import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function StorefrontHeader() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -26,8 +25,6 @@ export default function StorefrontHeader() {
   const wishlistCount = useWishlistItemCount();
   const isAuthenticated = useWishlistAuthStatus();
   const { megaMenuData, loading: megaMenuLoading } = useMegaMenu();
-  const { locale, setLocale } = useI18n();
-  
 
   const handleWishlistClick = () => {
     if (!isAuthenticated) {
@@ -39,30 +36,26 @@ export default function StorefrontHeader() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="px-4">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
           <Logo size="lg" href="/" />
 
-          {/* Desktop Navigation */}
           {megaMenuLoading ? (
             <MegaMenuSkeleton itemCount={4} />
           ) : (
             megaMenuData?.menu_items && (
-            <div className="hidden lg:flex flex-1 justify-center">
-              <MegaMenu menuItems={megaMenuData.menu_items} />
-            </div>
-          ))}
+              <div className="hidden lg:flex flex-1 justify-center">
+                <MegaMenu menuItems={megaMenuData.menu_items} />
+              </div>
+            )
+          )}
 
           <div className="flex flex-row-reverse items-center gap-2 md:flex-row md:gap-3">
-            {/* Search Bar */}
             <div className="hidden lg:flex items-center space-x-2 flex-1 mx-4">
               <div className="relative w-70 transition-all duration-300 ease-in-out xl:focus-within:w-90">
                 <SearchSuggestions className="w-full" />
               </div>
             </div>
 
-            {/* Action Buttons */}
             <div className="flex items-center gap-2 md:gap-3">
-              {/* Wishlist */}
               <Button
                 variant="ghost"
                 size="icon"
@@ -89,23 +82,10 @@ export default function StorefrontHeader() {
                 )}
               </Button>
 
-              {/* Cart */}
               <CartIcon />
 
-              {/* User Account */}
               <AuthIcon />
 
-              {/* Language Switcher */}
-              <Button
-                variant="outline"
-                size="sm"
-                className="hidden lg:inline-flex"
-                onClick={() => setLocale(locale === "vi" ? "en" : "vi")}
-              >
-                {locale === "vi" ? "VI" : "EN"}
-              </Button>
-
-              {/* Mobile Menu Button */}
               {megaMenuData?.menu_items && !megaMenuLoading && (
                 <MobileMegaMenu menuItems={megaMenuData.menu_items} />
               )}
@@ -126,7 +106,6 @@ export default function StorefrontHeader() {
           </div>
         </div>
 
-        {/* Mobile Search */}
         {isSearchOpen && (
           <div className="lg:hidden border-t">
             <div className="px-3 py-4">

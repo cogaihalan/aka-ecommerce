@@ -17,7 +17,7 @@ export function ContestGrid({ contests, total }: ContestGridProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          Showing {contests.length} of {total} contests
+          Hiển thị {contests.length} trên {total} cuộc thi
         </p>
       </div>
 
@@ -33,7 +33,7 @@ export function ContestGrid({ contests, total }: ContestGridProps) {
 
       {contests.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">No contests found</p>
+          <p className="text-muted-foreground">Không tìm thấy cuộc thi</p>
         </div>
       )}
 

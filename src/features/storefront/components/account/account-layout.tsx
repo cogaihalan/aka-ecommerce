@@ -18,24 +18,22 @@ import {
   Award,
 } from "lucide-react";
 import { SignOutButton } from "@/components/auth";
-import { useI18n } from "@/components/providers/i18n-provider";
 
 interface AccountLayoutProps {
   children: ReactNode;
 }
 
 const accountNav = [
-  { nameKey: "account.menu.dashboard", href: "/account", icon: User },
-  { nameKey: "account.menu.orders", href: "/account/orders", icon: Package },
-  { nameKey: "account.menu.addresses", href: "/account/addresses", icon: MapPin },
-  { nameKey: "account.menu.profile", href: "/account/profile", icon: Settings },
-  { nameKey: "account.menu.submissions", href: "/account/submissions", icon: Award },
-  { nameKey: "account.menu.wishlist", href: "/account/wishlist", icon: Heart },
-  { nameKey: "account.menu.signOut", href: "/auth/sign-out", icon: LogOut },
+  { label: "Tổng quan", href: "/account", icon: User },
+  { label: "Đơn hàng", href: "/account/orders", icon: Package },
+  { label: "Địa chỉ", href: "/account/addresses", icon: MapPin },
+  { label: "Hồ sơ", href: "/account/profile", icon: Settings },
+  { label: "Bài dự thi", href: "/account/submissions", icon: Award },
+  { label: "Yêu thích", href: "/account/wishlist", icon: Heart },
+  { label: "Đăng xuất", href: "/auth/sign-out", icon: LogOut },
 ];
 
 export default function AccountLayout({ children }: AccountLayoutProps) {
-  const { t } = useI18n();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -44,10 +42,10 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
       const Icon = item.icon;
 
       // Handle Logout item with SignOutButton
-      if (item.nameKey === "account.menu.signOut") {
+      if (item.label === "Đăng xuất") {
         return (
           <SignOutButton
-            key={item.nameKey}
+            key={item.href}
             redirectUrl="/auth/sign-in"
             className={cn(
               "flex items-center justify-start gap-3 px-3 py-2 rounded-md text-sm transition-colors cursor-pointer w-full text-left",
@@ -56,14 +54,14 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
             onClick={() => setIsOpen(false)}
           >
             <Icon className="h-4 w-4" />
-            {t(item.nameKey)}
+            {item.label}
           </SignOutButton>
         );
       }
 
       return (
         <Link
-          key={item.nameKey}
+          key={item.href}
           href={item.href}
           onClick={() => setIsOpen(false)}
           className={cn(
@@ -72,7 +70,7 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
           )}
         >
           <Icon className="h-4 w-4" />
-          {t(item.nameKey)}
+          {item.label}
         </Link>
       );
     });
@@ -82,8 +80,10 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
     <div className="space-y-6 pb-8 lg:pb-16">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">{t("account.title")}</h1>
-          <p className="text-muted-foreground">{t("account.subtitle")}</p>
+          <h1 className="text-3xl font-bold mb-2">Tài khoản của tôi</h1>
+          <p className="text-muted-foreground">
+            Quản lý cài đặt tài khoản và đơn hàng
+          </p>
         </div>
 
         {/* Mobile Navigation Button */}
@@ -96,8 +96,10 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
           <SheetContent side="left" className="w-80">
             <div className="space-y-4 p-4">
               <div>
-                <h2 className="text-lg font-semibold">{t("account.menu.title")}</h2>
-                <p className="text-sm text-muted-foreground">{t("account.menu.subtitle")}</p>
+                <h2 className="text-lg font-semibold">Menu tài khoản</h2>
+                <p className="text-sm text-muted-foreground">
+                  Điều hướng tài khoản của bạn
+                </p>
               </div>
               <nav className="space-y-2">{renderNavItems()}</nav>
             </div>

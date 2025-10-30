@@ -27,11 +27,10 @@ export function SignOutButton({
   const handleSignOut = async () => {
     try {
       setSigningOut(true);
-      closeDropdown(); // Close any open dropdowns
+      closeDropdown();
 
       await signOut();
 
-      // Redirect to the specified URL
       router.push(redirectUrl);
     } catch (error) {
       console.error("Error signing out:", error);
@@ -50,7 +49,7 @@ export function SignOutButton({
       {isSigningOut ? (
         <div className="flex items-center gap-2">
           <Loader2 className="h-4 w-4 animate-spin" />
-          <span>Signing out...</span>
+          <span>Đang đăng xuất...</span>
         </div>
       ) : (
         children

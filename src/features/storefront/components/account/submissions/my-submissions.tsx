@@ -8,7 +8,7 @@ import Image from "next/image";
 import { SubmissionDialog } from "./submission-dialog";
 
 const columns = [
-    {id:"images", header: "Images", accessorKey: "photos",
+    {id:"images", header: "Ảnh", accessorKey: "photos",
     cell: ({ row }: any) => {
       const s = row.original as Submission;
       return (
@@ -20,7 +20,7 @@ const columns = [
   },
   {
     id: "name",
-    header: "Submission",
+    header: "Bài dự thi",
     cell: ({ row }: any) => {
       const s = row.original as Submission;
       return (
@@ -31,7 +31,7 @@ const columns = [
       );
     },
   },
-  { id: "voteCount", header: "Votes", accessorKey: "voteCount",
+  { id: "voteCount", header: "Bình chọn", accessorKey: "voteCount",
     cell: ({ row }: any) => {
       const s = row.original as Submission;
       return (
@@ -41,7 +41,7 @@ const columns = [
       );
     },
   },
-  { id: "status", header: "Status", accessorKey: "status",
+  { id: "status", header: "Trạng thái", accessorKey: "status",
     cell: ({ row }: any) => {
       const s = row.original as Submission;
       return (
@@ -53,13 +53,13 @@ const columns = [
   },
   {
     id: "actions",
-    header: "Actions",
+    header: "Hành động",
     cell: ({ row }: any) => {
       const s = row.original as Submission;
       return (
         <div className="flex gap-2">
           <SubmissionDialog submission={s}>
-            <Button variant="ghost" size="sm">Edit</Button>
+            <Button variant="ghost" size="sm">Sửa</Button>
           </SubmissionDialog>
         </div>
       );
@@ -92,11 +92,11 @@ export default async function MySubmissionsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">My Submissions</h1>
-          <p className="text-muted-foreground">Manage your submissions ({total} total)</p>
+          <h1 className="text-3xl font-bold mb-2">Bài dự thi</h1>
+          <p className="text-muted-foreground">Quản lý bài dự thi cá nhân ({total} tổng)</p>
         </div>
         <SubmissionDialog>
-          <Button>New Submission</Button>
+          <Button>Thêm bài dự thi</Button>
         </SubmissionDialog>
       </div>
 
@@ -111,7 +111,7 @@ export default async function MySubmissionsPage() {
         />
       ) : (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">No submissions found</p>
+          <p className="text-muted-foreground">Không tìm thấy bài dự thi</p>
         </div>
       )}
     </div>

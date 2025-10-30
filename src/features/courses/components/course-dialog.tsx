@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
-import { useI18n } from "@/components/providers/i18n-provider";
 import { useVideoDuration } from "@/hooks/use-video-duration";
 
 import { Button } from "@/components/ui/button";
@@ -18,7 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  Form, 
+  Form,
   FormControl,
   FormDescription,
   FormField,
@@ -30,10 +29,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { FileUploader } from "@/components/file-uploader";
-import {
-  CourseCreateRequest,
-  CourseUpdateRequest,
-} from "@/lib/api/types";
+import { CourseCreateRequest, CourseUpdateRequest } from "@/lib/api/types";
 import { unifiedCourseService } from "@/lib/api/services/unified";
 import type { Course } from "@/types";
 
@@ -62,7 +58,6 @@ export function CourseDialog({
   onSuccess,
 }: CourseDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const { t } = useI18n();
   const [videoFiles, setVideoFiles] = useState<File[]>([]);
   const [thumbnailFiles, setThumbnailFiles] = useState<File[]>([]);
   const [useVideoUpload, setUseVideoUpload] = useState(false);
@@ -72,7 +67,11 @@ export function CourseDialog({
   const [uploadedVideoUrl, setUploadedVideoUrl] = useState<string>("");
   const [uploadedThumbnailUrl, setUploadedThumbnailUrl] = useState<string>("");
 
-  const { getVideoDuration, isLoading: isDetectingDuration, error: durationError } = useVideoDuration();
+  const {
+    getVideoDuration,
+    isLoading: isDetectingDuration,
+    error: durationError,
+  } = useVideoDuration();
 
   const isEditMode = !!course;
 
@@ -142,7 +141,7 @@ export function CourseDialog({
         };
 
         await unifiedCourseService.updateCourse(course.id, updateData);
-        toast.success(t("courses.dialog.toast.updated"));
+        toast.success("Cập nhật khoá học thành công");
       } else {
         // Add mode - only include fields that are in CourseCreateRequest interface
         const createData: CourseCreateRequest = {
@@ -151,15 +150,15 @@ export function CourseDialog({
           duration: data.duration,
           active: data.active ?? true,
         };
-        
+
         await unifiedCourseService.createCourse(createData);
-        toast.success(t("courses.dialog.toast.created"));
+        toast.success("Tạo khoá học thành công");
         onSuccess?.();
         onOpenChange(false);
         form.reset();
       }
     } catch (error) {
-      toast.error(t("courses.dialog.toast.failed", { action: isEditMode ? "update" : "create" }));
+      toast.error(`Không thể ${isEditMode ? "cập nhật" : "tạo"} khoá học`);
       console.error(
         `Error ${isEditMode ? "updating" : "creating"} course:`,
         error
@@ -171,30 +170,30 @@ export function CourseDialog({
 
   const handleVideoUpload = async (files: File[]) => {
     if (!course || files.length === 0) return;
-    
+
     try {
       setIsUploadingVideo(true);
       const file = files[0];
-      
+
       // Detect video duration before uploading
       const duration = await getVideoDuration(file);
       if (duration) {
         form.setValue("duration", duration);
       } else if (durationError) {
-        toast.warning(t("courses.dialog.toast.detectDurationWarn"));
+        toast.warning("Không thể tự động phát hiện thời lượng video");
       }
-      
+
       const uploadedCourse = await unifiedCourseService.uploadCourseVideo({
         id: course.id,
         file: file,
       });
-      
+
       form.setValue("videoUrl", uploadedCourse.videoUrl || "");
       setUploadedVideoUrl(uploadedCourse.videoUrl || "");
       setVideoFiles(files);
-      toast.success(t("courses.dialog.videoUploaded"));
+      toast.success("Tải video thành công");
     } catch (error) {
-      toast.error(t("courses.dialog.toast.uploadVideoFailed"));
+      toast.error("Tải video thất bại");
       console.error("Video upload error:", error);
     } finally {
       setUseVideoUpload(false);
@@ -204,11 +203,11 @@ export function CourseDialog({
 
   const handleThumbnailUpload = async (files: File[]) => {
     if (!course || files.length === 0) return;
-    
+
     try {
       setIsUploadingThumbnail(true);
       const file = files[0];
-      
+
       const uploadedCourse = await unifiedCourseService.uploadCourseThumbnail({
         id: course.id,
         file: file,
@@ -218,9 +217,9 @@ export function CourseDialog({
       form.setValue("thumbnailUrl", uploadedCourse.thumbnailUrl || "");
       setUploadedThumbnailUrl(uploadedCourse.thumbnailUrl || "");
       setThumbnailFiles(files);
-      toast.success(t("courses.dialog.thumbnailUploaded"));
+      toast.success("Tải ảnh bìa thành công");
     } catch (error) {
-      toast.error(t("courses.dialog.toast.uploadThumbFailed"));
+      toast.error("Tải ảnh bìa thất bại");
       console.error("Thumbnail upload error:", error);
     } finally {
       setUseThumbnailUpload(false);
@@ -240,11 +239,11 @@ export function CourseDialog({
   // Function to detect duration from video URL
   const detectDurationFromUrl = async (videoUrl: string) => {
     if (!videoUrl) return null;
-    
+
     try {
-      const video = document.createElement('video');
-      video.crossOrigin = 'anonymous';
-      
+      const video = document.createElement("video");
+      video.crossOrigin = "anonymous";
+
       return new Promise<number | null>((resolve) => {
         const handleLoadedMetadata = () => {
           const duration = Math.round(video.duration);
@@ -260,20 +259,20 @@ export function CourseDialog({
           resolve(null);
         }, 10000); // 10 second timeout
 
-        video.addEventListener('loadedmetadata', () => {
+        video.addEventListener("loadedmetadata", () => {
           clearTimeout(timeout);
           handleLoadedMetadata();
         });
-        video.addEventListener('error', () => {
+        video.addEventListener("error", () => {
           clearTimeout(timeout);
           handleError();
         });
-        
+
         video.src = videoUrl;
         video.load();
       });
     } catch (error) {
-      console.error('Error detecting duration from URL:', error);
+      console.error("Error detecting duration from URL:", error);
       return null;
     }
   };
@@ -282,14 +281,16 @@ export function CourseDialog({
   const handleVideoUrlChange = useCallback(
     async (url: string) => {
       form.setValue("videoUrl", url);
-      
+
       if (url && !useVideoUpload) {
         const duration = await detectDurationFromUrl(url);
         if (duration) {
           form.setValue("duration", duration);
           const min = Math.floor(duration / 60);
-          const sec = (duration % 60).toString().padStart(2, '0');
-          toast.success(t("courses.dialog.toast.detectedDuration", { min, sec }));
+          const sec = (duration % 60).toString().padStart(2, "0");
+          toast.success(
+            `Thời lượng video: ${min}:${sec}`
+          );
         }
       }
     },
@@ -301,30 +302,27 @@ export function CourseDialog({
       <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader className="flex-shrink-0">
           <DialogTitle>
-            {isEditMode ? t("courses.dialog.titleEdit") : t("courses.dialog.titleCreate")}
+            {isEditMode ? "Chỉnh sửa khoá học" : "Tạo khoá học mới"}
           </DialogTitle>
           <DialogDescription>
             {isEditMode
-              ? t("courses.dialog.descEdit")
-              : t("courses.dialog.descCreate")}
+              ? "Cập nhật thông tin khoá học và nội dung video."
+              : "Thêm một khoá học mới với nội dung video vào nền tảng của bạn."}
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex-1 overflow-y-auto pr-2">
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <div className="grid grid-cols-1 gap-3">
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t("courses.dialog.name")}</FormLabel>
+                      <FormLabel>Tên khoá học</FormLabel>
                       <FormControl>
-                        <Input placeholder={t("courses.dialog.namePlaceholder")} {...field} />
+                        <Input placeholder="Nhập tên khoá học" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -336,10 +334,10 @@ export function CourseDialog({
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t("courses.dialog.description")}</FormLabel>
+                      <FormLabel>Mô tả</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder={t("courses.dialog.descriptionPlaceholder")}
+                          placeholder="Nhập mô tả khoá học"
                           className="min-h-[80px]"
                           {...field}
                         />
@@ -350,135 +348,144 @@ export function CourseDialog({
                 />
 
                 {isEditMode && (
-                <>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <FormLabel>{t("courses.dialog.videoSource")}</FormLabel>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm text-muted-foreground">{t("courses.dialog.url")}</span>
-                        <Switch
-                          checked={useVideoUpload}
-                          onCheckedChange={handleVideoModeChange}
-                        />
-                        <span className="text-sm text-muted-foreground">
-                          {t("courses.dialog.upload")}
-                        </span>
+                  <>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <FormLabel>Nguồn video</FormLabel>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm text-muted-foreground">
+                            URL
+                          </span>
+                          <Switch
+                            checked={useVideoUpload}
+                            onCheckedChange={handleVideoModeChange}
+                          />
+                          <span className="text-sm text-muted-foreground">
+                            Tải lên
+                          </span>
+                        </div>
                       </div>
+
+                      {!useVideoUpload ? (
+                        <FormField
+                          control={form.control}
+                          name="videoUrl"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Đường dẫn video</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="https://example.com/video.mp4"
+                                  {...field}
+                                  onChange={(e) =>
+                                    handleVideoUrlChange(e.target.value)
+                                  }
+                                />
+                              </FormControl>
+                              <FormDescription>
+                                Nhập đường dẫn tệp video. Thời lượng sẽ được
+                                phát hiện tự động.
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      ) : (
+                        <div className="space-y-2">
+                          <FormLabel>Tải lên video</FormLabel>
+                          <FileUploader
+                            value={videoFiles}
+                            onValueChange={setVideoFiles}
+                            onUpload={handleVideoUpload}
+                            accept={{ "video/*": [] }}
+                            maxSize={1024 * 1024 * 100}
+                            maxFiles={1}
+                            disabled={isUploadingVideo}
+                          />
+                          {(isUploadingVideo || isDetectingDuration) && (
+                            <div className="text-sm text-muted-foreground">
+                              {isDetectingDuration
+                                ? "Đang phát hiện thời lượng video..."
+                                : "Đang tải video..."}
+                            </div>
+                          )}
+                          {uploadedVideoUrl && (
+                            <div className="text-sm text-green-600">
+                              Tải video thành công
+                            </div>
+                          )}
+                          {durationError && (
+                            <div className="text-sm text-yellow-600">
+                              {durationError}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
 
-                    {!useVideoUpload ? (
-                      <FormField
-                        control={form.control}
-                        name="videoUrl"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{t("courses.dialog.videoUrl")}</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder={t("courses.dialog.videoUrlPlaceholder")}
-                                {...field}
-                                onChange={(e) => handleVideoUrlChange(e.target.value)}
-                              />
-                            </FormControl>
-                            <FormDescription>
-                              {t("courses.dialog.videoUrlHelp")}
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    ) : (
-                      <div className="space-y-2">
-                        <FormLabel>Video Upload</FormLabel>
-                        <FileUploader
-                          value={videoFiles}
-                          onValueChange={setVideoFiles}
-                          onUpload={handleVideoUpload}
-                          accept={{ "video/*": [] }}
-                          maxSize={1024 * 1024 * 100} // 100MB
-                          maxFiles={1}
-                          disabled={isUploadingVideo}
-                        />
-                        {(isUploadingVideo || isDetectingDuration) && (
-                          <div className="text-sm text-muted-foreground">
-                            {isDetectingDuration ? t("courses.dialog.videoDetecting") : t("courses.dialog.videoUploading")}
-                          </div>
-                        )}
-                        {uploadedVideoUrl && (
-                          <div className="text-sm text-green-600">
-                            {t("courses.dialog.videoUploaded")}
-                          </div>
-                        )}
-                        {durationError && (
-                          <div className="text-sm text-yellow-600">
-                            {durationError}
-                          </div>
-                        )}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <FormLabel>Nguồn ảnh bìa</FormLabel>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm text-muted-foreground">
+                            URL
+                          </span>
+                          <Switch
+                            checked={useThumbnailUpload}
+                            onCheckedChange={handleThumbnailModeChange}
+                          />
+                          <span className="text-sm text-muted-foreground">
+                            Tải lên
+                          </span>
+                        </div>
                       </div>
-                    )}
-                  </div>
 
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <FormLabel>{t("courses.dialog.thumbnailSource")}</FormLabel>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm text-muted-foreground">{t("courses.dialog.url")}</span>
-                        <Switch
-                          checked={useThumbnailUpload}
-                          onCheckedChange={handleThumbnailModeChange}
+                      {!useThumbnailUpload ? (
+                        <FormField
+                          control={form.control}
+                          name="thumbnailUrl"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Đường dẫn ảnh bìa</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="https://example.com/thumbnail.jpg"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormDescription>
+                                Nhập đường dẫn ảnh bìa
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
                         />
-                        <span className="text-sm text-muted-foreground">
-                          {t("courses.dialog.upload")}
-                        </span>
-                      </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <FormLabel>Tải lên ảnh bìa</FormLabel>
+                          <FileUploader
+                            value={thumbnailFiles}
+                            onValueChange={setThumbnailFiles}
+                            onUpload={handleThumbnailUpload}
+                            accept={{ "image/*": [] }}
+                            maxSize={1024 * 1024 * 5}
+                            maxFiles={1}
+                            disabled={isUploadingThumbnail}
+                          />
+                          {isUploadingThumbnail && (
+                            <div className="text-sm text-muted-foreground">
+                              Đang tải ảnh bìa...
+                            </div>
+                          )}
+                          {uploadedThumbnailUrl && (
+                            <div className="text-sm text-green-600">
+                              Tải ảnh bìa thành công
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
-
-                    {!useThumbnailUpload ? (
-                      <FormField
-                        control={form.control}
-                        name="thumbnailUrl"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>{t("courses.dialog.thumbnailUrl")}</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder={t("courses.dialog.thumbnailUrlPlaceholder")}
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormDescription>
-                              {t("courses.dialog.thumbnailUrlHelp")}
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    ) : (
-                      <div className="space-y-2">
-                        <FormLabel>Thumbnail Upload</FormLabel>
-                        <FileUploader
-                          value={thumbnailFiles}
-                          onValueChange={setThumbnailFiles}
-                          onUpload={handleThumbnailUpload}
-                          accept={{ "image/*": [] }}
-                          maxSize={1024 * 1024 * 5} // 5MB
-                          maxFiles={1}
-                          disabled={isUploadingThumbnail}
-                        />
-                        {isUploadingThumbnail && (
-                          <div className="text-sm text-muted-foreground">
-                            {t("courses.dialog.thumbnailUploading")}
-                          </div>
-                        )}
-                        {uploadedThumbnailUrl && (
-                          <div className="text-sm text-green-600">
-                            {t("courses.dialog.thumbnailUploaded")}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </>
+                  </>
                 )}
 
                 <div className="grid grid-cols-2 gap-3">
@@ -487,11 +494,11 @@ export function CourseDialog({
                     name="duration"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{t("courses.dialog.duration")}</FormLabel>
+                        <FormLabel>Thời lượng (giây)</FormLabel>
                         <FormControl>
                           <Input
                             type="number"
-                            placeholder={t("courses.dialog.durationPlaceholder")}
+                            placeholder="3600"
                             {...field}
                             onChange={(e) =>
                               field.onChange(
@@ -511,9 +518,9 @@ export function CourseDialog({
                     render={({ field }) => (
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
                         <div className="space-y-0.5">
-                          <FormLabel className="text-sm">{t("courses.dialog.activeLabel")}</FormLabel>
+                          <FormLabel className="text-sm">Kích hoạt</FormLabel>
                           <FormDescription className="text-xs">
-                            {t("courses.dialog.activeHelp")}
+                            Hiển thị với người dùng
                           </FormDescription>
                         </div>
                         <FormControl>
@@ -534,12 +541,16 @@ export function CourseDialog({
                   onClick={() => onOpenChange(false)}
                   disabled={isLoading}
                 >
-                  {t("courses.dialog.cancel")}
+                  Hủy
                 </Button>
                 <Button type="submit" disabled={isLoading}>
                   {isLoading
-                    ? (isEditMode ? t("courses.dialog.updating") : t("courses.dialog.creating"))
-                    : (isEditMode ? t("courses.dialog.update") : t("courses.dialog.create"))}
+                    ? isEditMode
+                      ? "Đang cập nhật..."
+                      : "Đang tạo..."
+                    : isEditMode
+                      ? "Cập nhật khoá học"
+                      : "Tạo khoá học"}
                 </Button>
               </DialogFooter>
             </form>

@@ -6,12 +6,10 @@ export default function TopBar() {
     return (
         <div className="bg-primary text-white py-2 px-3 md:px-6">
             <div className="flex items-center justify-between gap-2">
-                {/* Welcome Message */}
                 <div className="text-sm font-medium">
-                    Welcome to AKA E-commerce Store
+                    Chào mừng bạn đến với AKA E-commerce Store
                 </div>
 
-                {/* Social Media Links */}
                 <div className="flex items-center space-x-4">
                     <Link
                         href="https://facebook.com"

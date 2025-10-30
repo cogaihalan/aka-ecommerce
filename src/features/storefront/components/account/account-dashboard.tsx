@@ -48,33 +48,33 @@ export default function AccountDashboard({ orders }: { orders: Order[] }) {
       {/* Greeting Section */}
       <div className="space-y-4">
         <h1 className="text-3xl font-bold">
-          Hello, {user?.firstName || "User"}
+          Chào mừng, {user?.firstName || "Người dùng"}
         </h1>
         <p className="text-muted-foreground text-lg">
-          From your account dashboard, you can easily check & view your{" "}
+          Từ bảng điều khiển tài khoản của bạn, bạn có thể dễ dàng kiểm tra & xem đơn hàng{" "}
           <Link href="/account/orders" className="text-red-600 hover:underline">
-            Recent Orders
+            Gần đây
           </Link>
           , manage your{" "}
           <Link
             href="/account/addresses"
             className="text-red-600 hover:underline"
           >
-            Shipping and Billing Addresses
+            Địa chỉ giao hàng và thanh toán
           </Link>{" "}
-          and edit your{" "}
+          và chỉnh sửa{" "}
           <Link
             href="/account/profile"
             className="text-red-600 hover:underline"
           >
-            Password
+            Mật khẩu
           </Link>{" "}
-          and{" "}
+          và{" "}
           <Link
             href="/account/profile"
             className="text-red-600 hover:underline"
           >
-            Account Details
+            Chi tiết tài khoản
           </Link>
           .
         </p>
@@ -86,7 +86,7 @@ export default function AccountDashboard({ orders }: { orders: Order[] }) {
         <Card>
           <CardHeader>
             <CardTitle className="text-lg font-semibold">
-              ACCOUNT INFO
+              THÔNG TIN TÀI KHOẢN
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -105,7 +105,7 @@ export default function AccountDashboard({ orders }: { orders: Order[] }) {
                 <div className="space-y-1 text-sm">
                   <div className="flex items-center justify-center space-x-2">
                     <Mail className="h-4 w-4" />
-                    <span>{user?.primaryEmailAddress?.emailAddress || user?.emailAddresses[0]?.emailAddress || "No email available"}</span>
+                    <span>{user?.primaryEmailAddress?.emailAddress || user?.emailAddresses[0]?.emailAddress || "Không có email"}</span>
                   </div>
                   {defaultAddress?.recipientPhone && (
                     <div className="flex items-center justify-center space-x-2">
@@ -122,14 +122,14 @@ export default function AccountDashboard({ orders }: { orders: Order[] }) {
               onClick={() => router.push("/account/profile")}
             >
               <Edit className="mr-2 h-4 w-4" />
-              EDIT ACCOUNT
+              CHỈNH SỬA TÀI KHOẢN
             </Button>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg font-semibold">ADDRESSES</CardTitle>
+            <CardTitle className="text-lg font-semibold">ĐỊA CHỈ</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-4">
@@ -137,7 +137,7 @@ export default function AccountDashboard({ orders }: { orders: Order[] }) {
               {defaultAddress && (
                 <div className="space-y-2">
                   <h4 className="font-medium text-sm text-muted-foreground">
-                    DEFAULT ADDRESS
+                    ĐỊA CHỈ MẶC ĐỊNH
                   </h4>
                   <div className="space-y-1">
                     <h3 className="font-semibold">
@@ -160,10 +160,10 @@ export default function AccountDashboard({ orders }: { orders: Order[] }) {
               {!defaultAddress && (
                 <div className="text-center py-4">
                   <p className="text-sm text-muted-foreground mb-2">
-                    No addresses set
+                    Không có địa chỉ
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Add addresses to see them here
+                    Thêm địa chỉ để mua hàng
                   </p>
                 </div>
               )}
@@ -174,7 +174,7 @@ export default function AccountDashboard({ orders }: { orders: Order[] }) {
               onClick={() => router.push("/account/addresses")}
             >
               <Edit className="mr-2 h-4 w-4" />
-              MANAGE ADDRESSES
+              QUẢN LÝ ĐỊA CHỈ
             </Button>
           </CardContent>
         </Card>
@@ -183,23 +183,23 @@ export default function AccountDashboard({ orders }: { orders: Order[] }) {
       {/* Recent Orders Table */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-lg font-semibold">RECENT ORDER</CardTitle>
+          <CardTitle className="text-lg font-semibold">ĐƠN HÀNG GẦN ĐÂY</CardTitle>
           <button
             onClick={() => router.push("/account/orders")}
             className="text-red-600 hover:underline flex items-center"
           >
-            View All <ArrowRight className="ml-1 h-4 w-4" />
+            Xem tất cả <ArrowRight className="ml-1 h-4 w-4" />
           </button>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>ORDER CODE</TableHead>
-                <TableHead>STATUS</TableHead>
-                <TableHead>DATE</TableHead>
-                <TableHead>TOTAL</TableHead>
-                <TableHead>ACTION</TableHead>
+                <TableHead>MÃ ĐƠN HÀNG</TableHead>
+                <TableHead>TRẠNG THÁI</TableHead>
+                <TableHead>NGÀY</TableHead>
+                <TableHead>TỔNG</TableHead>
+                <TableHead>HÀNH ĐỘNG</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -223,7 +223,7 @@ export default function AccountDashboard({ orders }: { orders: Order[] }) {
                         }
                         className="text-red-600 hover:underline flex items-center"
                       >
-                        View Details <ArrowRight className="ml-1 h-4 w-4" />
+                        Xem chi tiết <ArrowRight className="ml-1 h-4 w-4" />
                       </button>
                     </TableCell>
                   </TableRow>
@@ -234,7 +234,7 @@ export default function AccountDashboard({ orders }: { orders: Order[] }) {
                     colSpan={5}
                     className="text-center py-8 text-muted-foreground"
                   >
-                    No orders found
+                    Không tìm thấy đơn hàng
                   </TableCell>
                 </TableRow>
               )}

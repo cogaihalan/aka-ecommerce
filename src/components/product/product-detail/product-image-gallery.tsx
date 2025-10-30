@@ -98,7 +98,7 @@ export const ProductImageGallery = memo(function ProductImageGallery({
         )}
       >
         <div className="flex items-center justify-center h-full text-muted-foreground">
-          No images available
+          Không có hình ảnh
         </div>
       </div>
     );
@@ -109,7 +109,6 @@ export const ProductImageGallery = memo(function ProductImageGallery({
       ref={galleryRef}
       className={cn("space-y-4 product-image-gallery", className)}
     >
-      {/* Main Image Slider */}
       <div className="relative group">
         <Glider
           ref={mainGliderRef}
@@ -150,7 +149,6 @@ export const ProductImageGallery = memo(function ProductImageGallery({
                     priority={index === 0}
                   />
                 </a>
-                {/* Zoom button overlay */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20">
                   <Button
                     variant="secondary"

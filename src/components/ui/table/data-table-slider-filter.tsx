@@ -21,7 +21,6 @@ import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { PlusCircle, XCircle } from "lucide-react";
-import { useI18n } from "@/components/providers/i18n-provider";
 
 interface Range {
   min: number;
@@ -48,7 +47,6 @@ export function DataTableSliderFilter<TData>({
   column,
   title,
 }: DataTableSliderFilterProps<TData>) {
-  const { t } = useI18n();
   const id = useId();
 
   const columnFilterValue = getIsValidRange(column.getFilterValue())
@@ -143,7 +141,7 @@ export function DataTableSliderFilter<TData>({
           {columnFilterValue ? (
             <div
               role="button"
-              aria-label={t("table.clearFilter", { title })}
+              aria-label="Xóa bộ lọc"
               tabIndex={0}
               className="focus-visible:ring-ring rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-1 focus-visible:outline-none"
               onClick={onReset}
@@ -223,7 +221,7 @@ export function DataTableSliderFilter<TData>({
             </div>
           </div>
           <Label htmlFor={`${id}-slider`} className="sr-only">
-            {title} {t("table.slider")}
+            {title} thanh trượt
           </Label>
           <Slider
             id={`${id}-slider`}
@@ -235,12 +233,12 @@ export function DataTableSliderFilter<TData>({
           />
         </div>
         <Button
-          aria-label={t("table.clearFilter", { title })}
+          aria-label="Xóa bộ lọc"
           variant="outline"
           size="sm"
           onClick={onReset}
         >
-          {t("table.clear")}
+          Xóa
         </Button>
       </PopoverContent>
     </Popover>

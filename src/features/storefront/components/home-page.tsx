@@ -21,12 +21,12 @@ export default async function StorefrontHomePage() {
         <Card>
           <CardHeader className="flex flex-row items-center space-y-0 pb-2">
             <Truck className="h-6 w-6 text-primary" />
-            <CardTitle className="text-lg">Free Shipping</CardTitle>
+            <CardTitle className="text-lg"> Miễn phí vận chuyển</CardTitle>
           </CardHeader>
           <CardContent>
             <CardDescription>
-              Free shipping on orders over 1,000,000 đ. Fast and reliable
-              delivery to your doorstep.
+              Miễn phí vận chuyển trên đơn hàng trên 1,000,000 đ. Giao hàng nhanh chóng và đáng tin cậy
+              đến cửa nhà bạn.
             </CardDescription>
           </CardContent>
         </Card>
@@ -34,12 +34,12 @@ export default async function StorefrontHomePage() {
         <Card>
           <CardHeader className="flex flex-row items-center space-y-0 pb-2">
             <Shield className="h-6 w-6 text-primary" />
-            <CardTitle className="text-lg">Secure Payment</CardTitle>
+            <CardTitle className="text-lg">Thanh toán an toàn</CardTitle>
           </CardHeader>
           <CardContent>
             <CardDescription>
-              Your payment information is secure with our encrypted checkout
-              process.
+              Thông tin thanh toán của bạn được bảo mật với quá trình thanh toán mã hóa
+              để đảm bảo an toàn và bảo mật.
             </CardDescription>
           </CardContent>
         </Card>
@@ -47,11 +47,11 @@ export default async function StorefrontHomePage() {
         <Card>
           <CardHeader className="flex flex-row items-center space-y-0 pb-2">
             <RotateCcw className="h-6 w-6 text-primary" />
-            <CardTitle className="text-lg">Easy Returns</CardTitle>
+            <CardTitle className="text-lg">Trả hàng dễ dàng</CardTitle>
           </CardHeader>
           <CardContent>
             <CardDescription>
-              30-day return policy. Not satisfied? Return it for a full refund.
+              30 ngày trả hàng. Không hài lòng? Trả lại để được hoàn trả đầy đủ.
             </CardDescription>
           </CardContent>
         </Card>

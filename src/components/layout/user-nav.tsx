@@ -43,16 +43,13 @@ export function UserNav() {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem onClick={() => router.push("/admin/profile")}>
-              Profile
+              Hồ sơ
             </DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>New Team</DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <SignOutButton redirectUrl="/auth/sign-in" className="w-full">
-              Sign Out
+              Đăng xuất
             </SignOutButton>
           </DropdownMenuItem>
         </DropdownMenuContent>

@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock } from "lucide-react";
 import { format } from "date-fns";
 import Image from "next/image";
-import { useI18n } from "@/components/providers/i18n-provider";
 
 interface ContestCardProps {
   contest: Contest;
@@ -15,24 +14,28 @@ interface ContestCardProps {
 }
 
 export function ContestCard({ contest, onView }: ContestCardProps) {
-  const { t } = useI18n();
   const now = new Date();
   const startDate = new Date(contest.startDate);
   const endDate = new Date(contest.endDate);
 
-  let statusText = t("contests.status.inactive");
-  let statusVariant: "default" | "secondary" | "destructive" | "outline" | "info" | "live" =
-    "secondary";
+  let statusText = "Không hoạt động";
+  let statusVariant:
+    | "default"
+    | "secondary"
+    | "destructive"
+    | "outline"
+    | "info"
+    | "live" = "secondary";
 
   if (contest.active) {
     if (now < startDate) {
-      statusText = t("contests.status.upcoming");
+      statusText = "Sắp diễn ra";
       statusVariant = "info";
     } else if (now > endDate) {
-      statusText = t("contests.status.ended");
+      statusText = "Đã kết thúc";
       statusVariant = "secondary";
     } else {
-      statusText = t("contests.status.live");
+      statusText = "Đang diễn ra";
       statusVariant = "live";
     }
   }
@@ -56,7 +59,7 @@ export function ContestCard({ contest, onView }: ContestCardProps) {
             onClick={onView}
             disabled={!contest.active}
           >
-            {t("contests.viewDetails")}
+            Xem chi tiết
           </Button>
         </div>
 
@@ -75,11 +78,11 @@ export function ContestCard({ contest, onView }: ContestCardProps) {
           <div className="space-y-2 text-xs text-muted-foreground">
             <div className="flex items-center gap-2">
               <Calendar className="h-3 w-3" />
-              <span>{t("contests.starts")}: {format(startDate, "MMM dd, yyyy")}</span>
+              <span>Bắt đầu: {format(startDate, "MMM dd, yyyy")}</span>
             </div>
             <div className="flex items-center gap-2">
               <Clock className="h-3 w-3" />
-              <span>{t("contests.ends")}: {format(endDate, "MMM dd, yyyy")}</span>
+              <span>Kết thúc: {format(endDate, "MMM dd, yyyy")}</span>
             </div>
           </div>
         </div>

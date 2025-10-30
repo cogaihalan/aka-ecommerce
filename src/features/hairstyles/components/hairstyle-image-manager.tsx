@@ -78,7 +78,7 @@ export function HairstyleImageManager({
           files: selectedImages,
         };
         await unifiedHairstyleService.uploadHairstyleMedia(uploadData);
-        toast.success("Hairstyle images uploaded successfully");
+        toast.success("Tải ảnh lên thành công");
       }
 
       // Delete removed images if any
@@ -88,7 +88,7 @@ export function HairstyleImageManager({
           photoIds: removedImageIds,
         };
         await unifiedHairstyleService.deleteHairstyleMedia(deleteData);
-        toast.success("Hairstyle images deleted successfully");
+        toast.success("Xoá ảnh thành công");
       }
 
       onSuccess?.();
@@ -97,7 +97,7 @@ export function HairstyleImageManager({
       setRemovedImageIds([]);
     } catch (error) {
       console.error("Error managing hairstyle images:", error);
-      toast.error("Failed to manage hairstyle images");
+      toast.error("Lỗi khi quản lý ảnh kiểu tóc");
     } finally {
       setIsLoading(false);
     }

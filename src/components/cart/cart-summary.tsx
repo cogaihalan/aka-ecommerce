@@ -46,11 +46,11 @@ export function CartSummary({
     return (
       <Card className={cn("", className)}>
         <CardHeader>
-          <CardTitle>Order Summary</CardTitle>
+          <CardTitle>Tổng quan đơn hàng</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
-            <p className="text-muted-foreground">Your cart is empty</p>
+            <p className="text-muted-foreground">Giỏ hàng của bạn đang trống</p>
           </div>
         </CardContent>
       </Card>
@@ -61,7 +61,7 @@ export function CartSummary({
     <Card className={cn("sticky top-4", className)}>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          Order Summary
+          Tổng quan đơn hàng
           <Badge variant="secondary">
             {itemCount} item{itemCount !== 1 ? "s" : ""}
           </Badge>
@@ -69,30 +69,29 @@ export function CartSummary({
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {/* Order Details */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span>Subtotal</span>
+            <span>Tạm tính</span>
             <Price price={subtotal} size="sm" />
           </div>
 
           {shipping > 0 ? (
             <div className="flex justify-between text-sm">
-              <span>Shipping</span>
+              <span>Vận chuyển</span>
               <Price price={shipping} size="sm" />
             </div>
           ) : (
             <div className="flex justify-between text-sm text-green-600">
               <span className="flex items-center gap-1">
                 <Truck className="w-4 h-4" />
-                Free Shipping
+                Miễn phí vận chuyển
               </span>
-              <span>Free</span>
+              <span>Miễn phí</span>
             </div>
           )}
 
           <div className="flex justify-between text-sm">
-            <span>Tax</span>
+            <span>Thuế</span>
             <Price price={tax} size="sm" />
           </div>
         </div>
@@ -100,11 +99,10 @@ export function CartSummary({
         <Separator />
 
         <div className="flex justify-between font-bold text-lg">
-          <span>Total</span>
+          <span>Tổng</span>
           <Price price={total} size="lg" weight="semibold" />
         </div>
 
-        {/* Action Buttons */}
         <div className="space-y-2">
           <Button
             className="w-full"
@@ -112,7 +110,7 @@ export function CartSummary({
             onClick={onCheckout}
             disabled={items.length === 0}
           >
-            Proceed to Checkout
+            Tiếp tục thanh toán
           </Button>
 
           {onContinueShopping && (
@@ -121,12 +119,11 @@ export function CartSummary({
               className="w-full"
               onClick={onContinueShopping}
             >
-              Continue Shopping
+              Tiếp tục mua sắm
             </Button>
           )}
         </div>
 
-        {/* Shipping Information */}
         {showShippingInfo && (
           <div className="pt-4 border-t">
             <div className="space-y-2 text-sm text-muted-foreground">
@@ -140,23 +137,22 @@ export function CartSummary({
               </div>
               <div className="flex items-center gap-2">
                 <Shield className="w-4 h-4" />
-                <span>Secure checkout</span>
+                <span>Thanh toán an toàn</span>
               </div>
             </div>
           </div>
         )}
 
-        {/* Security Badges */}
         {showSecurityBadges && (
           <div className="pt-4 border-t">
             <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
               <div className="flex items-center gap-1">
                 <CreditCard className="w-3 h-3" />
-                <span>Secure Payment</span>
+                <span>Thanh toán an toàn</span>
               </div>
               <div className="flex items-center gap-1">
                 <Shield className="w-3 h-3" />
-                <span>SSL Encrypted</span>
+                <span>SSL mã hóa</span>
               </div>
             </div>
           </div>
@@ -169,7 +165,7 @@ export function CartSummary({
             className="w-full"
             onClick={async () => await clearCart()}
           >
-            Clear Cart
+            Xóa giỏ hàng
           </Button>
         </div>
       </CardContent>

@@ -36,7 +36,7 @@ export const columns: ColumnDef<Contest>[] = [
   {
     id: "images",
     accessorKey: "images",
-    header: "Thumbnail",
+    header: "Ảnh",
     cell: ({ row }) => {
       const thumbnail = row.original.thumbnailUrl;
 
@@ -59,7 +59,7 @@ export const columns: ColumnDef<Contest>[] = [
     id: "name",
     accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Contest Name" />
+      <DataTableColumnHeader column={column} title="Tên cuộc thi" />
     ),
     cell: ({ row }) => {
       const contest = row.original;
@@ -70,8 +70,8 @@ export const columns: ColumnDef<Contest>[] = [
       );
     },
     meta: {
-      label: "Contest Name",
-      placeholder: "Search contests...",
+      label: "Tên cuộc thi",
+      placeholder: "Tìm kiếm cuộc thi...",
       variant: "text",
       icon: Text,
     },
@@ -80,7 +80,7 @@ export const columns: ColumnDef<Contest>[] = [
   {
     id: "description",
     accessorKey: "description",
-    header: "Description",
+    header: "Mô tả",
     cell: ({ row }) => {
       const description = row.original.description;
       return (
@@ -95,7 +95,7 @@ export const columns: ColumnDef<Contest>[] = [
   {
     id: "status",
     accessorKey: "active",
-    header: "Status",
+    header: "Trạng thái",
     cell: ({ row }) => {
       const isActive = row.original.active;
       const now = new Date();
@@ -122,7 +122,7 @@ export const columns: ColumnDef<Contest>[] = [
       return <Badge variant={variant}>{statusText}</Badge>;
     },
     meta: {
-      label: "Status",
+      label: "Trạng thái",
       variant: "select",
       options: [
         { label: "Active", value: "ACTIVE" },
@@ -133,7 +133,7 @@ export const columns: ColumnDef<Contest>[] = [
   },
   {
     accessorKey: "startDate",
-    header: "Start Date",
+    header: "Ngày bắt đầu",
     cell: ({ row }) => {
       const date = row.getValue("startDate") as string;
       return (
@@ -146,7 +146,7 @@ export const columns: ColumnDef<Contest>[] = [
   },
   {
     accessorKey: "endDate",
-    header: "End Date",
+    header: "Ngày kết thúc",
     cell: ({ row }) => {
       const date = row.getValue("endDate") as string;
       return (
@@ -168,19 +168,19 @@ export const columns: ColumnDef<Contest>[] = [
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">Mở menu</span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>Hành động</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => setShowEditDialog(true)}
                 className="cursor-pointer"
               >
                 <Edit className="mr-2 h-4 w-4" />
-                Edit Contest
+                Cập nhật cuộc thi
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

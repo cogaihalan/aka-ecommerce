@@ -82,7 +82,7 @@ export function CourseFilters() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Filters</h3>
+        <h3 className="text-lg font-semibold">Bộ lọc</h3>
         <Button
           variant="outline"
           size="sm"
@@ -90,14 +90,14 @@ export function CourseFilters() {
           className="lg:hidden"
         >
           <Filter className="h-4 w-4 mr-1" />
-          {isExpanded ? "Hide" : "Show"} Filters
+          {isExpanded ? "Ẩn" : "Hiện"} Bộ lọc
         </Button>
       </div>
 
       <div className={cn("space-y-4", !isExpanded && "hidden lg:block")}>
         {/* Search */}
         <div className="space-y-2">
-          <Label htmlFor="search">Search</Label>
+          <Label htmlFor="search">Tìm kiếm</Label>
           <div className="relative">
             <Search className={cn(
               "absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground",
@@ -105,7 +105,7 @@ export function CourseFilters() {
             )} />
             <Input
               id="search"
-              placeholder="Search courses..."
+              placeholder="Tìm kiếu khóa học..."
               value={searchValue}
               onChange={(e) => handleSearch(e.target.value)}
               className="pl-10 pr-10"
@@ -115,7 +115,7 @@ export function CourseFilters() {
                 type="button"
                 onClick={clearSearch}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="Clear search"
+                aria-label="Xóa tìm kiếm"
               >
                 <XCircle className="h-4 w-4" />
               </button>
@@ -130,21 +130,21 @@ export function CourseFilters() {
 
         {/* Sort */}
         <div className="space-y-2">
-          <Label>Sort by</Label>
+          <Label>Sắp xếp theo</Label>
           <Select
             value={sort}
             onValueChange={handleSortChange}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select sort option" />
+              <SelectValue placeholder="Chọn tùy chọn sắp xếp" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="createdAt,desc">Newest First</SelectItem>
-              <SelectItem value="createdAt,asc">Oldest First</SelectItem>
-              <SelectItem value="name,asc">Name (A-Z)</SelectItem>
-              <SelectItem value="name,desc">Name (Z-A)</SelectItem>
-              <SelectItem value="duration,asc">Duration (Shortest)</SelectItem>
-              <SelectItem value="duration,desc">Duration (Longest)</SelectItem>
+              <SelectItem value="createdAt,desc">Mới nhất</SelectItem>
+              <SelectItem value="createdAt,asc">Cũ nhất</SelectItem>
+              <SelectItem value="name,asc">Tên (A-Z)</SelectItem>
+              <SelectItem value="name,desc">Tên (Z-A)</SelectItem>
+              <SelectItem value="duration,asc">Thời lượng (Ngắn nhất)</SelectItem>
+              <SelectItem value="duration,desc">Thời lượng (Dài nhất)</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -159,7 +159,7 @@ export function CourseFilters() {
             className="w-full"
           >
             <X className="h-4 w-4 mr-2" />
-            Clear Filters
+            Xóa bộ lọc
           </Button>
         )}
       </div>

@@ -14,7 +14,7 @@ export function SubmissionGrid({ submissions, total }: SubmissionGridProps) {
 
   const countText = useMemo(() => {
     const shown = submissions.length;
-    return `Showing ${shown} of ${total} submissions`;
+    return `Hiển thị ${shown} trên ${total} bài đăng`;
   }, [submissions, total]);
 
   return (
@@ -31,7 +31,7 @@ export function SubmissionGrid({ submissions, total }: SubmissionGridProps) {
 
       {!hasItems && (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">No submissions found</p>
+          <p className="text-muted-foreground">Không tìm thấy bài đăng</p>
         </div>
       )}
     </div>

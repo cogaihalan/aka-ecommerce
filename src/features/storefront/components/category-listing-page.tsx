@@ -21,7 +21,7 @@ export default function CategoryListingPage() {
   if (error) {
     return (
       <div className="text-center py-8">
-        <p className="text-muted-foreground">Failed to load categories</p>
+        <p className="text-muted-foreground">Không thể tải danh mục</p>
       </div>
     );
   }
@@ -29,7 +29,7 @@ export default function CategoryListingPage() {
   if (!isLoading && !categories.length) {
     return (
       <div className="text-center py-8">
-        <p className="text-muted-foreground">No categories available</p>
+        <p className="text-muted-foreground">Không có danh mục nào</p>
       </div>
     );
   }
@@ -37,8 +37,8 @@ export default function CategoryListingPage() {
   return (
     <div className="space-y-6 py-6 lg:py-12">
       <div>
-        <h1 className="text-3xl font-bold mb-2">Categories</h1>
-        <p className="text-muted-foreground">Browse products by category</p>
+        <h1 className="text-3xl font-bold mb-2">Danh mục</h1>
+        <p className="text-muted-foreground">Khám phá sản phẩm theo danh mục</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

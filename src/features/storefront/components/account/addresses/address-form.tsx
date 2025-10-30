@@ -7,27 +7,19 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Address } from "@/types";
-import { useI18n } from "@/components/providers/i18n-provider";
 
 const addressSchema = z.object({
-  recipientName: z.string().min(1, "Recipient name is required"),
-  recipientAddress: z.string().min(1, "Address is required"),
+  recipientName: z.string().min(1, "Tên người nhận là bắt buộc"),
+  recipientAddress: z.string().min(1, "Địa chỉ là bắt buộc"),
   recipientPhone: z
     .string()
-    .min(1, "Phone number is required")
+    .min(1, "Số điện thoại là bắt buộc")
     .regex(
       /^(\+84|84|0)[1-9][0-9]{8,9}$/,
-      "Please enter a valid Vietnamese phone number"
+      "Vui lòng nhập số điện thoại hợp lệ"
     ),
   isDefault: z.boolean().optional(),
 });
@@ -47,7 +39,6 @@ export function AddressForm({
   onCancel,
   isLoading = false,
 }: AddressFormProps) {
-  const { t } = useI18n();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -87,17 +78,19 @@ export function AddressForm({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{address ? t("address.editTitle") : t("address.addTitle")}</CardTitle>
+        <CardTitle>
+          {address ? "Chỉnh sửa địa chỉ" : "Thêm địa chỉ mới"}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
           {/* Name Fields */}
           <div className="space-y-2">
-            <Label htmlFor="recipientName">{t("address.recipientName")} *</Label>
+            <Label htmlFor="recipientName">Tên người nhận *</Label>
             <Input
               id="recipientName"
               {...register("recipientName")}
-              placeholder={t("address.recipientNamePlaceholder")}
+              placeholder="Nhập tên người nhận"
             />
             {errors.recipientName && (
               <p className="text-sm text-red-500">
@@ -108,11 +101,11 @@ export function AddressForm({
 
           {/* Address Fields */}
           <div className="space-y-2">
-            <Label htmlFor="recipientAddress">{t("address.address")} *</Label>
+            <Label htmlFor="recipientAddress">Địa chỉ *</Label>
             <Input
               id="recipientAddress"
               {...register("recipientAddress")}
-              placeholder={t("address.addressPlaceholder")}
+              placeholder="Nhập địa chỉ"
             />
             {errors.recipientAddress && (
               <p className="text-sm text-red-500">
@@ -123,11 +116,11 @@ export function AddressForm({
 
           {/* Phone */}
           <div className="space-y-2">
-            <Label htmlFor="recipientPhone">{t("address.phone")} *</Label>
+            <Label htmlFor="recipientPhone">Số điện thoại *</Label>
             <Input
               id="recipientPhone"
               {...register("recipientPhone")}
-              placeholder={t("address.phonePlaceholder")}
+              placeholder="Nhập số điện thoại"
             />
             {errors.recipientPhone && (
               <p className="text-sm text-red-500">
@@ -145,7 +138,7 @@ export function AddressForm({
                 setValue("isDefault", !!checked);
               }}
             />
-            <Label htmlFor="isDefault">{t("address.setDefault")}</Label>
+            <Label htmlFor="isDefault">Đặt làm địa chỉ mặc định</Label>
             {errors.isDefault && (
               <p className="text-sm text-red-500">{errors.isDefault.message}</p>
             )}
@@ -159,14 +152,14 @@ export function AddressForm({
               onClick={onCancel}
               disabled={isSubmitting}
             >
-              {t("common.close")}
+              Đóng
             </Button>
             <Button type="submit" disabled={isSubmitting || isLoading}>
               {isSubmitting
-                ? t("address.saving")
+                ? "Đang lưu..."
                 : address
-                  ? t("address.update")
-                  : t("address.add")}
+                  ? "Cập nhật địa chỉ"
+                  : "Thêm địa chỉ"}
             </Button>
           </div>
         </form>

@@ -35,7 +35,6 @@ import { z } from "zod";
 import { CreateProductRequest, UpdateProductRequest } from "@/lib/api/types";
 import { unifiedProductService } from "@/lib/api/services/unified";
 import { toast } from "sonner";
-import { useI18n } from "@/components/providers/i18n-provider";
 import { useApp } from "@/components/providers/app-provider";
 
 const formSchema = z.object({
@@ -43,10 +42,7 @@ const formSchema = z.object({
   description: z.string().min(1, "Mô tả là bắt buộc"),
   stock: z.number().min(0, "Tồn kho phải không âm"),
   price: z.number().min(0, "Giá phải là số dương"),
-  discountPrice: z
-    .number()
-    .min(0, "Giá khuyến mãi phải không âm")
-    .optional(),
+  discountPrice: z.number().min(0, "Giá khuyến mãi phải không âm").optional(),
   status: z.enum(["DRAFT", "ACTIVE", "INACTIVE", "ARCHIVED", "OUT_OF_STOCK"]),
   categoryIds: z.array(z.number()).min(1, "Cần ít nhất một danh mục"),
 });
@@ -67,7 +63,6 @@ export function ProductDialog({
   onSuccess,
 }: ProductDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const { t } = useI18n();
   const { categories } = useApp();
 
   const form = useForm<FormData>({
@@ -93,18 +88,18 @@ export function ProductDialog({
           ...data,
         };
         await unifiedProductService.updateProduct(product.id, updateData);
-        toast.success(t("products.dialog.toast.updated"));
+        toast.success("Cập nhật sản phẩm thành công");
       } else {
         // Create new product
         const createData: CreateProductRequest = data;
         await unifiedProductService.createProduct(createData);
-        toast.success(t("products.dialog.toast.created"));
+        toast.success("Tạo sản phẩm thành công");
       }
       onSuccess?.();
       onOpenChange(false);
       form.reset();
     } catch (error) {
-      toast.error(t("products.dialog.toast.failed"));
+      toast.error("Lưu sản phẩm thất bại");
       console.error("Error saving product:", error);
     } finally {
       setIsLoading(false);
@@ -116,12 +111,12 @@ export function ProductDialog({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {product ? t("products.dialog.titleEdit") : t("products.dialog.titleCreate")}
+            {product ? "Chỉnh sửa sản phẩm" : "Tạo sản phẩm mới"}
           </DialogTitle>
           <DialogDescription>
             {product
-              ? t("products.dialog.descEdit")
-              : t("products.dialog.descCreate")}
+              ? "Cập nhật thông tin sản phẩm bên dưới."
+              : "Thêm một sản phẩm mới vào cửa hàng của bạn."}
           </DialogDescription>
         </DialogHeader>
 
@@ -132,9 +127,9 @@ export function ProductDialog({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("products.dialog.name")}</FormLabel>
+                  <FormLabel>Tên sản phẩm</FormLabel>
                   <FormControl>
-                    <Input placeholder={t("products.dialog.namePlaceholder")} {...field} />
+                    <Input placeholder="Nhập tên sản phẩm" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -146,12 +141,9 @@ export function ProductDialog({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("products.dialog.description")}</FormLabel>
+                  <FormLabel>Mô tả</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder={t("products.dialog.descriptionPlaceholder")}
-                      {...field}
-                    />
+                    <Textarea placeholder="Nhập mô tả sản phẩm" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -164,12 +156,12 @@ export function ProductDialog({
                 name="stock"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("products.dialog.stock")}</FormLabel>
+                    <FormLabel>Tồn kho</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         min="0"
-                        placeholder={t("products.dialog.stockPlaceholder")}
+                        placeholder="0"
                         {...field}
                         onChange={(e) =>
                           field.onChange(parseInt(e.target.value) || 0)
@@ -186,13 +178,13 @@ export function ProductDialog({
                 name="price"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("products.dialog.price")}</FormLabel>
+                    <FormLabel>Giá</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         step="0.01"
                         min="0"
-                        placeholder={t("products.dialog.pricePlaceholder")}
+                        placeholder="0.00"
                         {...field}
                         onChange={(e) =>
                           field.onChange(parseFloat(e.target.value) || 0)
@@ -210,13 +202,13 @@ export function ProductDialog({
               name="discountPrice"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("products.dialog.discountPrice")}</FormLabel>
+                  <FormLabel>Giá khuyến mãi (Tuỳ chọn)</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       step="0.01"
                       min="0"
-                      placeholder={t("products.dialog.discountPricePlaceholder")}
+                      placeholder="0.00"
                       {...field}
                       onChange={(e) =>
                         field.onChange(parseFloat(e.target.value) || 0)
@@ -233,22 +225,22 @@ export function ProductDialog({
               name="status"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("products.dialog.status")}</FormLabel>
+                  <FormLabel>Trạng thái</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder={t("products.dialog.statusPlaceholder")} />
+                        <SelectValue placeholder="Chọn trạng thái sản phẩm" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="DRAFT">{t("products.dialog.statusOptions.DRAFT")}</SelectItem>
-                      <SelectItem value="ACTIVE">{t("products.dialog.statusOptions.ACTIVE")}</SelectItem>
-                      <SelectItem value="INACTIVE">{t("products.dialog.statusOptions.INACTIVE")}</SelectItem>
-                      <SelectItem value="ARCHIVED">{t("products.dialog.statusOptions.ARCHIVED")}</SelectItem>
-                      <SelectItem value="OUT_OF_STOCK">{t("products.dialog.statusOptions.OUT_OF_STOCK")}</SelectItem>
+                      <SelectItem value="DRAFT">Nháp</SelectItem>
+                      <SelectItem value="ACTIVE">Đang bán</SelectItem>
+                      <SelectItem value="INACTIVE">Ngừng bán</SelectItem>
+                      <SelectItem value="ARCHIVED">Lưu trữ</SelectItem>
+                      <SelectItem value="OUT_OF_STOCK">Hết hàng</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -269,7 +261,7 @@ export function ProductDialog({
 
                 return (
                   <FormItem>
-                    <FormLabel>{t("products.dialog.categories")}</FormLabel>
+                    <FormLabel>Danh mục</FormLabel>
                     <div className="space-y-2">
                       {/* Display selected categories */}
                       {selectedCategories.length > 0 && (
@@ -317,8 +309,8 @@ export function ProductDialog({
                             <SelectValue
                               placeholder={
                                 selectedCategories.length > 0
-                                  ? t("products.dialog.addMoreCategories")
-                                  : t("products.dialog.selectCategories")
+                                  ? "Thêm danh mục..."
+                                  : "Chọn danh mục"
                               }
                             />
                           </SelectTrigger>
@@ -335,7 +327,7 @@ export function ProductDialog({
                         </Select>
                       ) : (
                         <div className="flex items-center justify-center h-10 px-3 py-2 text-sm text-muted-foreground border border-input rounded-md bg-muted/50">
-                          {t("products.dialog.allCategoriesSelected")}
+                          Đã chọn tất cả danh mục
                         </div>
                       )}
                     </div>
@@ -351,10 +343,10 @@ export function ProductDialog({
                 variant="outline"
                 onClick={() => onOpenChange(false)}
               >
-                {t("products.dialog.cancel")}
+                Hủy
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? t("products.dialog.saving") : (product ? t("products.dialog.update") : t("products.dialog.create"))}
+                {isLoading ? "Đang lưu..." : product ? "Cập nhật" : "Tạo mới"}
               </Button>
             </DialogFooter>
           </form>

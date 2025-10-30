@@ -14,14 +14,12 @@ import {
   useCartItemCount,
 } from "@/stores/cart-store";
 import { CartItem } from "./cart-item";
-import { useI18n } from "@/components/providers/i18n-provider";
 
 interface MiniCartProps {
   className?: string;
 }
 
 export function MiniCart({ className }: MiniCartProps) {
-  const { t } = useI18n();
   const { isOpen, closeCart } = useCartStore();
   const items = useCartItems();
   const total = useCartTotal();
@@ -89,7 +87,7 @@ export function MiniCart({ className }: MiniCartProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ShoppingCart className="w-5 h-5" />
-            <h3 className="font-semibold text-lg">{t("cart.titleWithCount", { count: itemCount })}</h3>
+            <h3 className="font-semibold text-lg">{`Giỏ hàng (${itemCount})`}</h3>
           </div>
           <Button
             variant="ghost"
@@ -106,11 +104,15 @@ export function MiniCart({ className }: MiniCartProps) {
       {items.length === 0 ? (
         <div className="p-8 text-center">
           <ShoppingBag className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <h4 className="font-medium text-lg mb-2">{t("cart.emptyTitle")}</h4>
-          <p className="text-muted-foreground text-sm mb-6">{t("cart.emptySubtitle")}</p>
+          <h4 className="font-medium text-lg mb-2">
+            Giỏ hàng của bạn đang trống
+          </h4>
+          <p className="text-muted-foreground text-sm mb-6">
+            Hãy thêm một vài sản phẩm để bắt đầu
+          </p>
           <Button asChild onClick={closeCart}>
             <Link href="/products">
-              {t("cart.startShopping")}
+              Bắt đầu mua sắm
               <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
           </Button>
@@ -145,7 +147,7 @@ export function MiniCart({ className }: MiniCartProps) {
           {/* Summary */}
           <div className="p-4 space-y-4">
             <div className="flex justify-between items-center">
-              <span className="font-medium">{t("cart.total")}</span>
+              <span className="font-medium">Tổng</span>
               <span className="font-bold text-lg">{formatPrice(total)}</span>
             </div>
 
@@ -153,7 +155,7 @@ export function MiniCart({ className }: MiniCartProps) {
             <div className="space-y-2">
               <Button asChild className="w-full" size="lg" onClick={closeCart}>
                 <Link href="/checkout">
-                  {t("cart.checkout")}
+                  Thanh toán
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
               </Button>
@@ -163,7 +165,7 @@ export function MiniCart({ className }: MiniCartProps) {
                 className="w-full"
                 onClick={closeCart}
               >
-                <Link href="/cart">{t("cart.viewCart")}</Link>
+                <Link href="/cart">Xem giỏ hàng</Link>
               </Button>
             </div>
           </div>

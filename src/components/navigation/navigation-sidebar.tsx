@@ -61,7 +61,7 @@ export function NavigationSidebar({
         <SheetContent side="left" className="w-80 flex flex-col">
           <SheetHeader className="flex-shrink-0">
             <SheetTitle className="flex items-center justify-between">
-              Filters
+              Các bộ lọc
               {activeFiltersCount > 0 && (
                 <Button
                   variant="ghost"
@@ -69,7 +69,7 @@ export function NavigationSidebar({
                   onClick={onResetFilters}
                   className="text-xs"
                 >
-                  Clear All
+                  Xóa tất cả
                 </Button>
               )}
             </SheetTitle>

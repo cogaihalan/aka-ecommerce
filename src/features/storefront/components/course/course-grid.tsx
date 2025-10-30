@@ -17,7 +17,7 @@ export function CourseGrid({ courses, total }: CourseGridProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          Showing {courses.length} of {total} courses
+          Hiển thị {courses.length} trên {total} khóa học
         </p>
       </div>
 
@@ -33,7 +33,7 @@ export function CourseGrid({ courses, total }: CourseGridProps) {
 
       {courses.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">No courses found</p>
+          <p className="text-muted-foreground">Không tìm thấy khóa học</p>
         </div>
       )}
 

@@ -19,12 +19,12 @@ import { storefrontOrderService } from "@/lib/api/services/storefront/orders-cli
 import { toast } from "sonner";
 
 const STATUS_OPTIONS = [
-  { label: "Pending", value: "PENDING" },
-  { label: "Confirmed", value: "CONFIRMED" },
-  { label: "Shipping", value: "SHIPPING" },
-  { label: "Delivered", value: "DELIVERED" },
-  { label: "Cancelled", value: "CANCELLED" },
-  { label: "Refunded", value: "REFUNDED" },
+  { label: "Chờ xác nhận", value: "PENDING" },
+  { label: "Xác nhận", value: "CONFIRMED" },
+  { label: "Đang giao", value: "SHIPPING" },
+  { label: "Đã giao", value: "DELIVERED" },
+  { label: "Đã hủy", value: "CANCELLED" },
+  { label: "Đã hoàn tiền", value: "REFUNDED" },
 ];
 
 const getStatusBadgeVariant = (status: string) => {
@@ -49,10 +49,10 @@ const getStatusBadgeVariant = (status: string) => {
 const handleCancelOrder = async (id: number) => {
   const response = await storefrontOrderService.cancelOrder(id);
   if (response) {
-    toast.success("Order cancelled successfully");
+    toast.success("Đơn hàng đã được hủy thành công");
     window.location.reload();
   } else {
-    toast.error("Failed to cancel order");
+    toast.error("Lỗi khi hủy đơn hàng");
   }
 };
 
@@ -61,15 +61,15 @@ export const columns: ColumnDef<Order>[] = [
     id: "orderCode",
     accessorKey: "orderCode",
     header: ({ column }: { column: Column<Order, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Order Code" />
+      <DataTableColumnHeader column={column} title="Mã đơn hàng" />
     ),
     cell: ({ row }) => {
       const orderCode = row.original.code as string;
       return <div className="font-medium">{orderCode}</div>;
     },
     meta: {
-      label: "Order Code",
-      placeholder: "Search orders...",
+      label: "Mã đơn hàng",
+      placeholder: "Tìm kiếm đơn hàng...",
       variant: "text",
     },
     enableColumnFilter: true,
@@ -77,7 +77,7 @@ export const columns: ColumnDef<Order>[] = [
   {
     id: "status",
     accessorKey: "status",
-    header: "Status",
+    header: "Trạng thái",
     cell: ({ row }) => {
       const status = row.original.status as string;
       return (
@@ -88,7 +88,7 @@ export const columns: ColumnDef<Order>[] = [
     },
     enableColumnFilter: true,
     meta: {
-      label: "Status",
+      label: "Trạng thái",
       variant: "select",
       options: STATUS_OPTIONS,
     },
@@ -96,7 +96,7 @@ export const columns: ColumnDef<Order>[] = [
   {
     id: "paymentStatus",
     accessorKey: "paymentStatus",
-    header: "Payment Status",
+    header: "Trạng thái thanh toán",
     cell: ({ row }) => {
       const paymentStatus = row.getValue("paymentStatus") as string;
       return (
@@ -112,7 +112,7 @@ export const columns: ColumnDef<Order>[] = [
   {
     id: "paymentMethod",
     accessorKey: "paymentMethod",
-    header: "Payment Method",
+    header: "Phương thức thanh toán",
     cell: ({ row }) => {
       const paymentMethod = row.original.paymentMethod as string;
       return <div className="font-medium">{paymentMethod}</div>;
@@ -121,7 +121,7 @@ export const columns: ColumnDef<Order>[] = [
   {
     id: "total",
     accessorKey: "finalAmount",
-    header: "Total",
+    header: "Tổng",
     cell: ({ row }) => {
       const finalAmount = row.original.finalAmount;
       return <div className="font-medium">{formatCurrency(finalAmount)}</div>;
@@ -131,14 +131,14 @@ export const columns: ColumnDef<Order>[] = [
     id: "createdAt",
     accessorKey: "createdAt",
     header: ({ column }: { column: Column<Order, unknown> }) => (
-      <DataTableColumnHeader column={column} title="Date" />
+      <DataTableColumnHeader column={column} title="Ngày" />
     ),
     cell: ({ row }) => {
       const date = row.getValue("createdAt") as Date;
       return <div className="text-sm">{formatDate(date)}</div>;
     },
     meta: {
-      label: "Order Date",
+      label: "Ngày",
       variant: "dateRange",
     },
     enableColumnFilter: true,
@@ -153,15 +153,15 @@ export const columns: ColumnDef<Order>[] = [
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Mở menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuLabel>Hành động</DropdownMenuLabel>
             <DropdownMenuItem asChild>
               <Link href={`/account/orders/${id}`}>
-                <Eye className="mr-2 h-4 w-4" /> View Details
+                <Eye className="mr-2 h-4 w-4" /> Xem chi tiết
               </Link>
             </DropdownMenuItem>
 
@@ -169,7 +169,7 @@ export const columns: ColumnDef<Order>[] = [
               onClick={() => handleCancelOrder(id)}
               disabled={status === "CANCELLED"}
             >
-              <X className="mr-2 h-4 w-4 text-destructive" /> Cancel Order
+              <X className="mr-2 h-4 w-4 text-destructive" /> Hủy đơn hàng
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

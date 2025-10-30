@@ -39,7 +39,7 @@ export class ProductErrorBoundary extends Component<Props, State> {
         <Alert variant="destructive" className="my-4">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription className="flex items-center justify-between">
-            <span>Something went wrong loading this product section.</span>
+            <span>Đã xảy ra lỗi khi tải phần sản phẩm này.</span>
             <Button
               variant="outline"
               size="sm"
@@ -49,7 +49,7 @@ export class ProductErrorBoundary extends Component<Props, State> {
               className="ml-4"
             >
               <RefreshCw className="h-4 w-4 mr-2" />
-              Retry
+              Thử lại
             </Button>
           </AlertDescription>
         </Alert>

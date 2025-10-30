@@ -27,7 +27,6 @@ import { format } from "date-fns";
 import { User as UserType } from "@/types";
 import { unifiedUserService } from "@/lib/api/services/unified";
 import { toast } from "sonner";
-import { useI18n } from "@/components/providers/i18n-provider";
 
 interface UserDialogProps {
   user?: UserType;
@@ -38,7 +37,6 @@ interface UserDialogProps {
 export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { t } = useI18n();
 
   const handleDialogClose = (open: boolean) => {
     setIsDialogOpen(open);
@@ -54,10 +52,10 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
     try {
       if (user.enabled) {
         await unifiedUserService.lockUser(user.id.toString());
-        toast.success(t("users.dialog.toasts.lockSuccess"));
+        toast.success("Khóa tài khoản thành công");
       } else {
         await unifiedUserService.unlockUser(user.id.toString());
-        toast.success(t("users.dialog.toasts.unlockSuccess"));
+        toast.success("Mở khóa tài khoản thành công");
       }
       // Close dialog and refresh the page to show updated status
       setIsDialogOpen(false);
@@ -68,7 +66,7 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
     } catch (error) {
       console.error("Error updating user status:", error);
       toast.error(
-        user.enabled ? t("users.dialog.toasts.lockFailed") : t("users.dialog.toasts.unlockFailed")
+        user.enabled ? "Khóa tài khoản thất bại" : "Mở khóa tài khoản thất bại"
       );
     } finally {
       setIsLoading(false);
@@ -85,15 +83,15 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
         {trigger || (
           <Button variant="ghost" size="sm">
             <User className="mr-2 h-4 w-4" />
-            {t("users.dialog.trigger")}
+            Xem chi tiết
           </Button>
         )}
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{t("users.dialog.title")}</DialogTitle>
+          <DialogTitle>Thông tin người dùng</DialogTitle>
           <DialogDescription>
-            {t("users.dialog.description")}
+            Xem thông tin chi tiết về tài khoản người dùng này.
           </DialogDescription>
         </DialogHeader>
 
@@ -111,9 +109,9 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
               <p className="text-sm text-muted-foreground">{user.email}</p>
               <div className="flex items-center space-x-2">
                 <Badge variant={user.enabled ? "default" : "secondary"}>
-                  {user.enabled ? t("users.dialog.statusActive") : t("users.dialog.statusInactive")}
+                  {user.enabled ? "Đang hoạt động" : "Ngừng hoạt động"}
                 </Badge>
-                <Badge variant="outline">{t("users.dialog.idLabel")}: {user.id}</Badge>
+                <Badge variant="outline">ID: {user.id}</Badge>
               </div>
             </div>
           </div>
@@ -126,7 +124,7 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">{t("users.dialog.fields.email")}</p>
+                  <p className="text-sm font-medium">Email</p>
                   <p className="text-sm text-muted-foreground">{user.email}</p>
                 </div>
               </div>
@@ -134,9 +132,9 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">{t("users.dialog.fields.phone")}</p>
+                  <p className="text-sm font-medium">Số điện thoại</p>
                   <p className="text-sm text-muted-foreground">
-                    {user.phoneNumber || t("users.dialog.fields.phoneNotProvided")}
+                    {user.phoneNumber || "Chưa cung cấp"}
                   </p>
                 </div>
               </div>
@@ -144,7 +142,7 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
               <div className="flex items-center space-x-2">
                 <User className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">{t("users.dialog.fields.username")}</p>
+                  <p className="text-sm font-medium">Tên người dùng</p>
                   <p className="text-sm text-muted-foreground">
                     {user.username}
                   </p>
@@ -156,7 +154,7 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
               <div className="flex items-center space-x-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">{t("users.dialog.fields.created")}</p>
+                  <p className="text-sm font-medium">Ngày tạo</p>
                   <p className="text-sm text-muted-foreground">
                     {format(new Date(user.createdAt), "MMM dd, yyyy")}
                   </p>
@@ -166,7 +164,7 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
               <div className="flex items-center space-x-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">{t("users.dialog.fields.updated")}</p>
+                  <p className="text-sm font-medium">Cập nhật lần cuối</p>
                   <p className="text-sm text-muted-foreground">
                     {format(new Date(user.updatedAt), "MMM dd, yyyy")}
                   </p>
@@ -176,7 +174,7 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
               <div className="flex items-center space-x-2">
                 <User className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">{t("users.dialog.fields.clerkId")}</p>
+                  <p className="text-sm font-medium">Clerk ID</p>
                   <p className="text-xs text-muted-foreground font-mono">
                     {user.clerkId}
                   </p>
@@ -191,7 +189,7 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
           <div className="space-y-3">
             <h4 className="text-sm font-medium flex items-center">
               <Shield className="mr-2 h-4 w-4" />
-              {t("users.dialog.rolesTitle")}
+              Vai trò & Quyền hạn
             </h4>
             <div className="space-y-2">
               {user.roles.map((role) => (
@@ -228,12 +226,12 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
               {user.enabled ? (
                 <>
                   <Lock className="mr-2 h-4 w-4" />
-                  {isLoading ? t("users.dialog.actions.locking") : t("users.dialog.actions.lock")}
+                  {isLoading ? "Đang khóa..." : "Khóa tài khoản"}
                 </>
               ) : (
                 <>
                   <Unlock className="mr-2 h-4 w-4" />
-                  {isLoading ? t("users.dialog.actions.unlocking") : t("users.dialog.actions.unlock")}
+                  {isLoading ? "Đang mở khóa..." : "Mở khóa tài khoản"}
                 </>
               )}
             </Button>

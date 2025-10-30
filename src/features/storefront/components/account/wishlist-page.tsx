@@ -18,10 +18,8 @@ import {
 } from "@/stores/wishlist-store";
 import { useCart } from "@/hooks/use-cart";
 import { formatPrice } from "@/lib/utils";
-import { useI18n } from "@/components/providers/i18n-provider";
 
 export default function WishlistPage() {
-  const { t } = useI18n();
   const router = useRouter();
   const allWishlistItems = useWishlistItems();
   const currentUserId = useWishlistStore((state) => state.currentUserId);
@@ -62,11 +60,11 @@ export default function WishlistPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">{t("wishlist.title")}</h1>
+          <h1 className="text-3xl font-bold mb-2">Danh sách yêu thích</h1>
           <p className="text-muted-foreground">
             {itemCount > 0
-              ? t("wishlist.summaryWithCount", { count: itemCount, total: formatPrice(totalValue) })
-              : t("wishlist.subtitle")}
+              ? `Đã lưu ${itemCount} mục • Tổng giá trị: ${formatPrice(totalValue)}`
+              : "Sản phẩm đã lưu và mục yêu thích của bạn"}
           </p>
         </div>
         {itemCount > 0 && (
@@ -76,7 +74,7 @@ export default function WishlistPage() {
             className="text-destructive hover:text-destructive"
           >
             <Trash2 className="h-4 w-4 mr-2" />
-            {t("wishlist.clearAll")}
+            Xóa tất cả
           </Button>
         )}
       </div>
@@ -84,14 +82,16 @@ export default function WishlistPage() {
       {wishlistItems.length === 0 ? (
         <div className="text-center py-12">
           <Heart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold mb-2">{t("wishlist.emptyTitle")}</h3>
+          <h3 className="text-lg font-semibold mb-2">
+            Danh sách yêu thích trống
+          </h3>
           <p className="text-muted-foreground mb-6">
-            {t("wishlist.emptySubtitle")}
+            Lưu sản phẩm bạn thích bằng cách bấm vào biểu tượng trái tim
           </p>
           <Link href="/products">
             <Button>
               <ArrowLeft className="h-4 w-4 mr-2" />
-              {t("wishlist.startShopping")}
+              Bắt đầu mua sắm
             </Button>
           </Link>
         </div>
@@ -142,7 +142,7 @@ export default function WishlistPage() {
                     <Badge variant="secondary" className="text-xs w-fit">
                       {item.product.categories
                         ? item.product.categories[0].name
-                        : t("wishlist.uncategorized")}
+                        : "Chưa phân loại"}
                     </Badge>
 
                     {/* Product name */}
@@ -187,17 +187,17 @@ export default function WishlistPage() {
                       {isProductLoading(item.product.id) ? (
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          {t("wishlist.adding")}
+                          Đang thêm...
                         </>
                       ) : isInCartState ? (
                         <>
                           <ShoppingCart className="h-4 w-4 mr-2" />
-                          {t("wishlist.inCartWithQty", { qty: cartQuantity })}
+                          {`Trong giỏ (${cartQuantity})`}
                         </>
                       ) : (
                         <>
                           <ShoppingCart className="h-4 w-4 mr-2" />
-                          {t("wishlist.addToCart")}
+                          Thêm vào giỏ
                         </>
                       )}
                     </Button>

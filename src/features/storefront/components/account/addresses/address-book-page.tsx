@@ -96,9 +96,9 @@ export default function AddressBookPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Address Book</h1>
+            <h1 className="text-3xl font-bold mb-2">Sổ địa chỉ</h1>
             <p className="text-muted-foreground">
-              Manage your shipping addresses
+              Quản lý địa chỉ giao hàng của bạn
             </p>
           </div>
         </div>
@@ -127,15 +127,15 @@ export default function AddressBookPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Address Book</h1>
+            <h1 className="text-3xl font-bold mb-2">Sổ địa chỉ</h1>
             <p className="text-muted-foreground">
-              Manage your shipping addresses
+              Quản lý địa chỉ giao hàng của bạn
             </p>
           </div>
         </div>
         <div className="text-center py-8">
-          <p className="text-red-500 mb-4">Error loading addresses: {error}</p>
-          <Button onClick={() => window.location.reload()}>Try Again</Button>
+          <p className="text-red-500 mb-4">Lỗi khi tải địa chỉ: {error}</p>
+          <Button onClick={() => window.location.reload()}>Thử lại</Button>
         </div>
       </div>
     );
@@ -145,14 +145,14 @@ export default function AddressBookPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Address Book</h1>
+          <h1 className="text-3xl font-bold mb-2">Sổ địa chỉ</h1>
           <p className="text-muted-foreground">
-            Manage your shipping addresses
+            Quản lý địa chỉ giao hàng của bạn
           </p>
         </div>
         <Button onClick={handleAddAddress}>
           <Plus className="h-4 w-4 mr-2" />
-          Add Address
+          Thêm địa chỉ
         </Button>
       </div>
 
@@ -166,14 +166,14 @@ export default function AddressBookPage() {
         <div className="text-center py-12">
           <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            No addresses yet
+            Không có địa chỉ nào
           </h3>
           <p className="text-gray-500 mb-4">
-            Add your first address to get started with faster checkout.
+            Thêm địa chỉ đầu tiên để bắt đầu thanh toán nhanh hơn.
           </p>
           <Button onClick={handleAddAddress}>
             <Plus className="h-4 w-4 mr-2" />
-            Add Your First Address
+            Thêm địa chỉ đầu tiên
           </Button>
         </div>
       ) : (
@@ -200,7 +200,7 @@ export default function AddressBookPage() {
                     onClick={() => handleEditAddress(address)}
                   >
                     <Edit className="h-4 w-4 mr-2" />
-                    Edit
+                    Chỉnh sửa
                   </Button>
                   {!address.isDefault && (
                     <Button
@@ -208,7 +208,7 @@ export default function AddressBookPage() {
                       size="sm"
                       onClick={() => handleSetDefault(address)}
                     >
-                      Set Default
+                      Đặt làm địa chỉ mặc định
                     </Button>
                   )}
                   <Button
@@ -218,7 +218,7 @@ export default function AddressBookPage() {
                     onClick={() => handleDeleteAddress(address)}
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
+                    Xóa
                   </Button>
                 </div>
               </CardContent>
@@ -233,19 +233,19 @@ export default function AddressBookPage() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Address</AlertDialogTitle>
+            <AlertDialogTitle>Xóa địa chỉ</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this address? This action cannot
-              be undone.
+              Bạn có chắc chắn muốn xóa địa chỉ này? Thao tác này không thể
+              được hoàn tác.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmDelete}
               className="bg-red-600 hover:bg-red-700"
             >
-              Delete
+              Xóa
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

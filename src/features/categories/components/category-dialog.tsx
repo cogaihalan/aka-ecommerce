@@ -110,7 +110,7 @@ export function CategoryDialog({
       // Update the local category state to reflect changes immediately
       Object.assign(category, updatedCategory);
 
-      toast.success("Thumbnail uploaded successfully");
+      toast.success("Ảnh danh mục đã được tải lên thành công");
 
       // Reset progress after a short delay
       setTimeout(() => {
@@ -137,9 +137,9 @@ export function CategoryDialog({
       // Update the local category state to reflect changes immediately
       Object.assign(category, updatedCategory);
 
-      toast.success("Thumbnail deleted successfully");
+      toast.success("Ảnh danh mục đã được xóa thành công");
     } catch (error) {
-      toast.error("Failed to delete thumbnail");
+      toast.error("Lỗi khi xóa ảnh danh mục");
       console.error("Error deleting thumbnail:", error);
     }
   };

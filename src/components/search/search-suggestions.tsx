@@ -10,8 +10,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/utils";
 import { useProductSearchSuggestions } from "@/hooks/use-product-search-suggestions";
-import type { Product } from "@/types/product";
-import { useI18n } from "@/components/providers/i18n-provider";
 
 interface SearchSuggestionsProps {
   onClose?: () => void;
@@ -22,7 +20,6 @@ export function SearchSuggestions({
   onClose,
   className,
 }: SearchSuggestionsProps) {
-  const { t } = useI18n();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -42,7 +39,6 @@ export function SearchSuggestions({
     minLength: 2,
   });
 
-  // Handle click outside to close suggestions
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -58,7 +54,6 @@ export function SearchSuggestions({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [onClose]);
 
-  // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -105,7 +100,7 @@ export function SearchSuggestions({
         <input
           ref={inputRef}
           type="text"
-          placeholder={t("search.placeholder")}
+          placeholder="Tìm sản phẩm..."
           value={searchTerm}
           onChange={(e) => handleInputChange(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -126,7 +121,7 @@ export function SearchSuggestions({
           <CardContent className="p-0">
             {error && (
               <div className="p-4 text-sm text-destructive">
-                <p>{t("search.error")}</p>
+                <p>Không thể tải gợi ý. Vui lòng thử lại.</p>
               </div>
             )}
 
@@ -156,7 +151,7 @@ export function SearchSuggestions({
                 <div className="flex items-center justify-center mt-3">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    <span>{t("search.loading")}</span>
+                    <span>Đang tìm kiếm...</span>
                   </div>
                 </div>
               </div>
@@ -165,7 +160,6 @@ export function SearchSuggestions({
             {!error && !isLoading && suggestions.length > 0 && (
               <div className="max-h-80 overflow-y-auto animate-in fade-in-0 duration-200">
                 {suggestions.map((product) => {
-                  // Get primary image or first available image
                   const primaryImage =
                     product.images?.find((img) => img.primary) ||
                     product.images?.[0];
@@ -239,7 +233,7 @@ export function SearchSuggestions({
                     onClick={handleViewMoreClick}
                     className="w-full justify-between text-sm"
                   >
-                    {t("search.viewAll", { term: searchTerm })}
+                    {`Xem tất cả kết quả cho "${searchTerm}"`}
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                 </div>
@@ -254,7 +248,7 @@ export function SearchSuggestions({
                 <div className="p-4 text-center text-muted-foreground">
                   <Search className="h-8 w-8 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">
-                    {t("search.noResults", { term: searchTerm })}
+                    {`Không tìm thấy sản phẩm cho "${searchTerm}"`}
                   </p>
                   <Button
                     variant="outline"
@@ -262,7 +256,7 @@ export function SearchSuggestions({
                     onClick={handleViewMoreClick}
                     className="mt-2"
                   >
-                    {t("search.searchAll")}
+                    Tìm tất cả sản phẩm
                   </Button>
                 </div>
               )}

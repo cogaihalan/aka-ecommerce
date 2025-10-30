@@ -120,7 +120,7 @@ export function LayeredNavigation({
     if (filters.search) {
       activeFiltersList.push({
         key: "search",
-        label: `Search: ${filters.search}`,
+        label: `Tìm kiếm: ${filters.search}`,
         onRemove: () => onFiltersChange({ search: "" }),
       });
     }
@@ -132,15 +132,13 @@ export function LayeredNavigation({
     ) {
       activeFiltersList.push({
         key: "price",
-        label: `Price: ${formatPrice(filters.priceRange[0])} - ${formatPrice(filters.priceRange[1])}`,
+        label: `Giá: ${formatPrice(filters.priceRange[0])} - ${formatPrice(filters.priceRange[1])}`,
         onRemove: () => onFiltersChange({ priceRange: [] }),
       });
     }
 
-    // Handle category filters with proper labels
     if (filters.categoryIds && filters.categoryIds.length > 0) {
       filters.categoryIds.forEach((categoryId: string) => {
-        // Find the category name from the filter groups
         const categoryGroup = filterGroups.find(
           (group) => group.id === "categoryIds"
         );
@@ -303,7 +301,7 @@ export function LayeredNavigation({
       {/* Search */}
       <div className={cn("space-y-2")}>
         <Label htmlFor="search" className={cn("text-sm font-medium")}>
-          Search Products
+          Tìm kiếm sản phẩm
         </Label>
         <div className={cn("relative")}>
           <Search
@@ -313,7 +311,7 @@ export function LayeredNavigation({
           />
           <Input
             id="search"
-            placeholder="Search..."
+            placeholder="Tìm kiếm..."
             value={searchValue}
             onChange={(e) => handleSearchChange(e.target.value)}
             className={cn(
@@ -327,7 +325,7 @@ export function LayeredNavigation({
       {activeFiltersCount > 0 && (
         <div className={cn("space-y-2")}>
           <div className={cn("flex items-center justify-between")}>
-            <Label className={cn("text-sm font-medium")}>Active Filters</Label>
+            <Label className={cn("text-sm font-medium")}>Các bộ lọc đang hoạt động</Label>
             <Button
               variant="ghost"
               size="sm"
@@ -336,7 +334,7 @@ export function LayeredNavigation({
                 "text-xs text-muted-foreground hover:text-foreground"
               )}
             >
-              Clear All
+              Xóa tất cả
             </Button>
           </div>
           <div className={cn("flex flex-wrap gap-2")}>

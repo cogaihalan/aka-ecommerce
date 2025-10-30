@@ -7,14 +7,12 @@ import { Price } from "@/components/ui/price";
 import { CheckCircle, Package, Mail, Phone } from "lucide-react";
 import Link from "next/link";
 import { Order } from "@/types";
-import { useI18n } from "@/components/providers/i18n-provider";
 
 interface OrderDataProps {
   order: Order | null;
 }
 
 export default function CheckoutSuccessPage(props: OrderDataProps) {
-  const { t } = useI18n();
   const { order } = props;
 
   return (
@@ -26,14 +24,17 @@ export default function CheckoutSuccessPage(props: OrderDataProps) {
         </div>
 
         <div>
-          <h1 className="text-3xl font-bold mb-2">{t("checkout.success.title")}</h1>
-          <p className="text-muted-foreground">{t("checkout.success.subtitle")}</p>
+          <h1 className="text-3xl font-bold mb-2">Đặt hàng thành công!</h1>
+          <p className="text-muted-foreground">
+            Cảm ơn bạn đã mua hàng. Đơn hàng của bạn đã được xác nhận.
+          </p>
         </div>
 
         {order && (
-          <Badge variant="secondary" className="text-lg px-4 py-2">
-            {t("checkout.success.orderCode", { code: order.code })}
-          </Badge>
+          <Badge
+            variant="secondary"
+            className="text-lg px-4 py-2"
+          >{`Mã đơn hàng: ${order.code}`}</Badge>
         )}
       </div>
 
@@ -43,15 +44,15 @@ export default function CheckoutSuccessPage(props: OrderDataProps) {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Package className="h-5 w-5" />
-              {t("checkout.success.orderDetails")}
+              Chi tiết đơn hàng
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {order && (
               <>
-                <OrderDetailRow label={t("checkout.success.labels.orderCode")} value={order.code} />
+                <OrderDetailRow label="Mã đơn hàng" value={order.code} />
                 <OrderDetailRow
-                  label={t("checkout.success.labels.total")}
+                  label="Tổng tiền"
                   value={
                     <Price
                       price={order.finalAmount}
@@ -61,15 +62,15 @@ export default function CheckoutSuccessPage(props: OrderDataProps) {
                   }
                 />
                 <OrderDetailRow
-                  label={t("checkout.success.labels.paymentMethod")}
+                  label="Phương thức thanh toán"
                   value={order.paymentMethod}
                 />
                 <OrderDetailRow
-                  label={t("checkout.success.labels.shippingAddress")}
+                  label="Địa chỉ giao hàng"
                   value={order.shippingAddress}
                 />
                 <OrderDetailRow
-                  label={t("checkout.success.labels.status")}
+                  label="Trạng thái"
                   value={<Badge variant="default">{order.status}</Badge>}
                 />
               </>
@@ -80,26 +81,26 @@ export default function CheckoutSuccessPage(props: OrderDataProps) {
         {/* Next Steps Card */}
         <Card>
           <CardHeader>
-            <CardTitle>{t("checkout.success.nextSteps.title")}</CardTitle>
+            <CardTitle>Bước tiếp theo</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-3">
               <StepItem
                 step={1}
-                title={t("checkout.success.nextSteps.step1.title")}
-                description={t("checkout.success.nextSteps.step1.description")}
+                title="Xác nhận đơn hàng"
+                description="Chúng tôi sẽ gửi email xác nhận trong vài phút tới"
                 color="blue"
               />
               <StepItem
                 step={2}
-                title={t("checkout.success.nextSteps.step2.title")}
-                description={t("checkout.success.nextSteps.step2.description")}
+                title="Xử lý đơn hàng"
+                description="Đơn hàng sẽ được chuẩn bị và đóng gói"
                 color="orange"
               />
               <StepItem
                 step={3}
-                title={t("checkout.success.nextSteps.step3.title")}
-                description={t("checkout.success.nextSteps.step3.description")}
+                title="Giao hàng"
+                description="Dự kiến giao hàng trong 3-5 ngày làm việc"
                 color="green"
               />
             </div>
@@ -110,18 +111,18 @@ export default function CheckoutSuccessPage(props: OrderDataProps) {
       {/* Contact Information Card */}
       <Card>
         <CardHeader>
-          <CardTitle>{t("checkout.success.contact.title")}</CardTitle>
+          <CardTitle>Thông tin liên hệ</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <ContactItem
               icon={<Mail className="h-5 w-5 text-muted-foreground" />}
-              title={t("checkout.success.contact.email")}
+              title="Email hỗ trợ"
               value="support@akastore.com"
             />
             <ContactItem
               icon={<Phone className="h-5 w-5 text-muted-foreground" />}
-              title={t("checkout.success.contact.hotline")}
+              title="Hotline"
               value="1900 1234"
             />
           </div>
@@ -131,10 +132,10 @@ export default function CheckoutSuccessPage(props: OrderDataProps) {
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <Button asChild size="lg">
-          <Link href="/account/orders">{t("checkout.success.viewOrders")}</Link>
+          <Link href="/account/orders">Xem đơn hàng</Link>
         </Button>
         <Button variant="outline" size="lg" asChild>
-          <Link href="/products">{t("checkout.success.continueShopping")}</Link>
+          <Link href="/products">Tiếp tục mua sắm</Link>
         </Button>
       </div>
     </div>

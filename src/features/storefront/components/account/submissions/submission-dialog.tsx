@@ -41,11 +41,11 @@ export function SubmissionDialog({ submission, children }: SubmissionDialogProps
         barberAddress: data.barberAddress,
       };
       await storefrontSubmissionService.createSubmission(payload);
-      toast.success("Submission created");
+      toast.success("Tạo bài dự thi thành công");
       setOpen(false);
       router.refresh();
     } catch (e) {
-      toast.error("Failed to create submission");
+      toast.error("Lỗi khi tạo bài dự thi");
       throw e;
     }
   };
@@ -59,20 +59,20 @@ export function SubmissionDialog({ submission, children }: SubmissionDialogProps
         files,
       };
       await storefrontSubmissionService.uploadSubmissionMedia(payload);
-      toast.success("Photos uploaded");
+      toast.success("Tải ảnh thành công");
       router.refresh();
     } catch (e) {
-      toast.error("Failed to upload photos");
+      toast.error("Lỗi khi tải ảnh");
       throw e;
     } finally {
       setIsUploading(false);
     }
   };
 
-  const title = submission ? "Edit Submission" : "New Submission";
+  const title = submission ? "Sửa bài dự thi" : "Thêm bài dự thi";
   const description = submission
-    ? "Update your submission details and manage photos."
-    : "Create a new submission. You can add photos after creating.";
+    ? "Cập nhật chi tiết bài dự thi và quản lý ảnh."
+    : "Tạo mới bài dự thi. Bạn có thể thêm ảnh sau khi tạo.";
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -93,14 +93,14 @@ export function SubmissionDialog({ submission, children }: SubmissionDialogProps
 
           {submission ? (
             <div className="space-y-2 pt-2">
-              <div className="text-sm font-medium">Upload Photos</div>
+              <div className="text-sm font-medium">Tải ảnh</div>
               <FileUploader onUpload={onUpload} multiple maxFiles={5} disabled={isUploading} />
             </div>
           ) : null}
 
           {!submission ? (
             <p className="text-xs text-muted-foreground">
-              After creating, reopen this dialog on your submission to upload photos.
+              Sau khi tạo, mở lại hộp thoại này để tải ảnh.
             </p>
           ) : null}
         </div>

@@ -11,15 +11,15 @@ import { Textarea } from "@/components/ui/textarea";
 import type { Submission } from "@/types";
 
 const submissionSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  description: z.string().min(1, "Description is required"),
+  name: z.string().min(1, "Tên là bắt buộc"),
+  description: z.string().min(1, "Mô tả là bắt buộc"),
     // contestId: z
     //   .string()
     //   .min(1, "Contest ID is required")
     //   .transform((val) => parseInt(val, 10))
     //   .refine((v) => !Number.isNaN(v), { message: "Contest ID must be a number" }),
-  barberName: z.string().min(1, "Barber name is required"),
-  barberAddress: z.string().min(1, "Barber address is required"),
+  barberName: z.string().min(1, "Tên barber là bắt buộc"),
+  barberAddress: z.string().min(1, "Địa chỉ barber là bắt buộc"),
 });
 
 export type SubmissionFormValues = z.infer<typeof submissionSchema>;
@@ -65,18 +65,18 @@ export function SubmissionForm({
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="name">Name *</Label>
-        <Input id="name" placeholder="Submission name" {...register("name")} />
+        <Label htmlFor="name">Tên *</Label>
+        <Input id="name" placeholder="Nhập tên bài dự thi" {...register("name")} />
         {errors.name && (
           <p className="text-sm text-red-500">{errors.name.message}</p>
         )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="description">Description *</Label>
+        <Label htmlFor="description">Mô tả *</Label>
         <Textarea
           id="description"
-          placeholder="Describe your submission"
+          placeholder="Nhập mô tả bài dự thi"
           {...register("description")}
         />
         {errors.description && (
@@ -85,10 +85,10 @@ export function SubmissionForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="barberName">Barber Name *</Label>
+        <Label htmlFor="barberName">Tên barber *</Label>
         <Input
           id="barberName"
-          placeholder="Enter barber name"
+          placeholder="Nhập tên barber"
           {...register("barberName")}
         />
         {errors.barberName && (
@@ -97,10 +97,10 @@ export function SubmissionForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="barberAddress">Barber Address *</Label>
+        <Label htmlFor="barberAddress">Địa chỉ barber *</Label>
         <Input
           id="barberAddress"
-          placeholder="Enter barber address"
+          placeholder="Nhập địa chỉ barber"
           {...register("barberAddress")}
         />
         {errors.barberAddress && (
@@ -110,10 +110,10 @@ export function SubmissionForm({
 
       <div className="flex justify-end gap-2 pt-2">
         <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
-          Cancel
+          Hủy
         </Button>
         <Button type="submit" disabled={isSubmitting || isLoading}>
-          {isSubmitting ? "Saving..." : submission ? "Save" : "Create"}
+          {isSubmitting ? "Đang lưu..." : submission ? "Lưu" : "Tạo"}
         </Button>
       </div>
     </form>

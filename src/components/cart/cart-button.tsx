@@ -72,7 +72,7 @@ export function CartButton({
         className={cn("relative", className)}
       >
         <ShoppingBag className="h-4 w-4" />
-        {showText && <span className="ml-2">Cart</span>}
+        {showText && <span className="ml-2">Giỏ hàng</span>}
         {showBadge && itemCount > 0 && (
           <Badge
             variant="destructive"

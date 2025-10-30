@@ -19,7 +19,7 @@ export function HairstyleGrid({ hairstyles, total }: HairstyleGridProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          Showing {hairstyles.length} of {total} hairstyles
+          Hiển thị {hairstyles.length} trên {total} kiểu tóc
         </p>
       </div>
 
@@ -35,7 +35,7 @@ export function HairstyleGrid({ hairstyles, total }: HairstyleGridProps) {
 
       {hairstyles.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">No hairstyles found</p>
+          <p className="text-muted-foreground">Không tìm thấy kiểu tóc</p>
         </div>
       )}
 

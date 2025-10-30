@@ -41,13 +41,13 @@ export default async function OrderHistoryPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Order History</h1>
-          <p className="text-muted-foreground">View and track your orders</p>
+          <h1 className="text-3xl font-bold mb-2">Lịch sử đơn hàng</h1>
+          <p className="text-muted-foreground">Xem và theo dõi đơn hàng của bạn</p>
         </div>
         <div className="text-center py-12">
           <div className="text-muted-foreground">
-            <h3 className="text-lg font-semibold mb-2">No orders found</h3>
-            <p>You haven't placed any orders yet.</p>
+            <h3 className="text-lg font-semibold mb-2">Không tìm thấy đơn hàng</h3>
+            <p>Bạn chưa đặt đơn hàng nào.</p>
           </div>
         </div>
       </div>
@@ -57,9 +57,9 @@ export default async function OrderHistoryPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold mb-2">Order History</h1>
+        <h1 className="text-3xl font-bold mb-2">Lịch sử đơn hàng</h1>
         <p className="text-muted-foreground">
-          View and track your orders ({totalOrders} total)
+          Xem và theo dõi đơn hàng của bạn ({totalOrders} tổng)
         </p>
       </div>
 

@@ -15,7 +15,6 @@ import {
   ProductImageGallery,
   ProductInfo,
 } from "@/components/product/product-detail";
-import { useI18n } from "@/components/providers/i18n-provider";
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -28,7 +27,6 @@ export const QuickViewModal = memo(function QuickViewModal({
   isOpen,
   onClose,
 }: QuickViewModalProps) {
-  const { t } = useI18n();
   if (!product) return null;
 
   // Handle dialog close with Fancybox check
@@ -69,7 +67,7 @@ export const QuickViewModal = memo(function QuickViewModal({
               className="h-8 w-8 rounded-sm hover:bg-accent hover:text-accent-foreground"
             >
               <X className="h-4 w-4" />
-              <span className="sr-only">{t("common.close")}</span>
+              <span className="sr-only">Đóng</span>
             </Button>
           </div>
         </DialogHeader>
@@ -90,7 +88,7 @@ export const QuickViewModal = memo(function QuickViewModal({
               <div className="pt-4">
                 <Link href={`/products/${product.id}`}>
                   <Button variant="outline" className="w-full">
-                    {t("product.viewFullDetails")}
+                    Xem chi tiết đầy đủ
                   </Button>
                 </Link>
               </div>

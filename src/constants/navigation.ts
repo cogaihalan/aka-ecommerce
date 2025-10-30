@@ -3,35 +3,35 @@ import { FilterGroup, SortOption } from "@/types/navigation";
 export const SORT_OPTIONS: SortOption[] = [
   {
     id: "featured",
-    label: "Featured",
+    label: "Nổi bật",
     value: "featured",
     field: "featured",
     order: "desc",
   },
   {
     id: "price-asc",
-    label: "Price: Low to High",
+    label: "Giá: Thấp đến Cao",
     value: "price,asc",
     field: "price",
     order: "asc",
   },
   {
     id: "price-desc",
-    label: "Price: High to Low",
+    label: "Giá: Cao đến Thấp",
     value: "price,desc",
     field: "price",
     order: "desc",
   },
   {
     id: "name-asc",
-    label: "Name: A to Z",
+    label: "Tên: A đến Z",
     value: "name,asc",
     field: "name",
     order: "asc",
   },
   {
     id: "name-desc",
-    label: "Name: Z to A",
+    label: "Tên: Z đến A",
     value: "name,desc",
     field: "name",
     order: "desc",
@@ -41,7 +41,7 @@ export const SORT_OPTIONS: SortOption[] = [
 export const FILTER_GROUPS: FilterGroup[] = [
   {
     id: "price",
-    label: "Price Range",
+    label: "Khoảng giá",
     type: "range",
     options: [],
     min: 0,
@@ -50,7 +50,7 @@ export const FILTER_GROUPS: FilterGroup[] = [
   },
   {
     id: "categoryIds",
-    label: "Category",
+    label: "Danh mục",
     type: "checkbox",
     options: [],
   },
@@ -58,7 +58,7 @@ export const FILTER_GROUPS: FilterGroup[] = [
 
 export const DEFAULT_FILTERS = {
   search: "",
-  sort: "featured", // Keep "featured" as default option
+  sort: "featured",
   priceRange: [] as [] | [number, number],
   categoryIds: [],
 };

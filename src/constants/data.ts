@@ -3,7 +3,7 @@ import { NavItem } from "@/types";
 //Info: The following data is used for the sidebar navigation and Cmd K bar.
 export const navItems: NavItem[] = [
   {
-    title: "Products",
+    title: "Sản phẩm",
     url: "/admin/products",
     icon: "product",
     shortcut: ["p", "p"],
@@ -11,7 +11,7 @@ export const navItems: NavItem[] = [
     items: [],
   },
   {
-    title: "Categories",
+    title: "Danh mục",
     url: "/admin/categories",
     icon: "folder",
     shortcut: ["c", "c"],
@@ -19,7 +19,7 @@ export const navItems: NavItem[] = [
     items: [],
   },
   {
-    title: "Users",
+    title: "Người dùng",
     url: "/admin/users",
     icon: "users",
     shortcut: ["u", "u"],
@@ -27,7 +27,7 @@ export const navItems: NavItem[] = [
     items: [],
   },
   {
-    title: "Orders",
+    title: "Đơn hàng",
     url: "/admin/orders",
     icon: "package",
     shortcut: ["o", "o"],
@@ -35,7 +35,7 @@ export const navItems: NavItem[] = [
     items: [],
   },
   {
-    title: "Courses",
+    title: "Khóa học",
     url: "/admin/courses",
     icon: "media",
     shortcut: ["c", "o"],
@@ -43,7 +43,7 @@ export const navItems: NavItem[] = [
     items: [],
   },
   {
-    title: "Contests",
+    title: "Cuộc thi",
     url: "/admin/contests",
     icon: "trophy",
     shortcut: ["c", "t"],
@@ -51,7 +51,7 @@ export const navItems: NavItem[] = [
     items: [],
   },
   {
-    title: "Hairstyles",
+    title: "Kiểu tóc",
     url: "/admin/hairstyles",
     icon: "scissors",
     shortcut: ["h", "h"],
@@ -59,7 +59,7 @@ export const navItems: NavItem[] = [
     items: [],
   },
   {
-    title: "Submissions",
+    title: "Bài dự thi",
     url: "/admin/submissions",
     icon: "award",
     shortcut: ["s", "s"],
@@ -67,7 +67,7 @@ export const navItems: NavItem[] = [
     items: [],
   },
   {
-    title: "Pages",
+    title: "Trang",
     url: "/admin/pages",
     icon: "page",
     shortcut: ["p", "a"],

@@ -13,7 +13,6 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, User } from "lucide-react";
 import { format } from "date-fns";
 import Image from "next/image";
-import { useI18n } from "@/components/providers/i18n-provider";
 
 interface ContestDetailDialogProps {
   contest: Contest | null;
@@ -26,14 +25,13 @@ export function ContestDetailDialog({
   open,
   onOpenChange,
 }: ContestDetailDialogProps) {
-  const { t } = useI18n();
   if (!contest) return null;
 
   const now = new Date();
   const startDate = new Date(contest.startDate);
   const endDate = new Date(contest.endDate);
 
-  let statusText = t("contests.status.inactive");
+  let statusText = "Không hoạt động";
   let statusVariant:
     | "default"
     | "secondary"
@@ -44,13 +42,13 @@ export function ContestDetailDialog({
 
   if (contest.active) {
     if (now < startDate) {
-      statusText = t("contests.status.upcoming");
+      statusText = "Sắp diễn ra";
       statusVariant = "info";
     } else if (now > endDate) {
-      statusText = t("contests.status.ended");
+      statusText = "Đã kết thúc";
       statusVariant = "secondary";
     } else {
-      statusText = t("contests.status.live");
+      statusText = "Đang diễn ra";
       statusVariant = "live";
     }
   }
@@ -63,7 +61,7 @@ export function ContestDetailDialog({
         <DialogHeader>
           <DialogTitle className="text-2xl">{contest.name}</DialogTitle>
           <DialogDescription>
-            {t("contests.detailSubtitle")}
+            Chi tiết cuộc thi và thông tin tham gia
           </DialogDescription>
         </DialogHeader>
 
@@ -83,7 +81,7 @@ export function ContestDetailDialog({
 
           {/* Contest Description */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">{t("contests.description")}</h3>
+            <h3 className="text-lg font-semibold">Mô tả</h3>
             <p className="text-muted-foreground leading-relaxed">
               {contest.description}
             </p>
@@ -91,12 +89,12 @@ export function ContestDetailDialog({
 
           {/* Contest Dates */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">{t("contests.timeline")}</h3>
+            <h3 className="text-lg font-semibold">Mốc thời gian cuộc thi</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
                 <Calendar className="h-5 w-5 text-primary" />
                 <div>
-                  <p className="text-sm font-medium">{t("contests.startDate")}</p>
+                  <p className="text-sm font-medium">Ngày bắt đầu</p>
                   <p className="text-sm text-muted-foreground">
                     {format(startDate, "EEEE, MMMM dd, yyyy")}
                   </p>
@@ -105,7 +103,7 @@ export function ContestDetailDialog({
               <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
                 <Clock className="h-5 w-5 text-primary" />
                 <div>
-                  <p className="text-sm font-medium">{t("contests.endDate")}</p>
+                  <p className="text-sm font-medium">Ngày kết thúc</p>
                   <p className="text-sm text-muted-foreground">
                     {format(endDate, "EEEE, MMMM dd, yyyy")}
                   </p>
@@ -116,16 +114,16 @@ export function ContestDetailDialog({
 
           {/* Contest Info */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">{t("contests.info")}</h3>
+            <h3 className="text-lg font-semibold">Thông tin cuộc thi</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">{t("contests.createdBy")}</span>
+                <span className="text-muted-foreground">Tạo bởi:</span>
                 <span>{contest.createdBy}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">{t("contests.created")}</span>
+                <span className="text-muted-foreground">Ngày tạo:</span>
                 <span>
                   {format(new Date(contest.createdAt), "MMM dd, yyyy")}
                 </span>
@@ -140,24 +138,24 @@ export function ContestDetailDialog({
               onClick={() => onOpenChange(false)}
               className="flex-1"
             >
-              {t("common.close")}
+              Đóng
             </Button>
             {canParticipate && (
-              <Button className="flex-1">{t("contests.participateNow")}</Button>
+              <Button className="flex-1">Tham gia ngay</Button>
             )}
             {!canParticipate && contest.active && now < startDate && (
               <Button disabled className="flex-1">
-                {t("contests.notStarted")}
+                Cuộc thi chưa bắt đầu
               </Button>
             )}
             {!canParticipate && contest.active && now > endDate && (
               <Button disabled className="flex-1">
-                {t("contests.ended")}
+                Cuộc thi đã kết thúc
               </Button>
             )}
             {!contest.active && (
               <Button disabled className="flex-1">
-                {t("contests.inactive")}
+                Cuộc thi không hoạt động
               </Button>
             )}
           </div>

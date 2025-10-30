@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { formatDate } from "@/lib/format";
-import { useI18n } from "@/components/providers/i18n-provider";
 
 type DateSelection = Date[] | DateRange;
 
@@ -62,7 +61,6 @@ export function DataTableDateFilter<TData>({
   title,
   multiple,
 }: DataTableDateFilterProps<TData>) {
-  const { t } = useI18n();
   const columnFilterValue = column.getFilterValue();
 
   const selectedDates = useMemo<DateSelection>(() => {
@@ -133,7 +131,7 @@ export function DataTableDateFilter<TData>({
       const hasSelectedDates = selectedDates.from || selectedDates.to;
       const dateText = hasSelectedDates
         ? formatDateRange(selectedDates)
-        : t("table.selectDateRange");
+        : "Chọn khoảng ngày";
 
       return (
         <span className="flex items-center gap-2">
@@ -156,7 +154,7 @@ export function DataTableDateFilter<TData>({
     const hasSelectedDate = selectedDates.length > 0;
     const dateText = hasSelectedDate
       ? formatDate(selectedDates[0])
-      : t("table.selectDate");
+      : "Chọn ngày";
 
     return (
       <span className="flex items-center gap-2">
@@ -181,7 +179,7 @@ export function DataTableDateFilter<TData>({
           {hasValue ? (
             <div
               role="button"
-              aria-label={t("table.clearFilter", { title })}
+              aria-label="Xóa bộ lọc"
               tabIndex={0}
               onClick={onReset}
               className="focus-visible:ring-ring rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-1 focus-visible:outline-none"

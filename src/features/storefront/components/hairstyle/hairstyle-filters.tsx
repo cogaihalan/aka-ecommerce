@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDebounce } from "@/hooks/use-debounce";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -91,7 +90,7 @@ export function HairstyleFilters() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Filters</h3>
+        <h3 className="text-lg font-semibold">Bộ lọc</h3>
         <Button
           variant="outline"
           size="sm"
@@ -99,14 +98,14 @@ export function HairstyleFilters() {
           className="lg:hidden"
         >
           <X className="h-4 w-4 mr-1" />
-          {isExpanded ? "Hide" : "Show"} Filters
+          {isExpanded ? "Ẩn" : "Hiện"} Bộ lọc
         </Button>
       </div>
 
       <div className={cn("space-y-4", !isExpanded && "hidden lg:block")}>
         {/* Search */}
         <div className="space-y-2">
-          <Label htmlFor="search">Search</Label>
+          <Label htmlFor="search">Tìm kiếm</Label>
           <div className="relative">
             <Search
               className={cn(
@@ -116,7 +115,7 @@ export function HairstyleFilters() {
             />
             <Input
               id="search"
-              placeholder="Search hairstyles..."
+              placeholder="Tìm kiếu kiểu tóc..."
               value={searchValue}
               onChange={(e) => handleSearch(e.target.value)}
               className="pl-10 pr-10"
@@ -126,7 +125,7 @@ export function HairstyleFilters() {
                 type="button"
                 onClick={clearSearch}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="Clear search"
+                aria-label="Xóa tìm kiếm"
               >
                 <XCircle className="h-4 w-4" />
               </button>
@@ -141,33 +140,33 @@ export function HairstyleFilters() {
 
         {/* Gender Filter */}
         <div className="space-y-2">
-          <Label>Gender</Label>
+          <Label>Giới tính</Label>
           <Select value={gender} onValueChange={handleGenderChange}>
             <SelectTrigger>
-              <SelectValue placeholder="All genders" />
+              <SelectValue placeholder="Tất cả giới tính" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All genders</SelectItem>
-              <SelectItem value="MALE">Male</SelectItem>
-              <SelectItem value="FEMALE">Female</SelectItem>
+              <SelectItem value="all">Tất cả giới tính</SelectItem>
+              <SelectItem value="MALE">Nam</SelectItem>
+              <SelectItem value="FEMALE">Nữ</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Sort */}
         <div className="space-y-2">
-          <Label>Sort by</Label>
+          <Label>Sắp xếp theo</Label>
           <Select value={sort} onValueChange={handleSortChange}>
             <SelectTrigger>
-              <SelectValue placeholder="Select sort option" />
+              <SelectValue placeholder="Chọn tùy chọn sắp xếp" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="voteCount,desc">Votes (Highest)</SelectItem>
-              <SelectItem value="voteCount,asc">Votes (Lowest)</SelectItem>
-              <SelectItem value="name,asc">Name A-Z</SelectItem>
-              <SelectItem value="name,desc">Name Z-A</SelectItem>
-              <SelectItem value="barberName,asc">Barber A-Z</SelectItem>
-              <SelectItem value="barberName,desc">Barber Z-A</SelectItem>
+              <SelectItem value="voteCount,desc">Bình chọn (Cao nhất)</SelectItem>
+              <SelectItem value="voteCount,asc">Bình chọn (Thấp nhất)</SelectItem>
+              <SelectItem value="name,asc">Tên (A-Z)</SelectItem>
+              <SelectItem value="name,desc">Tên (Z-A)</SelectItem>
+              <SelectItem value="barberName,asc">Tên barber (A-Z)</SelectItem>
+              <SelectItem value="barberName,desc">Tên barber (Z-A)</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -181,7 +180,7 @@ export function HairstyleFilters() {
             className="w-full"
           >
             <X className="h-4 w-4 mr-2" />
-            Clear Filters
+            Xóa bộ lọc
           </Button>
         )}
       </div>

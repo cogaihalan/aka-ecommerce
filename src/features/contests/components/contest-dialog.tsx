@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
-import { useI18n } from "@/components/providers/i18n-provider";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  Form, 
+  Form,
   FormControl,
   FormDescription,
   FormField,
@@ -29,33 +28,35 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { FileUploader } from "@/components/file-uploader";
-import {
-  CreateContestRequest,
-  UpdateContestRequest,
-} from "@/lib/api/types";
+import { CreateContestRequest, UpdateContestRequest } from "@/lib/api/types";
 import { unifiedContestService } from "@/lib/api/services/unified";
 import type { Contest } from "@/types";
 
-const contestSchema = z.object({
-  name: z.string().min(1, "Contest name is required"),
-  description: z.string().min(1, "Description is required"),
-  startDate: z.string().min(1, "Start date is required"),
-  endDate: z.string().min(1, "End date is required"),
-  thumbnailUrl: z.string().optional(),
-  active: z.boolean().default(true),
-}).refine((data) => {
-  const startDate = new Date(data.startDate);
-  const endDate = new Date(data.endDate);
-  return endDate > startDate;
-}, {
-  message: "End date must be after start date",
-  path: ["endDate"],
-});
+const contestSchema = z
+  .object({
+    name: z.string().min(1, "Tên cuộc thi là bắt buộc"),
+    description: z.string().min(1, "Mô tả là bắt buộc"),
+    startDate: z.string().min(1, "Ngày bắt đầu là bắt buộc"),
+    endDate: z.string().min(1, "Ngày kết thúc là bắt buộc"),
+    thumbnailUrl: z.string().optional(),
+    active: z.boolean().default(true),
+  })
+  .refine(
+    (data) => {
+      const startDate = new Date(data.startDate);
+      const endDate = new Date(data.endDate);
+      return endDate > startDate;
+    },
+    {
+      message: "Ngày kết thúc phải sau ngày bắt đầu",
+      path: ["endDate"],
+    }
+  );
 
 type ContestFormValues = z.infer<typeof contestSchema>;
 
 interface ContestDialogProps {
-  contest?: Contest; // Optional - if provided, it's edit mode
+  contest?: Contest;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
@@ -68,7 +69,6 @@ export function ContestDialog({
   onSuccess,
 }: ContestDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const { t } = useI18n();
   const [thumbnailFiles, setThumbnailFiles] = useState<File[]>([]);
   const [useThumbnailUpload, setUseThumbnailUpload] = useState(false);
   const [isUploadingThumbnail, setIsUploadingThumbnail] = useState(false);
@@ -88,15 +88,13 @@ export function ContestDialog({
     },
   });
 
-  // Reset form when contest changes or dialog opens
   useEffect(() => {
     if (contest) {
-      // Edit mode - populate with existing contest data
       form.reset({
         name: contest.name,
         description: contest.description,
-        startDate: contest.startDate.split('T')[0], // Convert to YYYY-MM-DD format
-        endDate: contest.endDate.split('T')[0], // Convert to YYYY-MM-DD format
+        startDate: contest.startDate.split("T")[0], // Convert to YYYY-MM-DD format
+        endDate: contest.endDate.split("T")[0], // Convert to YYYY-MM-DD format
         thumbnailUrl: contest.thumbnailUrl || "",
         active: contest.active,
       });
@@ -134,11 +132,11 @@ export function ContestDialog({
         const updateData: UpdateContestRequest = {
           ...data,
           startDate,
-          endDate
+          endDate,
         };
 
         await unifiedContestService.updateContest(contest.id, updateData);
-        toast.success(t("contests.dialog.toast.updated"));
+        toast.success("Cập nhật cuộc thi thành công");
       } else {
         // Add mode
         const createData: CreateContestRequest = {
@@ -148,15 +146,15 @@ export function ContestDialog({
           endDate,
           active: data.active ?? true,
         };
-        
+
         await unifiedContestService.createContest(createData);
-        toast.success(t("contests.dialog.toast.created"));
+        toast.success("Tạo cuộc thi thành công");
         onSuccess?.();
         onOpenChange(false);
         form.reset();
       }
     } catch (error) {
-      toast.error(t("contests.dialog.toast.failed", { action: isEditMode ? "update" : "create" }));
+      toast.error(`Không thể ${isEditMode ? "cập nhật" : "tạo"} cuộc thi`);
       console.error(
         `Error ${isEditMode ? "updating" : "creating"} contest:`,
         error
@@ -168,23 +166,24 @@ export function ContestDialog({
 
   const handleThumbnailUpload = async (files: File[]) => {
     if (!contest || files.length === 0) return;
-    
+
     try {
       setIsUploadingThumbnail(true);
       const file = files[0];
-      
-      const uploadedContest = await unifiedContestService.uploadContestThumbnail({
-        id: contest.id,
-        file: file,
-      });
+
+      const uploadedContest =
+        await unifiedContestService.uploadContestThumbnail({
+          id: contest.id,
+          file: file,
+        });
 
       // Update the form field with the uploaded thumbnail URL
       form.setValue("thumbnailUrl", uploadedContest.thumbnailUrl || "");
       setUploadedThumbnailUrl(uploadedContest.thumbnailUrl || "");
       setThumbnailFiles(files);
-      toast.success(t("contests.dialog.thumbnailUploaded"));
+      toast.success("Tải ảnh bìa thành công");
     } catch (error) {
-      toast.error(t("contests.dialog.toast.uploadThumbFailed"));
+      toast.error("Tải ảnh bìa thất bại");
       console.error("Thumbnail upload error:", error);
     } finally {
       setUseThumbnailUpload(false);
@@ -201,30 +200,27 @@ export function ContestDialog({
       <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader className="flex-shrink-0">
           <DialogTitle>
-            {isEditMode ? t("contests.dialog.titleEdit") : t("contests.dialog.titleCreate")}
+            {isEditMode ? "Chỉnh sửa cuộc thi" : "Tạo cuộc thi mới"}
           </DialogTitle>
           <DialogDescription>
             {isEditMode
-              ? t("contests.dialog.descEdit")
-              : t("contests.dialog.descCreate")}
+              ? "Cập nhật thông tin và chi tiết cuộc thi."
+              : "Thêm một cuộc thi mới vào nền tảng của bạn."}
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex-1 overflow-y-auto pr-2">
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <div className="grid grid-cols-1 gap-3">
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t("contests.dialog.name")}</FormLabel>
+                      <FormLabel>Tên cuộc thi</FormLabel>
                       <FormControl>
-                        <Input placeholder={t("contests.dialog.namePlaceholder")} {...field} />
+                        <Input placeholder="Nhập tên cuộc thi" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -236,10 +232,10 @@ export function ContestDialog({
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t("contests.dialog.description")}</FormLabel>
+                      <FormLabel>Mô tả</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder={t("contests.dialog.descriptionPlaceholder")}
+                          placeholder="Nhập mô tả cuộc thi"
                           className="min-h-[80px]"
                           {...field}
                         />
@@ -255,12 +251,9 @@ export function ContestDialog({
                     name="startDate"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{t("contests.dialog.startDate")}</FormLabel>
+                        <FormLabel>Ngày bắt đầu</FormLabel>
                         <FormControl>
-                          <Input
-                            type="date"
-                            {...field}
-                          />
+                          <Input type="date" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -272,12 +265,9 @@ export function ContestDialog({
                     name="endDate"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{t("contests.dialog.endDate")}</FormLabel>
+                        <FormLabel>Ngày kết thúc</FormLabel>
                         <FormControl>
-                          <Input
-                            type="date"
-                            {...field}
-                          />
+                          <Input type="date" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -288,15 +278,17 @@ export function ContestDialog({
                 {isEditMode && (
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <FormLabel>{t("contests.dialog.thumbnailSource")}</FormLabel>
+                      <FormLabel>Nguồn ảnh bìa</FormLabel>
                       <div className="flex items-center space-x-2">
-                        <span className="text-sm text-muted-foreground">{t("contests.dialog.url")}</span>
+                        <span className="text-sm text-muted-foreground">
+                          URL
+                        </span>
                         <Switch
                           checked={useThumbnailUpload}
                           onCheckedChange={handleThumbnailModeChange}
                         />
                         <span className="text-sm text-muted-foreground">
-                          {t("contests.dialog.upload")}
+                          Tải lên
                         </span>
                       </div>
                     </div>
@@ -307,15 +299,15 @@ export function ContestDialog({
                         name="thumbnailUrl"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>{t("contests.dialog.thumbnailUrl")}</FormLabel>
+                            <FormLabel>Đường dẫn ảnh bìa</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder={t("contests.dialog.thumbnailUrlPlaceholder")}
+                                placeholder="https://example.com/thumbnail.jpg"
                                 {...field}
                               />
                             </FormControl>
                             <FormDescription>
-                              {t("contests.dialog.thumbnailUrlHelp")}
+                              Nhập đường dẫn ảnh bìa
                             </FormDescription>
                             <FormMessage />
                           </FormItem>
@@ -323,24 +315,24 @@ export function ContestDialog({
                       />
                     ) : (
                       <div className="space-y-2">
-                        <FormLabel>Thumbnail Upload</FormLabel>
+                        <FormLabel>Tải lên ảnh bìa</FormLabel>
                         <FileUploader
                           value={thumbnailFiles}
                           onValueChange={setThumbnailFiles}
                           onUpload={handleThumbnailUpload}
                           accept={{ "image/*": [] }}
-                          maxSize={1024 * 1024 * 5} // 5MB
+                          maxSize={1024 * 1024 * 5}
                           maxFiles={1}
                           disabled={isUploadingThumbnail}
                         />
                         {isUploadingThumbnail && (
                           <div className="text-sm text-muted-foreground">
-                            {t("contests.dialog.thumbnailUploading")}
+                            Đang tải ảnh bìa...
                           </div>
                         )}
                         {uploadedThumbnailUrl && (
                           <div className="text-sm text-green-600">
-                            {t("contests.dialog.thumbnailUploaded")}
+                            Tải ảnh bìa thành công
                           </div>
                         )}
                       </div>
@@ -353,10 +345,10 @@ export function ContestDialog({
                   name="active"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
-                        <div className="space-y-0.5">
-                        <FormLabel className="text-sm">{t("contests.dialog.activeLabel")}</FormLabel>
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-sm">Kích hoạt</FormLabel>
                         <FormDescription className="text-xs">
-                          {t("contests.dialog.activeHelp")}
+                          Hiển thị với người dùng
                         </FormDescription>
                       </div>
                       <FormControl>
@@ -376,12 +368,16 @@ export function ContestDialog({
                   onClick={() => onOpenChange(false)}
                   disabled={isLoading}
                 >
-                  {t("contests.dialog.cancel")}
+                  Hủy
                 </Button>
                 <Button type="submit" disabled={isLoading}>
                   {isLoading
-                    ? (isEditMode ? t("contests.dialog.updating") : t("contests.dialog.creating"))
-                    : (isEditMode ? t("contests.dialog.update") : t("contests.dialog.create"))}
+                    ? isEditMode
+                      ? "Đang cập nhật..."
+                      : "Đang tạo..."
+                    : isEditMode
+                      ? "Cập nhật cuộc thi"
+                      : "Tạo cuộc thi"}
                 </Button>
               </DialogFooter>
             </form>

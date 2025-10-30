@@ -98,7 +98,7 @@ export const columns: ColumnDef<User>[] = [
   {
     id: "createdAt",
     accessorKey: "createdAt",
-    header: "Tạo lúc",
+    header: "Ngày tạo",
     cell: ({ row }) => {
       const date = row.getValue("createdAt") as string;
       return (
@@ -124,7 +124,7 @@ export const columns: ColumnDef<User>[] = [
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end">
             <DropdownMenuLabel>Hành động</DropdownMenuLabel>
             <UserDialog
               user={user}
@@ -161,12 +161,12 @@ export const columns: ColumnDef<User>[] = [
               {user.enabled ? (
                 <>
                   <Lock className="mr-2 h-4 w-4" />
-                  Khóa tài khoản
+                  Khóa
                 </>
               ) : (
                 <>
                   <Unlock className="mr-2 h-4 w-4" />
-                  Mở khóa tài khoản
+                  Mở khóa
                 </>
               )}
             </DropdownMenuItem>

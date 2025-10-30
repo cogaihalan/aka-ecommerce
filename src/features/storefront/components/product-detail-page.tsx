@@ -107,7 +107,7 @@ export default function ProductDetailPage({
         <div className="absolute top-4 right-4 z-10">
           <div className="flex items-center gap-2 bg-background/90 backdrop-blur-sm px-3 py-2 rounded-md shadow-sm border">
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-            <span className="text-sm text-muted-foreground">Loading...</span>
+            <span className="text-sm text-muted-foreground">Đang tải...</span>
           </div>
         </div>
       )}

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useDebounce } from "@/hooks/use-debounce";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Search, Filter, X } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Search, X, XCircle } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -14,145 +15,176 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 export function HairstyleFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
 
-  const [search, setSearch] = useState(searchParams.get("search") || "");
-  const [gender, setGender] = useState(searchParams.get("gender") || "");
-  const [barberName, setBarberName] = useState(
-    searchParams.get("barberName") || ""
-  );
-  const [sort, setSort] = useState(
-    searchParams.get("sort") || "createdAt,desc"
-  );
+  const search = searchParams.get("search") || "";
+  const gender = searchParams.get("gender") || "all";
+  const sort = searchParams.get("sort") || "voteCount,desc";
 
-  const updateURL = (params: Record<string, string>) => {
-    const newSearchParams = new URLSearchParams(searchParams);
+  // Debounce the search value
+  const debouncedSearchValue = useDebounce(searchValue, 300);
 
-    Object.entries(params).forEach(([key, value]) => {
-      if (value) {
-        newSearchParams.set(key, value);
-      } else {
-        newSearchParams.delete(key);
-      }
-    });
-
-    router.push(`/hairstyles?${newSearchParams.toString()}`);
+  const updateSearchParams = (key: string, value: string | null) => {
+    const params = new URLSearchParams(searchParams);
+    if (value && value !== "") {
+      params.set(key, value);
+    } else {
+      params.delete(key);
+    }
+    router.push(`/hairstyles?${params.toString()}`);
   };
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    updateURL({ search });
-  };
+  // Initialize search value from URL
+  useEffect(() => {
+    setSearchValue(search);
+  }, [search]);
+
+  // Handle debounced search
+  useEffect(() => {
+    if (debouncedSearchValue !== search) {
+      setIsSearching(true);
+      updateSearchParams("search", debouncedSearchValue);
+      // Reset searching state after a short delay
+      const timer = setTimeout(() => setIsSearching(false), 100);
+      return () => clearTimeout(timer);
+    }
+  }, [debouncedSearchValue, search]);
+
+  const handleSearch = useCallback((value: string) => {
+    setSearchValue(value);
+    if (value === "") {
+      setIsSearching(false);
+      updateSearchParams("search", value);
+    }
+  }, []);
 
   const handleGenderChange = (value: string) => {
-    setGender(value);
-    updateURL({ gender: value });
-  };
-
-  const handleBarberChange = (value: string) => {
-    setBarberName(value);
-    updateURL({ barberName: value });
+    updateSearchParams("gender", value);
   };
 
   const handleSortChange = (value: string) => {
-    setSort(value);
-    updateURL({ sort: value });
+    updateSearchParams("sort", value);
+  };
+
+  const clearSearch = () => {
+    setSearchValue("");
+    updateSearchParams("search", null);
   };
 
   const clearFilters = () => {
-    setSearch("");
-    setGender("");
-    setBarberName("");
-    setSort("createdAt,desc");
+    setSearchValue("");
     router.push("/hairstyles");
   };
 
   const hasActiveFilters =
-    search || gender || barberName || sort !== "createdAt,desc";
+    search ||
+    (gender && gender !== "all") ||
+    (sort && sort !== "voteCount,desc");
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>Filters</span>
-            {hasActiveFilters && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={clearFilters}
-                className="h-8 px-2"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            )}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Search */}
-          <form onSubmit={handleSearch} className="space-y-2">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search hairstyles..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Button type="submit" size="sm" className="w-full">
-              Search
-            </Button>
-          </form>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold">Filters</h3>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="lg:hidden"
+        >
+          <X className="h-4 w-4 mr-1" />
+          {isExpanded ? "Hide" : "Show"} Filters
+        </Button>
+      </div>
 
-          {/* Gender Filter */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Gender</label>
-            <Select value={gender} onValueChange={handleGenderChange}>
-              <SelectTrigger>
-                <SelectValue placeholder="All genders" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">All genders</SelectItem>
-                <SelectItem value="MALE">Male</SelectItem>
-                <SelectItem value="FEMALE">Female</SelectItem>
-                <SelectItem value="OTHER">Other</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Barber Filter */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Barber</label>
-            <Input
-              placeholder="Filter by barber name..."
-              value={barberName}
-              onChange={(e) => setBarberName(e.target.value)}
+      <div className={cn("space-y-4", !isExpanded && "hidden lg:block")}>
+        {/* Search */}
+        <div className="space-y-2">
+          <Label htmlFor="search">Search</Label>
+          <div className="relative">
+            <Search
+              className={cn(
+                "absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground",
+                isSearching && "animate-pulse"
+              )}
             />
+            <Input
+              id="search"
+              placeholder="Search hairstyles..."
+              value={searchValue}
+              onChange={(e) => handleSearch(e.target.value)}
+              className="pl-10 pr-10"
+            />
+            {searchValue && (
+              <button
+                type="button"
+                onClick={clearSearch}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Clear search"
+              >
+                <XCircle className="h-4 w-4" />
+              </button>
+            )}
+            {isSearching && !searchValue && (
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full"></div>
+              </div>
+            )}
           </div>
+        </div>
 
-          {/* Sort */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Sort by</label>
-            <Select value={sort} onValueChange={handleSortChange}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="createdAt,desc">Newest first</SelectItem>
-                <SelectItem value="createdAt,asc">Oldest first</SelectItem>
-                <SelectItem value="name,asc">Name A-Z</SelectItem>
-                <SelectItem value="name,desc">Name Z-A</SelectItem>
-                <SelectItem value="barberName,asc">Barber A-Z</SelectItem>
-                <SelectItem value="barberName,desc">Barber Z-A</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card>
+        {/* Gender Filter */}
+        <div className="space-y-2">
+          <Label>Gender</Label>
+          <Select value={gender} onValueChange={handleGenderChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="All genders" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All genders</SelectItem>
+              <SelectItem value="MALE">Male</SelectItem>
+              <SelectItem value="FEMALE">Female</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Sort */}
+        <div className="space-y-2">
+          <Label>Sort by</Label>
+          <Select value={sort} onValueChange={handleSortChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select sort option" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="voteCount,desc">Votes (Highest)</SelectItem>
+              <SelectItem value="voteCount,asc">Votes (Lowest)</SelectItem>
+              <SelectItem value="name,asc">Name A-Z</SelectItem>
+              <SelectItem value="name,desc">Name Z-A</SelectItem>
+              <SelectItem value="barberName,asc">Barber A-Z</SelectItem>
+              <SelectItem value="barberName,desc">Barber Z-A</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Clear Filters */}
+        {hasActiveFilters && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={clearFilters}
+            className="w-full"
+          >
+            <X className="h-4 w-4 mr-2" />
+            Clear Filters
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

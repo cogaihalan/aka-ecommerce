@@ -36,7 +36,7 @@ export function ContestFilters() {
     } else {
       params.delete(key);
     }
-    router.push(`/contest?${params.toString()}`);
+    router.push(`/contests?${params.toString()}`);
   };
 
   // Initialize search value from URL

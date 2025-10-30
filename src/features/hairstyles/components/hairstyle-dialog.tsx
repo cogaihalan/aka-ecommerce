@@ -42,7 +42,7 @@ import type { Hairstyle } from "@/types";
 const hairstyleSchema = z.object({
   name: z.string().min(1, "Hairstyle name is required"),
   barberName: z.string().min(1, "Barber name is required"),
-  gender: z.enum(["MALE", "FEMALE", "OTHER"], {
+  gender: z.enum(["MALE", "FEMALE"], {
     required_error: "Please select a gender",
   }),
 });
@@ -71,7 +71,7 @@ export function HairstyleDialog({
     defaultValues: {
       name: "",
       barberName: "",
-      gender: "OTHER",
+      gender: "MALE",
     },
   });
 
@@ -88,7 +88,7 @@ export function HairstyleDialog({
         form.reset({
           name: "",
           barberName: "",
-          gender: "OTHER",
+          gender: "MALE",
         });
       }
     }
@@ -193,7 +193,6 @@ export function HairstyleDialog({
                     <SelectContent>
                       <SelectItem value="MALE">Male</SelectItem>
                       <SelectItem value="FEMALE">Female</SelectItem>
-                      <SelectItem value="OTHER">Other</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

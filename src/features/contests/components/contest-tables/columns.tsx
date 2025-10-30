@@ -5,13 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DataTableColumnHeader } from "@/components/ui/table/data-table-column-header";
 import { Contest } from "@/types/extensions/contest";
-import {
-  MoreHorizontal,
-  Edit,
-  Text,
-  Calendar,
-  Clock,
-} from "lucide-react";
+import { MoreHorizontal, Edit, Text, Calendar, Clock } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -70,7 +64,9 @@ export const columns: ColumnDef<Contest>[] = [
     cell: ({ row }) => {
       const contest = row.original;
       return (
-        <div className="max-w-45 font-medium line-clamp-2 whitespace-normal">{contest.name}</div>
+        <div className="max-w-45 font-medium line-clamp-2 whitespace-normal">
+          {contest.name}
+        </div>
       );
     },
     meta: {
@@ -87,7 +83,11 @@ export const columns: ColumnDef<Contest>[] = [
     header: "Description",
     cell: ({ row }) => {
       const description = row.original.description;
-      return <div className="max-w-60 line-clamp-4 text-sm text-muted-foreground whitespace-normal">{description}</div>;
+      return (
+        <div className="max-w-60 line-clamp-4 text-sm text-muted-foreground whitespace-normal">
+          {description}
+        </div>
+      );
     },
     size: 200,
     maxSize: 250,
@@ -95,16 +95,17 @@ export const columns: ColumnDef<Contest>[] = [
   {
     id: "status",
     accessorKey: "active",
-    header: 'Status',
+    header: "Status",
     cell: ({ row }) => {
       const isActive = row.original.active;
       const now = new Date();
       const startDate = new Date(row.original.startDate);
       const endDate = new Date(row.original.endDate);
-      
+
       let statusText = isActive ? "Active" : "Inactive";
-      let variant: "default" | "secondary" | "destructive" | "outline" = isActive ? "default" : "secondary";
-      
+      let variant: "default" | "secondary" | "destructive" | "outline" =
+        isActive ? "default" : "secondary";
+
       if (isActive) {
         if (now < startDate) {
           statusText = "Upcoming";
@@ -117,7 +118,7 @@ export const columns: ColumnDef<Contest>[] = [
           variant = "default";
         }
       }
-      
+
       return <Badge variant={variant}>{statusText}</Badge>;
     },
     meta: {
@@ -188,6 +189,10 @@ export const columns: ColumnDef<Contest>[] = [
             contest={contest}
             open={showEditDialog}
             onOpenChange={setShowEditDialog}
+            onSuccess={() => {
+              // Refresh the page or refetch data
+              window.location.reload();
+            }}
           />
         </>
       );

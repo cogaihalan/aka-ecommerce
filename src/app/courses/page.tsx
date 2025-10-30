@@ -37,7 +37,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
   const data = await serverUnifiedCourseService.getCourses(courseParams);
 
   return (
-    <div className="container mx-auto">
+    <div>
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Courses</h1>
         <p className="text-muted-foreground">

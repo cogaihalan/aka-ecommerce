@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Card,
   CardContent,
@@ -58,8 +56,6 @@ export default async function StorefrontHomePage() {
           </CardContent>
         </Card>
       </section>
-
-      
     </>
   );
 }

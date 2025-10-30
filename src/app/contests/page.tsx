@@ -36,8 +36,10 @@ export default async function ContestPage({ searchParams }: ContestPageProps) {
 
   const data = await serverUnifiedContestService.getContests(contestParams);
 
+
+  console.log(data);
   return (
-    <div className="container mx-auto">
+    <div>
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Contests</h1>
         <p className="text-muted-foreground">

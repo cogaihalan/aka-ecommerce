@@ -5,7 +5,7 @@ import { HairstyleFilters } from "@/features/storefront/components/hairstyle/hai
 import { HairstyleGridSkeleton } from "@/features/storefront/components/hairstyle/hairstyle-grid-skeleton";
 import { HairstyleFiltersSkeleton } from "@/features/storefront/components/hairstyle/hairstyle-filters-skeleton";
 import { searchParamsCache } from "@/lib/searchparams";
-import { serverStorefrontHairstyleService } from "@/lib/api/services/storefront/extensions/hairstyles/hairstyles";
+import { storefrontServerHairstyleService } from "@/lib/api/services/storefront/extensions/hairstyles/hairstyles";
 import { QueryParams } from "@/lib/api/types";
 
 export const metadata: Metadata = {
@@ -33,19 +33,17 @@ export default async function HairstylesPage({
   const hairstyleParams: QueryParams = {
     page: params.page ? parseInt(params.page) : 1,
     size: params.perPage ? parseInt(params.perPage) : 12,
-    sort: params.sort ? [params.sort] : ["createdAt,desc"],
+    sort: params.sort ? [params.sort] : [""],
     name: params.search?.toString(),
     gender: params.gender?.toString(),
     barberName: params.barberName?.toString(),
   };
 
   const data =
-    await serverStorefrontHairstyleService.getHairstyles(hairstyleParams);
-
-    console.log(data);
+    await storefrontServerHairstyleService.getHairstyles(hairstyleParams);
 
   return (
-    <div className="container mx-auto">
+    <div>
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Hairstyles</h1>
         <p className="text-muted-foreground">

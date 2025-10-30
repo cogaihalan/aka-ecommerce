@@ -73,7 +73,9 @@ export const columns: ColumnDef<Course>[] = [
     cell: ({ row }) => {
       const course = row.original;
       return (
-        <div className="max-w-45 font-medium line-clamp-2 whitespace-normal">{course.name}</div>
+        <div className="max-w-45 font-medium line-clamp-2 whitespace-normal">
+          {course.name}
+        </div>
       );
     },
     meta: {
@@ -90,7 +92,11 @@ export const columns: ColumnDef<Course>[] = [
     header: "Description",
     cell: ({ row }) => {
       const description = row.original.description;
-      return <div className="max-w-60 line-clamp-4 text-sm text-muted-foreground whitespace-normal">{description}</div>;
+      return (
+        <div className="max-w-60 line-clamp-4 text-sm text-muted-foreground whitespace-normal">
+          {description}
+        </div>
+      );
     },
     size: 200,
     maxSize: 250,
@@ -111,10 +117,14 @@ export const columns: ColumnDef<Course>[] = [
   {
     id: "status",
     accessorKey: "active",
-    header: 'Status',
+    header: "Status",
     cell: ({ row }) => {
       const isActive = row.original.active;
-      return <Badge variant={isActive ? "default" : "secondary"}>{isActive ? "Active" : "Inactive"}</Badge>;
+      return (
+        <Badge variant={isActive ? "default" : "secondary"}>
+          {isActive ? "Active" : "Inactive"}
+        </Badge>
+      );
     },
     meta: {
       label: "Status",
@@ -208,6 +218,10 @@ export const columns: ColumnDef<Course>[] = [
             course={course}
             open={showEditDialog}
             onOpenChange={setShowEditDialog}
+            onSuccess={() => {
+              // Refresh the page or refetch data
+              window.location.reload();
+            }}
           />
         </>
       );

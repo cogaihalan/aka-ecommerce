@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Hairstyle } from "@/types";
 import {
   Dialog,
@@ -36,7 +36,16 @@ export function HairstyleDetailDialog({
 }: HairstyleDetailDialogProps) {
   const [isFavoriting, setIsFavoriting] = useState(false);
   const [isFavorite, setIsFavorite] = useState(hairstyle?.liked || false);
+  const [voteCount, setVoteCount] = useState(hairstyle?.voteCount || 0);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+
+  // Update vote count when hairstyle prop changes
+  useEffect(() => {
+    if (hairstyle) {
+      setVoteCount(hairstyle.voteCount);
+      setIsFavorite(hairstyle.liked || false);
+    }
+  }, [hairstyle?.voteCount, hairstyle?.liked]);
 
   if (!hairstyle) return null;
 
@@ -47,6 +56,7 @@ export function HairstyleDetailDialog({
       const updatedHairstyle =
         await storefrontHairstyleService.toggleFavoriteHairstyle(hairstyle.id);
       setIsFavorite(updatedHairstyle.liked || false);
+      setVoteCount(updatedHairstyle.voteCount);
       toast.success(
         updatedHairstyle.liked ? "Added to favorites" : "Removed from favorites"
       );
@@ -77,7 +87,6 @@ export function HairstyleDetailDialog({
   const genderColors = {
     MALE: "bg-blue-100 text-blue-800",
     FEMALE: "bg-pink-100 text-pink-800",
-    OTHER: "bg-purple-100 text-purple-800",
   };
 
   return (
@@ -98,7 +107,7 @@ export function HairstyleDetailDialog({
                   src={hairstyle.photos[currentPhotoIndex].url}
                   alt={`${hairstyle.name} - Photo ${currentPhotoIndex + 1}`}
                   fill
-                  className="object-cover"
+                  className="object-contain"
                 />
               </div>
 
@@ -161,7 +170,7 @@ export function HairstyleDetailDialog({
                 </div>
                 <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                   <Heart className="h-4 w-4" />
-                  <span>{hairstyle.voteCount} votes</span>
+                  <span>{voteCount} votes</span>
                 </div>
               </div>
 

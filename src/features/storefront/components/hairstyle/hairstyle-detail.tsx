@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Hairstyle } from "@/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,7 +25,14 @@ interface HairstyleDetailProps {
 export function HairstyleDetail({ hairstyle }: HairstyleDetailProps) {
   const [isFavoriting, setIsFavoriting] = useState(false);
   const [isFavorite, setIsFavorite] = useState(hairstyle.liked || false);
+  const [voteCount, setVoteCount] = useState(hairstyle.voteCount);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+
+  // Update vote count when hairstyle prop changes
+  useEffect(() => {
+    setVoteCount(hairstyle.voteCount);
+    setIsFavorite(hairstyle.liked || false);
+  }, [hairstyle.voteCount, hairstyle.liked]);
 
   const handleToggleFavorite = async () => {
     setIsFavoriting(true);
@@ -34,6 +41,7 @@ export function HairstyleDetail({ hairstyle }: HairstyleDetailProps) {
       const updatedHairstyle =
         await storefrontHairstyleService.toggleFavoriteHairstyle(hairstyle.id);
       setIsFavorite(updatedHairstyle.liked || false);
+      setVoteCount(updatedHairstyle.voteCount);
       toast.success(
         updatedHairstyle.liked ? "Added to favorites" : "Removed from favorites"
       );
@@ -64,7 +72,6 @@ export function HairstyleDetail({ hairstyle }: HairstyleDetailProps) {
   const genderColors = {
     MALE: "bg-blue-100 text-blue-800",
     FEMALE: "bg-pink-100 text-pink-800",
-    OTHER: "bg-purple-100 text-purple-800",
   };
 
   return (
@@ -89,7 +96,7 @@ export function HairstyleDetail({ hairstyle }: HairstyleDetailProps) {
                 </div>
                 <div className="flex items-center space-x-2 text-muted-foreground">
                   <Heart className="h-4 w-4" />
-                  <span>{hairstyle.voteCount} votes</span>
+                  <span>{voteCount} votes</span>
                 </div>
               </div>
             </div>

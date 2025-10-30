@@ -11,7 +11,6 @@ import { CellAction } from "./cell-action";
 const GENDER_OPTIONS = [
   { label: "Male", value: "MALE" },
   { label: "Female", value: "FEMALE" },
-  { label: "Other", value: "OTHER" },
 ];
 
 export const columns: ColumnDef<Hairstyle>[] = [
@@ -67,7 +66,6 @@ export const columns: ColumnDef<Hairstyle>[] = [
       const genderColors = {
         MALE: "bg-blue-100 text-blue-800",
         FEMALE: "bg-pink-100 text-pink-800",
-        OTHER: "bg-purple-100 text-purple-800",
       };
       return (
         <Badge className={genderColors[gender as keyof typeof genderColors]}>

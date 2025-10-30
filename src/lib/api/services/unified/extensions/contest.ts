@@ -65,12 +65,8 @@ export class UnifiedContestService {
         const formData = new FormData();
         formData.append("id", data.id.toString());
         formData.append("file", data.file);
-        const response = await apiClient.post<Contest>(`${this.basePath}/${data.id}/thumbnail`, formData);
+        const response = await apiClient.post<Contest>(`${this.basePath}/${data.id}/upload-thumbnail`, formData);
         return response.data!;
-    }
-
-    async deleteContestThumbnail(id: number): Promise<void> {
-        await apiClient.delete(`${this.basePath}/${id}/thumbnail`);
     }
 }
 

@@ -30,14 +30,19 @@ export function ContestDetailDialog({
   const now = new Date();
   const startDate = new Date(contest.startDate);
   const endDate = new Date(contest.endDate);
-  
+
   let statusText = "Inactive";
-  let statusVariant: "default" | "secondary" | "destructive" | "outline" = "secondary";
-  
+  let statusVariant:
+    | "default"
+    | "secondary"
+    | "destructive"
+    | "outline"
+    | "info" = "secondary";
+
   if (contest.active) {
     if (now < startDate) {
       statusText = "Upcoming";
-      statusVariant = "outline";
+      statusVariant = "info";
     } else if (now > endDate) {
       statusText = "Ended";
       statusVariant = "secondary";
@@ -51,7 +56,7 @@ export function ContestDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl">{contest.name}</DialogTitle>
           <DialogDescription>
@@ -60,19 +65,17 @@ export function ContestDetailDialog({
         </DialogHeader>
 
         <div className="space-y-6">
+          <Badge variant={statusVariant} className="text-sm">
+            {statusText}
+          </Badge>
           {/* Contest Image */}
-          <div className="relative aspect-video overflow-hidden rounded-lg">
+          <div className="relative max-w-60 aspect-square overflow-hidden rounded-lg">
             <Image
               src={contest.thumbnailUrl || "/assets/placeholder-image.jpeg"}
               alt={contest.name}
               fill
               className="object-cover"
             />
-            <div className="absolute top-4 left-4">
-              <Badge variant={statusVariant} className="text-sm">
-                {statusText}
-              </Badge>
-            </div>
           </div>
 
           {/* Contest Description */}
@@ -120,7 +123,9 @@ export function ContestDetailDialog({
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <span className="text-muted-foreground">Created:</span>
-                <span>{format(new Date(contest.createdAt), "MMM dd, yyyy")}</span>
+                <span>
+                  {format(new Date(contest.createdAt), "MMM dd, yyyy")}
+                </span>
               </div>
             </div>
           </div>
@@ -135,9 +140,7 @@ export function ContestDetailDialog({
               Close
             </Button>
             {canParticipate && (
-              <Button className="flex-1">
-                Participate Now
-              </Button>
+              <Button className="flex-1">Participate Now</Button>
             )}
             {!canParticipate && contest.active && now < startDate && (
               <Button disabled className="flex-1">

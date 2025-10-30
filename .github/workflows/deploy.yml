@@ -33,9 +33,7 @@ jobs:
             echo "Building Next.js app..."
             pnpm run build
 
-            echo "Restarting systemd service..."
-            sudo systemctl daemon-reload
-            sudo systemctl restart aka
-            sudo journalctl -u aka -f
+            echo "Restarting PM2..."
+            pm2 reload ecosystem.config.js
 
             echo "✅ Deployment complete!"

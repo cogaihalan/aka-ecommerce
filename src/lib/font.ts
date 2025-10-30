@@ -1,13 +1,13 @@
-import { Geist } from "next/font/google";
+import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 
-// Only load essential fonts for better performance
-const fontSans = Geist({
+// Inter for all text
+const fontSans = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
-  display: "swap", // Improves loading performance
+  display: "swap",
   preload: true,
 });
 
-// Export only the essential font variable
+// Export font CSS variable to apply on <body>
 export const fontVariables = cn(fontSans.variable);

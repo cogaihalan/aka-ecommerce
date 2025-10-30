@@ -7,8 +7,9 @@ export const metadata: Metadata = {
   description: "Tổng quan tài khoản và hoạt động gần đây của bạn.",
 };
 
-export default async function AccountPage() {
+export const dynamic = "force-dynamic";
 
+export default async function AccountPage() {
   const orders = await storefrontServerOrderService.getOrders({
     page: 1,
     size: 5,

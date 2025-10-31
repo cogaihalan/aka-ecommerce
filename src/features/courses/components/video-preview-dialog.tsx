@@ -61,7 +61,7 @@ export function VideoPreviewDialog({
             )}
             <div className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />
-              <span>Tạo {format(new Date(course.createdAt), "MMM dd, yyyy")}</span>
+              <span>Ngày tạo: {new Date(course.createdAt).toLocaleDateString('vi-VN')}</span>
             </div>
           </div>
           

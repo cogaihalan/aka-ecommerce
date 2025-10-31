@@ -12,38 +12,38 @@ type BreadcrumbItem = {
 const routeMapping: Record<string, BreadcrumbItem[]> = {
   // Dashboard routes
   "/admin": [{ title: "Admin", link: "/admin" }],
-  "/admin/products": [{ title: "Products", link: "/admin/products" }],
-  "/admin/categories": [{ title: "Categories", link: "/admin/categories" }],
-  "/admin/users": [{ title: "Users", link: "/admin/users" }],
-  "/admin/orders": [{ title: "Orders", link: "/admin/orders" }],
-  "/admin/courses": [{ title: "Courses", link: "/admin/courses" }],
-  "/admin/pages": [{ title: "Pages", link: "/admin/pages" }],
-  "/admin/settings": [{ title: "Settings", link: "/admin/settings" }],
+  "/admin/products": [{ title: "Sản phẩm", link: "/admin/products" }],
+  "/admin/categories": [{ title: "Danh mục", link: "/admin/categories" }],
+  "/admin/users": [{ title: "Người dùng", link: "/admin/users" }],
+  "/admin/orders": [{ title: "Đơn hàng", link: "/admin/orders" }],
+  "/admin/courses": [{ title: "Khóa học", link: "/admin/courses" }],
+  "/admin/pages": [{ title: "Trang", link: "/admin/pages" }],
+  "/admin/settings": [{ title: "Cài đặt", link: "/admin/settings" }],
   "/account/wishlist": [
-    { title: "Account", link: "/account" },
-    { title: "Wishlist", link: "/account/wishlist" },
+    { title: "Tài khoản", link: "/account" },
+    { title: "Yêu thích", link: "/account/wishlist" },
   ],
-  "/checkout": [{ title: "Checkout", link: "/checkout" }],
+  "/checkout": [{ title: "Thanh toán", link: "/checkout" }],
   "/checkout/success": [
-    { title: "Checkout", link: "/checkout" },
-    { title: "Success", link: "/checkout/success" },
+    { title: "Thanh toán", link: "/checkout" },
+    { title: "Thanh toán thành công", link: "/checkout/success" },
   ],
-  "/categories": [{ title: "Categories", link: "/categories" }],
-  "/account": [{ title: "Account", link: "/account" }],
+  "/categories": [{ title: "Danh mục", link: "/categories" }],
+  "/account": [{ title: "Tài khoản", link: "/account" }],
   "/account/profile": [
-    { title: "Account", link: "/account" },
-    { title: "Profile", link: "/account/profile" },
+    { title: "Tài khoản", link: "/account" },
+    { title: "Hồ sơ", link: "/account/profile" },
   ],
   "/account/addresses": [
-    { title: "Account", link: "/account" },
-    { title: "Addresses", link: "/account/addresses" },
+    { title: "Tài khoản", link: "/account" },
+    { title: "Địa chỉ", link: "/account/addresses" },
   ],
   "/account/orders": [
-    { title: "Account", link: "/account" },
-    { title: "Orders", link: "/account/orders" },
+    { title: "Tài khoản", link: "/account" },
+    { title: "Đơn hàng", link: "/account/orders" },
   ],
-  "/auth/sign-in": [{ title: "Sign In", link: "/auth/sign-in" }],
-  "/auth/sign-up": [{ title: "Sign Up", link: "/auth/sign-up" }],
+  "/auth/sign-in": [{ title: "Đăng nhập", link: "/auth/sign-in" }],
+  "/auth/sign-up": [{ title: "Đăng ký", link: "/auth/sign-up" }],
 };
 
 export function useBreadcrumbs() {
@@ -66,15 +66,15 @@ export function useBreadcrumbs() {
     // Handle product pages
     if (segments[0] === "products" && segments[1]) {
       return [
-        { title: "Products", link: "/products" },
-        { title: "Product Details", link: pathname },
+        { title: "Sản phẩm", link: "/products" },
+        { title: "Chi tiết sản phẩm", link: pathname },
       ];
     }
 
     // Handle category pages
     if (segments[0] === "categories" && segments[1]) {
       return [
-        { title: "Categories", link: "/categories" },
+        { title: "Danh mục", link: "/categories" },
         {
           title: segments[1].charAt(0).toUpperCase() + segments[1].slice(1),
           link: pathname,
@@ -85,9 +85,9 @@ export function useBreadcrumbs() {
     // Handle account order details
     if (segments[0] === "account" && segments[1] === "orders" && segments[2]) {
       return [
-        { title: "Account", link: "/account" },
-        { title: "Orders", link: "/account/orders" },
-        { title: "Order Details", link: pathname },
+        { title: "Tài khoản", link: "/account" },
+        { title: "Đơn hàng", link: "/account/orders" },
+        { title: "Chi tiết đơn hàng", link: pathname },
       ];
     }
 

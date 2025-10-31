@@ -49,8 +49,6 @@ export class PrismicApiService {
         queryOptions.orderings = sortOrderings;
       }
 
-      console.log(queryOptions.orderings);
-
       const response = await this.client.getAllByType("page", queryOptions);
 
       return {

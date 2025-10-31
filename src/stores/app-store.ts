@@ -100,9 +100,8 @@ export const useAppStore = create<AppStore>()(
           try {
             setLoading(true);
             setError(null);
-            const res = await storefrontContestService.getContests({ page: 1, size: 100, active: true, sort: ["createdAt,desc"] });
-            console.log(res);
-            setContests(res.items);
+            // const res = await storefrontContestService.getContests({ page: 1, size: 100, active: true, sort: ["createdAt,desc"] });
+            setContests([]);
           } catch (error) {
             setError(
               error instanceof Error ? error.message : "Failed to fetch contests"

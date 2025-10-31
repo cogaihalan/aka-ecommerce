@@ -47,7 +47,7 @@ export default function StorefrontLayout({ children }: StorefrontLayoutProps) {
             <Suspense fallback={<HeaderSkeleton />}>
                 <StorefrontHeader />
             </Suspense>
-            <main className="flex-1 w-full px-4">
+            <main className="flex-1 w-full max-w-480 mx-auto px-4">
                 <Breadcrumbs />
                 {children}
             </main>

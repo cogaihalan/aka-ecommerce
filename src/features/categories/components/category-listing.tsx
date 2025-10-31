@@ -15,10 +15,8 @@ export default async function CategoryListingPage() {
   const queryParams = {
     page: page ? parseInt(page.toString()) : 1,
     size: pageLimit ? parseInt(pageLimit.toString()) : 10,
-    sort: sort
-      ? Array.isArray(sort)
-        ? [`${sort[0]?.id},${sort[0]?.desc ? "desc" : "asc"}`]
-        : [`${(sort as any).id},${(sort as any).desc ? "desc" : "asc"}`]
+    sort: sort && sort.length > 0
+      ? sort.map(item => `${item.id},${item.desc ? "desc" : "asc"}`)
       : undefined,
     name: search?.toString(),
   };

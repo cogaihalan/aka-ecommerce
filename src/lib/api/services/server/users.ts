@@ -26,7 +26,13 @@ class ServerUnifiedUserService {
     }
 
     if (params.name !== undefined)
-      searchParams.append("name", params.name.toString());
+      searchParams.append("fullName", params.name.toString());
+
+    if (params.email !== undefined)
+      searchParams.append("email", params.email.toString());
+
+    if (params.phoneNumber !== undefined)
+      searchParams.append("phoneNumber", params.phoneNumber.toString());
 
     const queryString = searchParams.toString();
     const endpoint = queryString

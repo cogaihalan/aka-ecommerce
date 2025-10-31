@@ -35,7 +35,7 @@ const PlainText: FC<PlainTextProps> = ({ slice }) => {
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
       className={cn(
-        "relative min-w-0 bg-white text-gray-900 py-8 lg:py-16",
+        "relative min-w-0 bg-white text-gray-900",
         "transition-all duration-700 ease-out",
         hasIntersected ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
       )}
@@ -70,6 +70,7 @@ const PlainText: FC<PlainTextProps> = ({ slice }) => {
               style={{ transitionDelay: hasIntersected ? "200ms" : "0ms" }}
             >
               {actions.map((link, idx) => {
+                if(!isFilled.link(link)) return null;
                 const variant = (link as any)?.variant ?? (link as any)?.value?.variant ?? "Primary";
                 const isPrimary = String(variant).toLowerCase() === "primary";
                 return (

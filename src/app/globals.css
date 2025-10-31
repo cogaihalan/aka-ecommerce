@@ -10,6 +10,7 @@
 
 @import "../styles/slider.css";
 @import "../styles/wysiwyg.css";
+@import "../styles/prismic.css";
 
 :root {
   --radius: 0.625rem;

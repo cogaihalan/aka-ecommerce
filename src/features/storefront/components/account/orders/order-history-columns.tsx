@@ -17,6 +17,7 @@ import { formatCurrency, formatDate } from "@/lib/format";
 import Link from "next/link";
 import { storefrontOrderService } from "@/lib/api/services/storefront/orders-client";
 import { toast } from "sonner";
+import { getStatusText } from "@/lib/utils";
 
 const STATUS_OPTIONS = [
   { label: "Chờ xác nhận", value: "PENDING" },
@@ -82,7 +83,7 @@ export const columns: ColumnDef<Order>[] = [
       const status = row.original.status as string;
       return (
         <Badge variant={getStatusBadgeVariant(status)} className="capitalize">
-          {status.replace("_", " ")}
+          {getStatusText(status)}
         </Badge>
       );
     },
@@ -104,7 +105,7 @@ export const columns: ColumnDef<Order>[] = [
           variant={getStatusBadgeVariant(paymentStatus)}
           className="capitalize"
         >
-          {paymentStatus.replace("_", " ")}
+          {getStatusText(paymentStatus)}
         </Badge>
       );
     },

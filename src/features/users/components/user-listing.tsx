@@ -6,12 +6,16 @@ import { serverUnifiedUserService } from "@/lib/api/services/server";
 export default async function UserListingPage() {
   const page = searchParamsCache.get("page");
   const name = searchParamsCache.get("name");
+  const email = searchParamsCache.get("email");
+  const phoneNumber = searchParamsCache.get("phoneNumber");
   const pageLimit = searchParamsCache.get("perPage");
 
   const filters = {
-    page,
-    size: pageLimit,
-    ...(name && { name }),
+    page: page ? parseInt(page.toString()) : 1,
+    size: pageLimit ? parseInt(pageLimit.toString()) : 10,
+    name: name?.toString(),
+    email: email?.toString(),
+    phoneNumber: phoneNumber?.toString(),
   };
 
   // Fetch users from API using the same pattern

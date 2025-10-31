@@ -15,7 +15,7 @@ export const MegaMenuSkeleton: FC<MegaMenuSkeletonProps> = ({
 }) => {
   return (
     <nav className={cn("relative hidden lg:block", className)}>
-      <ul className="flex items-center space-x-8">
+      <ul className="flex items-center space-x-4">
         {Array.from({ length: itemCount }).map((_, index) => (
           <li key={index} className="relative">
             <div className="flex items-center gap-2 py-2 px-3">

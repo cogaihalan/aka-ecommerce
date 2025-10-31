@@ -35,8 +35,6 @@ export async function PrismicPagesList({
     shouldForceRefresh
   );
 
-  console.log(data);
-
   return (
     <DataTableWrapper
       data={data.results}

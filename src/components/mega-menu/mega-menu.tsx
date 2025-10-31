@@ -60,7 +60,7 @@ export const MegaMenu: FC<MegaMenuProps> = ({ menuItems, className }) => {
 
   return (
     <nav className={cn("relative", className)}>
-      <ul className="flex items-center space-x-8">
+      <ul className="flex items-center space-x-4">
         {menuItems.map((item, index) => (
           <li
             key={index}
@@ -70,7 +70,7 @@ export const MegaMenu: FC<MegaMenuProps> = ({ menuItems, className }) => {
           >
             <PrismicNextLink
               field={item.link}
-              className={cn("flex items-center gap-2 py-2 px-3 text-md font-medium text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all duration-200", activeMenu === index.toString() ? "text-primary bg-gray-50 dark:bg-gray-800" : "")}
+              className={cn("group flex items-center gap-2 py-2 px-3 text-sm xl:text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all duration-200", activeMenu === index.toString() ? "text-primary bg-gray-50 dark:bg-gray-800" : "")}
               tabIndex={0}
               aria-expanded={
                 item.has_mega_menu ? activeMenu === index.toString() : undefined
@@ -79,7 +79,7 @@ export const MegaMenu: FC<MegaMenuProps> = ({ menuItems, className }) => {
             >
               {item.label}
               {item.has_mega_menu && (
-                <ChevronDown className="w-4 h-4 transition-transform duration-200 hover:rotate-180" />
+                <ChevronDown className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" />
               )}
             </PrismicNextLink>
 

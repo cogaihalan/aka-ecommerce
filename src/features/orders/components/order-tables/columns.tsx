@@ -50,7 +50,7 @@ export const columns: ColumnDef<Order>[] = [
       <DataTableColumnHeader column={column} title="Mã đơn" />
     ),
     cell: ({ row }) => {
-      const orderCode = row.getValue("code") as string;
+      const orderCode = row.original.code as string;
       return <div className="font-medium">{orderCode}</div>;
     },
     meta: {

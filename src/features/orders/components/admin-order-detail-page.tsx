@@ -32,6 +32,7 @@ import { unifiedOrderService } from "@/lib/api/services/unified";
 import { toast } from "sonner";
 import PageContainer from "@/components/layout/page-container";
 import OrderTimeline from "./order-timeline";
+import { getStatusText, getStatusBadgeVariant } from "@/lib/utils";
 
 interface AdminOrderDetailPageProps {
   order: Order;
@@ -70,24 +71,6 @@ export default function AdminOrderDetailPage({
     }
   }, []);
 
-  const getStatusBadgeVariant = useCallback((status: string) => {
-    switch (status.toUpperCase()) {
-      case "DELIVERED":
-      case "PAID":
-        return "default";
-      case "SHIPPING":
-      case "CONFIRMED":
-        return "secondary";
-      case "CANCELLED":
-      case "FAILED":
-      case "REFUNDED":
-        return "destructive";
-      case "PENDING":
-      case "UNPAID":
-      default:
-        return "outline";
-    }
-  }, []);
 
   const handleConfirmOrder = async () => {
     setLoading(true);
@@ -188,7 +171,7 @@ export default function AdminOrderDetailPage({
               <p className="text-muted-foreground">
                 Ngày tạo:{" "}
                 {order.createdAt
-                  ? new Date(order.createdAt).toLocaleDateString()
+                  ? new Date(order.createdAt).toLocaleDateString('vi-VN')
                   : "N/A"}
               </p>
             </div>
@@ -196,7 +179,7 @@ export default function AdminOrderDetailPage({
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
             <Badge variant={"outline"} className="w-fit">
               {getStatusIcon(order.status)}
-              {order.status}
+              {getStatusText(order.status)}
             </Badge>
             <Popover>
               <PopoverTrigger asChild>
@@ -446,7 +429,7 @@ export default function AdminOrderDetailPage({
                 <div className="flex justify-between">
                   <span>Trạng thái</span>
                   <Badge variant={getStatusBadgeVariant(order.paymentStatus)}>
-                    {order.paymentStatus}
+                    {getStatusText(order.paymentStatus as string)}
                   </Badge>
                 </div>
               </CardContent>

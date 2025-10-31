@@ -21,7 +21,6 @@ import {
   Lock,
   Unlock,
 } from "lucide-react";
-import { format } from "date-fns";
 import { UserDialog } from "../user-dialog";
 import { unifiedUserService } from "@/lib/api/services/unified";
 import { toast } from "sonner";
@@ -30,7 +29,7 @@ import { useState } from "react";
 export const columns: ColumnDef<User>[] = [
   {
     id: "name",
-    accessorKey: "email",
+    accessorKey: "Name",
     header: "Người dùng",
     cell: ({ row }) => {
       const user = row.original;
@@ -39,7 +38,7 @@ export const columns: ColumnDef<User>[] = [
           <Avatar className="h-8 w-8">
             <AvatarImage src={user.avatarUrl} />
             <AvatarFallback>
-              {user.fullName.charAt(0).toUpperCase()}
+              {user.fullName?.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div>
@@ -52,7 +51,22 @@ export const columns: ColumnDef<User>[] = [
     enableColumnFilter: true,
     meta: {
       label: "Người dùng",
-      placeholder: "Tìm người dùng...",
+      placeholder: "Tìm theo tên người dùng...",
+      variant: "text",
+    },
+  },
+  {
+    id: "email",
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => {
+      const user = row.original;
+      return <div className="text-sm text-muted-foreground">{user.email}</div>;
+    },
+    enableColumnFilter: true,
+    meta: {
+      label: "Email",
+      placeholder: "Tìm theo email...",
       variant: "text",
     },
   },
@@ -104,7 +118,7 @@ export const columns: ColumnDef<User>[] = [
       return (
         <div className="flex items-center gap-1 text-sm text-muted-foreground">
           <Calendar className="h-3 w-3" />
-          {format(new Date(date), "MMM dd, yyyy")}
+          {new Date(date).toLocaleDateString('vi-VN')}
         </div>
       );
     },
@@ -131,7 +145,7 @@ export const columns: ColumnDef<User>[] = [
               trigger={
                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                   <Eye className="mr-2 h-4 w-4" />
-                  Xem chi tiết người dùng
+                  Xem chi tiết
                 </DropdownMenuItem>
               }
               onDialogClose={() => setIsDropdownOpen(false)}

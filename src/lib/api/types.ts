@@ -29,6 +29,8 @@ export interface QueryParams {
   size?: number;
   sort?: string[];
   name?: string;
+  email?: string;
+  phoneNumber?: string;
   active?: boolean;
   categoryIds?: string[];
   minPrice?: number;

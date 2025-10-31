@@ -156,7 +156,7 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
                 <div>
                   <p className="text-sm font-medium">Ngày tạo</p>
                   <p className="text-sm text-muted-foreground">
-                    {format(new Date(user.createdAt), "MMM dd, yyyy")}
+                    {new Date(user.createdAt).toLocaleDateString('vi-VN')}
                   </p>
                 </div>
               </div>
@@ -166,7 +166,7 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
                 <div>
                   <p className="text-sm font-medium">Cập nhật lần cuối</p>
                   <p className="text-sm text-muted-foreground">
-                    {format(new Date(user.updatedAt), "MMM dd, yyyy")}
+                    {new Date(user.updatedAt).toLocaleDateString('vi-VN')}
                   </p>
                 </div>
               </div>

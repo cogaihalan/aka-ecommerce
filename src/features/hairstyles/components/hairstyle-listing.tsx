@@ -17,10 +17,8 @@ export default async function HairstyleListingPage() {
     name: name?.toString(),
     gender: gender?.toString(),
     barberName: barberName?.toString(),
-    sort: sort
-      ? Array.isArray(sort)
-        ? [`${sort[0]?.id},${sort[0]?.desc ? "desc" : "asc"}`]
-        : [`${(sort as any).id},${(sort as any).desc ? "desc" : "asc"}`]
+    sort: sort && sort.length > 0
+      ? sort.map(item => `${item.id},${item.desc ? "desc" : "asc"}`)
       : undefined,
   };
 

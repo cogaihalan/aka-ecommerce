@@ -161,7 +161,7 @@ export default function CheckoutPage() {
             </Card>
 
             {/* Shipping Fee */}
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Truck className="h-5 w-5" />
@@ -213,7 +213,7 @@ export default function CheckoutPage() {
                   </p>
                 )}
               </CardContent>
-            </Card>
+            </Card> */}
 
             {/* Payment Methods */}
             <Card>

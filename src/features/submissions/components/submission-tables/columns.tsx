@@ -26,7 +26,7 @@ function StatusBadge({ status }: { status: SubmissionStatus }) {
 export const columns: ColumnDef<Submission>[] = [
   {
     id: "photos",
-    accessorKey: "photos",
+    accessorKey: "Hình ảnh",
     header: "Hình ảnh",
     cell: ({ row }) => {
       const photos = row.getValue("photos") as SubmissionPhoto[];
@@ -48,13 +48,7 @@ export const columns: ColumnDef<Submission>[] = [
           <div className="text-xs text-muted-foreground">#{sub.id}</div>
         </div>
       );
-    },
-    enableColumnFilter: true,
-    meta: {
-      label: "Tên",
-      placeholder: "Tìm bài dự thi...",
-      variant: "text",
-    },
+    }
   },
   {
     id: "barberName",
@@ -72,7 +66,7 @@ export const columns: ColumnDef<Submission>[] = [
     id: "barberAddress",
     accessorKey: "barberAddress",
     header: "Địa chỉ tiệm",
-    cell: ({ row }) => row.getValue("barberAddress") as string
+    cell: ({ row }) => row.getValue("barberAddress") as string,
   },
   {
     id: "voteCount",

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { OrderHistory } from "@/types";
 import { formatDistanceToNow } from "date-fns";
+import { getStatusText, getStatusBadgeVariant, getOrderActionText } from "@/lib/utils";
 
 interface OrderTimelineProps {
   histories: OrderHistory[];
@@ -38,25 +39,6 @@ const getActionIcon = (action: string) => {
   }
 };
 
-const getStatusBadgeVariant = (status: string) => {
-  switch (status.toUpperCase()) {
-    case "DELIVERED":
-    case "PAID":
-      return "default";
-    case "SHIPPING":
-    case "CONFIRMED":
-      return "secondary";
-    case "CANCELLED":
-    case "FAILED":
-    case "REFUNDED":
-      return "destructive";
-    case "PENDING":
-    case "UNPAID":
-      return "outline";
-    default:
-      return "outline";
-  }
-};
 
 export default function OrderTimeline({ histories }: OrderTimelineProps) {
   if (histories.length === 0) {
@@ -103,12 +85,12 @@ export default function OrderTimeline({ histories }: OrderTimelineProps) {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="font-medium text-sm">
-                    {history.action.replace("_", " ")}
+                    {getOrderActionText(history.action)}
                   </span>
                   <Badge
                     variant={getStatusBadgeVariant(history.orderStatus)}
                   >
-                    {history.orderStatus}
+                    {getStatusText(history.orderStatus)}
                   </Badge>
                 </div>
                 <div className="text-xs text-muted-foreground">

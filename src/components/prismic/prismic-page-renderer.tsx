@@ -31,7 +31,7 @@ export function PrismicPageRenderer({
   }
 
   return (
-    <div className="prismic-page-content pb-8 md:pb-12 lg:pb-16">
+    <div className="prismic-page-content">
       {data.slices.map((slice: SliceData, index: number) => {
         // Map slice_type to component name
         const componentName = slice.slice_type;
@@ -58,11 +58,7 @@ export function PrismicPageRenderer({
         } as any; // Additional type assertion for the entire props object
 
         try {
-          return (
-            <div key={slice.id || index} data-slice-type={slice.slice_type}>
-              <SliceComponent {...sliceProps} />
-            </div>
-          );
+          return <SliceComponent key={slice.id || index} {...sliceProps} />;
         } catch (error) {
           console.error(`Error rendering slice ${slice.slice_type}:`, error);
           return (

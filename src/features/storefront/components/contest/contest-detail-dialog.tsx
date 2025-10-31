@@ -125,7 +125,7 @@ export function ContestDetailDialog({
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <span className="text-muted-foreground">Ngày tạo:</span>
                 <span>
-                  {format(new Date(contest.createdAt), "MMM dd, yyyy")}
+                  {new Date(contest.createdAt).toLocaleDateString('vi-VN')}
                 </span>
               </div>
             </div>

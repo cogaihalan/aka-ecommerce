@@ -24,10 +24,10 @@ export const columns: ColumnDef<Product>[] = [
     ),
     cell: ({ row }) => {
       const id = row.getValue("id") as number;
-      return <div className="font-medium text-sm w-8">{id}</div>;
+      return <div className="font-medium text-sm w-4">{id}</div>;
     },
-    size: 32,
-    maxSize: 32,
+    size: 16,
+    maxSize: 16,
   },
   {
     id: "images",
@@ -48,6 +48,8 @@ export const columns: ColumnDef<Product>[] = [
         </div>
       );
     },
+    size: 80,
+    maxSize: 80,
   },
   {
     id: "name",
@@ -138,7 +140,7 @@ export const columns: ColumnDef<Product>[] = [
     meta: {
       label: "Trạng thái",
       placeholder: "Lọc theo trạng thái...",
-      variant: "select",
+      variant: "multiSelect",
       options: [
         { label: "Nháp", value: "DRAFT" },
         { label: "Hoạt động", value: "ACTIVE" },

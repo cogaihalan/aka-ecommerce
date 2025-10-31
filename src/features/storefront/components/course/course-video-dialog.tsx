@@ -7,7 +7,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Clock, Calendar } from "lucide-react";
-import { format } from "date-fns";
 import { formatDuration } from "@/lib/format";
 
 interface CourseVideoDialogProps {
@@ -43,7 +42,7 @@ export function CourseVideoDialog({
             <div className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />
               <span>
-                Ngày tạo: {format(new Date(course.createdAt), "MMM dd, yyyy")}
+                Ngày tạo: {new Date(course.createdAt).toLocaleDateString('vi-VN')}
               </span>
             </div>
           </div>

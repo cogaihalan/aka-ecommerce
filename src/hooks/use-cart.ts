@@ -2,12 +2,18 @@
 
 import { useCallback } from "react";
 import { useCartStore } from "@/stores/cart-store";
+import { Product } from "@/types";
+import { useUser } from "@clerk/nextjs";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 /**
  * Custom hook for cart operations with enhanced functionality
  */
 export function useCart() {
   const store = useCartStore();
+  const { user } = useUser();
+  const router = useRouter();
 
   // Update item quantity with validation
   const updateItemQuantity = useCallback(
@@ -73,6 +79,28 @@ export function useCart() {
     };
   }, [store]);
 
+  const handleAddToCart = useCallback(
+    async (product: Product, quantity: number = 1) => {
+      if (!user) {
+        toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng", {
+          action: {
+            label: "Đăng nhập",
+            onClick: () => {
+              router.push("/auth/sign-in");
+            },
+          }
+        });
+        return;
+      }
+      try {
+        await store.addItem(product, quantity);
+      } catch (error) {
+        console.error("Failed to add to cart:", error);
+      }
+    },
+    [store, user, router]
+  );
+
   return {
     // State
     items: store.items,
@@ -82,7 +110,7 @@ export function useCart() {
     lastUpdated: store.lastUpdated,
 
     // Actions
-    addToCart: store.addItem,
+    addToCart: handleAddToCart,
     removeItem: store.removeItem,
     updateItemQuantity,
     clearCart: store.clearCart,

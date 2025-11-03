@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth-store";
+import { useCartStore } from "@/stores/cart-store";
 import { Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
 
@@ -23,11 +24,15 @@ export function SignOutButton({
   const { signOut } = useClerk();
   const router = useRouter();
   const { isSigningOut, setSigningOut, closeDropdown } = useAuthStore();
+  const resetCart = useCartStore((state) => state.resetCart);
 
   const handleSignOut = async () => {
     try {
       setSigningOut(true);
       closeDropdown();
+
+      // Clear cart items before signing out
+      resetCart();
 
       await signOut();
 

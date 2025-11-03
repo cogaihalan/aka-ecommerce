@@ -167,6 +167,14 @@ export const useCartStore = create<CartStore>()(
         });
       },
 
+      resetCart: () => {
+        set({
+          items: [],
+          lastUpdated: Date.now(),
+          error: null,
+        });
+      },
+
       // Cart state management
       toggleCart: () => {
         set((state: any) => ({ isOpen: !state.isOpen }));
@@ -208,15 +216,15 @@ export const useCartStore = create<CartStore>()(
 
       getTotalItems: () => {
         const state = get();
-        return state.items.reduce((total, item) => total + item.quantity, 0);
+        return state?.items?.reduce((total, item) => total + item.quantity, 0) || 0;
       },
 
       getTotalPrice: () => {
         const state = get();
-        return state.items.reduce(
+        return state?.items?.reduce(
           (total, item) => total + item.price * item.quantity,
           0
-        );
+        ) || 0;
       },
 
       getSubtotal: () => {
@@ -247,7 +255,7 @@ export const useCartStore = create<CartStore>()(
 
       isItemInCart: (productId: number) => {
         const state = get();
-        return state.items.some((item) => item.product.id === productId);
+        return state?.items?.some((item) => item.product.id === productId) || false;
       },
 
       // Persistence methods
@@ -288,8 +296,8 @@ export const useCartStore = create<CartStore>()(
       name: "cart-storage",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
-        items: state.items,
-        lastUpdated: state.lastUpdated,
+        items: state?.items || [],
+        lastUpdated: state?.lastUpdated || Date.now(),
       }),
       onRehydrateStorage: () => (state) => {
         if (state) {
@@ -301,7 +309,7 @@ export const useCartStore = create<CartStore>()(
 );
 
 // Selector hooks for better performance
-export const useCartItems = () => useCartStore((state) => state.items);
+export const useCartItems = () => useCartStore((state) => state?.items || []);
 export const useCartTotal = () => useCartStore((state) => state.getTotal());
 export const useCartItemCount = () =>
   useCartStore((state) => state.getTotalItems());

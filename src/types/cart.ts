@@ -30,6 +30,7 @@ export interface CartStore {
   removeItem: (itemId: number) => Promise<void>;
   updateQuantity: (itemId: number, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;
+  resetCart: () => void;
   toggleCart: () => void;
   openCart: () => void;
   closeCart: () => void;

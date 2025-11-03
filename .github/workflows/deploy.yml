@@ -28,7 +28,7 @@ jobs:
             git reset --hard origin/main
 
             echo "Installing dependencies..."
-            pnpm run install
+            pnpm install
 
             echo "Building Next.js app..."
             pnpm run build

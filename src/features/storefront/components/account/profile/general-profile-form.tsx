@@ -122,7 +122,7 @@ export function GeneralProfileForm() {
                   <FormLabel>Số điện thoại</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Nhập số điện thoạu của bạn"
+                      placeholder="Nhập số điện thoại của bạn"
                       {...field}
                     />
                   </FormControl>

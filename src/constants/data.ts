@@ -74,4 +74,12 @@ export const navItems: NavItem[] = [
     isActive: false,
     items: [],
   },
+  {
+    title: "Đánh giá sản phẩm",
+    url: "/admin/product-reviews",
+    icon: "star",
+    shortcut: ["r", "r"],
+    isActive: false,
+    items: [],
+  },
 ];

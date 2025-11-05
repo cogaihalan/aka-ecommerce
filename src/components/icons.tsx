@@ -37,6 +37,7 @@ import {
   UserX,
   X,
   Award,
+  Star,
   type LucideProps,
 } from "lucide-react";
 
@@ -81,4 +82,5 @@ export const Icons = {
   scissors: Scissors,
   trophy: Trophy,
   award: Award,
+  star: Star,
 };

@@ -2,7 +2,6 @@ import { searchParamsCache } from "@/lib/searchparams";
 import { DataTableWrapper } from "@/components/ui/table/data-table-wrapper";
 import { columns } from "./product-tables/columns";
 import { serverUnifiedProductService } from "@/lib/api/services/server";
-import { ProductStatus } from "@/types";
 
 export default async function ProductListingPage() {
   // Get search parameters for filtering

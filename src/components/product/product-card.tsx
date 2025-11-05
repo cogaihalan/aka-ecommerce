@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +19,7 @@ import {
 import { Product } from "@/types";
 import { cn, isProductOutOfStock, getStockStatusText } from "@/lib/utils";
 import { QuantitySelector } from "@/components/ui/quantity-selector";
+import { ProductRating } from "@/components/ui/product-rating";
 
 interface ProductCardProps {
   product: Product;
@@ -122,12 +124,21 @@ export function ProductCard({
                     {product.categories?.[0]?.name || "Uncategorized"}
                   </Badge>
                 </div>
-                <h3 className="font-medium text-sm line-clamp-1 group-hover:text-primary transition-colors cursor-pointer">
-                  {product.name}
-                </h3>
-                <p className="text-xs text-muted-foreground line-clamp-2">
-                  {product.description}
-                </p>
+            <Link href={`/products/${product.id}`}>
+              <h3 className="font-medium text-xs md:text-sm line-clamp-1 group-hover:text-primary transition-colors cursor-pointer">
+                {product.name}
+              </h3>
+            </Link>
+            {(product.averageRating > 0 || product.reviewCount > 0) && (
+              <ProductRating
+                rating={product.averageRating || 0}
+                reviewCount={product.reviewCount || 0}
+                size="sm"
+              />
+            )}
+            <p className="hidden text-xs text-muted-foreground md:line-clamp-2">
+              {product.description}
+            </p>
               </div>
 
               <div className="flex flex-col gap-2 items-start justify-between mt-2 md:flex-row md:items-center">
@@ -308,11 +319,21 @@ export function ProductCard({
               </Badge>
             </div>
 
-            <h3 className="font-semibold line-clamp-2 group-hover:text-primary transition-colors cursor-pointer">
-              {product.name}
-            </h3>
+            <Link href={`/products/${product.id}`}>
+              <h3 className="font-medium text-sm md:text-base line-clamp-2 group-hover:text-primary transition-colors cursor-pointer">
+                {product.name}
+              </h3>
+            </Link>
 
-            <p className="text-sm text-muted-foreground line-clamp-2">
+            {(product.averageRating > 0 || product.reviewCount > 0) && (
+              <ProductRating
+                rating={product.averageRating || 0}
+                reviewCount={product.reviewCount || 0}
+                size="sm"
+              />
+            )}
+
+            <p className="hidden text-sm text-muted-foreground md:line-clamp-2">
               {product.description}
             </p>
 
@@ -454,13 +475,21 @@ export function ProductCard({
             {product.categories?.[0]?.name || "Uncategorized"}
           </Badge>
 
-          {/* <Link href={`/products/${product.id}`}> */}
-          <h3 className="font-semibold line-clamp-2 group-hover:text-primary transition-colors cursor-pointer">
-            {product.name}
-          </h3>
-          {/* </Link> */}
+          <Link href={`/products/${product.id}`}>
+            <h3 className="font-medium text-sm md:text-base line-clamp-2 group-hover:text-primary transition-colors cursor-pointer">
+              {product.name}
+            </h3>
+          </Link>
 
-          <p className="text-sm text-muted-foreground line-clamp-2">
+          {(product.averageRating > 0 || product.reviewCount > 0) && (
+            <ProductRating
+              rating={product.averageRating || 0}
+              reviewCount={product.reviewCount || 0}
+              size="sm"
+            />
+          )}
+
+          <p className="hidden text-sm text-muted-foreground md:line-clamp-2">
             {product.description}
           </p>
 

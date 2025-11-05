@@ -23,6 +23,7 @@ import {
 } from "@/stores/wishlist-store";
 import { cn, isProductOutOfStock, getStockStatusText } from "@/lib/utils";
 import { Product } from "@/types";
+import { ProductRating } from "@/components/ui/product-rating";
 
 interface ProductInfoProps {
   product: Product & {
@@ -129,6 +130,17 @@ export const ProductInfo = memo(function ProductInfo({
         </div>
 
         <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+
+        {/* Rating and Review Count */}
+        {(product.averageRating > 0 || product.reviewCount > 0) && (
+          <div className="mb-3">
+            <ProductRating
+              rating={product.averageRating || 0}
+              reviewCount={product.reviewCount || 0}
+              size="md"
+            />
+          </div>
+        )}
 
         {/* Price */}
         <div className="flex items-center gap-3 mb-4">
@@ -241,7 +253,7 @@ export const ProductInfo = memo(function ProductInfo({
             ) : isInCartState ? (
               `Trong giỏ (${getItemQuantity(product.id)})`
             ) : (
-              "Thanh toán"
+              "Thêm vào giỏ hàng"
             )}
           </Button>
           <Button

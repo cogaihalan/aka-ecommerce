@@ -5,9 +5,10 @@ import { cva, type VariantProps } from "class-variance-authority";
 const priceVariants = cva("", {
   variants: {
     size: {
+      xs: "text-xs",
       sm: "text-sm",
       base: "text-base",
-      lg: "text-lg",
+      lg: "text-sm md:text-lg",
       xl: "text-xl",
       "2xl": "text-2xl",
       "3xl": "text-3xl",
@@ -24,6 +25,7 @@ const priceVariants = cva("", {
       primary: "text-primary",
       destructive: "text-destructive",
       success: "text-green-600",
+      discount: "text-red-600",
     },
   },
   defaultVariants: {
@@ -75,14 +77,21 @@ export function Price({
   return (
     <div className="flex items-center gap-2">
       <span
-        className={cn(priceVariants({ size, weight, color }), className)}
+        className={cn(
+          priceVariants({
+            size,
+            weight,
+            color: hasDiscount ? "discount" : color,
+          }),
+          className
+        )}
         {...props}
       >
         {formattedPrice}
       </span>
 
       {hasDiscount && originalPrice && (
-        <span className="text-sm text-muted-foreground line-through">
+        <span className="text-xs md:text-sm text-muted-foreground line-through">
           {formatPrice(originalPrice, {
             currency: showCurrency ? currency : undefined,
             locale,

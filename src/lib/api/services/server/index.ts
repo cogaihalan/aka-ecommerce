@@ -6,3 +6,4 @@ export { serverUnifiedUserService } from "./users";
 export { serverUnifiedCategoryService } from "./categories";
 export { serverUnifiedHairstyleService } from "./extensions/hairstyles";
 export { serverUnifiedContestService } from "./extensions/contest";
+export { serverProductReviewService } from "./product-reviews";

@@ -30,6 +30,8 @@ export const searchParams = {
   t: parseAsString,
   barberName: parseAsString,
   uid: parseAsString,
+  productId: parseAsInteger,
+  rating: parseAsInteger,
 };
 
 export const searchParamsCache = createSearchParamsCache(searchParams);

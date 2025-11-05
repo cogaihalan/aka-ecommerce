@@ -2,10 +2,18 @@
 
 import { useState, memo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Star, Truck, Shield, RotateCcw, CheckCircle } from "lucide-react";
+import { Truck, Shield, RotateCcw, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { ProductReviews } from "@/features/storefront/components/product-reviews/product-reviews";
 
 interface ProductTabsProps {
   product: {
@@ -26,23 +34,24 @@ interface ProductTabsProps {
   className?: string;
 }
 
+const TAB_OPTIONS = [
+  { value: "description", label: "Mô tả" },
+  { value: "specifications", label: "Thông số kỹ thuật" },
+  { value: "reviews", label: "Đánh giá" },
+  { value: "shipping", label: "Vận chuyển & Trả hàng" },
+] as const;
+
 export const ProductTabs = memo(function ProductTabs({
   product,
   className,
 }: ProductTabsProps) {
   const [activeTab, setActiveTab] = useState("description");
+  const isMobile = useIsMobile();
 
-  return (
-    <div className={cn("w-full", className)}>
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-3">
-          <TabsTrigger value="description">Mô tả</TabsTrigger>
-          <TabsTrigger value="specifications">Thông số kỹ thuật</TabsTrigger>
-          {/* <TabsTrigger value="reviews">Reviews</TabsTrigger> */}
-          <TabsTrigger value="shipping">Vận chuyển & Trả hàng</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="description" className="mt-6">
+  const renderTabContent = (tabValue: string) => {
+    switch (tabValue) {
+      case "description":
+        return (
           <Card>
             <CardHeader>
               <CardTitle>Mô tả sản phẩm</CardTitle>
@@ -67,9 +76,10 @@ export const ProductTabs = memo(function ProductTabs({
               )}
             </CardContent>
           </Card>
-        </TabsContent>
+        );
 
-        <TabsContent value="specifications" className="mt-6">
+      case "specifications":
+        return (
           <Card>
             <CardHeader>
               <CardTitle>Thông số kỹ thuật</CardTitle>
@@ -98,9 +108,13 @@ export const ProductTabs = memo(function ProductTabs({
               )}
             </CardContent>
           </Card>
-        </TabsContent>
+        );
 
-        <TabsContent value="shipping" className="mt-6">
+      case "reviews":
+        return <ProductReviews productId={product.id} />;
+
+      case "shipping":
+        return (
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
@@ -160,8 +174,65 @@ export const ProductTabs = memo(function ProductTabs({
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
-      </Tabs>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className={cn("w-full", className)}>
+      {isMobile ? (
+        <div className="space-y-4">
+          <Select value={activeTab} onValueChange={setActiveTab}>
+            <SelectTrigger className="w-full">
+              <SelectValue>
+                {TAB_OPTIONS.find((opt) => opt.value === activeTab)?.label ||
+                  "Chọn mục"}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {TAB_OPTIONS.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <div className="mt-6">{renderTabContent(activeTab)}</div>
+        </div>
+      ) : (
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-4 h-auto p-1 bg-muted/50">
+            {TAB_OPTIONS.map((option) => (
+              <TabsTrigger
+                key={option.value}
+                value={option.value}
+                className="py-3 text-sm font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm"
+              >
+                {option.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
+          <TabsContent value="description" className="mt-6">
+            {renderTabContent("description")}
+          </TabsContent>
+
+          <TabsContent value="specifications" className="mt-6">
+            {renderTabContent("specifications")}
+          </TabsContent>
+
+          <TabsContent value="reviews" className="mt-6">
+            {renderTabContent("reviews")}
+          </TabsContent>
+
+          <TabsContent value="shipping" className="mt-6">
+            {renderTabContent("shipping")}
+          </TabsContent>
+        </Tabs>
+      )}
     </div>
   );
 });

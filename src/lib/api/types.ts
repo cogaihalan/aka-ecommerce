@@ -1,6 +1,7 @@
 // Import comprehensive product types
 import type {
   Product,
+  ProductReview,
   Category,
   Order,
   User,
@@ -14,6 +15,7 @@ import type {
   OrderHistory,
   Submission,
   SubmissionStatus,
+  ProductReviewStatus,
 } from "@/types";
 
 // Base API types
@@ -39,6 +41,8 @@ export interface QueryParams {
   status?: SubmissionStatus;
   barberName?: string;
   gender?: string;
+  rating?: number;
+  productId?: number;
 }
 
 export interface OrderQueryParams {
@@ -56,6 +60,11 @@ export interface OrderQueryParams {
 // API Response types
 export interface ProductListResponse {
   items: Product[];
+  pagination: PaginationResponse;
+}
+
+export interface ProductReviewListResponse {
+  items: ProductReview[];
   pagination: PaginationResponse;
 }
 
@@ -143,6 +152,17 @@ export interface ProductImageDeleteRequest {
   id: number;
   files: File[];
   removedImageIds: number[];
+}
+
+export interface CreateProductReviewRequest {
+  rating: number;
+  comment: string;
+  productId?: number;
+}
+
+export interface UpdateProductReviewStatusRequest {
+  id: number;
+  status: ProductReviewStatus;
 }
 
 // Category API types

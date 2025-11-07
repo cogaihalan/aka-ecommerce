@@ -43,7 +43,7 @@ export default async function HairstylesPage({
     await storefrontServerHairstyleService.getHairstyles(hairstyleParams);
 
   return (
-    <div>
+    <div className="pb-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Kiểu tóc</h1>
         <p className="text-muted-foreground">Khám phá bộ sưu tập kiểu tóc và tác phẩm barber</p>

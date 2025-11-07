@@ -183,7 +183,7 @@ export default function AddressBookPage() {
               <CardHeader className="flex flex-row items-center justify-between">
                 <div className="flex items-center gap-2">
                   {address.isDefault && (
-                    <Badge variant="default">Default</Badge>
+                    <Badge variant="default">Mặc định</Badge>
                   )}
                 </div>
               </CardHeader>

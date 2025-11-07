@@ -18,6 +18,7 @@ import { useUserAddresses } from "@/hooks/use-user-addresses";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { useRouter } from "next/navigation";
 import type { Order, OrderStatus } from "@/types";
+import { ModeToggle } from "@/components/layout/ThemeToggle/theme-toggle";
 
 export default function AccountDashboard({ orders }: { orders: Order[] }) {
   const { user } = useUser();
@@ -47,9 +48,12 @@ export default function AccountDashboard({ orders }: { orders: Order[] }) {
     <div className="space-y-8">
       {/* Greeting Section */}
       <div className="space-y-4">
-        <h1 className="text-3xl font-bold">
-          Chào mừng, {user?.firstName || "Người dùng"}
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-bold">
+            Chào mừng, {user?.firstName || "Người dùng"}
+          </h1>
+          <ModeToggle />
+        </div>
         <p className="text-muted-foreground text-lg">
           Từ bảng điều khiển tài khoản của bạn, bạn có thể dễ dàng kiểm tra & xem đơn hàng{" "}
           <Link href="/account/orders" className="text-red-600 hover:underline">

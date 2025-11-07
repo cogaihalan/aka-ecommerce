@@ -37,7 +37,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
   const data = await serverUnifiedCourseService.getCourses(courseParams);
 
   return (
-    <div>
+    <div className="pb-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Khoá học</h1>
         <p className="text-muted-foreground">Khám phá bộ sưu tập khoá học video và hướng dẫn</p>

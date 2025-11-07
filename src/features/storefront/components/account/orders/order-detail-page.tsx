@@ -11,6 +11,7 @@ import Link from "next/link";
 import { storefrontOrderService } from "@/lib/api/services/storefront/orders-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { getStatusBadgeVariant, getStatusText } from "@/lib/utils";
 
 interface OrderDetailPageProps {
   order: Order;
@@ -51,20 +52,6 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
         return <Package className="h-5 w-5 text-red-500" />;
       default:
         return <Package className="h-5 w-5 text-gray-500" />;
-    }
-  };
-
-  const getStatusVariant = (status: OrderStatus) => {
-    switch (status) {
-      case "DELIVERED":
-        return "default";
-      case "SHIPPING":
-        return "secondary";
-      case "CANCELLED":
-      case "REFUNDED":
-        return "destructive";
-      default:
-        return "outline";
     }
   };
 
@@ -158,8 +145,8 @@ export default function OrderDetailPage({ order }: OrderDetailPageProps) {
             <CardContent>
               <div className="flex items-center gap-3">
                 {getStatusIcon(order.status)}
-                <Badge variant={getStatusVariant(order.status)}>
-                  {order.status}
+                <Badge variant={getStatusBadgeVariant(order.status)}>
+                  {getStatusText(order.status)}
                 </Badge>
               </div>
               <div className="mt-2">

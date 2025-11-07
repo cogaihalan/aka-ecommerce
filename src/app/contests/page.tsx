@@ -37,7 +37,7 @@ export default async function ContestPage({ searchParams }: ContestPageProps) {
   const data = await storefrontServerContestService.getContests(contestParams);
 
   return (
-    <div>
+    <div className="pb-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Cuộc thi</h1>
         <p className="text-muted-foreground">Khám phá bộ sưu tập cuộc thi và chương trình thi đua</p>

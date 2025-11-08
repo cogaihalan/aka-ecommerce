@@ -1,9 +1,15 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { usePromotionModal } from "@/hooks/use-promotion-modal";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,10 +29,10 @@ interface PromotionModalProps {
   // Manual control props (when autoShow is false or not provided)
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  
+
   // Auto-show props
   autoShow?: boolean;
-  
+
   // Common props
   title?: string;
   description?: string;
@@ -78,17 +84,20 @@ export function PromotionModal({
 
   // Determine if modal should be open
   const isOpen = autoShow ? shouldShow : (openProp ?? false);
-  
+
   // Determine change handler
-  const handleOpenChange = useCallback((newOpen: boolean) => {
-    if (autoShow) {
-      if (!newOpen) {
-        handleDismiss();
+  const handleOpenChange = useCallback(
+    (newOpen: boolean) => {
+      if (autoShow) {
+        if (!newOpen) {
+          handleDismiss();
+        }
+      } else {
+        onOpenChangeProp?.(newOpen);
       }
-    } else {
-      onOpenChangeProp?.(newOpen);
-    }
-  }, [autoShow, onOpenChangeProp, handleDismiss]);
+    },
+    [autoShow, onOpenChangeProp, handleDismiss]
+  );
 
   const handleFormSubmit = async (data: ContactFormValues) => {
     try {
@@ -119,18 +128,26 @@ export function PromotionModal({
     }
   }, [isSubmitting, reset, handleOpenChange, handleDismiss]);
 
+  // Enhance overlay animation for smooth effect
+  useEffect(() => {
+    if (isOpen) {
+      const overlay = document.querySelector('[data-slot="dialog-overlay"]');
+      if (overlay) {
+        overlay.classList.add("duration-500", "ease-out");
+      }
+    }
+  }, [isOpen]);
+
   if (autoShow && !isMounted) {
     return null;
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-[90%] md:max-w-4xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-[90%] md:max-w-4xl max-h-[80vh] overflow-y-auto !duration-500 ease-out">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            {description}
-          </DialogDescription>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
@@ -236,4 +253,3 @@ export function PromotionModal({
     </Dialog>
   );
 }
-

@@ -44,14 +44,28 @@ export function usePromotionModal({
     }
 
     // Parse dates
-    const start = typeof startDate === "string" ? new Date(startDate) : startDate;
+    const start =
+      typeof startDate === "string" ? new Date(startDate) : startDate;
     const end = typeof endDate === "string" ? new Date(endDate) : endDate;
     const now = new Date();
 
     // Check if current date is within promotion period
     const isActive = now >= start && now <= end;
 
-    setShouldShow(isActive);
+    if (!isActive) {
+      setShouldShow(false);
+      return;
+    }
+
+    // Delay showing the modal for 7 seconds to allow data loading
+    const delayTimer = setTimeout(() => {
+      setShouldShow(true);
+    }, 7000);
+
+    // Cleanup timer on unmount or dependency change
+    return () => {
+      clearTimeout(delayTimer);
+    };
   }, [isMounted, startDate, endDate]);
 
   const handleDismiss = () => {
@@ -66,4 +80,3 @@ export function usePromotionModal({
     isMounted,
   };
 }
-

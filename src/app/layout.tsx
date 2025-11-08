@@ -10,6 +10,7 @@ import "./globals.css";
 import "./theme.css";
 import ConditionalLayout from "@/components/layout/conditional-layout";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { GoogleAnalyticsComponent } from "@/components/google-analytics";
 
 const META_THEME_COLORS = {
   light: "#ffffff",
@@ -65,6 +66,34 @@ export default async function RootLayout({
             `,
           }}
         />
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-JCGBQBRY9S"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              
+              gtag('js', new Date());
+              gtag('config', 'G-JCGBQBRY9S');
+    
+              // Check if user has previously given consent
+              var consentCookie = document.cookie.split('; ').find(function(row) {
+                return row.startsWith('gdpr-consent=');
+              });
+              var hasConsent = consentCookie && consentCookie.split('=')[1] === 'true';
+              
+              // Initialize consent mode - denied by default unless previously accepted
+              gtag('consent', 'default', {
+                'analytics_storage': hasConsent ? 'granted' : 'denied',
+                'ad_storage': hasConsent ? 'granted' : 'denied',
+                'wait_for_update': 500
+              });
+            `,
+          }}
+        />
       </head>
       <body
         className={cn(
@@ -89,6 +118,7 @@ export default async function RootLayout({
             </Providers>
           </NuqsAdapter>
         </ThemeProvider>
+        <GoogleAnalyticsComponent />
       </body>
     </html>
   );

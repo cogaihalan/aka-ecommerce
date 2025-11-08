@@ -10,6 +10,7 @@ import { WishlistAuthProvider } from "@/components/providers/wishlist-auth-provi
 import { AppProvider } from "@/components/providers/app-provider";
 import { ApiAuthProvider } from "@/components/providers/api-auth-provider";
 import { AuthSyncProvider } from "@/components/providers/auth-sync-provider";
+import { CookieConsentBanner } from "@/components/cookie-consent";
 
 export default function Providers({
   activeThemeValue,
@@ -34,7 +35,10 @@ export default function Providers({
               <AuthSyncProvider>
                 <WishlistAuthProvider>
                   <CartProvider>
-                    <QuickViewProvider>{children}</QuickViewProvider>
+                    <QuickViewProvider>
+                      {children}
+                      <CookieConsentBanner />
+                    </QuickViewProvider>
                   </CartProvider>
                 </WishlistAuthProvider>
               </AuthSyncProvider>

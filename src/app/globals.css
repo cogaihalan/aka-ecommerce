@@ -311,3 +311,13 @@
     rgba(0, 0, 0, 0.24) 100%
   );
 }
+
+/* Cookie Consent Banner Styles */
+#rcc-confirm-button,
+#rcc-decline-button {
+  display: none !important;
+}
+
+#rcc-confirm-button-wrapper {
+  display: none !important;
+}

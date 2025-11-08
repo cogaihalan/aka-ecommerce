@@ -82,4 +82,12 @@ export const navItems: NavItem[] = [
     isActive: false,
     items: [],
   },
+  {
+    title: "Phân tích",
+    url: "/admin/analytics",
+    icon: "dashboard",
+    shortcut: ["a", "a"],
+    isActive: false,
+    items: [],
+  },
 ];

@@ -19,6 +19,7 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
   "/admin/courses": [{ title: "Khóa học", link: "/admin/courses" }],
   "/admin/pages": [{ title: "Trang", link: "/admin/pages" }],
   "/admin/settings": [{ title: "Cài đặt", link: "/admin/settings" }],
+  "/admin/analytics": [{ title: "Phân tích", link: "/admin/analytics" }],
   "/account/wishlist": [
     { title: "Tài khoản", link: "/account" },
     { title: "Yêu thích", link: "/account/wishlist" },

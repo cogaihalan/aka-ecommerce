@@ -44,8 +44,9 @@ export default function ProductDetailPage({
       try {
         setData((prev) => ({ ...prev, loading: true, error: null }));
 
+        const productIdNum = parseInt(productId, 10);
         const [productData] = await Promise.all([
-          storefrontCatalogService.getProduct(parseInt(productId)),
+          storefrontCatalogService.getProduct(productIdNum),
         ]);
 
         if (!productData) {
@@ -74,7 +75,7 @@ export default function ProductDetailPage({
     };
 
     fetchProductData();
-  }, [productId]);
+  }, [productId, router]);
 
   // Use deferred value to smooth out rendering
   const deferredProduct = useDeferredValue(data.product);

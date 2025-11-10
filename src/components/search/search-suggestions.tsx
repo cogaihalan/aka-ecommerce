@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/utils";
 import { useProductSearchSuggestions } from "@/hooks/use-product-search-suggestions";
+import { generateProductUrl } from "@/lib/utils/slug";
 
 interface SearchSuggestionsProps {
   onClose?: () => void;
@@ -186,7 +187,7 @@ export function SearchSuggestions({
                         {/* Product Info */}
                         <div className="flex-1 min-w-0">
                           <Link
-                            href={`/products/${product.id}`}
+                            href={generateProductUrl(product.name, product.id)}
                             onClick={() => {
                               setIsOpen(false);
                               clearSuggestions();

@@ -15,6 +15,7 @@ import {
   ProductImageGallery,
   ProductInfo,
 } from "@/components/product/product-detail";
+import { generateProductUrl } from "@/lib/utils/slug";
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -86,7 +87,7 @@ export const QuickViewModal = memo(function QuickViewModal({
             <div className="mt-6 space-y-4">
               {/* View Full Details Link */}
               <div className="pt-4">
-                <Link href={`/products/${product.id}`}>
+                <Link href={generateProductUrl(product.name, product.id)}>
                   <Button variant="outline" className="w-full">
                     Xem chi tiết đầy đủ
                   </Button>

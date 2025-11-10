@@ -20,6 +20,7 @@ import { Product } from "@/types";
 import { cn, isProductOutOfStock, getStockStatusText } from "@/lib/utils";
 import { QuantitySelector } from "@/components/ui/quantity-selector";
 import { ProductRating } from "@/components/ui/product-rating";
+import { generateProductUrl } from "@/lib/utils/slug";
 
 interface ProductCardProps {
   product: Product;
@@ -124,7 +125,7 @@ export function ProductCard({
                     {product.categories?.[0]?.name || "Uncategorized"}
                   </Badge>
                 </div>
-            <Link href={`/products/${product.id}`}>
+            <Link href={generateProductUrl(product.name, product.id)}>
               <h3 className="font-medium text-xs md:text-sm line-clamp-1 group-hover:text-primary transition-colors cursor-pointer">
                 {product.name}
               </h3>
@@ -319,7 +320,7 @@ export function ProductCard({
               </Badge>
             </div>
 
-            <Link href={`/products/${product.id}`}>
+            <Link href={generateProductUrl(product.name, product.id)}>
               <h3 className="font-medium text-sm md:text-base line-clamp-2 group-hover:text-primary transition-colors cursor-pointer">
                 {product.name}
               </h3>
@@ -475,7 +476,7 @@ export function ProductCard({
             {product.categories?.[0]?.name || "Uncategorized"}
           </Badge>
 
-          <Link href={`/products/${product.id}`}>
+          <Link href={generateProductUrl(product.name, product.id)}>
             <h3 className="font-medium text-sm md:text-base line-clamp-2 group-hover:text-primary transition-colors cursor-pointer">
               {product.name}
             </h3>

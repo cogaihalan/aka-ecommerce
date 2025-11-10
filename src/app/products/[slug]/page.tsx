@@ -1,16 +1,26 @@
 import { Metadata } from "next";
 import ProductDetailPage from "@/features/storefront/components/product-detail-page";
+import { extractProductIdFromSlug } from "@/lib/utils/slug";
+import { notFound } from "next/navigation";
 
 interface ProductPageProps {
   params: Promise<{
-    productId: string;
+    slug: string;
   }>;
 }
 
 export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
-  const { productId } = await params;
+  const { slug } = await params;
+  const productId = extractProductIdFromSlug(slug);
+
+  if (!productId) {
+    return {
+      title: "Product Not Found - AKA Store",
+      description: "The requested product could not be found.",
+    };
+  }
 
   // Import the service here to avoid issues with client components
   const { serverUnifiedProductService } = await import(
@@ -18,9 +28,7 @@ export async function generateMetadata({
   );
 
   try {
-    const product = await serverUnifiedProductService.getProduct(
-      parseInt(productId)
-    );
+    const product = await serverUnifiedProductService.getProduct(productId);
 
     if (!product) {
       return {
@@ -51,6 +59,12 @@ export async function generateMetadata({
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const { productId } = await params;
-  return <ProductDetailPage productId={productId} />;
+  const { slug } = await params;
+  const productId = extractProductIdFromSlug(slug);
+  
+  if (!productId) {
+    notFound();
+  }
+  
+  return <ProductDetailPage productId={productId.toString()} />;
 }

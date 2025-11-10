@@ -18,6 +18,7 @@ import {
 } from "@/stores/wishlist-store";
 import { useCart } from "@/hooks/use-cart";
 import { formatPrice } from "@/lib/utils";
+import { generateProductUrl } from "@/lib/utils/slug";
 
 export default function WishlistPage() {
   const router = useRouter();
@@ -107,7 +108,7 @@ export default function WishlistPage() {
                 key={item.id}
                 className="group h-full flex flex-col"
               >
-                <Link href={`/products/${item.product.id}`}>
+                <Link href={generateProductUrl(item.product.name, item.product.id)}>
                   <div className="aspect-square bg-muted rounded-t-lg relative overflow-hidden">
                     <Image
                       src={
@@ -146,7 +147,7 @@ export default function WishlistPage() {
                     </Badge>
 
                     {/* Product name */}
-                    <Link href={`/products/${item.product.id}`}>
+                    <Link href={generateProductUrl(item.product.name, item.product.id)}>
                       <h3 className="font-semibold line-clamp-2 group-hover:text-primary transition-colors cursor-pointer">
                         {item.product.name}
                       </h3>

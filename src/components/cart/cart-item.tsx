@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -42,7 +42,17 @@ export function CartItem({
     item.product.images?.find((image) => image.primary)?.url ||
     "/assets/placeholder-image.jpeg";
 
-  const isOutOfStock = false;
+  const displayPrice = useMemo(() => {
+    if (item.product.discountPrice && item.product.discountPrice > 0) {
+      return (
+        <div className="flex flex-col items-end">
+          <Price price={item.product.discountPrice * item.quantity} size="sm" className="text-primary font-semibold" />
+          <Price price={item.price * item.quantity} size="xs" className="text-muted-foreground line-through" />
+        </div>
+      );
+    } 
+    return <Price price={item.price * item.quantity} size="sm" />;
+  }, [item]);
 
   if (variant === "minimal") {
     return (
@@ -66,9 +76,7 @@ export function CartItem({
         </div>
         <div className="flex items-center gap-2">
           <div className="text-right">
-            <div className="text-sm font-semibold">
-              {formatPrice(item.price * item.quantity)}
-            </div>
+            {displayPrice}
           </div>
           {showRemoveButton && (
             <Button
@@ -125,9 +133,7 @@ export function CartItem({
           )}
 
           <div className="text-right min-w-[80px]">
-            <div className="font-medium">
-              {formatPrice(item.price * item.quantity)}
-            </div>
+            {displayPrice}
           </div>
 
           {showRemoveButton && (
@@ -186,9 +192,7 @@ export function CartItem({
             )}
 
             <div className="text-right">
-              <div className="text-lg font-bold">
-                {formatPrice(item.price * item.quantity)}
-              </div>
+              {displayPrice}
             </div>
 
             {showRemoveButton && (

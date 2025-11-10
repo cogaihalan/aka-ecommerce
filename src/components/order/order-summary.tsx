@@ -108,9 +108,14 @@ export function OrderSummary({
                     Qty: {item.quantity}
                   </p>
                 </div>
-                <p className="text-sm font-medium">
-                  {formatPrice(item.price * item.quantity)}
-                </p>
+                {item.product.discountPrice && item.product.discountPrice > 0 ? (
+                  <div className="flex flex-col items-end">
+                    <Price price={item.product.discountPrice * item.quantity} size="sm" className="text-primary font-semibold" />
+                    <Price price={item.price * item.quantity} size="xs" className="text-muted-foreground line-through" />
+                  </div>
+                ) : (
+                  <Price price={item.price * item.quantity} size="sm" />
+                )}
               </div>
             ))}
           </div>

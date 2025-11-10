@@ -33,6 +33,7 @@ import { toast } from "sonner";
 import PageContainer from "@/components/layout/page-container";
 import OrderTimeline from "./order-timeline";
 import { getStatusText, getStatusBadgeVariant } from "@/lib/utils";
+import { sendOrderStatusUpdateEmail, sendShippedOrderEmail } from "@/lib/email/helpers";
 
 interface AdminOrderDetailPageProps {
   order: Order;
@@ -75,10 +76,15 @@ export default function AdminOrderDetailPage({
   const handleConfirmOrder = async () => {
     setLoading(true);
     try {
+      const previousStatus = order.status;
       await unifiedOrderService.confirmOrder(
         order.id,
         "Xác nhận bởi quản trị viên"
       );
+      
+      // Send email notification
+      await sendOrderStatusUpdateEmail(order.id, previousStatus, "CONFIRMED", "Xác nhận bởi quản trị viên");
+      
       toast.success("Xác nhận đơn hàng thành công");
       router.refresh();
     } catch (error) {
@@ -91,10 +97,17 @@ export default function AdminOrderDetailPage({
   const handleShippingUpdate = async () => {
     setLoading(true);
     try {
+      const previousStatus = order.status;
       await unifiedOrderService.updateOrderShippingStatus(
         order.id,
         "Đã giao cho đơn vị vận chuyển bởi quản trị viên"
       );
+      
+      // Send email notification
+      await sendOrderStatusUpdateEmail(order.id, previousStatus, "SHIPPING", "Đã giao cho đơn vị vận chuyển bởi quản trị viên");
+      // Also send shipped order email with tracking info
+      await sendShippedOrderEmail(order.id, undefined, undefined, undefined, "Đã giao cho đơn vị vận chuyển bởi quản trị viên");
+      
       toast.success("Cập nhật trạng thái: Đang giao hàng");
       router.refresh();
     } catch (error) {
@@ -107,10 +120,15 @@ export default function AdminOrderDetailPage({
   const handleDeliveredUpdate = async () => {
     setLoading(true);
     try {
+      const previousStatus = order.status;
       await unifiedOrderService.markDeliveredOrder(
         order.id,
         "Đã giao bởi quản trị viên"
       );
+      
+      // Send email notification
+      await sendOrderStatusUpdateEmail(order.id, previousStatus, "DELIVERED", "Đã giao bởi quản trị viên");
+      
       toast.success("Đánh dấu đã giao thành công");
       router.refresh();
     } catch (error) {
@@ -123,7 +141,12 @@ export default function AdminOrderDetailPage({
   const handleCancelOrder = async () => {
     setLoading(true);
     try {
+      const previousStatus = order.status;
       await unifiedOrderService.cancelOrder(order.id, "Hủy bởi quản trị viên");
+      
+      // Send email notification
+      await sendOrderStatusUpdateEmail(order.id, previousStatus, "CANCELLED", "Hủy bởi quản trị viên");
+      
       toast.success("Hủy đơn hàng thành công");
       router.refresh();
     } catch (error) {
@@ -136,10 +159,15 @@ export default function AdminOrderDetailPage({
   const handleRefundOrder = async () => {
     setLoading(true);
     try {
+      const previousStatus = order.status;
       await unifiedOrderService.refundOrder(
         order.id,
         "Hoàn tiền bởi quản trị viên"
       );
+      
+      // Send email notification
+      await sendOrderStatusUpdateEmail(order.id, previousStatus, "REFUNDED", "Hoàn tiền bởi quản trị viên");
+      
       toast.success("Hoàn tiền đơn hàng thành công");
       router.refresh();
     } catch (error) {
@@ -162,7 +190,6 @@ export default function AdminOrderDetailPage({
               className="flex items-center gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
-              Quay lại
             </Button>
             <div>
               <h1 className="text-xl font-semibold lg:text-2xl">

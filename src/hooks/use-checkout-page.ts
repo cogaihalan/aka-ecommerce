@@ -226,6 +226,15 @@ export function useCheckoutPage() {
       // Create order using the new API
       const createdOrder = await storefrontOrderService.createOrder(orderData);
 
+      // Send order confirmation email
+      try {
+        const { sendOrderConfirmationEmail } = await import("@/lib/email/helpers");
+        await sendOrderConfirmationEmail(createdOrder);
+      } catch (emailError) {
+        console.error("Failed to send order confirmation email:", emailError);
+        // Don't block the order flow if email fails
+      }
+
       if (data.paymentMethod !== "COD") {
         const paymentResponse = await unifiedPaymentService.createPayment({
           orderId: createdOrder.id,

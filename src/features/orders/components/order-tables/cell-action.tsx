@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { Order, OrderStatus } from "@/types";
 import { unifiedOrderService } from "@/lib/api/services/unified";
+import { sendOrderStatusUpdateEmail, sendShippedOrderEmail } from "@/lib/email/helpers";
 
 interface CellActionProps {
   data: Order;
@@ -75,7 +76,12 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const handleConfirmOrder = async () => {
     try {
       setLoading(true);
+      const previousStatus = data.status;
       await unifiedOrderService.confirmOrder(data.id, "Xác nhận bởi quản trị viên");
+      
+      // Send email notification
+      await sendOrderStatusUpdateEmail(data.id, previousStatus, "CONFIRMED", "Xác nhận bởi quản trị viên");
+      
       toast.success("Xác nhận đơn hàng thành công");
       router.refresh();
     } catch (error) {
@@ -89,7 +95,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const handleShippingUpdate = async () => {
     try {
       setLoading(true);
+      const previousStatus = data.status;
       await unifiedOrderService.updateOrderShippingStatus(data.id, "Đã giao cho đơn vị vận chuyển bởi quản trị viên");
+      
+      // Send email notification
+      await sendOrderStatusUpdateEmail(data.id, previousStatus, "SHIPPING", "Đã giao cho đơn vị vận chuyển bởi quản trị viên");
+      // Also send shipped order email
+      await sendShippedOrderEmail(data.id, undefined, undefined, undefined, "Đã giao cho đơn vị vận chuyển bởi quản trị viên");
+      
       toast.success("Cập nhật trạng thái: Đang giao hàng");
       router.refresh();
     } catch (error) {
@@ -102,7 +115,12 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const handleDeliveredUpdate = async () => {
     try {
       setLoading(true);
+      const previousStatus = data.status;
       await unifiedOrderService.markDeliveredOrder(data.id, "Đã giao bởi quản trị viên");
+      
+      // Send email notification
+      await sendOrderStatusUpdateEmail(data.id, previousStatus, "DELIVERED", "Đã giao bởi quản trị viên");
+      
       toast.success("Đánh dấu đã giao thành công");
       router.refresh();
     } catch (error) {
@@ -115,7 +133,12 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const handleCancelOrder = async () => {
     try {
       setLoading(true);
+      const previousStatus = data.status;
       await unifiedOrderService.cancelOrder(data.id, "Hủy bởi quản trị viên");
+      
+      // Send email notification
+      await sendOrderStatusUpdateEmail(data.id, previousStatus, "CANCELLED", "Hủy bởi quản trị viên");
+      
       toast.success("Hủy đơn hàng thành công");
       router.refresh();
     } catch (error) {
@@ -128,7 +151,12 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const handleRefundOrder = async () => {
     try {
       setLoading(true);
+      const previousStatus = data.status;
       await unifiedOrderService.refundOrder(data.id, "Hoàn tiền bởi quản trị viên");
+      
+      // Send email notification
+      await sendOrderStatusUpdateEmail(data.id, previousStatus, "REFUNDED", "Hoàn tiền bởi quản trị viên");
+      
       toast.success("Hoàn tiền đơn hàng thành công");
       router.refresh();
     } catch (error) {

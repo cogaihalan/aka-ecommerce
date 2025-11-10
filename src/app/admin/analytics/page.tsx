@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { AnalyticsStatCard } from "@/features/analytics/components/analytics-stat-card";
-import { VisitorsChart } from "@/features/analytics/components/visitors-chart";
-import { TopPagesTable } from "@/features/analytics/components/top-pages-table";
-import { TopReferrersTable } from "@/features/analytics/components/top-referrers-table";
 import {
   Users,
   Eye,
@@ -29,7 +27,65 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { OverviewData, PageData, VisitorData, ReferrerData } from "@/types/analytics"
+import { OverviewData, PageData, VisitorData, ReferrerData } from "@/types/analytics";
+
+// Lazy load heavy chart component (recharts is ~50-70kb)
+const VisitorsChart = dynamic(
+  () => import("@/features/analytics/components/visitors-chart").then((mod) => ({ default: mod.VisitorsChart })),
+  {
+    ssr: false,
+    loading: () => (
+      <Card>
+        <CardHeader>
+          <CardTitle>Visitors Over Time</CardTitle>
+          <CardDescription>
+            Track active users, new users, and sessions
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-[300px] w-full" />
+        </CardContent>
+      </Card>
+    ),
+  }
+);
+
+// Lazy load table components
+const TopPagesTable = dynamic(
+  () => import("@/features/analytics/components/top-pages-table").then((mod) => ({ default: mod.TopPagesTable })),
+  {
+    ssr: false,
+    loading: () => (
+      <Card>
+        <CardHeader>
+          <CardTitle>Top Pages</CardTitle>
+          <CardDescription>Most viewed pages on your site</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-[300px] w-full" />
+        </CardContent>
+      </Card>
+    ),
+  }
+);
+
+const TopReferrersTable = dynamic(
+  () => import("@/features/analytics/components/top-referrers-table").then((mod) => ({ default: mod.TopReferrersTable })),
+  {
+    ssr: false,
+    loading: () => (
+      <Card>
+        <CardHeader>
+          <CardTitle>Top Referrers</CardTitle>
+          <CardDescription>Where your visitors are coming from</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-[300px] w-full" />
+        </CardContent>
+      </Card>
+    ),
+  }
+);
 
 export default function AnalyticsPage() {
   const [loading, setLoading] = useState(true);

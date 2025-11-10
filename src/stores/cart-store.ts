@@ -222,7 +222,7 @@ export const useCartStore = create<CartStore>()(
       getTotalPrice: () => {
         const state = get();
         return state?.items?.reduce(
-          (total, item) => total + item.price * item.quantity,
+          (total, item) => total + (item.product.discountPrice || item.price) * item.quantity,
           0
         ) || 0;
       },

@@ -49,6 +49,8 @@ const baseConfig: NextConfig = {
       "@radix-ui/react-tabs",
       "@radix-ui/react-toast",
       "@radix-ui/react-tooltip",
+      "recharts",
+      "date-fns",
     ],
   },
 

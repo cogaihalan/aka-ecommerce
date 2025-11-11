@@ -20,17 +20,17 @@ const footerLinks = {
     { key: "Bài dự thi", href: "/submissions" },
   ],
   support: [
-    { key: "Về chúng tôi", href: "/pages/about" },
-    { key: "Trung tâm trợ giúp", href: "/pages/help" },
-    { key: "Liên hệ", href: "/pages/contact" },
-    { key: "Thông tin vận chuyển", href: "/pages/help/shipping" },
-    { key: "Đổi trả", href: "/pages/help/returns" },
+    { key: "Về chúng tôi", href: "/" },
+    { key: "Trung tâm trợ giúp", href: "/" },
+    { key: "Liên hệ", href: "/" },
+    { key: "Thông tin vận chuyển", href: "/" },
+    { key: "Đổi trả", href: "/" },
   ],
   legal: [
-    { key: "Chính sách bảo mật", href: "/pages/privacy" },
-    { key: "Điều khoản dịch vụ", href: "/pages/terms-conditions" },
-    { key: "Chính sách cookie", href: "/pages/cookies" },
-    { key: "Khả năng tiếp cận", href: "/pages/accessibility" },
+    { key: "Chính sách bảo mật", href: "/" },
+    { key: "Điều khoản dịch vụ", href: "/" },
+    { key: "Chính sách cookie", href: "/" },
+    { key: "Khả năng tiếp cận", href: "/" },
   ],
 };
 

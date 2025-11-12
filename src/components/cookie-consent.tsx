@@ -61,7 +61,7 @@ export function CookieConsentBanner() {
           Chúng tôi sử dụng cookie để cải thiện trải nghiệm của bạn. Bằng cách
           tiếp tục sử dụng trang web, bạn đồng ý với{" "}
           <Link
-            href="/legal/cookies"
+            href="/"
             className="text-primary hover:underline font-medium underline-offset-4 transition-colors"
           >
             Chính sách cookie

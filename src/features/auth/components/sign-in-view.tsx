@@ -21,14 +21,14 @@ export default function SignInViewPage() {
         <p className="text-muted-foreground text-center text-sm">
           Khi tiếp tục, bạn đồng ý với{" "}
           <Link
-            href="/terms"
+            href="/"
             className="hover:text-primary underline underline-offset-4"
           >
             Điều khoản dịch vụ
           </Link>{" "}
           and{" "}
           <Link
-            href="/privacy"
+            href="/"
             className="hover:text-primary underline underline-offset-4"
           >
             Chính sách bảo mật

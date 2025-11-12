@@ -161,10 +161,10 @@ export default function CartPage() {
         </p>
         <div className="flex flex-col sm:flex-row gap-2">
           <Button variant="outline" size="sm" asChild>
-            <Link href="/contact">Liên hệ hỗ trợ</Link>
+            <Link href="/">Liên hệ hỗ trợ</Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
-            <Link href="/help">Trung tâm hỗ trợ</Link>
+            <Link href="/">Trung tâm hỗ trợ</Link>
           </Button>
         </div>
       </div>

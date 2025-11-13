@@ -20,7 +20,8 @@ const footerLinks = {
     { key: "Bài dự thi", href: "/submissions" },
   ],
   support: [
-    { key: "Về chúng tôi", href: "/" },
+    { key: "Về chúng tôi", href: "/pages/about-us" },
+    { key: "Chương trình Affiliate", href: "/affiliate" },
     { key: "Trung tâm trợ giúp", href: "/" },
     { key: "Liên hệ", href: "/" },
     { key: "Thông tin vận chuyển", href: "/" },

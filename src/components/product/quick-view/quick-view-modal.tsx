@@ -88,7 +88,7 @@ export const QuickViewModal = memo(function QuickViewModal({
               {/* View Full Details Link */}
               <div className="pt-4">
                 <Link href={generateProductUrl(product.name, product.id)}>
-                  <Button variant="outline" className="w-full">
+                  <Button onClick={onClose} variant="outline" className="w-full">
                     Xem chi tiết đầy đủ
                   </Button>
                 </Link>

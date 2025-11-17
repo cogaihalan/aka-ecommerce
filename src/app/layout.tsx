@@ -11,6 +11,7 @@ import "./theme.css";
 import ConditionalLayout from "@/components/layout/conditional-layout";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { GoogleAnalyticsComponent } from "@/components/google-analytics";
+import { WebVitalsReporter } from "@/components/web-vitals";
 
 const META_THEME_COLORS = {
   light: "#ffffff",
@@ -55,6 +56,11 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Resource hints for external domains - improve connection time */}
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
+        
+        {/* Theme color script - inline and non-blocking */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -66,31 +72,12 @@ export default async function RootLayout({
             `,
           }}
         />
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-JCGBQBRY9S"
-        ></script>
+        {/* Google Analytics initialization - minimal inline script for dataLayer */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
-              
-              gtag('js', new Date());
-              gtag('config', 'G-JCGBQBRY9S');
-    
-              // Check if user has previously given consent
-              var consentCookie = document.cookie.split('; ').find(function(row) {
-                return row.startsWith('gdpr-consent=');
-              });
-              var hasConsent = consentCookie && consentCookie.split('=')[1] === 'true';
-              
-              // Initialize consent mode - denied by default unless previously accepted
-              gtag('consent', 'default', {
-                'analytics_storage': hasConsent ? 'granted' : 'denied',
-                'ad_storage': hasConsent ? 'granted' : 'denied',
-                'wait_for_update': 500
-              });
             `,
           }}
         />
@@ -118,7 +105,10 @@ export default async function RootLayout({
             </Providers>
           </NuqsAdapter>
         </ThemeProvider>
+        {/* Lazy load analytics components to reduce initial bundle */}
         <GoogleAnalyticsComponent />
+        {/* WebVitals loads after page is interactive to avoid blocking */}
+        <WebVitalsReporter />
       </body>
     </html>
   );

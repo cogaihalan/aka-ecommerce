@@ -1,12 +1,22 @@
 "use client";
 
 import { ReactNode, Suspense } from "react";
+import dynamic from "next/dynamic";
 import TopBar from "@/components/layout/top-bar";
 import StorefrontHeader from "@/components/layout/storefront-header";
 import StorefrontFooter from "@/components/layout/storefront-footer";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { ScrollToTopButton } from "@/components/scroll-to-top-button";
-import { PromotionModal } from "@/components/modal/promotion-modal";
+
+// Lazy load non-critical components to reduce initial bundle size
+const ScrollToTopButton = dynamic(
+  () => import("@/components/scroll-to-top-button").then((mod) => ({ default: mod.ScrollToTopButton })),
+  { ssr: false }
+);
+
+const PromotionModal = dynamic(
+  () => import("@/components/modal/promotion-modal").then((mod) => ({ default: mod.PromotionModal })),
+  { ssr: false }
+);
 
 interface StorefrontLayoutProps {
     children: ReactNode;
@@ -48,23 +58,28 @@ export default function StorefrontLayout({ children }: StorefrontLayoutProps) {
             <Suspense fallback={<HeaderSkeleton />}>
                 <StorefrontHeader />
             </Suspense>
-            <main className="flex-1 w-full max-w-480 mx-auto px-4">
+            <main className="flex-1 w-full max-w-480 mx-auto px-4 overflow-x-hidden">
                 <Breadcrumbs />
                 {children}
             </main>
             <StorefrontFooter />
-            <ScrollToTopButton />
+            <Suspense fallback={null}>
+                <ScrollToTopButton />
+            </Suspense>
             
-            <PromotionModal
-                autoShow={true}
-                promotionImage="/assets/placeholder-banner.png"
-                promotionImageAlt="Khuyến mãi đặc biệt"
-                startDate={new Date()}
-                endDate={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)}
-                onSubmit={async (data) => {
-                    console.log("Promotion form submitted:", data);
-                }}
-            />
+            {/* Lazy load promotion modal - only loads when needed */}
+            <Suspense fallback={null}>
+                <PromotionModal
+                    autoShow={true}
+                    promotionImage="/assets/placeholder-banner.png"
+                    promotionImageAlt="Khuyến mãi đặc biệt"
+                    startDate={new Date()}
+                    endDate={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)}
+                    onSubmit={async (data) => {
+                        console.log("Promotion form submitted:", data);
+                    }}
+                />
+            </Suspense>
         </div>
     );
 }

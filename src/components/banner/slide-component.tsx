@@ -24,7 +24,7 @@ export const SlideComponent = memo(
     return (
       <div className="h-full">
         <div className="relative h-full flex items-center">
-          {/* Background Image */}
+          {/* Background Image - optimized for LCP */}
           <div
             className={cn(
               "absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-1000",
@@ -35,6 +35,7 @@ export const SlideComponent = memo(
               backgroundImage: `url(${hasImageError ? fallbackImage : imageUrl})`,
               transform:
                 slideIndex === currentSlide ? "scale(1.05)" : "scale(1.0)",
+              willChange: slideIndex === currentSlide ? "transform" : "auto",
             }}
           />
 

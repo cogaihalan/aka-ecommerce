@@ -6,7 +6,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Truck, Shield, RotateCcw } from "lucide-react";
-import FullWidthBanner from "@/components/full-width-banner";
+import dynamic from "next/dynamic";
+
+// Lazy load banner to improve initial page load
+const FullWidthBanner = dynamic(
+  () => import("@/components/full-width-banner"),
+  { 
+    ssr: true,
+    loading: () => (
+      <div className="w-full h-[500px] sm:h-[600px] md:h-[700px] bg-gradient-to-r from-gray-200 to-gray-300 animate-pulse" />
+    )
+  }
+);
 
 export default async function StorefrontHomePage() {
   return (

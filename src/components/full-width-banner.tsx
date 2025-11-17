@@ -19,7 +19,7 @@ const slides: BannerSlide[] = [
     description:
       "Discover cutting-edge technology that revolutionizes how you work, collaborate, and grow your business in the digital age.",
     image:
-      "https://fastly.picsum.photos/id/318/1920/900.jpg?hmac=3OFMpUC8lfG33ZZhcc5GOhoI0gDGcfsksCOWHa9wKnI",
+      "/assets/placeholder-banner.png",
     ctaText: "Get Started Free",
     ctaLink: "#",
     ctaSecondaryText: "Watch Demo",
@@ -32,7 +32,7 @@ const slides: BannerSlide[] = [
     description:
       "Join thousands of teams who have streamlined their workflow and achieved unprecedented levels of efficiency with our platform.",
     image:
-      "https://fastly.picsum.photos/id/170/1920/900.jpg?hmac=DObCw8j1euR35R9gh9-4X2kRIJUSocGgSaxezhzKJFQ",
+      "/assets/placeholder-banner.png",
     ctaText: "View Demo",
     ctaLink: "#",
     ctaSecondaryText: "Learn More",
@@ -65,12 +65,33 @@ const FullWidthBanner = memo(function FullWidthBanner({
 
   const bannerSlides = useMemo(() => customSlides || slides, [customSlides]);
 
-  // Preload images to prevent layout shift
+  // Preload images to prevent layout shift - prioritize first image for LCP
   useEffect(() => {
     const preloadImages = async () => {
-      const imagePromises = bannerSlides.map((slide) => {
+      // Prioritize first image (LCP candidate) - load immediately
+      const firstSlide = bannerSlides[0];
+      if (firstSlide) {
+        const firstImg = new Image();
+        firstImg.fetchPriority = "high";
+        firstImg.loading = "eager";
+        firstImg.onload = () => {
+          setLoadedImages((prev) => new Set([...Array.from(prev), firstSlide.image]));
+          setIsLoaded(true); // Show content as soon as first image loads
+        };
+        firstImg.onerror = () => {
+          setImageErrors((prev) => new Set([...Array.from(prev), firstSlide.image]));
+          setIsLoaded(true);
+        };
+        firstImg.src = firstSlide.image;
+      }
+
+      // Load remaining images with lower priority
+      const remainingSlides = bannerSlides.slice(1);
+      const imagePromises = remainingSlides.map((slide) => {
         return new Promise<string>((resolve, reject) => {
           const img = new Image();
+          img.fetchPriority = "low";
+          img.loading = "lazy";
           img.onload = () => {
             setLoadedImages(
               (prev) => new Set([...Array.from(prev), slide.image])
@@ -87,14 +108,10 @@ const FullWidthBanner = memo(function FullWidthBanner({
         });
       });
 
-      try {
-        await Promise.allSettled(imagePromises);
-        // Small delay to ensure smooth transition
-        setTimeout(() => setIsLoaded(true), 100);
-      } catch (error) {
-        console.warn("Some images failed to load:", error);
-        setIsLoaded(true);
-      }
+      // Don't wait for remaining images - they'll load in background
+      Promise.allSettled(imagePromises).catch(() => {
+        // Silently handle errors for non-critical images
+      });
     };
 
     preloadImages();

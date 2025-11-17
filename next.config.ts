@@ -11,20 +11,15 @@ const baseConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "http",
-        hostname: "103.82.25.111",
-        port: "8080",
+        protocol: "https",
+        hostname: "akapro.vn",
+        port: "",
       },
       {
         protocol: "https",
         hostname: "api.slingacademy.com",
         port: "",
-      },
-      {
-        protocol: "https",
-        hostname: "picsum.photos",
-        port: "",
-      },
+      }
     ],
     // Optimize images for better performance
     formats: ["image/avif", "image/webp"],

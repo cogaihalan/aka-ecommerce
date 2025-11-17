@@ -11,7 +11,7 @@ import "./theme.css";
 import ConditionalLayout from "@/components/layout/conditional-layout";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { GoogleAnalyticsComponent } from "@/components/google-analytics";
-import { WebVitalsReporter } from "@/components/web-vitals";
+// import { WebVitalsReporter } from "@/components/web-vitals";
 
 const META_THEME_COLORS = {
   light: "#ffffff",
@@ -108,7 +108,7 @@ export default async function RootLayout({
         {/* Lazy load analytics components to reduce initial bundle */}
         <GoogleAnalyticsComponent />
         {/* WebVitals loads after page is interactive to avoid blocking */}
-        <WebVitalsReporter />
+        {/* <WebVitalsReporter /> */}
       </body>
     </html>
   );

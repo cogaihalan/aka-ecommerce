@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/table/data-table-column-header";
 import { PrismicContent } from "@/types/prismic";
 import { Column, ColumnDef } from "@tanstack/react-table";
-import { Edit, Eye, Calendar, Text } from "lucide-react";
+import { Edit, Eye } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 const convertUIDToPageTitle = (uid: string) => {
@@ -81,7 +81,7 @@ export const columns: ColumnDef<PrismicContent>[] = [
             variant="outline"
             onClick={() =>
               window.open(
-                `${process.env.NEXT_PUBLIC_PRISMIC_URL}/builder/pagesdo/${page.id}`,
+                `${process.env.NEXT_PUBLIC_PRISMIC_URL}/builder/pages/${page.id}`,
                 "_blank"
               )
             }

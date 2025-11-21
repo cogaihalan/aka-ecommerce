@@ -17,6 +17,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "before_after_slider": {
+              "type": "SharedSlice"
+            },
             "stats_counter": {
               "type": "SharedSlice"
             },

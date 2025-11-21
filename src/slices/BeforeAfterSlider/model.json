@@ -1,0 +1,93 @@
+{
+  "id": "before_after_slider",
+  "name": "Before & After Image Slider",
+  "description": "An interactive before and after image comparison slider with drag functionality",
+  "type": "SharedSlice",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default Before & After Slider",
+      "imageUrl": "",
+      "primary": {
+        "title": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Title",
+            "placeholder": "Enter the section title",
+            "single": "heading1,heading2,heading3,heading4,heading5,heading6"
+          }
+        },
+        "subtitle": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Subtitle",
+            "placeholder": "Enter a subtitle or description",
+            "single": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+          }
+        },
+        "before_image": {
+          "type": "Image",
+          "config": {
+            "label": "Before Image",
+            "constraint": {
+              "width": 1200,
+              "height": 800
+            },
+            "thumbnails": []
+          }
+        },
+        "after_image": {
+          "type": "Image",
+          "config": {
+            "label": "After Image",
+            "constraint": {
+              "width": 1200,
+              "height": 800
+            },
+            "thumbnails": []
+          }
+        },
+        "orientation": {
+          "type": "Select",
+          "config": {
+            "label": "Orientation",
+            "placeholder": "Choose the slider orientation",
+            "options": [
+              "horizontal",
+              "vertical"
+            ],
+            "default_value": "horizontal"
+          }
+        },
+        "show_labels": {
+          "type": "Boolean",
+          "config": {
+            "label": "Show Labels",
+            "default_value": true,
+            "placeholder_false": "Hide labels",
+            "placeholder_true": "Show labels"
+          }
+        },
+        "before_label": {
+          "type": "Text",
+          "config": {
+            "label": "Before Label",
+            "placeholder": "Before"
+          }
+        },
+        "after_label": {
+          "type": "Text",
+          "config": {
+            "label": "After Label",
+            "placeholder": "After"
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}
+

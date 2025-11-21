@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 
 export const components = {
+  before_after_slider: dynamic(() => import("./BeforeAfterSlider")),
   faq_accordion: dynamic(() => import("./FAQAccordion")),
   feature_grid_animated: dynamic(() => import("./FeatureGridAnimated")),
   full_width_banner: dynamic(() => import("./FullWidthBanner")),

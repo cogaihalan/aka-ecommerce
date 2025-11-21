@@ -16,6 +16,11 @@ const baseConfig: NextConfig = {
         port: "",
       },
       {
+        protocol: "http",
+        hostname: "103.82.25.111",
+        port: "8080",
+      },
+      {
         protocol: "https",
         hostname: "api.slingacademy.com",
         port: "",

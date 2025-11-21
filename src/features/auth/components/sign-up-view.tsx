@@ -26,7 +26,7 @@ export default function SignUpViewPage() {
           >
             Điều khoản dịch vụ
           </Link>{" "}
-          and{" "}
+          và{" "}
           <Link
             href="/"
             className="hover:text-primary underline underline-offset-4"

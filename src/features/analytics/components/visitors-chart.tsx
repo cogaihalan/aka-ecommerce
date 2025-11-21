@@ -46,40 +46,40 @@ export function VisitorsChart({ data }: VisitorsChartProps) {
 
   const chartConfig = {
     activeUsers: {
-      label: "Active Users",
-      color: "hsl(var(--chart-1))",
+      label: "Người dùng hoạt động",
+      color: "#3b82f6", // Blue - primary metric
     },
     newUsers: {
-      label: "New Users",
-      color: "hsl(var(--chart-2))",
+      label: "Người dùng mới",
+      color: "#10b981", // Green - growth metric
     },
     sessions: {
-      label: "Sessions",
-      color: "hsl(var(--chart-3))",
+      label: "Lượt truy cập",
+      color: "#8b5cf6", // Purple - engagement metric
     },
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Visitors Over Time</CardTitle>
+        <CardTitle> Lượt truy cập theo thời gian</CardTitle>
         <CardDescription>
-          Track active users, new users, and sessions
+          Theo dõi người dùng hoạt động, người dùng mới và lượt truy cập
         </CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
+          <ResponsiveContainer width="100%" height={200}>
+            <LineChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
               <XAxis
                 dataKey="dateFormatted"
-                tick={{ fontSize: 12 }}
+                tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
                 tickLine={false}
                 axisLine={false}
               />
               <YAxis
-                tick={{ fontSize: 12 }}
+                tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
                 tickLine={false}
                 axisLine={false}
               />
@@ -88,25 +88,28 @@ export function VisitorsChart({ data }: VisitorsChartProps) {
                 type="monotone"
                 dataKey="activeUsers"
                 stroke={chartConfig.activeUsers.color}
-                strokeWidth={2}
+                strokeWidth={2.5}
                 dot={false}
-                name="Active Users"
+                activeDot={{ r: 4 }}
+                name="Người dùng hoạt động"
               />
               <Line
                 type="monotone"
                 dataKey="newUsers"
                 stroke={chartConfig.newUsers.color}
-                strokeWidth={2}
+                strokeWidth={2.5}
                 dot={false}
-                name="New Users"
+                activeDot={{ r: 4 }}
+                name="Người dùng mới"
               />
               <Line
                 type="monotone"
                 dataKey="sessions"
                 stroke={chartConfig.sessions.color}
-                strokeWidth={2}
+                strokeWidth={2.5}
                 dot={false}
-                name="Sessions"
+                activeDot={{ r: 4 }}
+                name="Lượt truy cập"
               />
             </LineChart>
           </ResponsiveContainer>

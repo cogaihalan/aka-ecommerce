@@ -98,7 +98,7 @@ const ProductCarousel: FC<ProductCarouselProps> = ({ slice }) => {
             <p className="text-destructive mb-4">Error loading products: {error}</p>
             <button
               onClick={fetchProducts}
-              className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
+              className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
             >
               Try Again
             </button>

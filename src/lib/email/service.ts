@@ -5,6 +5,7 @@ import { OrderStatusUpdateEmail } from "./templates/order-status-update";
 import { PaymentNotificationEmail } from "./templates/payment-notification";
 import { ShippedOrderEmail } from "./templates/shipped-order";
 import { PromotionEmail } from "./templates/promotion";
+import { NewsletterEmail } from "./templates/newsletter";
 import type { Order, OrderStatus, PaymentStatus } from "@/types";
 
 export interface SendOrderConfirmationParams {
@@ -53,6 +54,18 @@ export interface SendPromotionParams {
   termsAndConditions?: string;
   ctaLink?: string;
   ctaText?: string;
+}
+
+export interface SendNewsletterParams {
+  customerName?: string;
+  customerEmail: string;
+  newsletterTitle: string;
+  newsletterContent: string;
+  featuredImage?: string;
+  featuredImageAlt?: string;
+  ctaLink?: string;
+  ctaText?: string;
+  unsubscribeLink?: string;
 }
 
 export class EmailService {
@@ -232,6 +245,78 @@ export class EmailService {
         error: error instanceof Error ? error.message : "Unknown error" 
       };
     }
+  }
+
+  /**
+   * Send newsletter email
+   */
+  async sendNewsletter(params: SendNewsletterParams): Promise<{ success: boolean; messageId?: string; error?: string }> {
+    try {
+      const html = await render(
+        NewsletterEmail({
+          customerName: params.customerName,
+          newsletterTitle: params.newsletterTitle,
+          newsletterContent: params.newsletterContent,
+          featuredImage: params.featuredImage,
+          featuredImageAlt: params.featuredImageAlt,
+          ctaLink: params.ctaLink,
+          ctaText: params.ctaText,
+          unsubscribeLink: params.unsubscribeLink,
+        })
+      );
+
+      const result = await resend.emails.send({
+        from: `${FROM_NAME} <${FROM_EMAIL}>`,
+        to: params.customerEmail,
+        subject: params.newsletterTitle,
+        html,
+      });
+
+      return { success: true, messageId: result.data?.id };
+    } catch (error) {
+      console.error("Error sending newsletter email:", error);
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      };
+    }
+  }
+
+  /**
+   * Send newsletter email to multiple recipients
+   * @param baseParams Base newsletter parameters (shared across all recipients)
+   * @param recipients Array of recipient email addresses and optional names
+   * @returns Array of results for each recipient
+   */
+  async sendBulkNewsletter(
+    baseParams: Omit<SendNewsletterParams, "customerEmail" | "customerName">,
+    recipients: Array<{ email: string; name?: string }>
+  ): Promise<Array<{ email: string; success: boolean; messageId?: string; error?: string }>> {
+    const results = await Promise.allSettled(
+      recipients.map(async (recipient) => {
+        const result = await this.sendNewsletter({
+          ...baseParams,
+          customerEmail: recipient.email,
+          customerName: recipient.name,
+        });
+        return {
+          email: recipient.email,
+          ...result,
+        };
+      })
+    );
+
+    return results.map((result, index) => {
+      if (result.status === "fulfilled") {
+        return result.value;
+      } else {
+        return {
+          email: recipients[index].email,
+          success: false,
+          error: result.reason?.message || "Unknown error",
+        };
+      }
+    });
   }
 }
 

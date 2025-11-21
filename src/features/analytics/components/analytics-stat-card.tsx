@@ -53,7 +53,7 @@ export function AnalyticsStatCard({
               {trend.value}%
             </span>
             <span className="text-xs text-muted-foreground">
-              vs previous period
+              so với kỳ trước
             </span>
           </div>
         )}

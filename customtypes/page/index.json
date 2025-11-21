@@ -17,6 +17,9 @@
         "fieldset": "Slice Zone",
         "config": {
           "choices": {
+            "stats_counter": {
+              "type": "SharedSlice"
+            },
             "plain_text": {
               "type": "SharedSlice"
             },
@@ -39,9 +42,6 @@
               "type": "SharedSlice"
             },
             "product_carousel": {
-              "type": "SharedSlice"
-            },
-            "hero_animated": {
               "type": "SharedSlice"
             },
             "multi_column_cards": {

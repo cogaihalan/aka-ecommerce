@@ -47,58 +47,60 @@ export function TopPagesTable({ pages }: TopPagesTableProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Top Pages</CardTitle>
-        <CardDescription>Most viewed pages on your site</CardDescription>
+        <CardTitle>Top Trang</CardTitle>
+        <CardDescription>Trang web được xem nhiều nhất</CardDescription>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Page</TableHead>
-              <TableHead className="text-right">Page Views</TableHead>
-              <TableHead className="text-right">Users</TableHead>
-              <TableHead className="text-right">Avg. Duration</TableHead>
-              <TableHead className="text-right">Bounce Rate</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {pages.length === 0 ? (
+        <div className="max-h-90 overflow-y-auto">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell
-                  colSpan={5}
-                  className="text-center text-muted-foreground"
-                >
-                  No data available
-                </TableCell>
+                  <TableHead>Trang</TableHead>
+                <TableHead className="text-right">Lượt xem trang</TableHead>
+                <TableHead className="text-right">Người dùng</TableHead>
+                <TableHead className="text-right">Thời gian trung bình</TableHead>
+                <TableHead className="text-right">Tỷ lệ rời khỏi trang</TableHead>
               </TableRow>
-            ) : (
-              pages.map((page, index) => (
-                <TableRow key={index}>
-                  <TableCell>
-                    <div>
-                      <div className="font-medium">{page.title}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {page.path}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right font-medium">
-                    {page.pageViews.toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {page.activeUsers.toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {formatDuration(page.avgSessionDuration)}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {formatBounceRate(page.bounceRate)}
+            </TableHeader>
+            <TableBody>
+              {pages.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={5}
+                    className="text-center text-muted-foreground"
+                  >
+                    Không có dữ liệu
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : (
+                pages.map((page, index) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      <div>
+                        <div className="font-medium">{page.title}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {page.path}
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right font-medium">
+                      {page.pageViews.toLocaleString()}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {page.activeUsers.toLocaleString()}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatDuration(page.avgSessionDuration)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatBounceRate(page.bounceRate)}
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </CardContent>
     </Card>
   );

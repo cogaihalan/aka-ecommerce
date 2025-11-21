@@ -168,3 +168,26 @@
     @apply px-4;
   }
 }
+
+/* Image Gallery Carousel Specific Styles */
+.image-gallery-carousel .glider-container {
+  @apply overflow-hidden rounded-lg;
+}
+
+.image-gallery-carousel .glider-slide,
+.image-gallery-slide {
+  @apply px-0 transition-all duration-700 ease-in-out;
+  will-change: transform;
+}
+
+.image-gallery-carousel .glider-slide img,
+.image-gallery-slide img {
+  @apply transition-all duration-700 ease-in-out;
+  will-change: transform, opacity;
+}
+
+/* Smooth fade and slide effect for image gallery */
+.image-gallery-carousel .glider-track {
+  @apply transition-transform duration-700 ease-in-out;
+  will-change: transform;
+}

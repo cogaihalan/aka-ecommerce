@@ -73,7 +73,7 @@ const PricingTable: FC<PricingTableProps> = ({ slice }) => {
               >
                 {/* Badge */}
                 {isFilled.keyText(plan.badge) && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-medium">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white px-4 py-1 rounded-full text-sm font-medium">
                     {plan.badge}
                   </div>
                 )}
@@ -119,10 +119,8 @@ const PricingTable: FC<PricingTableProps> = ({ slice }) => {
                     <div className="mt-auto">
                       <Button 
                         asChild 
-                        className={cn(
-                          "w-full",
-                          index === highlightPlan - 1 ? "bg-primary hover:bg-primary/90" : "bg-secondary hover:bg-secondary/80"
-                        )}
+                        className="w-full"
+                        variant="default"
                       >
                         <PrismicNextLink field={plan.link}>
                           {plan.buttonText || "Choose Plan"}

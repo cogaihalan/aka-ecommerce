@@ -37,17 +37,17 @@ export function TopReferrersTable({ referrers }: TopReferrersTableProps) {
     <Card>
       <CardHeader>
         <CardTitle>Top Referrers</CardTitle>
-        <CardDescription>Where your visitors are coming from</CardDescription>
+        <CardDescription>Từ đâu đến trang web của bạn</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Source</TableHead>
-              <TableHead>Medium</TableHead>
-              <TableHead className="text-right">Sessions</TableHead>
-              <TableHead className="text-right">Users</TableHead>
-              <TableHead className="text-right">Bounce Rate</TableHead>
+              <TableHead>Nguồn</TableHead>
+              <TableHead>Phương thức</TableHead>
+              <TableHead className="text-right">Lượt truy cập</TableHead>
+              <TableHead className="text-right">Người dùng</TableHead>
+              <TableHead className="text-right">Tỷ lệ rời khỏi trang</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -57,7 +57,7 @@ export function TopReferrersTable({ referrers }: TopReferrersTableProps) {
                   colSpan={5}
                   className="text-center text-muted-foreground"
                 >
-                  No data available
+                  Không có dữ liệu
                 </TableCell>
               </TableRow>
             ) : (

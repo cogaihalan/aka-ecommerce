@@ -37,9 +37,9 @@ const VisitorsChart = dynamic(
     loading: () => (
       <Card>
         <CardHeader>
-          <CardTitle>Visitors Over Time</CardTitle>
+          <CardTitle>Lượt truy cập trong thời gian</CardTitle>
           <CardDescription>
-            Track active users, new users, and sessions
+            Theo dõi người dùng hoạt động, người dùng mới và lượt truy cập
           </CardDescription>
         </CardHeader>
         <CardContent>

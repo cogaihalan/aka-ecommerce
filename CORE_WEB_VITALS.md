@@ -167,3 +167,4 @@ In production, metrics are automatically collected from real users. Monitor:
 - [Google Analytics 4 Documentation](https://developers.google.com/analytics/devguides/collection/ga4)
 - [Next.js Performance](https://nextjs.org/docs/app/building-your-application/optimizing)
 
+

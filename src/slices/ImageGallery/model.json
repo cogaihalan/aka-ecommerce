@@ -2,8 +2,6 @@
   "id": "image_gallery",
   "name": "Image Gallery",
   "description": "A flexible image gallery with carousel and grid layouts, modal viewing, and navigation options",
-  "imageUrl": "",
-  "display": "list",
   "type": "SharedSlice",
   "variations": [
     {
@@ -31,10 +29,16 @@
           }
         },
         "layout": {
-          "type": "Text",
+          "type": "Select",
           "config": {
             "label": "Layout",
-            "placeholder": "carousel"
+            "placeholder": "Choose the gallery layout",
+            "options": [
+              "carousel",
+              "mansory",
+              "featured"
+            ],
+            "default_value": "carousel"
           }
         },
         "showThumbnails": {

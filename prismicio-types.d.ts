@@ -214,6 +214,7 @@ export type MegaMenuDocument<Lang extends string = string> =
   >;
 
 type PageDocumentDataSlicesSlice =
+  | StatsCounterSlice
   | PlainTextSlice
   | TextAndImageSlice
   | FullWidthBannerSlice
@@ -222,7 +223,6 @@ type PageDocumentDataSlicesSlice =
   | PricingTableSlice
   | ImageGallerySlice
   | ProductCarouselSlice
-  | HeroAnimatedSlice
   | MultiColumnCardsSlice
   | FaqAccordionSlice;
 
@@ -769,97 +769,6 @@ export type FullWidthBannerSlice = prismic.SharedSlice<
 >;
 
 /**
- * Primary content in *Hero Animated → Default → Primary*
- */
-export interface HeroAnimatedSliceDefaultPrimary {
-  /**
-   * Eyebrow Headline field in *Hero Animated → Default → Primary*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: Enter a small headline above the main title
-   * - **API ID Path**: hero_animated.default.primary.eyebrowHeadline
-   * - **Documentation**: https://prismic.io/docs/fields/text
-   */
-  eyebrowHeadline: prismic.KeyTextField;
-
-  /**
-   * Title field in *Hero Animated → Default → Primary*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: Enter the main hero title
-   * - **API ID Path**: hero_animated.default.primary.title
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  title: prismic.RichTextField;
-
-  /**
-   * Description field in *Hero Animated → Default → Primary*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: Enter a description or subtitle
-   * - **API ID Path**: hero_animated.default.primary.description
-   * - **Documentation**: https://prismic.io/docs/fields/rich-text
-   */
-  description: prismic.RichTextField;
-
-  /**
-   * Hero Image field in *Hero Animated → Default → Primary*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: hero_animated.default.primary.image
-   * - **Documentation**: https://prismic.io/docs/fields/image
-   */
-  image: prismic.ImageField<never>;
-
-  /**
-   * Call to Action Link field in *Hero Animated → Default → Primary*
-   *
-   * - **Field Type**: Link
-   * - **Placeholder**: Link for the main CTA button
-   * - **API ID Path**: hero_animated.default.primary.callToActionLink
-   * - **Documentation**: https://prismic.io/docs/fields/link
-   */
-  callToActionLink: prismic.LinkField<
-    string,
-    string,
-    unknown,
-    prismic.FieldState,
-    never
-  >;
-}
-
-/**
- * Default variation for Hero Animated Slice
- *
- * - **API ID**: `default`
- * - **Description**: Default Animated Hero
- * - **Documentation**: https://prismic.io/docs/slices
- */
-export type HeroAnimatedSliceDefault = prismic.SharedSliceVariation<
-  "default",
-  Simplify<HeroAnimatedSliceDefaultPrimary>,
-  never
->;
-
-/**
- * Slice variation for *Hero Animated*
- */
-type HeroAnimatedSliceVariation = HeroAnimatedSliceDefault;
-
-/**
- * Hero Animated Shared Slice
- *
- * - **API ID**: `hero_animated`
- * - **Description**: An animated hero section with scroll-triggered animations and customizable content
- * - **Documentation**: https://prismic.io/docs/slices
- */
-export type HeroAnimatedSlice = prismic.SharedSlice<
-  "hero_animated",
-  HeroAnimatedSliceVariation
->;
-
-/**
  * Primary content in *Image Gallery → Default → Primary*
  */
 export interface ImageGallerySliceDefaultPrimary {
@@ -886,12 +795,13 @@ export interface ImageGallerySliceDefaultPrimary {
   /**
    * Layout field in *Image Gallery → Default → Primary*
    *
-   * - **Field Type**: Text
-   * - **Placeholder**: carousel
+   * - **Field Type**: Select
+   * - **Placeholder**: Choose the gallery layout
+   * - **Default Value**: carousel
    * - **API ID Path**: image_gallery.default.primary.layout
-   * - **Documentation**: https://prismic.io/docs/fields/text
+   * - **Documentation**: https://prismic.io/docs/fields/select
    */
-  layout: prismic.KeyTextField;
+  layout: prismic.SelectField<"carousel" | "mansory" | "featured", "filled">;
 
   /**
    * Show Thumbnails field in *Image Gallery → Default → Primary*
@@ -2243,10 +2153,6 @@ declare module "@prismicio/client" {
       FullWidthBannerSliceDefaultPrimary,
       FullWidthBannerSliceVariation,
       FullWidthBannerSliceDefault,
-      HeroAnimatedSlice,
-      HeroAnimatedSliceDefaultPrimary,
-      HeroAnimatedSliceVariation,
-      HeroAnimatedSliceDefault,
       ImageGallerySlice,
       ImageGallerySliceDefaultPrimary,
       ImageGallerySliceDefaultItem,

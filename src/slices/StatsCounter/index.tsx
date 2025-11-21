@@ -86,12 +86,7 @@ const StatsCounter: FC<StatsCounterProps> = ({ slice }) => {
     suffix: string = "",
     prefix: string = ""
   ) => {
-    if (value >= 1000000) {
-      return `${prefix}${(value / 1000000).toFixed(1)}M${suffix}`;
-    } else if (value >= 1000) {
-      return `${prefix}${(value / 1000).toFixed(1)}K${suffix}`;
-    }
-    return `${prefix}${value}${suffix}`;
+    return `${prefix}${value.toLocaleString()}${suffix}`;
   };
 
   const getLayoutClasses = () => {

@@ -32,6 +32,8 @@ export const searchParams = {
   uid: parseAsString,
   productId: parseAsInteger,
   rating: parseAsInteger,
+  code: parseAsString,
+  campaignName: parseAsString,
 };
 
 export const searchParamsCache = createSearchParamsCache(searchParams);

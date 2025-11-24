@@ -16,6 +16,7 @@ import {
   LogOut,
   Menu,
   Award,
+  Link as LinkIcon,
 } from "lucide-react";
 import { SignOutButton } from "@/components/auth";
 
@@ -29,6 +30,7 @@ const accountNav = [
   { label: "Địa chỉ", href: "/account/addresses", icon: MapPin },
   { label: "Hồ sơ", href: "/account/profile", icon: Settings },
   { label: "Bài dự thi", href: "/account/submissions", icon: Award },
+  { label: "Affiliate", href: "/account/affiliate", icon: LinkIcon },
   { label: "Yêu thích", href: "/account/wishlist", icon: Heart },
   { label: "Đăng xuất", href: "/auth/sign-out", icon: LogOut },
 ];

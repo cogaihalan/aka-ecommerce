@@ -38,6 +38,7 @@ import {
   X,
   Award,
   Star,
+  Link,
   type LucideProps,
 } from "lucide-react";
 
@@ -83,4 +84,5 @@ export const Icons = {
   trophy: Trophy,
   award: Award,
   star: Star,
+  link: Link,
 };

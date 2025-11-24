@@ -83,6 +83,22 @@ export const navItems: NavItem[] = [
     items: [],
   },
   {
+    title: "Duyệt Affiliate",
+    url: "/admin/affiliate-approvals",
+    icon: "users",
+    shortcut: ["a", "f"],
+    isActive: false,
+    items: [],
+  },
+  {
+    title: "Affiliate Links",
+    url: "/admin/affiliate-links",
+    icon: "link",
+    shortcut: ["l", "l"],
+    isActive: false,
+    items: [],
+  },
+  {
     title: "Phân tích",
     url: "/admin/analytics",
     icon: "dashboard",

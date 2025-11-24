@@ -16,6 +16,9 @@ import type {
   Submission,
   SubmissionStatus,
   ProductReviewStatus,
+  AffiliateLink,
+  AffiliateApproval,
+  AffiliateApprovalStatus,
 } from "@/types";
 
 // Base API types
@@ -43,6 +46,8 @@ export interface QueryParams {
   gender?: string;
   rating?: number;
   productId?: number;
+  code?: string;
+  campaignName?: string;
 }
 
 export interface OrderQueryParams {
@@ -108,6 +113,16 @@ export interface HairstyleListResponse {
 
 export interface SubmissionListResponse {
   items: Submission[];
+  pagination: PaginationResponse;
+}
+
+export interface AffiliateApprovalListResponse {
+  items: AffiliateApproval[];
+  pagination: PaginationResponse;
+}
+
+export interface AffiliateLinkListResponse {
+  items: AffiliateLink[];
   pagination: PaginationResponse;
 }
 
@@ -302,4 +317,22 @@ export interface CreateSubmissionRequest {
 export interface SubmissionMediaUploadRequest {
   submissionId: number;
   files: File[];
+}
+
+
+// Affiliate API types
+export interface AdminUpdateAffiliateApprovalStatusRequest {
+  id: number;
+  status: AffiliateApprovalStatus;
+}
+
+export interface CreateAffiliateLinkRequest {
+  name: string;
+  targetUrl: string;
+  campaignName: string;
+  activeByAffiliate: boolean;
+}
+
+export interface AffiliateLinkUpdateRequest extends Partial<CreateAffiliateLinkRequest> {
+  id?: number;
 }

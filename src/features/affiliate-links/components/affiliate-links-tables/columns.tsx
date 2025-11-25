@@ -4,7 +4,8 @@ import { Column, ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { DataTableColumnHeader } from "@/components/ui/table/data-table-column-header";
 import { AffiliateLink } from "@/types";
-import { Copy, ExternalLink, ToggleLeft, ToggleRight, Edit, MoreVertical } from "lucide-react";
+import { ToggleLeft, ToggleRight, MoreVertical } from "lucide-react";
+import Link from "next/link";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import {
@@ -68,18 +69,7 @@ export const columns: ColumnDef<AffiliateLink>[] = [
       const code = row.getValue("code") as string;
       return (
         <div className="flex items-center gap-2">
-          <code className="px-2 py-1 bg-muted rounded text-sm font-mono">{code}</code>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-6 w-6 p-0"
-            onClick={() => {
-              navigator.clipboard.writeText(code);
-              toast.success("Đã sao chép mã");
-            }}
-          >
-            <Copy className="h-3 w-3" />
-          </Button>
+          <code className="px-2 py-1 bg-muted rounded text-sm">{code}</code>
         </div>
       );
     },
@@ -97,16 +87,14 @@ export const columns: ColumnDef<AffiliateLink>[] = [
     cell: ({ row }) => {
       const url = row.getValue("targetUrl") as string;
       return (
-        <div className="flex items-center gap-2 max-w-xs">
-          <a
+        <div className="flex items-center gap-2 max-w-2xs">
+          <Link
             href={url}
             target="_blank"
-            rel="noopener noreferrer"
             className="text-sm text-primary hover:underline truncate"
           >
             {url}
-          </a>
-          <ExternalLink className="h-3 w-3 text-muted-foreground" />
+          </Link>
         </div>
       );
     },
@@ -121,14 +109,14 @@ export const columns: ColumnDef<AffiliateLink>[] = [
       
       if (isActive) {
         return (
-          <Badge variant="default" className="flex items-center gap-1 w-fit">
+          <Badge variant="live" className="flex items-center gap-1 w-fit">
             <ToggleRight className="h-3 w-3" />
             Hoạt động
           </Badge>
         );
       } else {
         return (
-          <Badge variant="secondary" className="flex items-center gap-1 w-fit">
+          <Badge variant="destructive" className="flex items-center gap-1 w-fit">
             <ToggleLeft className="h-3 w-3" />
             Tắt
           </Badge>
@@ -191,12 +179,12 @@ export const columns: ColumnDef<AffiliateLink>[] = [
             >
               {link.activeByAdmin ? (
                 <>
-                  <ToggleLeft className="mr-2 h-4 w-4" />
+                  <ToggleLeft className="mr-2 h-4 w-4 text-red-500" />
                   Tắt
                 </>
               ) : (
                 <>
-                  <ToggleRight className="mr-2 h-4 w-4" />
+                  <ToggleRight className="mr-2 h-4 w-4 text-green-500" />
                   Bật
                 </>
               )}

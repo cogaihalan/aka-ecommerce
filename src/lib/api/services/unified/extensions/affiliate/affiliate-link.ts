@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/api/client";
 import type { AffiliateLink } from "@/types";
-import type { QueryParams, AffiliateLinkListResponse, CreateAffiliateLinkRequest } from "@/lib/api/types";
+import type { QueryParams, AffiliateLinkListResponse, CreateAffiliateLinkRequest, AffiliateLinkUpdateRequest } from "@/lib/api/types";
 
 
 export class  UnifiedAffiliateLinkService {
@@ -46,8 +46,13 @@ export class  UnifiedAffiliateLinkService {
       return response.data!;
     }
 
+    async updateAffiliateLink(id: number, data: AffiliateLinkUpdateRequest): Promise<AffiliateLink> {
+      const response = await apiClient.put<AffiliateLink>(`${this.basePath}/${id}`, data);
+      return response.data!;
+    }
+
     async toggleActiveAffiliateLink(id: number): Promise<AffiliateLink> {
-      const response = await apiClient.put<AffiliateLink>(`${this.basePath}/${id}/toggle-active`);
+      const response = await apiClient.patch<AffiliateLink>(`${this.basePath}/${id}/toggle-active`);
       return response.data!;
     }
 

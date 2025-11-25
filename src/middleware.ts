@@ -4,6 +4,7 @@ import { NextRequest } from "next/server";
 // Define protected routes
 const isProtectedRoute = createRouteMatcher([
   "/admin(.*)", 
+  "/account(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {

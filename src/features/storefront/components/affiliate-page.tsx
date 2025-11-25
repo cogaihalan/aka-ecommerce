@@ -37,7 +37,7 @@ export default function AffiliatePage() {
           AKA Affiliate ngay bây giờ.
         </p>
         <Button asChild size="lg" className="mt-4">
-          <Link href="/auth/sign-up">Tham gia ngay</Link>
+          <Link href="/account/affiliate">Tham gia ngay</Link>
         </Button>
       </section>
 
@@ -451,7 +451,7 @@ export default function AffiliatePage() {
 
         <div className="flex justify-center">
           <Button asChild size="lg">
-            <Link href="/auth/sign-up">Tham gia ngay</Link>
+            <Link href="/account/affiliate">Tham gia ngay</Link>
           </Button>
         </div>
       </section>

@@ -1,49 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, XCircle, Clock, Plus } from "lucide-react";
 import { AffiliateApprovalStatus } from "@/types";
-import { storefrontAffiliateApprovalService } from "@/lib/api/services/storefront/extensions/affiliate/affiliate-approval";
+import { storefrontAffiliateApprovalService } from "@/lib/api/services/storefront/extensions/affiliate/affiliate-approval-client";
 import { toast } from "sonner";
-// import AffiliateLinksTable from "./affiliate-links-table";
 import { AffiliateLinkForm } from "./affiliate-link-form";
 import type { AffiliateApproval, AffiliateLink } from "@/types";
 import { CreateAffiliateLinkRequest } from "@/lib/api/types";
 import { storefrontAffiliateLinkService } from "@/lib/api/services/storefront/extensions/affiliate/affiliate-link-client";
+import AffiliateLinksTable from "./affiliate-links-table";
+import { useRouter } from "next/navigation";
 
-export default function AffiliateAccountPage() {
-  const [approval, setApproval] = useState<AffiliateApproval | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+export default function AffiliateAccountPage({approval, links}: {approval: AffiliateApproval, links: AffiliateLink[]}) {
   const [showForm, setShowForm] = useState(false);
   const [editingLink, setEditingLink] = useState<AffiliateLink | null>(null);
-
-  useEffect(() => {
-    const fetchApproval = async () => {
-      try {
-        setIsLoading(true);
-        // Fetch current user's approval status
-        // Assuming the API returns the current user's approval when called without params
-        const response = await storefrontAffiliateApprovalService.getAffiliateApprovals({
-          page: 1,
-          size: 1,
-        });
-        if (response.items && response.items.length > 0) {
-          setApproval(response.items[0]);
-        }
-      } catch (error) {
-        console.error("Error fetching affiliate approval:", error);
-        // If no approval found, that's okay - user might not have registered yet
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchApproval();
-  }, []);
-
+  const router = useRouter();
   const getStatusConfig = (status: AffiliateApprovalStatus) => {
     switch (status) {
       case AffiliateApprovalStatus.APPROVED:
@@ -81,6 +56,16 @@ export default function AffiliateAccountPage() {
   const Icon = statusConfig.icon;
   const canManageLinks = approval?.status === AffiliateApprovalStatus.APPROVED;
 
+  const handleCreateAffiliateApproval = async () => {
+    try {
+      await storefrontAffiliateApprovalService.createAffiliateApproval();
+      toast.success("Yêu cầu đăng ký affiliate đã được gửi. Vui lòng chờ phản hồi từ quản trị viên.");
+    } catch (error) {
+      toast.error("Yêu cầu đăng ký affiliate thất bại");
+      console.error("Error creating affiliate approval:", error);
+    }
+  };  
+
   return (
     <div className="space-y-6">
       <div>
@@ -97,12 +82,6 @@ export default function AffiliateAccountPage() {
           <CardDescription>Thông tin về trạng thái đăng ký affiliate của bạn</CardDescription>
         </CardHeader>
         <CardContent>
-          {isLoading ? (
-            <div className="flex items-center gap-2">
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-              <span className="text-sm text-muted-foreground">Đang tải...</span>
-            </div>
-          ) : (
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <Badge variant={statusConfig.variant} className="flex items-center gap-1">
@@ -121,9 +100,8 @@ export default function AffiliateAccountPage() {
                   <p className="text-sm font-medium mb-1">Lý do:</p>
                   <p className="text-sm text-muted-foreground">{approval.reason}</p>
                 </div>
-              )}
-            </div>
-          )}
+            )}
+          </div>
         </CardContent>
       </Card>
 
@@ -153,7 +131,7 @@ export default function AffiliateAccountPage() {
             {showForm ? (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">
+                  <h3 className="text-base font-semibold">
                     {editingLink ? "Chỉnh sửa affiliate link" : "Tạo affiliate link mới"}
                   </h3>
                   <Button variant="outline" onClick={() => {
@@ -168,15 +146,15 @@ export default function AffiliateAccountPage() {
                   onSubmit={async (data: CreateAffiliateLinkRequest) => {
                     try {
                       if (editingLink) {
-                        // Note: Update method might not be available in storefront API
-                        toast.info("Chức năng cập nhật chưa được hỗ trợ");
+                        await storefrontAffiliateLinkService.updateAffiliateLink(editingLink.id, data);
+                        toast.success("Cập nhật affiliate link thành công");
                       } else {
                         await storefrontAffiliateLinkService.createAffiliateLink(data);
                         toast.success("Tạo affiliate link thành công");
                       }
                       setShowForm(false);
                       setEditingLink(null);
-                      window.location.reload();
+                      router.refresh();
                     } catch (error) {
                       toast.error("Lưu affiliate link thất bại");
                       console.error("Error saving affiliate link:", error);
@@ -189,13 +167,13 @@ export default function AffiliateAccountPage() {
                 />
               </div>
             ) : (
-                <div>Affiliate Links Table</div>
-            //   <AffiliateLinksTable
-            //     onEdit={(link) => {
-            //       setEditingLink(link);
-            //       setShowForm(true);
-            //     }}
-            //   />
+              <AffiliateLinksTable
+                links={links}
+                onEdit={(link) => {
+                  setEditingLink(link);
+                  setShowForm(true);
+                }}
+              />
             )}
           </CardContent>
         </Card>
@@ -216,16 +194,16 @@ export default function AffiliateAccountPage() {
           <CardContent className="pt-6">
             <div className="text-center space-y-4">
               <p className="text-sm text-muted-foreground">
-                Bạn chưa đăng ký làm affiliate. Hãy đăng ký để bắt đầu kiếm hoa hồng.
+                Hãy đăng ký để bắt đầu kiếm hoa hồng.
               </p>
-              <Button asChild>
-                <a href="/affiliate/register">Đăng ký affiliate</a>
+              <Button variant="default" onClick={handleCreateAffiliateApproval}>
+                <Plus className="mr-2 h-4 w-4" />
+                Đăng ký ngay
               </Button>
             </div>
           </CardContent>
         </Card>
       )}
-
     </div>
   );
 }

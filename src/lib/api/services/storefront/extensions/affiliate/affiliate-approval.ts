@@ -1,8 +1,8 @@
-import { UnifiedAffiliateApprovalService } from "@/lib/api/services/unified/extensions/affiliate/affiliate-approval";
+import { ServerAffiliateApprovalService } from "@/lib/api/services/server/extensions/affiliate/affiliate-approval";
 
-export class StorefrontAffiliateApprovalService extends UnifiedAffiliateApprovalService {
-  protected basePath = "/affiliate/approvals";
+export class StorefrontServerAffiliateApprovalService extends ServerAffiliateApprovalService {
+  protected basePath = "/affiliates/approvals";
 }
 
 // Export singleton instance
-export const storefrontAffiliateApprovalService = new StorefrontAffiliateApprovalService();
+export const storefrontServerAffiliateApprovalService = new StorefrontServerAffiliateApprovalService();

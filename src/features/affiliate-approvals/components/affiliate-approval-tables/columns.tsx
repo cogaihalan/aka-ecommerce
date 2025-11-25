@@ -32,9 +32,9 @@ export const columns: ColumnDef<AffiliateApproval>[] = [
       const approval = row.original;
       return (
         <div className="space-y-1">
-          <div className="font-medium">{approval.response.fullName}</div>
+          <div className="font-medium">{approval.response?.fullName}</div>
           <div className="text-sm text-muted-foreground">
-            @{approval.response.username}
+            @{approval.response?.username}
           </div>
         </div>
       );

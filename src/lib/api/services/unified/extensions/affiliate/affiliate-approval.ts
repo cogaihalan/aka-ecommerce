@@ -21,11 +21,8 @@ export class  UnifiedAffiliateApprovalService {
     }
 
     // Handle search
-    if (params.name !== undefined) searchParams.append("name", params.name.toString());
-
-    if (params.code !== undefined) searchParams.append("code", params.code.toString());
-
-    if (params.campaignName !== undefined) searchParams.append("campaignName", params.campaignName.toString());
+    if (params.userId !== undefined) searchParams.append("userId", params.userId.toString());
+    if (params.status !== undefined) searchParams.append("status", params.status.toString());
 
     const queryString = searchParams.toString();
     const endpoint = queryString
@@ -37,7 +34,7 @@ export class  UnifiedAffiliateApprovalService {
     }
 
     async updateAffiliateApprovalStatus(data: AdminUpdateAffiliateApprovalStatusRequest): Promise<AffiliateApproval> {
-        const endpoint = `${this.basePath}/${data.id}/${data.status.toLowerCase()}`;
+        const endpoint = `${this.basePath}/${data.id}/${data.status.slice(0, -1).toLowerCase()}`;
         const response = await apiClient.patch<AffiliateApproval>(endpoint);
         return response.data!;
     }

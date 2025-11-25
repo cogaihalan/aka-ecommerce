@@ -1,6 +1,6 @@
 import { serverApiClient } from "@/lib/api/server";
 import type { AffiliateLink } from "@/types";
-import type { QueryParams, AffiliateLinkListResponse, CreateAffiliateLinkRequest } from "@/lib/api/types";
+import type { QueryParams, AffiliateLinkListResponse, CreateAffiliateLinkRequest, AffiliateLinkUpdateRequest } from "@/lib/api/types";
 
 
 export class ServerAffiliateLinkService {
@@ -43,6 +43,11 @@ export class ServerAffiliateLinkService {
 
   async createAffiliateLink(data: CreateAffiliateLinkRequest): Promise<AffiliateLink> {
     const response = await serverApiClient.post<AffiliateLink>(this.basePath, data);
+    return response.data!;
+  }
+
+  async updateAffiliateLink(id: number, data: AffiliateLinkUpdateRequest): Promise<AffiliateLink> {
+    const response = await serverApiClient.put<AffiliateLink>(`${this.basePath}/${id}`, data);
     return response.data!;
   }
 

@@ -8,8 +8,8 @@ export default async function AffiliateLinksListingPage() {
   const pageLimit = searchParamsCache.get("perPage");
   const sort = searchParamsCache.get("sort");
   const name = searchParamsCache.get("name");
-  const code = (searchParamsCache as any).get("code");
-  const campaignName = (searchParamsCache as any).get("campaignName");
+  const code = searchParamsCache.get("code");
+  const campaignName = searchParamsCache.get("campaignName");
 
   const filters: any = {
     page: page ? parseInt(page.toString()) : 1,
@@ -27,27 +27,12 @@ export default async function AffiliateLinksListingPage() {
   const links = data.items;
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h2 className="text-2xl font-bold">Danh sách Affiliate Links</h2>
-        <p className="text-sm text-muted-foreground">
-          Quản lý tất cả affiliate links trong hệ thống
-        </p>
-      </div>
-
-      {links.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">Không có affiliate link nào.</p>
-        </div>
-      ) : (
-        <DataTableWrapper
-          data={links}
-          totalItems={totalItems}
-          columns={columns}
-          debounceMs={500}
-          shallow={false}
-        />
-      )}
-    </div>
+    <DataTableWrapper
+      data={links}
+      totalItems={totalItems}
+      columns={columns}
+      debounceMs={500}
+      shallow={false}
+    />
   );
 }

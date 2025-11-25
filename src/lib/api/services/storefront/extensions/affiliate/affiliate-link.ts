@@ -1,7 +1,7 @@
 import { ServerAffiliateLinkService } from "@/lib/api/services/server/extensions/affiliate/affiliate-link";
 
 export class StorefrontServerAffiliateLinkService extends ServerAffiliateLinkService {
-  protected basePath = "/affiliate/links";
+  protected basePath = "/affiliates/links";
 }
 
 // Export singleton instance

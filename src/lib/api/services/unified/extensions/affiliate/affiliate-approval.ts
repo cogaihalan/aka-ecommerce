@@ -21,7 +21,6 @@ export class  UnifiedAffiliateApprovalService {
     }
 
     // Handle search
-    if (params.userId !== undefined) searchParams.append("userId", params.userId.toString());
     if (params.status !== undefined) searchParams.append("status", params.status.toString());
 
     const queryString = searchParams.toString();

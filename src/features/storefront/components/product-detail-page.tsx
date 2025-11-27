@@ -17,6 +17,7 @@ import { storefrontCatalogService } from "@/lib/api/services/storefront/catalog"
 import { Product, ProductImage } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { ProductAddToCartSticky } from "@/components/product/product-detail/product-add-to-cart-sticky";
 
 interface ProductDetailPageProps {
   productId: string;
@@ -138,6 +139,9 @@ export default function ProductDetailPage({
         {/* Product Tabs */}
         {enhancedProduct && <ProductTabs product={enhancedProduct} />}
       </div>
+
+      {/* Add to Cart Sticky */}
+      {enhancedProduct && <ProductAddToCartSticky product={enhancedProduct} />}
     </div>
   );
 }

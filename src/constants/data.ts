@@ -37,7 +37,7 @@ export const navItems: NavItem[] = [
   {
     title: "Khóa học",
     url: "/admin/courses",
-    icon: "media",
+    icon: "book-audio",
     shortcut: ["c", "o"],
     isActive: false,
     items: [],
@@ -83,15 +83,15 @@ export const navItems: NavItem[] = [
     items: [],
   },
   {
-    title: "Duyệt Affiliate",
+    title: "Đại lý/CTV",
     url: "/admin/affiliate-approvals",
-    icon: "users",
+    icon: "user-check",
     shortcut: ["a", "f"],
     isActive: false,
     items: [],
   },
   {
-    title: "Affiliate Links",
+    title: "Link affiliate",
     url: "/admin/affiliate-links",
     icon: "link",
     shortcut: ["l", "l"],
@@ -101,7 +101,7 @@ export const navItems: NavItem[] = [
   {
     title: "Phân tích",
     url: "/admin/analytics",
-    icon: "dashboard",
+    icon: "chart",
     shortcut: ["a", "a"],
     isActive: false,
     items: [],

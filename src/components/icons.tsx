@@ -39,6 +39,8 @@ import {
   Award,
   Star,
   Link,
+  BookAudio,
+  ChartNoAxesCombined as Chart,
   type LucideProps,
 } from "lucide-react";
 
@@ -76,6 +78,7 @@ export const Icons = {
   laptop: Laptop,
   check: Check,
   book: Book,
+  "book-audio": BookAudio,
   users: Users,
   "user-check": UserCheck,
   percent: Percent,
@@ -85,4 +88,5 @@ export const Icons = {
   award: Award,
   star: Star,
   link: Link,
+  chart: Chart,
 };

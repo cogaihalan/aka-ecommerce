@@ -100,7 +100,7 @@ export function SubmissionDialog({ submission, children }: SubmissionDialogProps
 
           {!submission ? (
             <p className="text-xs text-muted-foreground">
-              Sau khi tạo, mở lại hộp thoại này để tải ảnh.
+              Sau khi tạo, hãy vào chi tiết bài dự thi để tải ảnh.
             </p>
           ) : null}
         </div>

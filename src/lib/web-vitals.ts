@@ -13,8 +13,6 @@
  * - TTFB (Time to First Byte): Measures server response time
  */
 
-import type { Metric } from 'web-vitals';
-
 // Extend Window interface for TypeScript
 declare global {
   interface Window {
@@ -24,105 +22,6 @@ declare global {
       config?: { [key: string]: any }
     ) => void;
     dataLayer?: Object[];
-  }
-}
-
-export interface WebVitalMetric extends Metric {
-  // Additional metadata
-  page?: string;
-  url?: string;
-  userAgent?: string;
-  connection?: string;
-  timestamp?: number;
-}
-
-/**
- * Get the Google Analytics measurement ID
- */
-export function getGAId(): string | null {
-  if (typeof window === 'undefined') return null;
-  
-  // Check environment variable first
-  const envId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
-  if (envId) return envId;
-  
-  // Fallback to hardcoded ID from layout.tsx
-  // This matches the ID in your layout.tsx file
-  return 'G-JCGBQBRY9S';
-}
-
-/**
- * Report metric to Google Analytics
- */
-export function reportToGoogleAnalytics(metric: Metric): void {
-  const gaId = getGAId();
-  if (!gaId || typeof window === 'undefined' || !window.gtag) {
-    return;
-  }
-
-  const { name, value, id, delta, rating } = metric;
-
-  // Send to Google Analytics as an event
-  window.gtag('event', name, {
-    event_category: 'Web Vitals',
-    event_label: id,
-    value: Math.round(name === 'CLS' ? delta * 1000 : delta),
-    non_interaction: true,
-    // Custom dimensions for better analysis
-    metric_value: value,
-    metric_delta: delta,
-    metric_rating: rating,
-    metric_id: id,
-  });
-
-  // Also send as a custom metric if you have GA4 configured
-  // This requires setting up custom metrics in GA4 first
-  window.gtag('event', 'web_vitals', {
-    [name.toLowerCase()]: value,
-    metric_id: id,
-    metric_rating: rating,
-  });
-}
-
-/**
- * Report metric to custom API endpoint (optional)
- * Useful for server-side analysis and custom dashboards
- */
-export async function reportToAPI(metric: WebVitalMetric): Promise<void> {
-  if (typeof window === 'undefined') return;
-
-  try {
-    // Only send in production to avoid cluttering logs
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('[Web Vitals]', metric);
-      return;
-    }
-
-    // Add additional context
-    const enrichedMetric: WebVitalMetric = {
-      ...metric,
-      page: window.location.pathname,
-      url: window.location.href,
-      userAgent: navigator.userAgent,
-      connection: (navigator as any).connection
-        ? `${(navigator as any).connection.effectiveType || 'unknown'}`
-        : 'unknown',
-      timestamp: Date.now(),
-    };
-
-    // Send to your API endpoint
-    await fetch('/api/web-vitals', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(enrichedMetric),
-      // Don't block the page if this fails
-      keepalive: true,
-    });
-  } catch (error) {
-    // Silently fail - we don't want to impact user experience
-    console.warn('[Web Vitals] Failed to report to API:', error);
   }
 }
 
@@ -143,7 +42,6 @@ export function getMetricRating(name: string, value: number): 'good' | 'needs-im
   // Thresholds based on Core Web Vitals guidelines
   const thresholds: Record<string, { good: number; poor: number }> = {
     LCP: { good: 2500, poor: 4000 }, // milliseconds
-    FID: { good: 100, poor: 300 }, // milliseconds (deprecated but still measured)
     INP: { good: 200, poor: 500 }, // milliseconds
     CLS: { good: 0.1, poor: 0.25 }, // score
     FCP: { good: 1800, poor: 3000 }, // milliseconds
@@ -162,14 +60,7 @@ export function getMetricRating(name: string, value: number): 'good' | 'needs-im
  * Main function to handle Web Vitals reporting
  * This is called by Next.js's reportWebVitals function
  */
-export function handleWebVitals(metric: Metric): void {
-  // Report to Google Analytics
-  reportToGoogleAnalytics(metric);
-
-  // Optionally report to custom API
-  // Uncomment if you want server-side logging
-  // reportToAPI(metric as WebVitalMetric);
-
+export function handleWebVitals(metric: { name: string; value: number }): void {
   // Log to console in development
   if (process.env.NODE_ENV === 'development') {
     const rating = getMetricRating(metric.name, metric.value);

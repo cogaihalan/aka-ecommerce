@@ -24,6 +24,11 @@ const baseConfig: NextConfig = {
         protocol: "https",
         hostname: "api.slingacademy.com",
         port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+        port: "",
       }
     ],
     // Optimize images for better performance
@@ -32,7 +37,7 @@ const baseConfig: NextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
-  transpilePackages: ["geist"],
+  transpilePackages: ["inter"],
   
   // Compiler optimizations
   compiler: {
@@ -46,6 +51,7 @@ const baseConfig: NextConfig = {
 
   // Performance optimizations for development
   experimental: {
+    webVitalsAttribution: ['CLS', 'LCP', 'FCP', 'TTFB', 'INP'], // Enable Core Web Vitals attribution
     optimizePackageImports: [
       "lucide-react",
       "@radix-ui/react-icons",

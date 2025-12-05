@@ -105,7 +105,7 @@ export default async function RootLayout({
             </Providers>
           </NuqsAdapter>
         </ThemeProvider>
-        {/* Lazy load analytics components to reduce initial bundle */}
+
         <GoogleAnalyticsComponent />
         <WebVitalsReporter />
       </body>

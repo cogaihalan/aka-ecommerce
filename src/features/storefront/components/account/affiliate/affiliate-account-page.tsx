@@ -111,9 +111,9 @@ export default function AffiliateAccountPage({approval, links}: {approval: Affil
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>Affiliate Links</CardTitle>
+                <CardTitle>Liên kết Affiliate</CardTitle>
                 <CardDescription>
-                  Tạo và quản lý các affiliate links của bạn
+                  Tạo và quản lý các liên kết affiliate của bạn
                 </CardDescription>
               </div>
               {!showForm && (

@@ -50,10 +50,10 @@ export default function AppSidebar() {
                     <CollapsibleTrigger asChild>
                       <SidebarMenuButton
                         tooltip={item.title}
-                        isActive={pathname === item.url}
+                        isActive={pathname === item.url || item.items?.some(subItem => pathname === subItem.url)}
                       >
                         {item.icon && <Icon />}
-                        <span>{item.title}</span>
+                        <Link href={item.url}>{item.title}</Link>
                         <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                       </SidebarMenuButton>
                     </CollapsibleTrigger>

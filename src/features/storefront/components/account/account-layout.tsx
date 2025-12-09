@@ -1,9 +1,15 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -24,13 +30,27 @@ interface AccountLayoutProps {
   children: ReactNode;
 }
 
-const accountNav = [
+type AccountNavItem = {
+  label: string;
+  href?: string;
+  icon: typeof User;
+  children?: { label: string; href: string }[];
+};
+
+const accountNav: AccountNavItem[] = [
   { label: "Tổng quan", href: "/account", icon: User },
   { label: "Đơn hàng", href: "/account/orders", icon: Package },
   { label: "Địa chỉ", href: "/account/addresses", icon: MapPin },
   { label: "Hồ sơ", href: "/account/profile", icon: Settings },
   { label: "Bài dự thi", href: "/account/submissions", icon: Award },
-  { label: "Affiliate", href: "/account/affiliate", icon: LinkIcon },
+  { label: "Affiliate", href: "/account/affiliate", icon: LinkIcon,
+    children: [
+      { label: "Liên kết", href: "/account/affiliate/links" },
+      { label: "Thanh toán", href: "/account/affiliate/payouts" },
+      { label: "Rút tiền", href: "/account/affiliate/withdrawals" },
+      { label: "Giao dịch", href: "/account/affiliate/transactions" },
+    ],
+   },
   { label: "Yêu thích", href: "/account/wishlist", icon: Heart },
   { label: "Đăng xuất", href: "/auth/sign-out", icon: LogOut },
 ];
@@ -39,43 +59,108 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
+  const defaultExpandedParent = useMemo(() => {
+    const parentWithActiveChild = accountNav.find((item) =>
+      item.children?.some((child) => child.href === pathname)
+    );
+
+    return parentWithActiveChild?.label;
+  }, [pathname]);
+
   const renderNavItems = () => {
-    return accountNav.map((item) => {
-      const Icon = item.icon;
+    return (
+      <Accordion
+        type="single"
+        collapsible
+        defaultValue={defaultExpandedParent}
+        className="space-y-2"
+      >
+        {accountNav.map((item) => {
+          const Icon = item.icon;
+          const hasChildren = Boolean(item.children?.length);
+          const isActive =
+            pathname === item.href ||
+            item.children?.some((child) => pathname === child.href);
 
-      // Handle Logout item with SignOutButton
-      if (item.label === "Đăng xuất") {
-        return (
-          <SignOutButton
-            key={item.href}
-            redirectUrl="/auth/sign-in"
-            className={cn(
-              "flex items-center justify-start gap-3 px-3 py-2 rounded-md text-sm transition-colors cursor-pointer w-full text-left",
-              "hover:bg-muted"
-            )}
-            onClick={() => setIsOpen(false)}
-          >
-            <Icon className="h-4 w-4" />
-            {item.label}
-          </SignOutButton>
-        );
-      }
+          // Handle Logout item with SignOutButton
+          if (item.label === "Đăng xuất") {
+            return (
+              <div key={item.href}>
+                <SignOutButton
+                  redirectUrl="/auth/sign-in"
+                  className={cn(
+                    "flex items-center justify-start gap-3 px-3 py-2 rounded-md text-sm transition-colors cursor-pointer w-full text-left",
+                    "hover:bg-muted"
+                  )}
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Icon className="h-4 w-4" />
+                  {item.label}
+                </SignOutButton>
+              </div>
+            );
+          }
 
-      return (
-        <Link
-          key={item.href}
-          href={item.href}
-          onClick={() => setIsOpen(false)}
-          className={cn(
-            "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
-            pathname === item.href ? "bg-primary text-white" : "hover:bg-muted"
-          )}
-        >
-          <Icon className="h-4 w-4" />
-          {item.label}
-        </Link>
-      );
-    });
+          if (hasChildren) {
+            return (
+              <AccordionItem
+                key={item.label}
+                value={item.label}
+                className="border-none"
+              >
+                <AccordionTrigger
+                  className={cn(
+                    "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                    isActive ? "bg-primary text-white [&>svg]:text-white" : "hover:bg-muted",
+                    "hover:no-underline"
+                  )}
+                >
+                  <Icon className="h-4 w-4 shrink-0" />
+                  <Link href={item.href as string} className={cn("flex-1 text-left", isActive ? "pointer-events-none" : "")}>
+                    {item.label}
+                  </Link>
+                </AccordionTrigger>
+                <AccordionContent className="pb-0">
+                  <div className="space-y-1 pt-2 pl-4">
+                    {item.children?.map((child) => (
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        onClick={() => setIsOpen(false)}
+                        className={cn(
+                          "block rounded-md px-3 py-2 text-sm transition-colors",
+                          pathname === child.href
+                            ? "bg-primary text-white"
+                            : "hover:bg-muted"
+                        )}
+                      >
+                        {child.label}
+                      </Link>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            );
+          }
+
+          return (
+            <div key={item.href}>
+              <Link
+                href={item.href as string}
+                onClick={() => setIsOpen(false)}
+                className={cn(
+                  "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                  isActive ? "bg-primary text-white pointer-events-none" : "hover:bg-muted"
+                )}
+              >
+                <Icon className="h-4 w-4" />
+                {item.label}
+              </Link>
+            </div>
+          );
+        })}
+      </Accordion>
+    );
   };
 
   return (

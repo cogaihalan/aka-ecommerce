@@ -9,3 +9,5 @@ export { serverUnifiedContestService } from "./extensions/contest";
 export { serverProductReviewService } from "./product-reviews";
 export { serverAffiliateApprovalService } from "./extensions/affiliate/affiliate-approval";
 export { serverAffiliateLinkService } from "./extensions/affiliate/affiliate-link";
+export { serverAffiliateService } from "./extensions/affiliate/affiliate";
+export { serverAffiliatePayoutService } from "./extensions/affiliate/affiliate-payout";

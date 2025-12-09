@@ -42,6 +42,7 @@ import {
   BookAudio,
   ChartNoAxesCombined as Chart,
   type LucideProps,
+  DollarSign,
 } from "lucide-react";
 
 export type Icon = React.ComponentType<LucideProps>;
@@ -89,4 +90,6 @@ export const Icons = {
   star: Star,
   link: Link,
   chart: Chart,
+  money: DollarSign,
+  "credit-card": CreditCard,
 };

@@ -19,6 +19,11 @@ import type {
   AffiliateLink,
   AffiliateApproval,
   AffiliateApprovalStatus,
+  AffiliatePayoutMethod,
+  AffiliateWithdrawal,
+  AffiliateTransaction,
+  AffiliateAccount,
+  AffiliateTransactionType,
 } from "@/types";
 
 // Base API types
@@ -47,7 +52,10 @@ export interface QueryParams {
   rating?: number;
   productId?: number;
   code?: string;
+  type?: AffiliateTransactionType;
   campaignName?: string;
+  affiliateId?: number;
+  affiliateCode?: string;
 }
 
 export interface OrderQueryParams {
@@ -123,6 +131,26 @@ export interface AffiliateApprovalListResponse {
 
 export interface AffiliateLinkListResponse {
   items: AffiliateLink[];
+  pagination: PaginationResponse;
+}
+
+export interface AffiliateAccountListResponse {
+  items: AffiliateAccount[];
+  pagination: PaginationResponse;
+}
+
+export interface AffiliatePayoutMethodListResponse {
+  items: AffiliatePayoutMethod[];
+  pagination: PaginationResponse;
+}
+  
+export interface AffiliateWithdrawalListResponse {
+  items: AffiliateWithdrawal[];
+  pagination: PaginationResponse;
+}
+
+export interface AffiliateTransactionListResponse {
+  items: AffiliateTransaction[];
   pagination: PaginationResponse;
 }
 
@@ -335,4 +363,26 @@ export interface CreateAffiliateLinkRequest {
 
 export interface AffiliateLinkUpdateRequest extends Partial<CreateAffiliateLinkRequest> {
   id?: number;
+}
+
+export interface CreateAffiliatePayoutMethodRequest {
+  type: "BANK";
+  displayName: string;
+  identifier: string;
+  bankName: string;
+  accountHolder: string;
+}
+
+export interface CreateAffiliateWithdrawalRequest {
+  amount: number;
+  status: AffiliateApprovalStatus;
+}
+
+export interface UpdateAffiliateWithdrawalRequest extends Partial<CreateAffiliateWithdrawalRequest> {
+  id?: number;
+}
+
+export interface CreateAffiliateWithdrawalRequest {
+  amount: number;
+  payoutMethodId: number;
 }

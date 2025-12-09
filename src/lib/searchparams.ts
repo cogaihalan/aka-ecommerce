@@ -34,6 +34,9 @@ export const searchParams = {
   rating: parseAsInteger,
   code: parseAsString,
   campaignName: parseAsString,
+  affiliateId: parseAsInteger,
+  affiliateCode: parseAsString,
+  transactionType: parseAsString,
 };
 
 export const searchParamsCache = createSearchParamsCache(searchParams);

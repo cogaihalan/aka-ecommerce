@@ -6,12 +6,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, XCircle, Clock, Plus } from "lucide-react";
 import { AffiliateApprovalStatus } from "@/types";
-import { storefrontAffiliateApprovalService } from "@/lib/api/services/storefront/extensions/affiliate/affiliate-approval-client";
+import { storefrontAffiliateApprovalService } from "@/lib/api/services/storefront/extensions/affiliate/client/affiliate-approval-client";
 import { toast } from "sonner";
 import { AffiliateLinkForm } from "./affiliate-link-form";
 import type { AffiliateApproval, AffiliateLink } from "@/types";
 import { CreateAffiliateLinkRequest } from "@/lib/api/types";
-import { storefrontAffiliateLinkService } from "@/lib/api/services/storefront/extensions/affiliate/affiliate-link-client";
+import { storefrontAffiliateLinkService } from "@/lib/api/services/storefront/extensions/affiliate/client/affiliate-link-client";
 import AffiliateLinksTable from "./affiliate-links-table";
 import { useRouter } from "next/navigation";
 
@@ -71,7 +71,7 @@ export default function AffiliateAccountPage({approval, links}: {approval: Affil
       <div>
         <h1 className="text-3xl font-bold mb-2">Affiliate</h1>
         <p className="text-muted-foreground">
-          Quản lý affiliate links và theo dõi trạng thái duyệt của bạn
+          Quản lý tài khoản affiliate của bạn
         </p>
       </div>
 

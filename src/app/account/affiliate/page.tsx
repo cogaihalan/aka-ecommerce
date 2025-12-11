@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import AffiliateAccountPage from "@/features/storefront/components/account/affiliate/affiliate-account-page";
-import { storefrontServerAffiliateApprovalService, storefrontServerAffiliateLinkService } from "@/lib/api/services/storefront";
-import { AffiliateApprovalStatus, AffiliateLink } from "@/types/affiliate";
+import { storefrontServerAffiliateApprovalService } from "@/lib/api/services/storefront";
 
 export const dynamic = "force-dynamic";
 
@@ -11,19 +10,11 @@ export const metadata: Metadata = {
 };
 
 export default async function AffiliateAccountPageRoute() {
-  const approvalResponse = await storefrontServerAffiliateApprovalService.getAffiliateApprovals({
-    page: 1,
-    size: 1
-  });
-
-  let links: AffiliateLink[] = [];
-  if(approvalResponse.items && approvalResponse.items.length > 0 && approvalResponse.items[0]?.status === AffiliateApprovalStatus.APPROVED) {
-    links = await storefrontServerAffiliateLinkService.getAffiliateLinks({
+  const approvalResponse =
+    await storefrontServerAffiliateApprovalService.getAffiliateApprovals({
       page: 1,
-      size: 100,
-    }).then(response => response.items || []);
-  }
+      size: 1,
+    });
 
-  return <AffiliateAccountPage approval={approvalResponse.items[0]!} links={links} />;
+  return <AffiliateAccountPage approval={approvalResponse.items[0]!} />;
 }
-

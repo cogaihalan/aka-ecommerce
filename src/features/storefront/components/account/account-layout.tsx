@@ -89,7 +89,7 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
                 <SignOutButton
                   redirectUrl="/auth/sign-in"
                   className={cn(
-                    "flex items-center justify-start gap-3 px-3 py-2 rounded-md text-sm transition-colors cursor-pointer w-full text-left",
+                    "flex items-center justify-start gap-3 px-3 py-2 rounded-md font-normal text-sm transition-colors cursor-pointer w-full text-left",
                     "hover:bg-muted"
                   )}
                   onClick={() => setIsOpen(false)}
@@ -116,7 +116,7 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
                   )}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
-                  <Link href={item.href as string} className={cn("flex-1 text-left", isActive ? "pointer-events-none" : "")}>
+                  <Link href={item.href as string} className={"flex-1 text-left font-normal"}>
                     {item.label}
                   </Link>
                 </AccordionTrigger>

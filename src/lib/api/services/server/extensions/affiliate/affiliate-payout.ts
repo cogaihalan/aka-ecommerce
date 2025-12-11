@@ -1,13 +1,13 @@
 import { serverApiClient } from "@/lib/api/server";
 import type { AffiliatePayoutMethod } from "@/types";
-import type { CreateAffiliatePayoutMethodRequest } from "@/lib/api/types";
+import type { AffiliatePayoutMethodListResponse, CreateAffiliatePayoutMethodRequest } from "@/lib/api/types";
 
 
 export class  ServerAffiliatePayoutService {
     protected basePath = "/affiliate/payout-method";
 
-    async getAffiliatePayoutMethods(): Promise<AffiliatePayoutMethod[]> {
-        const response = await serverApiClient.get<AffiliatePayoutMethod[]>(this.basePath);
+    async getAffiliatePayoutMethods(): Promise<AffiliatePayoutMethodListResponse> {
+        const response = await serverApiClient.get<AffiliatePayoutMethodListResponse>(this.basePath);
         return response.data!;
     }
 

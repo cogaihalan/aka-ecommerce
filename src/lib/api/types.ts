@@ -375,7 +375,7 @@ export interface CreateAffiliatePayoutMethodRequest {
 
 export interface CreateAffiliateWithdrawalRequest {
   amount: number;
-  status: AffiliateApprovalStatus;
+  status?: AffiliateApprovalStatus;
 }
 
 export interface UpdateAffiliateWithdrawalRequest extends Partial<CreateAffiliateWithdrawalRequest> {

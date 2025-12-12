@@ -4,7 +4,6 @@ import { columns } from "./affiliate-tables/columns";
 import { serverAffiliateService } from "@/lib/api/services/server";
 import type { QueryParams } from "@/lib/api/types";
 import { AffiliateAccount } from "@/types";
-import { log } from "console";
 
 export default async function AffiliateListingPage() {
   // Get search parameters for filtering

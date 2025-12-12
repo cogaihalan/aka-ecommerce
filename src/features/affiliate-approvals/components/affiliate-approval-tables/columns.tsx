@@ -24,20 +24,11 @@ export const columns: ColumnDef<AffiliateApproval>[] = [
   },
   {
     id: "user",
-    accessorKey: "response.fullName",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Người dùng" />
-    ),
+    accessorKey: "email",
+    header: "Email",
     cell: ({ row }) => {
       const approval = row.original;
-      return (
-        <div className="space-y-1">
-          <div className="font-medium">{approval.response?.fullName}</div>
-          <div className="text-sm text-muted-foreground">
-            @{approval.response?.username}
-          </div>
-        </div>
-      );
+      return <div className="text-sm text-muted-foreground">{approval.user?.email}</div>;
     },
     meta: {
       label: "Người dùng",
@@ -103,7 +94,7 @@ export const columns: ColumnDef<AffiliateApproval>[] = [
     cell: ({ row }) => {
       const reason = row.getValue("reason") as string;
       return (
-        <div className="max-w-60 line-clamp-2 text-sm text-muted-foreground whitespace-normal">
+        <div className="max-w-80 line-clamp-2 text-sm text-muted-foreground whitespace-normal">
           {reason || "Không có lý do"}
         </div>
       );

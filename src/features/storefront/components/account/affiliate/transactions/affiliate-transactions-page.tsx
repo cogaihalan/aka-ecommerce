@@ -24,20 +24,14 @@ export default function AffiliateTransactionsPage({
         </p>
       </div>
 
-      {initialTransactions.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">Bạn chưa có giao dịch nào.</p>
-        </div>
-      ) : (
-        <DataTableWrapper
-          data={initialTransactions}
-          totalItems={initialTotalItems}
-          columns={columns}
-          debounceMs={500}
-          shallow={false}
-          position="relative"
-        />
-      )}
+      <DataTableWrapper
+        data={initialTransactions}
+        totalItems={initialTotalItems}
+        columns={columns}
+        debounceMs={500}
+        shallow={false}
+        position="relative"
+      />
     </div>
   );
 }

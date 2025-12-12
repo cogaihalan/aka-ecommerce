@@ -20,7 +20,7 @@ export default async function AffiliateTransactionListingPage() {
       ? sort.map(item => `${item.id},${item.desc ? "desc" : "asc"}`)
       : undefined,
     affiliateId: affiliateId ? parseInt(affiliateId.toString()) : undefined,
-    type: transactionType,
+    type: transactionType ? transactionType as AffiliateTransactionType : undefined,
   };
 
   let totalItems = 0;

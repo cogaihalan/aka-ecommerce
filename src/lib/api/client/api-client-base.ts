@@ -139,6 +139,8 @@ export abstract class BaseApiClient {
     const url = this.buildUrl(endpoint);
     const authHeaders = await this.getAuthHeaders();
 
+    console.log(url);
+
     const requestHeaders = {
       ...this.defaultHeaders,
       ...authHeaders,

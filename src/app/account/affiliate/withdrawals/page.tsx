@@ -5,6 +5,7 @@ import { storefrontServerAffiliateService } from "@/lib/api/services/storefront"
 import { searchParamsCache } from "@/lib/searchparams";
 import type { QueryParams } from "@/lib/api/types";
 import { AffiliateApprovalStatus } from "@/types/affiliate";
+import { serverAffiliatePayoutService } from "@/lib/api/services/server";
 
 export const dynamic = "force-dynamic";
 
@@ -41,23 +42,27 @@ export default async function AffiliateWithdrawalsPageRoute(
 
   let withdrawals: any[] = [];
   let totalItems = 0;
-
+  let payoutMethod: any | null = null;
+  let balance = 0;
   try {
-    const withdrawalsResponse = await storefrontServerAffiliateService.getAffiliateWithdrawals(queryParams);
+    const [withdrawalsResponse, payoutMethodResponse, accountResponse] = await Promise.all([storefrontServerAffiliateService.getAffiliateWithdrawals(queryParams), serverAffiliatePayoutService.getAffiliatePayoutMethods(), storefrontServerAffiliateService.getCurrentAffiliateAccount()]);
 
     withdrawals = withdrawalsResponse.items || [];
     totalItems = withdrawalsResponse.pagination?.total || 0;
+    payoutMethod = payoutMethodResponse.items?.find(item => item.status === "ACTIVE") || null;
+    balance = accountResponse.balance || 0;
 
+    return (
+      <Suspense fallback={<div>Đang tải...</div>}>
+        <AffiliateWithdrawalsPage
+          initialWithdrawals={withdrawals}
+          initialTotalItems={totalItems}
+          payoutMethod={payoutMethod}
+          balance={balance}
+        />
+      </Suspense>
+    );
   } catch (error) {
     console.error("Error fetching affiliate data:", error);
   }
-
-  return (
-    <Suspense fallback={<div>Đang tải...</div>}>
-      <AffiliateWithdrawalsPage
-        initialWithdrawals={withdrawals}
-        initialTotalItems={totalItems}
-      />
-    </Suspense>
-  );
 }

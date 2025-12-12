@@ -5,6 +5,7 @@ import type { CreateAffiliateWithdrawalRequest } from "@/lib/api/types";
 
 export class StorefrontAffiliateService extends UnifiedAffiliateService {
   protected basePath = "/affiliate/account";
+  protected withdrawPath = "/withdraw";
   
   async getCurrentAffiliateAccount(): Promise<AffiliateAccount> {
     const response = await apiClient.get<AffiliateAccount>(this.basePath);
@@ -12,7 +13,7 @@ export class StorefrontAffiliateService extends UnifiedAffiliateService {
   }
 
   async createAffiliateWithdrawal(data: CreateAffiliateWithdrawalRequest): Promise<AffiliateWithdrawal> {
-    const response = await apiClient.post<AffiliateWithdrawal>(this.basePath, data);
+    const response = await apiClient.post<AffiliateWithdrawal>(`${this.basePath}${this.withdrawPath}`, data);
     return response.data!;
   }
 }

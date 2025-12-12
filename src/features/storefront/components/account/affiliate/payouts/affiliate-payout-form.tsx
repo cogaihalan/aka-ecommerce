@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AffiliatePayoutMethod } from "@/types";
 import { CreateAffiliatePayoutMethodRequest } from "@/lib/api/types";
-import { unifiedAffiliatePayoutService } from "@/lib/api/services/unified";
 
 const payoutMethodSchema = z.object({
   displayName: z.string().min(1, "Tên hiển thị là bắt buộc"),

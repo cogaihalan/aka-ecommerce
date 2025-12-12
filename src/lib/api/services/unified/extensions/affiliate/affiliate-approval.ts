@@ -32,9 +32,15 @@ export class  UnifiedAffiliateApprovalService {
     return response.data!;
     }
 
-    async updateAffiliateApprovalStatus(data: AdminUpdateAffiliateApprovalStatusRequest): Promise<AffiliateApproval> {
-        const endpoint = `${this.basePath}/${data.id}/${data.status.slice(0, -1).toLowerCase()}`;
+    async approveAffiliateApproval(data: AdminUpdateAffiliateApprovalStatusRequest): Promise<AffiliateApproval> {
+        const endpoint = `${this.basePath}/${data.id}/approve`;
         const response = await apiClient.patch<AffiliateApproval>(endpoint);
+        return response.data!;
+    }
+
+    async rejectAffiliateApproval(data: AdminUpdateAffiliateApprovalStatusRequest): Promise<AffiliateApproval> {
+        const endpoint = `${this.basePath}/${data.id}/reject`;
+        const response = await apiClient.patch<AffiliateApproval>(endpoint, data);
         return response.data!;
     }
 

@@ -14,15 +14,16 @@ export default async function AffiliatePayoutsPageRoute() {
   let payoutMethods: any = [];
 
   try {
-    payoutMethods =
+    const response =
       await serverAffiliatePayoutService.getAffiliatePayoutMethods();
+    payoutMethods = response.items!.filter(item => item.status !== "DELETED");
+
+    return (
+      <Suspense fallback={<div>Đang tải...</div>}>
+        <AffiliatePayoutsPage initialPayoutMethods={payoutMethods} />
+      </Suspense>
+    );
   } catch (error) {
     console.error("Error fetching affiliate payout methods:", error);
   }
-
-  return (
-    <Suspense fallback={<div>Đang tải...</div>}>
-      <AffiliatePayoutsPage initialPayoutMethods={payoutMethods.items!} />
-    </Suspense>
-  );
 }

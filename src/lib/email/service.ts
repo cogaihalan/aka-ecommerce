@@ -6,7 +6,9 @@ import { PaymentNotificationEmail } from "./templates/payment-notification";
 import { ShippedOrderEmail } from "./templates/shipped-order";
 import { PromotionEmail } from "./templates/promotion";
 import { NewsletterEmail } from "./templates/newsletter";
+import { AffiliateApprovalEmail } from "./templates/affiliate-approval";
 import type { Order, OrderStatus, PaymentStatus } from "@/types";
+import type { AffiliateApproval, AffiliateApprovalStatus } from "@/types/affiliate";
 
 export interface SendOrderConfirmationParams {
   order: Order;
@@ -66,6 +68,14 @@ export interface SendNewsletterParams {
   ctaLink?: string;
   ctaText?: string;
   unsubscribeLink?: string;
+}
+
+export interface SendAffiliateApprovalParams {
+  approval: AffiliateApproval;
+  customerName: string;
+  customerEmail: string;
+  status: AffiliateApprovalStatus;
+  note?: string;
 }
 
 export class EmailService {
@@ -275,6 +285,43 @@ export class EmailService {
       return { success: true, messageId: result.data?.id };
     } catch (error) {
       console.error("Error sending newsletter email:", error);
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      };
+    }
+  }
+
+  /**
+   * Send affiliate approval email
+   */
+  async sendAffiliateApproval(params: SendAffiliateApprovalParams): Promise<{ success: boolean; messageId?: string; error?: string }> {
+    try {
+      const html = await render(
+        AffiliateApprovalEmail({
+          approval: params.approval,
+          customerName: params.customerName,
+          customerEmail: params.customerEmail,
+          status: params.status,
+          note: params.note,
+        })
+      );
+
+      const statusText = params.status === "APPROVED" ? "Đã duyệt" : "Đã từ chối";
+      const subject = params.status === "APPROVED" 
+        ? "Yêu cầu affiliate đã được duyệt" 
+        : "Yêu cầu affiliate đã bị từ chối";
+
+      const result = await resend.emails.send({
+        from: `${FROM_NAME} <${FROM_EMAIL}>`,
+        to: params.customerEmail,
+        subject,
+        html,
+      });
+
+      return { success: true, messageId: result.data?.id };
+    } catch (error) {
+      console.error("Error sending affiliate approval email:", error);
       return { 
         success: false, 
         error: error instanceof Error ? error.message : "Unknown error" 

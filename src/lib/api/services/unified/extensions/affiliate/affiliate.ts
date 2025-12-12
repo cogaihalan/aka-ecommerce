@@ -4,6 +4,7 @@ import type { QueryParams, AffiliateAccountListResponse, AffiliateWithdrawalList
 
 export class  UnifiedAffiliateService {
     protected basePath = "/admin/affiliate/account";
+    protected withdrawPath = "/withdraw-history";
 
     async getAffiliateAccount(params: QueryParams = {}): Promise<AffiliateAccountListResponse> {
         const searchParams = new URLSearchParams();
@@ -31,7 +32,7 @@ export class  UnifiedAffiliateService {
 
         if (params.status !== undefined) searchParams.append("status", params.status.toString());
 
-        const response = await apiClient.get<AffiliateWithdrawalListResponse>(`${this.basePath}?${searchParams.toString()}`);
+        const response = await apiClient.get<AffiliateWithdrawalListResponse>(`${this.basePath}${this.withdrawPath}?${searchParams.toString()}`);
         return response.data!;
     }
 
@@ -47,12 +48,12 @@ export class  UnifiedAffiliateService {
 
         if (params.type !== undefined) searchParams.append("type", params.type);
 
-        const response = await apiClient.get<AffiliateTransactionListResponse>(`${this.basePath}?${searchParams.toString()}`);
+        const response = await apiClient.get<AffiliateTransactionListResponse>(`${this.basePath}/transactions?${searchParams.toString()}`);
         return response.data!;
     }
 
     async updateAffiliateWithdrawalStatus(id: number): Promise<AffiliateWithdrawal> {
-        const response = await apiClient.post<AffiliateWithdrawal>(`${this.basePath}/${id}`);
+        const response = await apiClient.post<AffiliateWithdrawal>(`${this.basePath}/withdraw/${id}`);
         return response.data!;
     }
 }

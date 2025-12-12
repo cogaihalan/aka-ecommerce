@@ -2,6 +2,7 @@ import { emailClient } from "./client";
 import { unifiedOrderService } from "@/lib/api/services/unified";
 import { unifiedUserService } from "@/lib/api/services/unified";
 import type { Order, OrderStatus } from "@/types";
+import type { AffiliateApproval, AffiliateApprovalStatus } from "@/types/affiliate";
 
 /**
  * Helper function to get customer email from order
@@ -152,6 +153,36 @@ export async function sendShippedOrderEmail(
   } catch (error) {
     console.error("Error sending shipped order email:", error);
     // Don't throw - email sending failure shouldn't break the order flow
+  }
+}
+
+/**
+ * Send affiliate approval email
+ */
+export async function sendAffiliateApprovalEmail(
+  approval: AffiliateApproval,
+  status: AffiliateApprovalStatus,
+  note?: string
+): Promise<void> {
+  try {
+    const customerEmail = approval.user?.email;
+    if (!customerEmail) {
+      console.warn(`Cannot send affiliate approval email: No email found for approval #${approval.id}`);
+      return;
+    }
+
+    const customerName = approval.user?.fullName || approval.user?.username || "Người dùng";
+    
+    await emailClient.sendAffiliateApproval({
+      approval,
+      customerName,
+      customerEmail,
+      status,
+      note,
+    });
+  } catch (error) {
+    console.error("Error sending affiliate approval email:", error);
+    // Don't throw - email sending failure shouldn't break the approval flow
   }
 }
 

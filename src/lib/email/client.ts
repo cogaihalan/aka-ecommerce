@@ -53,6 +53,14 @@ export interface SendPromotionParams {
   ctaText?: string;
 }
 
+export interface SendAffiliateApprovalParams {
+  approval: any; // AffiliateApproval type
+  customerName: string;
+  customerEmail: string;
+  status: string; // AffiliateApprovalStatus
+  note?: string;
+}
+
 export const emailClient = {
   /**
    * Send order confirmation email
@@ -192,6 +200,35 @@ export const emailClient = {
       return { success: true, messageId: data.messageId };
     } catch (error) {
       console.error("Error sending promotion email:", error);
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      };
+    }
+  },
+
+  /**
+   * Send affiliate approval email
+   */
+  async sendAffiliateApproval(params: SendAffiliateApprovalParams): Promise<{ success: boolean; messageId?: string; error?: string }> {
+    try {
+      const response = await fetch(`${API_BASE}/affiliate-approval`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { success: false, error: data.error || "Failed to send email" };
+      }
+
+      return { success: true, messageId: data.messageId };
+    } catch (error) {
+      console.error("Error sending affiliate approval email:", error);
       return { 
         success: false, 
         error: error instanceof Error ? error.message : "Unknown error" 

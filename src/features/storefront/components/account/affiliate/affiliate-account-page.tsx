@@ -8,20 +8,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { CheckCircle, XCircle, Clock, Plus } from "lucide-react";
-import { AffiliateApprovalStatus } from "@/types";
-import { storefrontAffiliateApprovalService } from "@/lib/api/services/storefront/extensions/affiliate/client/affiliate-approval-client";
-import { toast } from "sonner";
+import { CheckCircle, XCircle, Clock } from "lucide-react";
+import { AffiliateApprovalStatus, AffiliateAccount } from "@/types";
 import type { AffiliateApproval } from "@/types";
-import { useRouter } from "next/navigation";
+import { Price } from "@/components/ui/price";
 
 export default function AffiliateAccountPage({
   approval,
+  account,
 }: {
   approval: AffiliateApproval;
+  account: AffiliateAccount;
 }) {
-  const router = useRouter();
   const getStatusConfig = (status: AffiliateApprovalStatus) => {
     switch (status) {
       case AffiliateApprovalStatus.APPROVED:
@@ -63,19 +61,6 @@ export default function AffiliateAccountPage({
     ? getStatusConfig(approval.status)
     : getStatusConfig(null as any);
   const Icon = statusConfig.icon;
-  const canManageLinks = approval?.status === AffiliateApprovalStatus.APPROVED;
-
-  const handleCreateAffiliateApproval = async () => {
-    try {
-      await storefrontAffiliateApprovalService.createAffiliateApproval();
-      toast.success(
-        "Yêu cầu đăng ký affiliate đã được gửi. Vui lòng chờ phản hồi từ quản trị viên."
-      );
-    } catch (error) {
-      toast.error("Yêu cầu đăng ký affiliate thất bại");
-      console.error("Error creating affiliate approval:", error);
-    }
-  };
 
   return (
     <div className="space-y-6">
@@ -126,33 +111,51 @@ export default function AffiliateAccountPage({
         </CardContent>
       </Card>
 
-      {!canManageLinks &&
-        approval?.status === AffiliateApprovalStatus.PENDING && (
-          <Card>
-            <CardContent className="pt-6">
-              <p className="text-sm text-muted-foreground text-center">
-                Vui lòng chờ quản trị viên duyệt yêu cầu của bạn để có thể tạo
-                affiliate links.
-              </p>
-            </CardContent>
-          </Card>
-        )}
-
-      {!approval && (
+       {account && (
         <Card>
-          <CardContent className="pt-6">
-            <div className="text-center space-y-4">
-              <p className="text-sm text-muted-foreground">
-                Hãy đăng ký để bắt đầu kiếm hoa hồng.
-              </p>
-              <Button variant="default" onClick={handleCreateAffiliateApproval}>
-                <Plus className="mr-2 h-4 w-4" />
-                Đăng ký ngay
-              </Button>
+          <CardHeader>
+            <CardTitle>Tài khoản Affiliate</CardTitle>
+            <CardDescription>
+              Thông tin về tài khoản affiliate của bạn
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex gap-3 flex-col">
+                <span className="text-sm text-muted-foreground">
+                  Người dùng: {account.affiliate.fullName || account.affiliate.userName}
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  Email: {account.affiliate.email}
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  Mã affiliate: {account.affiliate.code}
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  Tỷ lệ hoa hồng: <Price
+                    price={account.affiliate.commissionRate}
+                    size="base"
+                    weight="semibold"
+                    showCurrency={true}
+                    currency="%"
+                    color="primary"
+                  />
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  Số dư: <Price
+                    price={account.balance}
+                    size="base"
+                    weight="semibold"
+                    showCurrency={true}
+                    currency="đ"
+                    color="primary"
+                  />
+                </span>
+              </div>
             </div>
           </CardContent>
         </Card>
-      )}
+       )}     
     </div>
   );
 }

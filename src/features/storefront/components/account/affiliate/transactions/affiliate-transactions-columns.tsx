@@ -6,6 +6,7 @@ import { Column, ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "lucide-react";
 import { format } from "date-fns";
+import { Price } from "@/components/ui/price";
 
 export function createColumns(): ColumnDef<AffiliateTransaction>[] {
   return [
@@ -35,12 +36,7 @@ export function createColumns(): ColumnDef<AffiliateTransaction>[] {
       cell: ({ row }) => {
         const amount = row.getValue("amount") as number;
         return (
-          <div className="font-medium">
-            {new Intl.NumberFormat("vi-VN", {
-              style: "currency",
-              currency: "VND",
-            }).format(amount)}
-          </div>
+          <Price price={amount} size="base" weight="semibold" showCurrency={true} currency="đ" />
         );
       },
     },
@@ -84,12 +80,7 @@ export function createColumns(): ColumnDef<AffiliateTransaction>[] {
       cell: ({ row }) => {
         const balance = row.getValue("balanceAfter") as number;
         return (
-          <div className="font-medium">
-            {new Intl.NumberFormat("vi-VN", {
-              style: "currency",
-              currency: "VND",
-            }).format(balance)}
-          </div>
+            <Price price={balance} size="base" weight="semibold" showCurrency={true} currency="đ" />
         );
       },
     },

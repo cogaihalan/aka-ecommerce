@@ -5,6 +5,7 @@ import { AffiliateTransaction, AffiliateTransactionType, AffiliateUserAccount } 
 import { Column, ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "lucide-react";
+import { Price } from "@/components/ui/price";
 
 export const columns: ColumnDef<AffiliateTransaction>[] = [
     {
@@ -21,6 +22,15 @@ export const columns: ColumnDef<AffiliateTransaction>[] = [
         maxSize: 16,
     },
     {
+        id: "affiliate",
+        accessorKey: "affiliate",
+        header: "Người dùng",
+        cell: ({ row }) => {
+            const affiliate = row.getValue("affiliate") as AffiliateUserAccount;
+            return <div className="font-medium text-sm w-4">{affiliate.fullName || affiliate.userName}</div>;
+        },
+    },
+    {
         id: "amount",
         accessorKey: "amount",
         header: ({ column }: { column: Column<AffiliateTransaction, unknown> }) => (
@@ -28,26 +38,13 @@ export const columns: ColumnDef<AffiliateTransaction>[] = [
         ),
         cell: ({ row }) => {
             const amount = row.getValue("amount") as number;
-            return <div className="font-medium text-sm w-4">{amount}</div>;
-        },
-    },
-    {
-        id: "affiliate",
-        accessorKey: "affiliate",
-        header: ({ column }: { column: Column<AffiliateTransaction, unknown> }) => (
-            <DataTableColumnHeader column={column} title="Người dùng" />
-        ),
-        cell: ({ row }) => {
-            const affiliate = row.getValue("affiliate") as AffiliateUserAccount;
-            return <div className="font-medium text-sm w-4">{affiliate.fullName || affiliate.userName}</div>;
+            return <Price price={amount} size="base" weight="semibold" showCurrency={true} currency="đ" />
         },
     },
     {
         id: "type",
         accessorKey: "type",
-        header: ({ column }: { column: Column<AffiliateTransaction, unknown> }) => (
-            <DataTableColumnHeader column={column} title="Loại giao dịch" />
-        ),
+        header: "Loại giao dịch",
         cell: ({ row }) => {
             const type = row.getValue("type") as AffiliateTransactionType;
             return <Badge variant="outline">{type.charAt(0).toUpperCase() + type.slice(1)}</Badge>;

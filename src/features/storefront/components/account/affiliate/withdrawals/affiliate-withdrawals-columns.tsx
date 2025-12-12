@@ -1,10 +1,11 @@
 "use client";
 
 import { DataTableColumnHeader } from "@/components/ui/table/data-table-column-header";
-import { AffiliateApprovalStatus, AffiliateWithdrawal } from "@/types";
+import { AffiliateWithdrawalStatus, AffiliateWithdrawal } from "@/types";
 import { Column, ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import { Calendar } from "lucide-react";
 
 export function createColumns(): ColumnDef<AffiliateWithdrawal>[] {
   return [
@@ -46,20 +47,15 @@ export function createColumns(): ColumnDef<AffiliateWithdrawal>[] {
     {
       id: "status",
       accessorKey: "status",
-      header: ({
-        column,
-      }: {
-        column: Column<AffiliateWithdrawal, unknown>;
-      }) => <DataTableColumnHeader column={column} title="Trạng thái" />,
+      header: "Trạng thái",
       cell: ({ row }) => {
-        const status = row.getValue("status") as AffiliateApprovalStatus;
+        const status = row.getValue("status") as AffiliateWithdrawalStatus;
         const statusConfig: Record<
-          AffiliateApprovalStatus,
+          AffiliateWithdrawalStatus,
           { label: string; variant: "default" | "secondary" | "destructive" }
         > = {
           PENDING: { label: "Chờ duyệt", variant: "secondary" },
-          APPROVED: { label: "Đã duyệt", variant: "default" },
-          REJECTED: { label: "Từ chối", variant: "destructive" },
+          COMPLETED: { label: "Đã duyệt", variant: "default" },
         };
         const config = statusConfig[status] || {
           label: status,
@@ -72,9 +68,8 @@ export function createColumns(): ColumnDef<AffiliateWithdrawal>[] {
         placeholder: "Lọc theo trạng thái...",
         variant: "select",
         options: [
-          { label: "Chờ duyệt", value: AffiliateApprovalStatus.PENDING },
-          { label: "Đã duyệt", value: AffiliateApprovalStatus.APPROVED },
-          { label: "Từ chối", value: AffiliateApprovalStatus.REJECTED },
+          { label: "Chờ duyệt", value: AffiliateWithdrawalStatus.PENDING },
+          { label: "Đã duyệt", value: AffiliateWithdrawalStatus.COMPLETED },
         ],
       },
       enableColumnFilter: true,
@@ -94,6 +89,12 @@ export function createColumns(): ColumnDef<AffiliateWithdrawal>[] {
             {format(new Date(createdAt), "dd/MM/yyyy HH:mm")}
           </div>
         );
+      },
+      enableColumnFilter: true,
+      meta: {
+        label: "Ngày tạo",
+        variant: "date",
+        icon: Calendar,
       },
       size: 120,
       maxSize: 150,

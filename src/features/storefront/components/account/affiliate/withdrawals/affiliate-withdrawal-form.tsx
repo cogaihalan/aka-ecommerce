@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -8,11 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { AffiliatePayoutMethod } from "@/types";
 import { CreateAffiliateWithdrawalRequest } from "@/lib/api/types";
 import { CreditCard } from "lucide-react";
+import { Price } from "@/components/ui/price";
 
 const withdrawalSchema = z.object({
   amount: z
@@ -25,7 +25,7 @@ const withdrawalSchema = z.object({
 type WithdrawalFormValues = z.infer<typeof withdrawalSchema>;
 
 interface AffiliateWithdrawalFormProps {
-  payoutMethods: AffiliatePayoutMethod[];
+  payoutMethod: AffiliatePayoutMethod;
   balance: number;
   onSubmit: (data: CreateAffiliateWithdrawalRequest) => Promise<void>;
   onCancel: () => void;
@@ -33,7 +33,7 @@ interface AffiliateWithdrawalFormProps {
 }
 
 export function AffiliateWithdrawalForm({
-  payoutMethods,
+  payoutMethod,
   balance,
   onSubmit,
   onCancel,
@@ -45,21 +45,19 @@ export function AffiliateWithdrawalForm({
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
     watch,
   } = useForm<WithdrawalFormValues>({
     resolver: zodResolver(withdrawalSchema),
     defaultValues: {
       amount: 0,
-      payoutMethodId: 0,
+      payoutMethodId: payoutMethod?.id,
     },
   });
 
-  const watchedPayoutMethodId = watch("payoutMethodId");
   const watchedAmount = watch("amount");
 
   const handleFormSubmit = async (data: WithdrawalFormValues) => {
-    if (data.amount > balance) {
+    if (data.amount > balance || !data.payoutMethodId) {
       return;
     }
     try {
@@ -76,10 +74,6 @@ export function AffiliateWithdrawalForm({
     }
   };
 
-  const activePayoutMethods = useMemo(() => payoutMethods.filter(
-    (pm) => pm.status === "ACTIVE"
-  ), [payoutMethods]);
-
   return (
     <Card>
       <CardHeader>
@@ -93,12 +87,7 @@ export function AffiliateWithdrawalForm({
               <span className="text-sm text-muted-foreground">
                 Số dư khả dụng:
               </span>
-              <span className="text-lg font-bold">
-                {new Intl.NumberFormat("vi-VN", {
-                  style: "currency",
-                  currency: "VND",
-                }).format(balance)}
-              </span>
+              <Price price={balance} size="base" weight="semibold" showCurrency={true} currency="đ" />
             </div>
           </div>
 
@@ -122,37 +111,21 @@ export function AffiliateWithdrawalForm({
               </p>
             )}
             {watchedAmount > 0 && watchedAmount <= balance && (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground flex items-center gap-2">
                 Số tiền còn lại sau khi rút:{" "}
-                {new Intl.NumberFormat("vi-VN", {
-                  style: "currency",
-                  currency: "VND",
-                }).format(balance - watchedAmount)}
+                <Price price={balance - watchedAmount} size="sm" weight="semibold" showCurrency={true} currency="đ" />
               </p>
             )}
           </div>
 
           {/* Payout Method Selection */}
           <div className="space-y-3">
-            <Label>Phương thức thanh toán *</Label>
-            {activePayoutMethods.length > 0 ? (
-              <RadioGroup
-                value={watchedPayoutMethodId?.toString() || ""}
-                onValueChange={(value) =>
-                  setValue("payoutMethodId", parseInt(value))
-                }
-                className="space-y-3"
-              >
-                {activePayoutMethods.map((payoutMethod) => (
-                  <div
-                    key={payoutMethod.id}
-                    className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-muted/50"
-                  >
-                    <RadioGroupItem
-                      value={payoutMethod.id.toString()}
-                      id={`payout-${payoutMethod.id}`}
-                      className="mt-1"
-                    />
+            <Label>Tài khoản nhận tiền</Label>
+            {payoutMethod ? (
+                <div
+                  key={payoutMethod.id}
+                  className="flex items-start space-x-3 p-3 border rounded-lg hover:bg-muted/50"
+                >
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <CreditCard className="h-4 w-4 text-muted-foreground" />
@@ -184,15 +157,12 @@ export function AffiliateWithdrawalForm({
                           </code>
                         </p>
                       </div>
-                    </div>
                   </div>
-                ))}
-              </RadioGroup>
+                </div>
             ) : (
               <div className="text-center py-4 border rounded-lg">
                 <p className="text-muted-foreground mb-4">
-                  Bạn chưa có phương thức thanh toán nào. Vui lòng thêm phương
-                  thức thanh toán trước khi rút tiền.
+                  Bạn chưa có tài khoản nhận tiền nào.
                 </p>
                 <Button
                   type="button"
@@ -201,14 +171,9 @@ export function AffiliateWithdrawalForm({
                     window.location.href = "/account/affiliate/payouts";
                   }}
                 >
-                  Thêm phương thức thanh toán
+                  Thêm tài khoản
                 </Button>
               </div>
-            )}
-            {errors.payoutMethodId && (
-              <p className="text-sm text-red-500">
-                {errors.payoutMethodId.message}
-              </p>
             )}
           </div>
 
@@ -226,10 +191,10 @@ export function AffiliateWithdrawalForm({
               disabled={
                 isSubmitting ||
                 isLoading ||
-                activePayoutMethods.length === 0 ||
+                !payoutMethod ||
                 watchedAmount > balance ||
                 watchedAmount <= 0 ||
-                !watchedPayoutMethodId
+                !payoutMethod.id
               }
             >
               {isSubmitting ? "Đang gửi yêu cầu..." : "Gửi yêu cầu rút tiền"}

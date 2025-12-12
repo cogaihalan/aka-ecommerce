@@ -351,7 +351,7 @@ export interface SubmissionMediaUploadRequest {
 // Affiliate API types
 export interface AdminUpdateAffiliateApprovalStatusRequest {
   id: number;
-  status: AffiliateApprovalStatus;
+  reason?: string;
 }
 
 export interface CreateAffiliateLinkRequest {

@@ -101,7 +101,7 @@ export function UserDialog({ user, trigger, onDialogClose }: UserDialogProps) {
             <Avatar className="h-16 w-16">
               <AvatarImage src={user.avatarUrl} />
               <AvatarFallback className="text-lg">
-                {user.fullName.charAt(0).toUpperCase()}
+                {user.fullName?.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div className="space-y-1">

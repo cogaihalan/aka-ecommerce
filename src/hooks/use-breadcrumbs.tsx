@@ -20,6 +20,18 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
   "/admin/pages": [{ title: "Trang", link: "/admin/pages" }],
   "/admin/settings": [{ title: "Cài đặt", link: "/admin/settings" }],
   "/admin/analytics": [{ title: "Phân tích", link: "/admin/analytics" }],
+  "/admin/affiliate-approvals": [
+    { title: "Quản lý yêu cầu đăng ký đại lý/CTV", link: "/admin/affiliate-approvals" },
+  ],
+  "/admin/affiliate-links": [
+    { title: "Quản lý liên kết affiliate", link: "/admin/affiliate-links" },
+  ],
+  "/admin/affiliate-withdrawals": [
+    { title: "Quản lý yêu cầu rút tiền", link: "/admin/affiliate-withdrawals" },
+  ],
+  "/admin/affiliate-transactions": [
+    { title: "Quản lý giao dịch affiliate", link: "/admin/affiliate-transactions" },
+  ],
   "/account/wishlist": [
     { title: "Tài khoản", link: "/account" },
     { title: "Yêu thích", link: "/account/wishlist" },
@@ -43,6 +55,29 @@ const routeMapping: Record<string, BreadcrumbItem[]> = {
     { title: "Tài khoản", link: "/account" },
     { title: "Đơn hàng", link: "/account/orders" },
   ],
+
+  "/account/affiliate/approvals": [
+    { title: "Tài khoản", link: "/account" },
+    { title: "Quản lý yêu cầu đăng ký đại lý/CTV", link: "/account/affiliate/approvals" },
+  ],
+  "/account/affiliate/links": [
+    { title: "Tài khoản", link: "/account" },
+    { title: "Quản lý liên kết affiliate", link: "/account/affiliate/links" },
+  ],
+  "/account/affiliate/withdrawals": [
+    { title: "Tài khoản", link: "/account" },
+    { title: "Quản lý yêu cầu rút tiền", link: "/account/affiliate/withdrawals" },
+  ],
+  "/account/affiliate/transactions": [
+    { title: "Tài khoản", link: "/account" },
+    { title: "Quản lý giao dịch affiliate", link: "/account/affiliate/transactions" },
+  ],
+
+  "/account/affiliate/payouts": [
+    { title: "Tài khoản", link: "/account" },
+    { title: "Quản lý tài khoản nhận tiền", link: "/account/affiliate/payouts" },
+  ],
+
   "/auth/sign-in": [{ title: "Đăng nhập", link: "/auth/sign-in" }],
   "/auth/sign-up": [{ title: "Đăng ký", link: "/auth/sign-up" }],
   "/affiliate": [{ title: "Chương trình Affiliate", link: "/affiliate" }],

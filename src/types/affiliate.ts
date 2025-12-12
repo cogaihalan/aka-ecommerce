@@ -5,6 +5,11 @@ export enum AffiliateApprovalStatus {
   REJECTED = "REJECTED",
 }
 
+export enum AffiliateWithdrawalStatus {
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+}
+
 export enum AffiliateTransactionType {
   COMMISSION = "COMMISSION",
   WITHDRAWAL = "WITHDRAWAL",
@@ -29,11 +34,12 @@ export interface AffiliateApproval {
   createdBy: string;
   updatedBy: string;
   id: number;
-  response: {
+  user: {
     id: number;
     username: string;
     clerkId: string;
     fullName: string;
+    email: string;
   };
   status: AffiliateApprovalStatus;
   reason: string;
@@ -61,7 +67,7 @@ export interface AffiliatePayoutMethod {
   identifier: string;
   bankName: string;
   accountHolder: string;
-  status: "ACTIVE" | "INACTIVE";
+  status: "ACTIVE" | "INACTIVE" | "DELETED";
   createdAt: Date;
   updatedAt: Date;
   }
@@ -71,7 +77,7 @@ export interface AffiliateWithdrawal {
   id: number;
   affiliate: AffiliateUserAccount;
   amount: number;
-  status: AffiliateApprovalStatus;
+  status: AffiliateWithdrawalStatus;
   createdAt: Date;
   updatedAt: Date;
 }

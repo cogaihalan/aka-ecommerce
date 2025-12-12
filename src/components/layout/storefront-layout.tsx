@@ -6,6 +6,7 @@ import TopBar from "@/components/layout/top-bar";
 import StorefrontHeader from "@/components/layout/storefront-header";
 import StorefrontFooter from "@/components/layout/storefront-footer";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { SnowflakeEffect } from "@/components/effect/snowflake-effect";
 
 // Lazy load non-critical components to reduce initial bundle size
 const ScrollToTopButton = dynamic(
@@ -80,6 +81,7 @@ export default function StorefrontLayout({ children }: StorefrontLayoutProps) {
                     }}
                 />
             </Suspense>
+            <SnowflakeEffect />
         </div>
     );
 }

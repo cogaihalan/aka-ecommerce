@@ -23,6 +23,11 @@ const baseConfig: NextConfig = {
         protocol: "https",
         hostname: "picsum.photos",
         port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "goose55.run.place",
+        port: "",
       }
     ],
     // Optimize images for better performance

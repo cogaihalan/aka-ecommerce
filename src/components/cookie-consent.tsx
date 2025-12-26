@@ -3,11 +3,40 @@
 import CookieConsent from "react-cookie-consent";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Cookie, Shield } from "lucide-react";
 
 export function CookieConsentBanner() {
+  const [isReady, setIsReady] = useState(false);
+
+  // Defer rendering until browser is idle to avoid blocking TBT
   useEffect(() => {
+    let idleCallbackId: number | undefined;
+    let timeoutId: NodeJS.Timeout | undefined;
+
+    if ('requestIdleCallback' in window) {
+      idleCallbackId = (window as any).requestIdleCallback(
+        () => setIsReady(true),
+        { timeout: 2500 }
+      );
+    } else {
+      // Fallback: wait for page to be interactive
+      timeoutId = setTimeout(() => setIsReady(true), 1500);
+    }
+
+    return () => {
+      if (idleCallbackId !== undefined && 'cancelIdleCallback' in window) {
+        (window as any).cancelIdleCallback(idleCallbackId);
+      }
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isReady) return;
+
     // Hide default buttons and replace with custom UI buttons
     const hideDefaultButtons = () => {
       const confirmButton = document.getElementById("rcc-confirm-button");
@@ -23,7 +52,10 @@ export function CookieConsentBanner() {
 
     const timer = setTimeout(hideDefaultButtons, 50);
     return () => clearTimeout(timer);
-  }, []);
+  }, [isReady]);
+
+  // Don't render until page is interactive
+  if (!isReady) return null;
 
   return (
     <CookieConsent

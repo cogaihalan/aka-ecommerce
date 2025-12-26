@@ -1,14 +1,39 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
 export function GoogleAnalyticsComponent() {
   const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-JCGBQBRY9S";
+  const [shouldLoad, setShouldLoad] = useState(false);
 
-  // Initialize consent mode after component mounts (non-blocking)
+  // Defer GA loading to avoid blocking TBT
   useEffect(() => {
-    if (typeof window === "undefined" || !window.gtag) return;
+    let idleCallbackId: number | undefined;
+    let timeoutId: NodeJS.Timeout | undefined;
+
+    const loadGA = () => setShouldLoad(true);
+
+    if ('requestIdleCallback' in window) {
+      idleCallbackId = (window as any).requestIdleCallback(loadGA, { timeout: 3000 });
+    } else {
+      // Fallback: defer to next tick
+      timeoutId = setTimeout(loadGA, 1500);
+    }
+
+    return () => {
+      if (idleCallbackId !== undefined && 'cancelIdleCallback' in window) {
+        (window as any).cancelIdleCallback(idleCallbackId);
+      }
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, []);
+
+  // Initialize consent mode after GA loads
+  useEffect(() => {
+    if (!shouldLoad || typeof window === "undefined" || !window.gtag) return;
 
     // Check if user has previously given consent
     const consentCookie = document.cookie
@@ -22,7 +47,10 @@ export function GoogleAnalyticsComponent() {
       ad_storage: hasConsent ? "granted" : "denied",
       wait_for_update: 500,
     });
-  }, []);
+  }, [shouldLoad]);
+
+  // Don't load GA until page is interactive
+  if (!shouldLoad) return null;
 
   return <GoogleAnalytics gaId={measurementId} />;
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useReportWebVitals } from "next/web-vitals";
 import { handleWebVitals } from "@/lib/web-vitals";
 
@@ -20,7 +21,38 @@ import { handleWebVitals } from "@/lib/web-vitals";
  * attribution data for debugging performance issues.
  */
 export function WebVitalsReporter() {
-  useReportWebVitals(handleWebVitals);
+  const [isReady, setIsReady] = useState(false);
+
+  // Defer web vitals reporting to avoid blocking TBT
+  useEffect(() => {
+    let idleCallbackId: number | undefined;
+    let timeoutId: NodeJS.Timeout | undefined;
+
+    if ('requestIdleCallback' in window) {
+      idleCallbackId = (window as any).requestIdleCallback(
+        () => setIsReady(true),
+        { timeout: 2000 }
+      );
+    } else {
+      timeoutId = setTimeout(() => setIsReady(true), 1000);
+    }
+
+    return () => {
+      if (idleCallbackId !== undefined && 'cancelIdleCallback' in window) {
+        (window as any).cancelIdleCallback(idleCallbackId);
+      }
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, []);
+
+  // Only report when ready
+  useReportWebVitals((metric) => {
+    if (isReady) {
+      handleWebVitals(metric);
+    }
+  });
 
   return null;
 }

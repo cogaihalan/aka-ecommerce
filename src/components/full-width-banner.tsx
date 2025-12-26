@@ -67,54 +67,58 @@ const FullWidthBanner = memo(function FullWidthBanner({
 
   // Preload images to prevent layout shift - prioritize first image for LCP
   useEffect(() => {
-    const preloadImages = async () => {
-      // Prioritize first image (LCP candidate) - load immediately
-      const firstSlide = bannerSlides[0];
-      if (firstSlide) {
-        const firstImg = new Image();
-        firstImg.fetchPriority = "high";
-        firstImg.loading = "eager";
-        firstImg.onload = () => {
-          setLoadedImages((prev) => new Set([...Array.from(prev), firstSlide.image]));
-          setIsLoaded(true); // Show content as soon as first image loads
-        };
-        firstImg.onerror = () => {
-          setImageErrors((prev) => new Set([...Array.from(prev), firstSlide.image]));
-          setIsLoaded(true);
-        };
-        firstImg.src = firstSlide.image;
-      }
+    let idleCallbackId: number | undefined;
+    let timeoutId: NodeJS.Timeout | undefined;
 
-      // Load remaining images with lower priority
+    // Load first image immediately for LCP
+    const firstSlide = bannerSlides[0];
+    if (firstSlide) {
+      const firstImg = new Image();
+      firstImg.fetchPriority = "high";
+      firstImg.loading = "eager";
+      firstImg.onload = () => {
+        setLoadedImages((prev) => new Set([...Array.from(prev), firstSlide.image]));
+        setIsLoaded(true);
+      };
+      firstImg.onerror = () => {
+        setImageErrors((prev) => new Set([...Array.from(prev), firstSlide.image]));
+        setIsLoaded(true);
+      };
+      firstImg.src = firstSlide.image;
+    }
+
+    // Defer loading remaining images to avoid blocking TBT
+    const loadRemainingImages = () => {
       const remainingSlides = bannerSlides.slice(1);
-      const imagePromises = remainingSlides.map((slide) => {
-        return new Promise<string>((resolve, reject) => {
-          const img = new Image();
-          img.fetchPriority = "low";
-          img.loading = "lazy";
-          img.onload = () => {
-            setLoadedImages(
-              (prev) => new Set([...Array.from(prev), slide.image])
-            );
-            resolve(slide.image);
-          };
-          img.onerror = () => {
-            setImageErrors(
-              (prev) => new Set([...Array.from(prev), slide.image])
-            );
-            reject(slide.image);
-          };
-          img.src = slide.image;
-        });
-      });
-
-      // Don't wait for remaining images - they'll load in background
-      Promise.allSettled(imagePromises).catch(() => {
-        // Silently handle errors for non-critical images
+      remainingSlides.forEach((slide) => {
+        const img = new Image();
+        img.fetchPriority = "low";
+        img.loading = "lazy";
+        img.onload = () => {
+          setLoadedImages((prev) => new Set([...Array.from(prev), slide.image]));
+        };
+        img.onerror = () => {
+          setImageErrors((prev) => new Set([...Array.from(prev), slide.image]));
+        };
+        img.src = slide.image;
       });
     };
 
-    preloadImages();
+    // Use requestIdleCallback to defer non-LCP images
+    if ('requestIdleCallback' in window) {
+      idleCallbackId = (window as any).requestIdleCallback(loadRemainingImages, { timeout: 3000 });
+    } else {
+      timeoutId = setTimeout(loadRemainingImages, 1000);
+    }
+
+    return () => {
+      if (idleCallbackId !== undefined && 'cancelIdleCallback' in window) {
+        (window as any).cancelIdleCallback(idleCallbackId);
+      }
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [bannerSlides]);
 
   const goToSlide = useCallback(
@@ -183,7 +187,7 @@ const FullWidthBanner = memo(function FullWidthBanner({
       <button
         onClick={prevSlide}
         disabled={isAnimating || !isLoaded}
-        className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-40 p-2 sm:p-3 rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/20 shadow-lg transition-all duration-200 hover:scale-110 hover-translate-x-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-40 p-2 sm:p-3 rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/20 shadow-lg transition-all duration-200 hover:scale-110 hover:-translate-x-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         aria-label="Previous slide"
       >
         <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-white" />

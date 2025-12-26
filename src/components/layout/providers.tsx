@@ -1,6 +1,6 @@
 "use client";
-import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
+import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
 import React from "react";
 import { ActiveThemeProvider } from "@/components/theme/active-theme";
@@ -11,6 +11,10 @@ import { AppProvider } from "@/components/providers/app-provider";
 import { ApiAuthProvider } from "@/components/providers/api-auth-provider";
 import { AuthSyncProvider } from "@/components/providers/auth-sync-provider";
 import { CookieConsentBanner } from "@/components/cookie-consent";
+
+const ClerkProvider = dynamic(() => import("@clerk/nextjs").then((mod) => mod.ClerkProvider), {
+  ssr: false,
+});
 
 export default function Providers({
   activeThemeValue,

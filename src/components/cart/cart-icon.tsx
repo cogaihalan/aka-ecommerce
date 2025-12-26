@@ -41,6 +41,7 @@ export function CartIcon({ className, showBadge = true }: CartIconProps) {
           isOpen && "pointer-events-none",
           className
         )}
+        aria-label="Giỏ hàng"
       >
         <ShoppingCart
           className={cn(

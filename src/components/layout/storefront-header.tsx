@@ -62,6 +62,7 @@ export default function StorefrontHeader() {
                 className="relative"
                 onClick={handleWishlistClick}
                 asChild={isAuthenticated}
+                aria-label="Danh sách yêu thích"
               >
                 {isAuthenticated ? (
                   <Link href="/account/wishlist">
@@ -95,6 +96,7 @@ export default function StorefrontHeader() {
                 size="icon"
                 className={`lg:hidden ${isSearchOpen ? "pointer-events-none" : ""}`}
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
+                aria-label="Tìm kiếm sản phẩm"
               >
                 {isSearchOpen ? (
                   <X className="h-5 w-5" />

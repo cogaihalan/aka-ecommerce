@@ -31,6 +31,7 @@ export function AuthIcon({ className }: AuthIconProps) {
           isDropdownOpen && "pointer-events-none",
           className
         )}
+        aria-label="Tài khoản"
       >
         <User
           className={cn(

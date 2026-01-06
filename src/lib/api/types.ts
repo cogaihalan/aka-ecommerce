@@ -212,7 +212,7 @@ export interface UpdateProductReviewStatusRequest {
 export interface CreateCategoryRequest {
   name: string;
   description: string;
-  parentId?: number;
+  parentId?: number | null;
 }
 
 export interface UpdateCategoryRequest extends Partial<CreateCategoryRequest> {

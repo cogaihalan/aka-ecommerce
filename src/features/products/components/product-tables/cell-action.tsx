@@ -8,10 +8,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Product } from "@/types/product";
-import { Edit, MoreVertical, Trash2, Image } from "lucide-react";
+import { Edit, MoreVertical, Image } from "lucide-react";
 import { useState } from "react";
 import { ProductDialog } from "../product-dialog";
 import { ProductImageManager } from "../product-image-manager";
+import { useCategories } from "@/components/providers/app-provider";
 
 interface CellActionProps {
   data: Product;
@@ -20,12 +21,13 @@ interface CellActionProps {
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [imageManagerOpen, setImageManagerOpen] = useState(false);
-
+  const { categories } = useCategories();
   return (
     <>
       <ProductDialog
         open={editDialogOpen}
         onOpenChange={setEditDialogOpen}
+        categories={categories}
         product={data}
         onSuccess={() => {
           // Refresh the page or refetch data

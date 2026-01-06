@@ -40,9 +40,9 @@ import { Category } from "@/types/app";
 const formSchema = z.object({
   name: z.string().min(1, "Tên là bắt buộc"),
   description: z.string().min(1, "Mô tả là bắt buộc"),
-  stock: z.number().min(0, "Tồn kho phải không âm"),
-  price: z.number().min(0, "Giá phải là số dương"),
-  discountPrice: z.number().min(0, "Giá khuyến mãi phải không âm").optional(),
+  stock: z.number().min(0, "Tồn kho phải lớn hơn 0"),
+  price: z.number().min(0, "Giá phải lớn hơn 0"),
+  discountPrice: z.number().min(0, "Giá khuyến mãi phải lớn hơn 0").optional(),
   status: z.enum(["DRAFT", "ACTIVE", "INACTIVE", "ARCHIVED", "OUT_OF_STOCK"]),
   categoryIds: z.array(z.number()).min(1, "Cần ít nhất một danh mục"),
 });

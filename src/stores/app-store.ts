@@ -4,7 +4,6 @@ import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 import { AppStore } from "@/types/app";
 import { unifiedCategoryService } from "@/lib/api/services/unified";
-import { storefrontContestService } from "@/lib/api/services/storefront/extensions/contests/contest-client";
 
 export const useAppStore = create<AppStore>()(
   devtools(
@@ -33,16 +32,12 @@ export const useAppStore = create<AppStore>()(
         },
 
         initializeApp: async () => {
-          const { setLoading, setError, refreshCategories, refreshContests } = get();
+          const { setLoading, setError, refreshCategories } = get();
 
           try {
             setLoading(true);
             setError(null);
-
-            // Fetch categories
             await refreshCategories();
-            // Optionally preload contests similar to categories
-            await refreshContests();
           } catch (error) {
             setError(
               error instanceof Error
@@ -96,12 +91,10 @@ export const useAppStore = create<AppStore>()(
         },
 
         refreshContests: async () => {
-          const { setLoading, setError, setContests } = get();
+          const { setLoading, setError } = get();
           try {
             setLoading(true);
             setError(null);
-            // const res = await storefrontContestService.getContests({ page: 1, size: 100, active: true, sort: ["createdAt,desc"] });
-            setContests([]);
           } catch (error) {
             setError(
               error instanceof Error ? error.message : "Failed to fetch contests"

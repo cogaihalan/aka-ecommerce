@@ -4,9 +4,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { ProductDialog } from "./product-dialog";
+import { useCategories } from "@/components/providers/app-provider";
 
 export function AddProductButton() {
   const [open, setOpen] = useState(false);
+  const { categories } = useCategories();
 
   return (
     <>
@@ -17,6 +19,7 @@ export function AddProductButton() {
 
       <ProductDialog
         open={open}
+        categories={categories}
         onOpenChange={setOpen}
         onSuccess={() => {
           // Refresh the page or refetch data

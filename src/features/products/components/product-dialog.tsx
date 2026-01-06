@@ -35,7 +35,7 @@ import { z } from "zod";
 import { CreateProductRequest, UpdateProductRequest } from "@/lib/api/types";
 import { unifiedProductService } from "@/lib/api/services/unified";
 import { toast } from "sonner";
-import { useApp } from "@/components/providers/app-provider";
+import { Category } from "@/types/app";
 
 const formSchema = z.object({
   name: z.string().min(1, "Tên là bắt buộc"),
@@ -51,6 +51,7 @@ type FormData = z.infer<typeof formSchema>;
 
 interface ProductDialogProps {
   open: boolean;
+  categories: Category[];
   onOpenChange: (open: boolean) => void;
   product?: any; // For editing
   onSuccess?: () => void;
@@ -58,12 +59,12 @@ interface ProductDialogProps {
 
 export function ProductDialog({
   open,
+  categories = [],
   onOpenChange,
   product,
   onSuccess,
 }: ProductDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const { categories } = useApp();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),

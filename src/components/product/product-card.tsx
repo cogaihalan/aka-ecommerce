@@ -50,6 +50,7 @@ export function ProductCard({
     useWishlistActions();
   const isAuthenticated = useWishlistAuthStatus();
   const isInWishlistState = useIsInWishlist(product.id);
+  const primaryImage = product.images.find((image) => image.primary)?.url || "/assets/placeholder-image.jpeg";
 
   // Stock status checks
   const isOutOfStock = isProductOutOfStock(product);
@@ -108,7 +109,7 @@ export function ProductCard({
             <div className="w-20 h-20 bg-muted rounded-lg overflow-hidden">
               <Image
                 src={
-                  product.images?.[0]?.url || "/assets/placeholder-image.jpeg"
+                  primaryImage
                 }
                 alt={product.name}
                 width={80}
@@ -230,7 +231,7 @@ export function ProductCard({
       >
         <div className="aspect-square bg-muted rounded-t-lg overflow-hidden relative">
           <Image
-            src={product.images?.[0]?.url || "/assets/placeholder-image.jpeg"}
+            src={primaryImage}
             alt={product.name}
             width={300}
             height={300}
@@ -402,7 +403,7 @@ export function ProductCard({
     >
       <div className="flex-shrink-0 bg-muted rounded-t-lg overflow-hidden relative">
         <Image
-          src={product.images?.[0]?.url || "/assets/placeholder-image.jpeg"}
+          src={primaryImage}
           alt={product.name}
           width={300}
           height={300}

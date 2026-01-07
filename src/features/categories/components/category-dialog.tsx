@@ -237,10 +237,10 @@ export function CategoryDialog({
                   <FormLabel>Danh mục cha (Không bắt buộc)</FormLabel>
                   <Select
                     onValueChange={(value) => {
-                      field.onChange(value === "none" ? 0 : parseInt(value));
+                      field.onChange(value === "none" ? null : parseInt(value));
                     }}
                     value={
-                      field.value === 0
+                      field.value === null
                         ? "none"
                         : field.value?.toString() || "none"
                     }

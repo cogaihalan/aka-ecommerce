@@ -72,7 +72,13 @@ export function useApp() {
 
 // Convenience hooks for specific data
 export function useCategories() {
-  const { categories } = useApp();
+  const { categories, refreshCategories } = useApp();
+
+  // Refresh categories when this hook is used
+  useEffect(() => {
+    refreshCategories();
+  }, [refreshCategories]);
+
   return { categories };
 }
 

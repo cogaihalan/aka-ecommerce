@@ -35,7 +35,7 @@ import { unifiedCategoryService } from "@/lib/api/services/unified";
 import { useAppStore } from "@/stores/app-store";
 import { toast } from "sonner";
 import { Category } from "@/types";
-import { useApp } from "@/components/providers/app-provider";
+import { useCategories } from "@/components/providers/app-provider";
 import { FileUploader } from "@/components/file-uploader";
 import { Progress } from "@/components/ui/progress";
 import { Image as ImageIcon, X } from "lucide-react";
@@ -44,8 +44,8 @@ import Image from "next/image";
 const formSchema = z.object({
   name: z.string().min(1, "Tên là bắt buộc"),
   description: z.string().min(1, "Mô tả là bắt buộc"),
-  parentId: z.number().default(0),
-});
+  parentId: z.number().nullable(),
+})
 
 type FormData = z.infer<typeof formSchema>;
 
@@ -67,7 +67,7 @@ export function CategoryDialog({
     {}
   );
   const [isUploading, setIsUploading] = useState(false);
-  const { categories } = useApp();
+  const { categories } = useCategories();
   const { addCategory, updateCategory } = useAppStore();
 
   const form = useForm<FormData>({
@@ -75,7 +75,7 @@ export function CategoryDialog({
     defaultValues: {
       name: category?.name || "",
       description: category?.description || "",
-      parentId: category?.parentId || 0,
+      parentId: category?.parentId || null,
     },
   });
 
@@ -164,8 +164,8 @@ export function CategoryDialog({
         const createData: CreateCategoryRequest = {
           name: data.name,
           description: data.description,
-          ...(data.parentId !== 0 && { parentId: data.parentId }),
-        };
+          ...(data.parentId !== null && { parentId: data.parentId }),
+        } as CreateCategoryRequest;
         const newCategory =
           await unifiedCategoryService.createCategory(createData);
         addCategory(newCategory);
@@ -237,10 +237,10 @@ export function CategoryDialog({
                   <FormLabel>Danh mục cha (Không bắt buộc)</FormLabel>
                   <Select
                     onValueChange={(value) => {
-                      field.onChange(value === "none" ? 0 : parseInt(value));
+                      field.onChange(value === "none" ? null : parseInt(value));
                     }}
                     value={
-                      field.value === 0
+                      field.value === null
                         ? "none"
                         : field.value?.toString() || "none"
                     }

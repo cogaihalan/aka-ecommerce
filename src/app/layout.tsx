@@ -35,7 +35,7 @@ export default async function RootLayout({
 }) {
   // For static generation, we'll let the client-side handle theme
   // This prevents dynamic server usage errors during build
-  let activeThemeValue: string | undefined;
+  let activeThemeValue: string | undefined = 'default';
   let isScaled = false;
 
   // Only read cookies in non-static contexts

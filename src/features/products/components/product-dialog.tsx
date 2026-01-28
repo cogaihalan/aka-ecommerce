@@ -35,14 +35,14 @@ import { z } from "zod";
 import { CreateProductRequest, UpdateProductRequest } from "@/lib/api/types";
 import { unifiedProductService } from "@/lib/api/services/unified";
 import { toast } from "sonner";
-import { useApp } from "@/components/providers/app-provider";
+import { Category } from "@/types/app";
 
 const formSchema = z.object({
   name: z.string().min(1, "Tên là bắt buộc"),
   description: z.string().min(1, "Mô tả là bắt buộc"),
-  stock: z.number().min(0, "Tồn kho phải không âm"),
-  price: z.number().min(0, "Giá phải là số dương"),
-  discountPrice: z.number().min(0, "Giá khuyến mãi phải không âm").optional(),
+  stock: z.number().min(0, "Tồn kho phải lớn hơn 0"),
+  price: z.number().min(0, "Giá phải lớn hơn 0"),
+  discountPrice: z.number().min(0, "Giá khuyến mãi phải lớn hơn 0").optional(),
   status: z.enum(["DRAFT", "ACTIVE", "INACTIVE", "ARCHIVED", "OUT_OF_STOCK"]),
   categoryIds: z.array(z.number()).min(1, "Cần ít nhất một danh mục"),
 });
@@ -51,6 +51,7 @@ type FormData = z.infer<typeof formSchema>;
 
 interface ProductDialogProps {
   open: boolean;
+  categories: Category[];
   onOpenChange: (open: boolean) => void;
   product?: any; // For editing
   onSuccess?: () => void;
@@ -58,12 +59,12 @@ interface ProductDialogProps {
 
 export function ProductDialog({
   open,
+  categories = [],
   onOpenChange,
   product,
   onSuccess,
 }: ProductDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const { categories } = useApp();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),

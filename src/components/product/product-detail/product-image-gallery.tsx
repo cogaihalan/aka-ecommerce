@@ -109,7 +109,7 @@ export const ProductImageGallery = memo(function ProductImageGallery({
       ref={galleryRef}
       className={cn("space-y-4 product-image-gallery", className)}
     >
-      <div className="relative group">
+      <div className="relative group touch-pan-x">
         <Glider
           ref={mainGliderRef}
           hasArrows={false}
@@ -127,33 +127,35 @@ export const ProductImageGallery = memo(function ProductImageGallery({
               setCurrentSlide(glider.slide);
             }
           }}
-          className="glider-container"
+          className="glider-container touch-pan-x"
         >
           {sortedImages.map((image, index) => (
-            <div key={image.id} className="glider-slide">
-              <div className="bg-muted rounded-lg overflow-hidden transform transition-all duration-300 ease-out relative group min-h-[300px] max-h-[500px] flex items-center justify-center">
+            <div key={image.id} className="glider-slide touch-pan-x">
+              <div className="bg-muted rounded-lg overflow-hidden transform transition-all duration-300 ease-out relative group min-h-[300px] max-h-[500px] flex items-center justify-center touch-pan-x">
                 <a
                   href={image.url}
                   data-fancybox="product-gallery"
                   data-caption={image.alt}
                   data-thumb={image.url}
-                  className="w-full h-full flex items-center justify-center"
+                  className="w-full h-full flex items-center justify-center touch-pan-x"
+                  draggable={false}
                 >
                   <Image
                     src={image.url}
                     alt={image.alt}
                     width={600}
                     height={600}
-                    className="max-w-full max-h-full object-contain transition-transform duration-500 hover:scale-105"
+                    className="max-w-full max-h-full object-contain transition-transform duration-500 hover:scale-105 pointer-events-none select-none"
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 40vw"
                     priority={index === 0}
+                    draggable={false}
                   />
                 </a>
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20">
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 pointer-events-none">
                   <Button
                     variant="secondary"
                     size="icon"
-                    className="h-10 w-10 rounded-full bg-white/90 hover:bg-white shadow-lg"
+                    className="h-10 w-10 rounded-full bg-white/90 hover:bg-white shadow-lg pointer-events-auto"
                     aria-label="Open image in lightbox"
                     onClick={(e) => {
                       e.preventDefault();

@@ -116,9 +116,9 @@ export const SlideVideoComponent = memo(
     );
 
     return (
-      <div className="h-full">
+      <div className="h-full touch-pan-x">
         <div
-          className="relative h-full flex items-center cursor-pointer"
+          className="relative h-full flex items-center cursor-pointer touch-pan-x"
           onClick={handleToggleVideo}
         >
           {/* Video Background */}
@@ -164,10 +164,10 @@ export const SlideVideoComponent = memo(
           />
 
           {/* Dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/5 z-10" />
+          <div className="absolute inset-0 bg-black/5 z-10 pointer-events-none" />
 
           {/* Gradient overlay for better text contrast */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-black/50 z-20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-black/50 z-20 pointer-events-none" />
 
           {/* Content */}
           <div className="relative z-30 container mx-auto px-4 sm:px-6 lg:px-8">

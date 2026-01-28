@@ -126,7 +126,7 @@ const FullWidthBanner = memo(function FullWidthBanner({
       {/* Loading skeleton */}
       {!isLoaded && <LoadingSkeleton slideCount={bannerSlides.length} />}
 
-      <div className={cn("absolute inset-0", !isLoaded && "opacity-0")}>
+      <div className={cn("absolute inset-0 touch-pan-x", !isLoaded && "opacity-0")}>
         <Glider
           ref={gliderRef}
           draggable={true}
@@ -135,6 +135,9 @@ const FullWidthBanner = memo(function FullWidthBanner({
           slidesToShow={1}
           slidesToScroll={1}
           duration={1.2}
+          scrollLock={true}
+          scrollLockDelay={100}
+          rewind={true}
           className="h-full"
           onSlideVisible={(event: any) => {
             setCurrentSlide(event.detail.slide);

@@ -77,7 +77,7 @@ export const MobileMegaMenu: FC<MobileMegaMenuProps> = ({
                 {item.has_mega_menu ? (
                   <>
                     <AccordionTrigger className="flex items-center justify-between w-full py-3 px-4 text-base font-medium text-gray-900 dark:text-gray-100 hover:text-primary hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 [&[data-state=open]]:text-primary [&[data-state=open]]:bg-gray-50 dark:[&[data-state=open]]:bg-gray-800">
-                      <Link href={item.link} className="flex items-center gap-3">
+                      <Link href={item.link.url} className="flex items-center gap-3">
                         {item.label}
                       </Link>
                     </AccordionTrigger>

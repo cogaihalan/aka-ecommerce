@@ -16,19 +16,14 @@ export const SlideComponent = memo(
     loadedImages,
     imageErrors,
   }: SlideComponentProps) => {
-    const slideType = slide.type;
-    const imageUrl =
-      slideType === "image" ? slide.imageUrl : "/assets/placeholder-banner.png";
-    const videoUrl =
-      slideType === "video" ? slide.videoUrl : "/assets/sample-video.mp4";
-
+    const imageUrl = slide.imageUrl;
     const isImageLoaded = loadedImages.has(imageUrl);
     const hasImageError = imageErrors.has(imageUrl);
     const fallbackImage = "/assets/placeholder-banner.png";
 
     return (
-      <div className="h-full">
-        <div className="relative h-full flex items-center">
+      <div className="h-full touch-pan-x">
+        <div className="relative h-full flex items-center touch-pan-x">
           {/* Background Image - optimized for LCP */}
           <div
             className={cn(
@@ -50,10 +45,10 @@ export const SlideComponent = memo(
           )}
 
           {/* Dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/5 z-10" />
+          <div className="absolute inset-0 bg-black/5 z-10 pointer-events-none" />
 
           {/* Gradient overlay for better text contrast */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-black/50 z-20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-black/50 z-20 pointer-events-none" />
 
           {/* Content */}
           <div className="relative z-30 container mx-auto px-4 sm:px-6 lg:px-8">

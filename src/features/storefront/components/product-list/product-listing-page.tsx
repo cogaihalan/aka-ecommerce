@@ -67,7 +67,7 @@ export default function ProductListingPage() {
       state.filters.sort,
       state.filters.categoryIds,
       state.filters.priceRange,
-    ]
+    ],
   );
 
   // Fetch products with proper loading state management
@@ -88,7 +88,7 @@ export default function ProductListingPage() {
         setProducts(response.items || []);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Failed to fetch products"
+          err instanceof Error ? err.message : "Failed to fetch products",
         );
       } finally {
         setIsLoading(false);
@@ -96,7 +96,7 @@ export default function ProductListingPage() {
         setIsInitialLoad(false);
       }
     },
-    [queryParams]
+    [queryParams],
   );
 
   // Use product filters hook for client-side filtering (only for search and additional client-side filters)
@@ -128,7 +128,7 @@ export default function ProductListingPage() {
   // Show loading skeleton only on initial load
   if (isInitialLoad && isLoading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 py-8 lg:py-16">
         {/* Header */}
         <div>
           <h1 className="text-3xl font-bold mb-2">Tất cả sản phẩm</h1>
@@ -185,7 +185,7 @@ export default function ProductListingPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 py-8 lg:py-16">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold mb-2">Tất cả sản phẩm</h1>

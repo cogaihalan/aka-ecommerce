@@ -6,6 +6,7 @@ import Glider from "react-glider";
 import { cn } from "@/lib/utils";
 import {
   SlideComponent,
+  SlideVideoComponent,
   LoadingSkeleton,
   BannerSlide,
   FullWidthBannerProps,
@@ -14,41 +15,40 @@ import {
 const slides: BannerSlide[] = [
   {
     id: 1,
-    title: "Transform Your Business",
-    subtitle: "with AI-Powered Solutions",
+    type: "video",
+    title: "Nâng tầm đẳng cấp gian bếp với tinh hoa thép Việt",
+    subtitle: "AKA – Sắc Bén Từ Thép, Uy Tín Từ Tâm",
     description:
-      "Discover cutting-edge technology that revolutionizes how you work, collaborate, and grow your business in the digital age.",
-    image:
-      "/assets/placeholder-banner.png",
-    ctaText: "Get Started Free",
-    ctaLink: "#",
-    ctaSecondaryText: "Watch Demo",
-    ctaSecondaryLink: "#",
+      "Tự hào thương hiệu kéo gia dụng cao cấp 100% sản xuất tại Việt Nam",
+    imageUrl: "/assets/placeholder-banner.png",
+    videoUrl: "/assets/sample-video.mp4",
   },
   {
     id: 2,
-    title: "Boost Productivity",
-    subtitle: "by 300% or More",
+    type: "image",
+    title: "Thách Thức Mọi Loại Xương Cứng",
+    subtitle: "Chinh phục mọi thực phẩm cứng đầu",
     description:
-      "Join thousands of teams who have streamlined their workflow and achieved unprecedented levels of efficiency with our platform.",
-    image:
-      "/assets/placeholder-banner.png",
-    ctaText: "View Demo",
-    ctaLink: "#",
-    ctaSecondaryText: "Learn More",
-    ctaSecondaryLink: "#",
+      "Thiết kế trợ lực thông minh & lưỡi răng cưa chống trượt. Cắt gà, vịt gọn bưng trong 5 phút",
+    imageUrl: "/assets/placeholder-banner.png",
   },
   {
     id: 3,
-    title: "Scale Without Limits",
-    subtitle: "Enterprise-Ready Platform",
+    type: "image",
+    title: "Gửi trọn sự an tâm vào từng bữa ăn thuần khiết",
+    subtitle: "An Toàn Tuyệt Đối Cho Sức Khỏe Gia Đình",
     description:
-      "Built for growth with enterprise-grade security, unlimited scalability, and seamless integrations with your existing tools.",
-    image: "/assets/placeholder-banner.png",
-    ctaText: "Contact Sales",
-    ctaLink: "#",
-    ctaSecondaryText: "Schedule Demo",
-    ctaSecondaryLink: "#",
+      "Thép không gỉ cao cấp, đã qua kiểm định Quatest. Cam kết không thôi nhiễm kim loại nặng (Chì, Thạch tín).",
+    imageUrl: "/assets/placeholder-banner.png",
+  },
+  {
+    id: 4,
+    type: "image",
+    title: "Cam Kết Chất Lượng – Bảo Hành 5 Năm",
+    subtitle: " Đồng hành cùng gian bếp Việt. Lỗi 1 đổi 1 từ nhà sản xuất",
+    description:
+      "Đặc quyền bảo hành 5 năm – Bảo chứng vàng cho chất lượng bền bỉ vượt thời gian",
+    imageUrl: "/assets/placeholder-banner.png",
   },
 ];
 
@@ -65,7 +65,6 @@ const FullWidthBanner = memo(function FullWidthBanner({
 
   const bannerSlides = useMemo(() => customSlides || slides, [customSlides]);
 
-  // Preload images to prevent layout shift - prioritize first image for LCP
   useEffect(() => {
     let idleCallbackId: number | undefined;
     let timeoutId: NodeJS.Timeout | undefined;
@@ -77,17 +76,20 @@ const FullWidthBanner = memo(function FullWidthBanner({
       firstImg.fetchPriority = "high";
       firstImg.loading = "eager";
       firstImg.onload = () => {
-        setLoadedImages((prev) => new Set([...Array.from(prev), firstSlide.image]));
+        setLoadedImages(
+          (prev) => new Set([...Array.from(prev), firstSlide.imageUrl]),
+        );
         setIsLoaded(true);
       };
       firstImg.onerror = () => {
-        setImageErrors((prev) => new Set([...Array.from(prev), firstSlide.image]));
+        setImageErrors(
+          (prev) => new Set([...Array.from(prev), firstSlide.imageUrl]),
+        );
         setIsLoaded(true);
       };
-      firstImg.src = firstSlide.image;
+      firstImg.src = firstSlide.imageUrl;
     }
 
-    // Defer loading remaining images to avoid blocking TBT
     const loadRemainingImages = () => {
       const remainingSlides = bannerSlides.slice(1);
       remainingSlides.forEach((slide) => {
@@ -95,24 +97,30 @@ const FullWidthBanner = memo(function FullWidthBanner({
         img.fetchPriority = "low";
         img.loading = "lazy";
         img.onload = () => {
-          setLoadedImages((prev) => new Set([...Array.from(prev), slide.image]));
+          setLoadedImages(
+            (prev) => new Set([...Array.from(prev), slide.imageUrl]),
+          );
         };
         img.onerror = () => {
-          setImageErrors((prev) => new Set([...Array.from(prev), slide.image]));
+          setImageErrors(
+            (prev) => new Set([...Array.from(prev), slide.imageUrl]),
+          );
         };
-        img.src = slide.image;
+        img.src = slide.imageUrl;
       });
     };
 
-    // Use requestIdleCallback to defer non-LCP images
-    if ('requestIdleCallback' in window) {
-      idleCallbackId = (window as any).requestIdleCallback(loadRemainingImages, { timeout: 3000 });
+    if ("requestIdleCallback" in window) {
+      idleCallbackId = (window as any).requestIdleCallback(
+        loadRemainingImages,
+        { timeout: 3000 },
+      );
     } else {
       timeoutId = setTimeout(loadRemainingImages, 1000);
     }
 
     return () => {
-      if (idleCallbackId !== undefined && 'cancelIdleCallback' in window) {
+      if (idleCallbackId !== undefined && "cancelIdleCallback" in window) {
         (window as any).cancelIdleCallback(idleCallbackId);
       }
       if (timeoutId !== undefined) {
@@ -132,7 +140,7 @@ const FullWidthBanner = memo(function FullWidthBanner({
         }, 100);
       }
     },
-    [isAnimating]
+    [isAnimating],
   );
 
   const nextSlide = useCallback(() => {
@@ -149,7 +157,7 @@ const FullWidthBanner = memo(function FullWidthBanner({
     <section
       className={cn(
         "relative w-full h-[500px] sm:h-[600px] md:h-[700px] overflow-hidden",
-        className
+        className,
       )}
     >
       {/* Loading skeleton */}
@@ -158,6 +166,7 @@ const FullWidthBanner = memo(function FullWidthBanner({
       <div className={cn("absolute inset-0", !isLoaded && "opacity-0")}>
         <Glider
           ref={gliderRef}
+          draggable={true}
           hasArrows={false}
           hasDots={false}
           slidesToShow={1}
@@ -168,18 +177,31 @@ const FullWidthBanner = memo(function FullWidthBanner({
             setCurrentSlide(event.detail.slide);
           }}
         >
-          {bannerSlides.map((slide, slideIndex) => (
-            <SlideComponent
-              key={slide.id}
-              slide={slide}
-              slideIndex={slideIndex}
-              currentSlide={currentSlide}
-              isAnimating={isAnimating}
-              isLoaded={isLoaded}
-              loadedImages={loadedImages}
-              imageErrors={imageErrors}
-            />
-          ))}
+          {bannerSlides.map((slide, slideIndex) =>
+            slide.type === "video" ? (
+              <SlideVideoComponent
+                key={slide.id}
+                slide={slide}
+                slideIndex={slideIndex}
+                currentSlide={currentSlide}
+                isAnimating={isAnimating}
+                isLoaded={isLoaded}
+                loadedImages={loadedImages}
+                imageErrors={imageErrors}
+              />
+            ) : (
+              <SlideComponent
+                key={slide.id}
+                slide={slide}
+                slideIndex={slideIndex}
+                currentSlide={currentSlide}
+                isAnimating={isAnimating}
+                isLoaded={isLoaded}
+                loadedImages={loadedImages}
+                imageErrors={imageErrors}
+              />
+            ),
+          )}
         </Glider>
       </div>
 
@@ -214,7 +236,7 @@ const FullWidthBanner = memo(function FullWidthBanner({
                 "w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 hover:scale-125 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed",
                 index === currentSlide
                   ? "bg-primary scale-125 shadow-lg shadow-primary/50"
-                  : "bg-white/40 hover:bg-white/60"
+                  : "bg-white/40 hover:bg-white/60",
               )}
               aria-label={`Go to slide ${index + 1}`}
             />

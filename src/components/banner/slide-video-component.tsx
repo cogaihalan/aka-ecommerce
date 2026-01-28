@@ -1,12 +1,12 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useRef, useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SlideComponentProps } from "./types";
 
-export const SlideComponent = memo(
+export const SlideVideoComponent = memo(
   ({
     slide,
     slideIndex,
@@ -16,25 +16,144 @@ export const SlideComponent = memo(
     loadedImages,
     imageErrors,
   }: SlideComponentProps) => {
-    const slideType = slide.type;
-    const imageUrl =
-      slideType === "image" ? slide.imageUrl : "/assets/placeholder-banner.png";
-    const videoUrl =
-      slideType === "video" ? slide.videoUrl : "/assets/sample-video.mp4";
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+    const [isVideoLoaded, setIsVideoLoaded] = useState(false);
 
+    const videoUrl = slide.videoUrl || "/assets/sample-video.mp4";
+    const imageUrl = slide.imageUrl || "/assets/placeholder-banner.png";
     const isImageLoaded = loadedImages.has(imageUrl);
     const hasImageError = imageErrors.has(imageUrl);
     const fallbackImage = "/assets/placeholder-banner.png";
+    const isActive = slideIndex === currentSlide;
+
+    // Autoplay video when slide becomes active
+    useEffect(() => {
+      if (videoRef.current && isActive && !isAnimating) {
+        const playPromise = videoRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              setIsVideoPlaying(true);
+            })
+            .catch((error) => {
+              console.error("Error autoplaying video:", error);
+              setIsVideoPlaying(false);
+            });
+        }
+      } else if (videoRef.current && !isActive) {
+        videoRef.current.pause();
+        setIsVideoPlaying(false);
+      }
+    }, [isActive, isAnimating]);
+
+    // Handle video loading
+    useEffect(() => {
+      const video = videoRef.current;
+      if (!video) {
+        setIsVideoLoaded(false);
+        setIsVideoPlaying(false);
+        return;
+      }
+
+      // Reset state when video URL changes
+      setIsVideoLoaded(false);
+      setIsVideoPlaying(false);
+
+      const handleCanPlay = () => {
+        setIsVideoLoaded(true);
+      };
+
+      const handlePlay = () => {
+        setIsVideoPlaying(true);
+      };
+
+      const handlePause = () => {
+        setIsVideoPlaying(false);
+      };
+
+      const handleError = () => {
+        setIsVideoLoaded(false);
+        setIsVideoPlaying(false);
+      };
+
+      video.addEventListener("canplay", handleCanPlay);
+      video.addEventListener("play", handlePlay);
+      video.addEventListener("pause", handlePause);
+      video.addEventListener("error", handleError);
+
+      return () => {
+        video.removeEventListener("canplay", handleCanPlay);
+        video.removeEventListener("play", handlePlay);
+        video.removeEventListener("pause", handlePause);
+        video.removeEventListener("error", handleError);
+      };
+    }, [videoUrl]);
+
+    // Toggle video play/pause on click
+    const handleToggleVideo = useCallback(
+      (e: React.MouseEvent) => {
+        // Don't toggle if clicking on buttons or links
+        const target = e.target as HTMLElement;
+        if (
+          target.closest("a") ||
+          target.closest("button") ||
+          target.tagName === "A" ||
+          target.tagName === "BUTTON"
+        ) {
+          return;
+        }
+
+        if (videoRef.current) {
+          if (isVideoPlaying) {
+            videoRef.current.pause();
+          } else {
+            videoRef.current.play().catch(console.error);
+          }
+        }
+      },
+      [isVideoPlaying],
+    );
 
     return (
       <div className="h-full">
-        <div className="relative h-full flex items-center">
-          {/* Background Image - optimized for LCP */}
+        <div
+          className="relative h-full flex items-center cursor-pointer"
+          onClick={handleToggleVideo}
+        >
+          {/* Video Background */}
+          <video
+            ref={videoRef}
+            src={videoUrl}
+            className={cn(
+              "absolute inset-0 z-0 w-full h-full object-cover transition-all duration-1000",
+              !isVideoLoaded && "opacity-0",
+              isVideoLoaded && "opacity-100",
+            )}
+            style={{
+              transform:
+                slideIndex === currentSlide ? "scale(1.05)" : "scale(1.0)",
+              willChange: slideIndex === currentSlide ? "transform" : "auto",
+            }}
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster={imageUrl}
+          />
+
+          {/* Video loading placeholder */}
+          {!isVideoLoaded && (
+            <div className="absolute inset-0 z-0 bg-gradient-to-r from-gray-200 to-gray-300 animate-pulse" />
+          )}
+
+          {/* Fallback image while video loads or if video fails */}
           <div
             className={cn(
               "absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-1000",
-              !isImageLoaded && !hasImageError && "opacity-0",
-              isImageLoaded && "opacity-100",
+              isVideoLoaded && "opacity-0",
+              !isVideoLoaded && !isImageLoaded && !hasImageError && "opacity-0",
+              !isVideoLoaded && isImageLoaded && "opacity-100",
             )}
             style={{
               backgroundImage: `url(${hasImageError ? fallbackImage : imageUrl})`,
@@ -43,11 +162,6 @@ export const SlideComponent = memo(
               willChange: slideIndex === currentSlide ? "transform" : "auto",
             }}
           />
-
-          {/* Image loading placeholder */}
-          {!isImageLoaded && !hasImageError && (
-            <div className="absolute inset-0 z-0 bg-gradient-to-r from-gray-200 to-gray-300 animate-pulse" />
-          )}
 
           {/* Dark overlay for better text readability */}
           <div className="absolute inset-0 bg-black/5 z-10" />
@@ -142,4 +256,4 @@ export const SlideComponent = memo(
   },
 );
 
-SlideComponent.displayName = "SlideComponent";
+SlideVideoComponent.displayName = "SlideVideoComponent";

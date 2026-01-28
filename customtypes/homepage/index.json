@@ -1,0 +1,144 @@
+{
+  "format": "custom",
+  "id": "homepage",
+  "label": "Homepage",
+  "repeatable": false,
+  "status": true,
+  "json": {
+    "Main": {
+      "banner_slides": {
+        "type": "Group",
+        "config": {
+          "label": "Banner Slides",
+          "fields": {
+            "slide_type": {
+              "type": "Select",
+              "config": {
+                "label": "Slide Type",
+                "options": ["image", "video"],
+                "default_value": "image"
+              }
+            },
+            "title": {
+              "type": "Text",
+              "config": {
+                "label": "Title",
+                "placeholder": "Enter slide title"
+              }
+            },
+            "subtitle": {
+              "type": "Text",
+              "config": {
+                "label": "Subtitle",
+                "placeholder": "Enter slide subtitle"
+              }
+            },
+            "description": {
+              "type": "Text",
+              "config": {
+                "label": "Description",
+                "placeholder": "Enter slide description"
+              }
+            },
+            "image": {
+              "type": "Image",
+              "config": {
+                "label": "Background Image",
+                "constraint": {
+                  "width": 1920,
+                  "height": 800
+                },
+                "thumbnails": []
+              }
+            },
+            "video_url": {
+              "type": "Text",
+              "config": {
+                "label": "Video URL",
+                "placeholder": "Enter video URL (e.g., /assets/sample-video.mp4)"
+              }
+            },
+            "cta_text": {
+              "type": "Text",
+              "config": {
+                "label": "CTA Button Text",
+                "placeholder": "Enter button text"
+              }
+            },
+            "cta_link": {
+              "type": "Link",
+              "config": {
+                "label": "CTA Button Link",
+                "placeholder": "Select or enter a link"
+              }
+            }
+          }
+        }
+      },
+      "brand_section_title": {
+        "type": "Text",
+        "config": {
+          "label": "Brand Section Title",
+          "placeholder": "Giới thiệu về AKA"
+        }
+      },
+      "brand_values": {
+        "type": "Group",
+        "config": {
+          "label": "Brand Values",
+          "fields": {
+            "title": {
+              "type": "Text",
+              "config": {
+                "label": "Title",
+                "placeholder": "Enter brand value title"
+              }
+            },
+            "image": {
+              "type": "Image",
+              "config": {
+                "label": "Image",
+                "constraint": {
+                  "width": 400,
+                  "height": 300
+                },
+                "thumbnails": []
+              }
+            },
+            "short_content": {
+              "type": "Text",
+              "config": {
+                "label": "Short Content",
+                "placeholder": "Brief description shown on card"
+              }
+            },
+            "full_content": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Full Content",
+                "placeholder": "Full description shown in modal",
+                "multi": "paragraph,strong,em,hyperlink"
+              }
+            }
+          }
+        }
+      }
+    },
+    "SEO & Metadata": {
+      "meta_title": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Title",
+          "placeholder": "SEO title for homepage"
+        }
+      },
+      "meta_description": {
+        "type": "Text",
+        "config": {
+          "label": "Meta Description",
+          "placeholder": "SEO description for homepage"
+        }
+      }
+    }
+  }
+}

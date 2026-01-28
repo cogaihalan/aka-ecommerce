@@ -28,6 +28,11 @@ const baseConfig: NextConfig = {
         protocol: "https",
         hostname: "goose55.run.place",
         port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "images.prismic.io",
+        port: "",
       }
     ],
     // Optimize images for better performance

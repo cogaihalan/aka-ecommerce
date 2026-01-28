@@ -14,6 +14,8 @@ export default function CategoryListingPage() {
   const { categories } = useCategories();
   const { error, isLoading } = useAppLoading();
 
+  console.log(error)
+
   if (isLoading) {
     return <CategoryListingSkeleton />;
   }

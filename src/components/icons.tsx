@@ -11,6 +11,7 @@ import {
   File,
   FileText,
   Folder,
+  Gift,
   HelpCircle,
   Image as Photo,
   Laptop,
@@ -92,4 +93,5 @@ export const Icons = {
   chart: Chart,
   money: DollarSign,
   "credit-card": CreditCard,
+  gift: Gift,
 };

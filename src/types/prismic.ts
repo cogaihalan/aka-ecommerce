@@ -24,14 +24,34 @@ export interface PrismicPage extends PrismicDocument {
 export interface PrismicHomepage extends PrismicDocument {
   type: "homepage";
   data: {
-    title: string;
-    hero_title: string;
-    hero_description: string;
-    hero_image: {
-      url: string;
-      alt: string;
-    };
-    featured_products: any[];
+    // Banner slides
+    banner_slides?: Array<{
+      slide_type: "image" | "video";
+      title?: string;
+      subtitle?: string;
+      description?: string;
+      image?: {
+        url: string;
+        alt?: string;
+      };
+      video_url?: string;
+      cta_text?: string;
+      cta_link?: {
+        url?: string;
+      };
+    }>;
+    // Brand values section
+    brand_section_title?: string;
+    brand_values?: Array<{
+      title?: string;
+      image?: {
+        url: string;
+        alt?: string;
+      };
+      short_content?: string;
+      full_content?: any; // Rich text
+    }>;
+    // SEO
     meta_title?: string;
     meta_description?: string;
   };

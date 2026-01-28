@@ -8,54 +8,13 @@ import {
   SlideComponent,
   SlideVideoComponent,
   LoadingSkeleton,
-  BannerSlide,
   FullWidthBannerProps,
 } from "./banner";
 
-const slides: BannerSlide[] = [
-  {
-    id: 1,
-    type: "video",
-    title: "Nâng tầm đẳng cấp gian bếp với tinh hoa thép Việt",
-    subtitle: "AKA – Sắc Bén Từ Thép, Uy Tín Từ Tâm",
-    description:
-      "Tự hào thương hiệu kéo gia dụng cao cấp 100% sản xuất tại Việt Nam",
-    imageUrl: "/assets/placeholder-banner.png",
-    videoUrl: "/assets/sample-video.mp4",
-  },
-  {
-    id: 2,
-    type: "image",
-    title: "Thách Thức Mọi Loại Xương Cứng",
-    subtitle: "Chinh phục mọi thực phẩm cứng đầu",
-    description:
-      "Thiết kế trợ lực thông minh & lưỡi răng cưa chống trượt. Cắt gà, vịt gọn bưng trong 5 phút",
-    imageUrl: "/assets/placeholder-banner.png",
-  },
-  {
-    id: 3,
-    type: "image",
-    title: "Gửi trọn sự an tâm vào từng bữa ăn thuần khiết",
-    subtitle: "An Toàn Tuyệt Đối Cho Sức Khỏe Gia Đình",
-    description:
-      "Thép không gỉ cao cấp, đã qua kiểm định Quatest. Cam kết không thôi nhiễm kim loại nặng (Chì, Thạch tín).",
-    imageUrl: "/assets/placeholder-banner.png",
-  },
-  {
-    id: 4,
-    type: "image",
-    title: "Cam Kết Chất Lượng – Bảo Hành 5 Năm",
-    subtitle: " Đồng hành cùng gian bếp Việt. Lỗi 1 đổi 1 từ nhà sản xuất",
-    description:
-      "Đặc quyền bảo hành 5 năm – Bảo chứng vàng cho chất lượng bền bỉ vượt thời gian",
-    imageUrl: "/assets/placeholder-banner.png",
-  },
-];
-
 const FullWidthBanner = memo(function FullWidthBanner({
-  slides: customSlides,
+  slides,
   className,
-}: FullWidthBannerProps = {}) {
+}: FullWidthBannerProps) {
   const gliderRef = useRef<any>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -63,7 +22,11 @@ const FullWidthBanner = memo(function FullWidthBanner({
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
 
-  const bannerSlides = useMemo(() => customSlides || slides, [customSlides]);
+  const bannerSlides = useMemo(() => slides || [], [slides]);
+
+  if (!bannerSlides || bannerSlides.length === 0) {
+    return null;
+  }
 
   useEffect(() => {
     let idleCallbackId: number | undefined;

@@ -1,24 +1,38 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getCookie, setCookie } from "@/lib/utils/cookies";
+import { useCallback, useEffect, useState } from "react";
 
-const PROMOTION_DISMISSED_COOKIE = "promotion_modal_dismissed";
-const COOKIE_EXPIRY_DAYS = 3;
+export interface PromotionFormData {
+  name: string;
+  email: string;
+  phone: string;
+  message?: string;
+}
 
 interface UsePromotionModalProps {
   startDate?: Date | string;
   endDate?: Date | string;
-  onDismiss?: () => void;
+  promotionTitle?: string;
+  promotionDescription?: string;
+}
+
+interface SubmitResult {
+  success: boolean;
+  error?: string;
 }
 
 export function usePromotionModal({
   startDate,
   endDate,
-  onDismiss,
+  promotionTitle = "Khuyến mãi đặc biệt",
+  promotionDescription = "Cảm ơn bạn đã quan tâm đến chương trình khuyến mãi của chúng tôi!",
 }: UsePromotionModalProps) {
-  const [shouldShow, setShouldShow] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isPromotionActive, setIsPromotionActive] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
@@ -26,20 +40,13 @@ export function usePromotionModal({
 
   useEffect(() => {
     if (!isMounted) {
-      setShouldShow(false);
-      return;
-    }
-
-    // Check if user has dismissed the modal
-    const dismissedCookie = getCookie(PROMOTION_DISMISSED_COOKIE);
-    if (dismissedCookie === "true") {
-      setShouldShow(false);
+      setIsPromotionActive(false);
       return;
     }
 
     // Check if promotion dates are provided
     if (!startDate || !endDate) {
-      setShouldShow(false);
+      setIsPromotionActive(false);
       return;
     }
 
@@ -51,32 +58,106 @@ export function usePromotionModal({
 
     // Check if current date is within promotion period
     const isActive = now >= start && now <= end;
-
-    if (!isActive) {
-      setShouldShow(false);
-      return;
-    }
-
-    // Delay showing the modal for 7 seconds to allow data loading
-    const delayTimer = setTimeout(() => {
-      setShouldShow(true);
-    }, 7000);
-
-    // Cleanup timer on unmount or dependency change
-    return () => {
-      clearTimeout(delayTimer);
-    };
+    setIsPromotionActive(isActive);
   }, [isMounted, startDate, endDate]);
 
-  const handleDismiss = () => {
-    setCookie(PROMOTION_DISMISSED_COOKIE, "true", COOKIE_EXPIRY_DAYS);
-    setShouldShow(false);
-    onDismiss?.();
-  };
+  const openModal = useCallback(() => {
+    setIsOpen(true);
+    setSubmitError(null);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setIsOpen(false);
+    // Reset submitted state after closing
+    setTimeout(() => {
+      setIsSubmitted(false);
+      setSubmitError(null);
+    }, 300);
+  }, []);
+
+  const toggleModal = useCallback(() => {
+    setIsOpen((prev) => {
+      if (prev) {
+        // Closing modal - reset states
+        setTimeout(() => {
+          setIsSubmitted(false);
+          setSubmitError(null);
+        }, 300);
+      } else {
+        setSubmitError(null);
+      }
+      return !prev;
+    });
+  }, []);
+
+  const submitPromotion = useCallback(
+    async (data: PromotionFormData): Promise<SubmitResult> => {
+      setIsSubmitting(true);
+      setSubmitError(null);
+
+      try {
+        const response = await fetch("/api/email/promotion", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            customerName: data.name,
+            customerEmail: data.email,
+            promotionTitle,
+            promotionDescription: data.message
+              ? `${promotionDescription}\n\nTin nhắn từ khách hàng:\n${data.message}\n\nSố điện thoại: ${data.phone}`
+              : `${promotionDescription}\n\nSố điện thoại liên hệ: ${data.phone}`,
+            ctaLink: typeof window !== "undefined" ? window.location.origin : "",
+            ctaText: "Khám phá ngay",
+          }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(result.error || "Gửi thông tin thất bại");
+        }
+
+        setIsSubmitted(true);
+
+        // Auto close modal after success
+        setTimeout(() => {
+          closeModal();
+        }, 2000);
+
+        return { success: true };
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Đã có lỗi xảy ra";
+        setSubmitError(errorMessage);
+        return { success: false, error: errorMessage };
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [promotionTitle, promotionDescription, closeModal]
+  );
+
+  const resetSubmitState = useCallback(() => {
+    setIsSubmitted(false);
+    setSubmitError(null);
+  }, []);
 
   return {
-    shouldShow,
-    handleDismiss,
+    // Modal state
+    isOpen,
+    isPromotionActive,
     isMounted,
+    // Submit state
+    isSubmitting,
+    isSubmitted,
+    submitError,
+    // Actions
+    openModal,
+    closeModal,
+    toggleModal,
+    submitPromotion,
+    resetSubmitState,
   };
 }
